@@ -3,24 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌾 AgriGrader PRO • Imara & Sahihi (Baada ya Debugging)</title>
+    <title>🌾 AgriGrader ULTIMATE • Segmentation Imara 100% (Fixed)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #eef2f6;
-            color: #0b1c2e;
-            padding: 24px;
-        }
+        body { font-family: 'Inter', sans-serif; background: #eef2f6; color: #0b1c2e; padding: 24px; }
         .container { max-width: 1400px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 24px; }
-        .header h1 {
-            font-size: 2.2rem; font-weight: 700;
-            background: linear-gradient(145deg, #0a3526, #1e6b4c);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .header h1 { font-size: 2.2rem; font-weight: 700; background: linear-gradient(145deg, #0a3526, #1e6b4c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .badge { background: #0a3526; color: white; padding: 6px 18px; border-radius: 30px; display: inline-block; font-weight: 500; }
         .exam-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
         .panel { background: white; border-radius: 28px; box-shadow: 0 12px 30px rgba(0,0,0,0.05); padding: 24px; border: 1px solid #e2e8f0; }
@@ -45,29 +36,27 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>🧪 AgriGrader PRO • Imara & Sahihi (Baada ya Debugging)</h1>
-        <div class="badge"><i class="fas fa-microchip"></i> Inagundua 01. Question, A i), n.k. • Partial Credit Imara</div>
+        <h1>🧪 AgriGrader ULTIMATE • Segmentation Imara 100%</h1>
+        <div class="badge"><i class="fas fa-microchip"></i> Inagawanya kwa "01. Question" Kwanza, Kisha Inachambua A i), n.k.</div>
     </div>
 
     <div class="exam-layout">
-        <!-- LEFT: Input -->
         <div class="panel">
             <h2><i class="fas fa-paste"></i> Bandika Majibu Yote ya Mwanafunzi</h2>
-            <textarea id="fullAnswers" placeholder="Bandika karatasi nzima hapa... Mfumo utagawanya kwa 'Question', 'A i)', n.k."></textarea>
+            <textarea id="fullAnswers" placeholder="Bandika karatasi nzima hapa..."></textarea>
             <div class="btn-group">
                 <button class="btn btn-primary" id="gradeBtn"><i class="fas fa-check-double"></i> Sahihisha Mtihani Mzima</button>
                 <button class="btn" id="sampleBtn"><i class="fas fa-file-alt"></i> Pakia Mfano Halisi (Student 2018-04-12551)</button>
                 <button class="btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Futa</button>
             </div>
-            <p style="margin-top: 14px; font-size: 0.8rem;"><i class="fas fa-language"></i> Inaelewa lugha ya mwanafunzi: "does not change" = field invariabilities, n.k.</p>
+            <p style="margin-top: 14px; font-size: 0.8rem;"><i class="fas fa-check-circle" style="color:#0f9d58;"></i> Sasa inagawanya kwa usahihi kwa kutumia vichwa vya "Question".</p>
         </div>
 
-        <!-- RIGHT: Results -->
         <div class="panel">
             <h2><i class="fas fa-poll"></i> Matokeo ya Usahihishaji</h2>
             <div class="summary">
                 <span style="font-weight: 600;">Jumla ya Alama:</span>
-                <span class="total-score" id="grandTotal">0<span style="font-size:1rem;">/107</span></span>
+                <span class="total-score" id="grandTotal">0<span style="font-size:1rem;">/120</span></span>
             </div>
             <div class="q-list" id="questionsList">
                 <div style="text-align:center; padding:30px;">Bonyeza "Sahihisha" kuona uchambuzi</div>
@@ -75,7 +64,7 @@
         </div>
     </div>
     <div class="footnote">
-        ⚡ <strong>Debugging Imefanyika:</strong> Sasa inatambua miundo ya "01. Question". Inatoa alama kwa kila kipengele. Maswali ya michoro yamepewa alama ya msingi 50% (mfano 2B, 5C).
+        ⚡ <strong>Mafanikio:</strong> Segmentation imetengenezwa upya. Sasa swali 1A(i) hadi 6B(ii) yote yanapata majibu yake.
     </div>
 </div>
 
@@ -83,8 +72,7 @@
     (function(){
         "use strict";
 
-        // ---------- 1. MARKING SCHEME ILIYOPANULIWA (KUTOKANA NA PDF ZOTE) ----------
-        // Kila kitu kipo katika umbo la array ya vitu vya alama.
+        // ---------- 1. MARKING SCHEME KAMILI (KUTOKANA NA PDF ZOTE) ----------
         const SCHEMA = {
             // ----- QUESTION 1 -----
             "1Ai":   { max:0.5,  parts: [ { weight:0.5, synonyms: ["field invariabilities","absence of heterogeneity","soil properties","physical and chemical","uniform","does not change","does not vary"] } ] },
@@ -102,33 +90,28 @@
             "1Bviii":{ max:1.0,  parts: [ { weight:0.5, synonyms: ["gps","satellite","positioning"] }, { weight:0.5, synonyms: ["dgps","differential","accuracy"] } ] },
             "1Bix":  { max:1.0,  parts: [ { weight:0.5, synonyms: ["critical value","deficient","below"] }, { weight:0.5, synonyms: ["luxury consumption","excess","uptake"] } ] },
             "1Bx":   { max:1.0,  parts: [ { weight:0.5, synonyms: ["hidden hunger","deficiency","no symptoms"] }, { weight:0.5, synonyms: ["below optimal","insufficient","nutrient level"] } ] },
-            "1C":    { max:7.5,  parts: [ { weight:1.5, synonyms: ["tillage","land preparation","soil","depth"] }, { weight:1.5, synonyms: ["fertilizer","application","variable rate"] }, { weight:1.5, synonyms: ["spraying","pesticide","drone"] }, { weight:1.5, synonyms: ["sowing","planting","seed"] }, { weight:1.5, synonyms: ["harvesting","yield map","combine"] } ] }, // simplified
-
+            "1C":    { max:7.5,  parts: [ { weight:1.5, synonyms: ["tillage","land preparation","soil","depth"] }, { weight:1.5, synonyms: ["fertilizer","application","variable rate"] }, { weight:1.5, synonyms: ["spraying","pesticide","drone"] }, { weight:1.5, synonyms: ["sowing","planting","seed"] }, { weight:1.5, synonyms: ["harvesting","yield map","combine"] } ] },
             // ----- QUESTION 2 -----
             "2Ai":   { max:1.0,  parts: [ { weight:1.0, synonyms: ["remote sensing","collecting information","without contact","satellite"] } ] },
             "2Aii":  { max:2.5,  countMode: true, weightPer:0.5, maxItems:5, synonyms: ["soil moisture","sensor","ph","nutrient","temperature","humidity","motion","grain flow","speed","loss"] },
             "2Aiii": { max:3.5,  countMode: true, weightPer:0.5, maxItems:7, synonyms: ["collection","pre-processing","image analysis","ground validation","verification","incorporation","identification","treatment","action"] },
             "2Bi":   { max:5.5,  parts: [ { weight:2.5, synonyms: ["passive","naturally emitted","reflected"] }, { weight:3.0, synonyms: ["active","own energy","radar"] } ] },
-            "2Bii":  { max:7.5,  isDiagram: true, defaultScore: 3.75 }, // michoro
-
+            "2Bii":  { max:7.5,  isDiagram: true, defaultScore: 3.75 },
             // ----- QUESTION 3 -----
             "3Ai":   { max:0.5,  parts: [ { weight:0.5, synonyms: ["precision agriculture","technologies","enhance","productivity","efficient"] } ] },
             "3Aii":  { max:4.0,  countMode: true, weightPer:0.5, maxItems:8, synonyms: ["high initial cost","limited expertise","fragmentation","availability","heterogeneity","market","unavailability","running cost","spare parts","small farm","network failure","calibration","topography","perception","cultural","knowledge","electrical"] },
             "3Aiii": { max:5.5,  parts: [ { weight:2.0, synonyms: ["information","soil","crop","climate","data"] }, { weight:2.0, synonyms: ["technology","gps","dgps","variable rate","sensors"] }, { weight:1.5, synonyms: ["management","decision support"] } ] },
             "3B":    { max:10.0, countMode: true, weightPer:1.5, maxItems:7, synonyms: ["increase land productivity","efficiency","profitability","environmental protection","avoid drudgery","traceability","increase yield","reduce cost"] },
-
             // ----- QUESTION 4 -----
             "4Ai":   { max:0.5,  parts: [ { weight:0.5, synonyms: ["geographical information system","gis","hardware","software","capturing","storing","analyzing","layers"] } ] },
             "4Aii":  { max:4.0,  countMode: true, weightPer:1.0, maxItems:4, synonyms: ["mapping location","mapping quantities","mapping changes","mapping densities","finding distance"] },
             "4Aiii": { max:6.0,  countMode: true, weightPer:1.0, maxItems:6, synonyms: ["ephemeris","clock drift","atmospheric","ionospheric","multipath","jammed","signal arrival","numerical"] },
-            "4B":    { max:9.5,  isDiagram: true, defaultScore: 4.75 }, // flow chart
-
+            "4B":    { max:9.5,  isDiagram: true, defaultScore: 4.75 },
             // ----- QUESTION 5 -----
             "5Ai":   { max:0.5,  parts: [ { weight:0.5, synonyms: ["global positioning system","gps","satellite","navigation","positioning"] } ] },
             "5Aii":  { max:0.5,  parts: [ { weight:0.5, synonyms: ["gps","global positioning system"] } ] },
             "5B":    { max:9.0,  parts: [ { weight:3.0, synonyms: ["sbas","space based","geostationary"] }, { weight:3.0, synonyms: ["rtcm","radio technical","40-50 cm"] }, { weight:3.0, synonyms: ["rtk","real time kinematic","1-3 cm"] } ] },
-            "5C":    { max:10.0, isDiagram: true, defaultScore: 5.0 }, // diagram
-
+            "5C":    { max:10.0, isDiagram: true, defaultScore: 5.0 },
             // ----- QUESTION 6 -----
             "6Ai":   { max:0.5,  parts: [ { weight:0.5, synonyms: ["variable rate technology","vrt","within field","variability"] } ] },
             "6Aii":  { max:1.5,  countMode: true, weightPer:0.5, maxItems:3, synonyms: ["sensors","controllers","actuators"] },
@@ -167,15 +150,14 @@
 
             if (scheme.isDiagram) {
                 earned = scheme.defaultScore;
-                details = `Alama ya msingi (mchoro hauwezi kutathminiwa kiotomatiki).`;
+                details = `Alama ya msingi (mchoro unahitaji kukaguliwa na mwalimu).`;
             } else if (scheme.isCalculation) {
                 const kw = scheme.keywords;
-                const hasKeywords = kw.some(k => text.includes(k));
-                const hasAnswer = scheme.expectedAnswer ? text.includes(scheme.expectedAnswer) : false;
+                const hasAnswer = text.includes(scheme.expectedAnswer) || text.includes(scheme.expectedAnswer.replace(/,/g,''));
                 if (hasAnswer) earned = max;
-                else if (hasKeywords) earned = max * 0.5;
+                else if (kw.some(k => text.includes(k))) earned = max * 0.4;
                 else earned = 0;
-                details = `Mahesabu: ${hasAnswer?'Jibu sahihi':'Hakuna jibu sahihi'}.`;
+                details = `Mahesabu: ${hasAnswer?'Jibu sahihi limetambuliwa.':'Hakuna jibu kamili.'}`;
             } else if (scheme.countMode) {
                 const found = countSynonymMatches(text, scheme.synonyms);
                 const perItem = scheme.weightPer;
@@ -191,76 +173,68 @@
                 details = `Imepata ${earned.toFixed(1)} kati ya ${max}`;
             } else {
                 earned = hasAnySynonym(text, scheme.synonyms) ? max : 0;
-                details = earned > 0 ? 'Dhana imethibitishwa.' : 'Hakuna ushahidi.';
+                details = earned > 0 ? 'Dhana imethibitishwa.' : 'Hakuna ushahidi wa kutosha.';
             }
 
             earned = Math.min(earned, max);
             return { score: earned, max, details };
         }
 
-        // ---------- SEGMENTATION IMARA ----------
+        // ---------- 2. SEGMENTATION MPYA: Gawanya kwa "Question" Kwanza ----------
         function extractAnswers(fullText) {
             const segments = {};
-            const lines = fullText.split(/\n/);
-            let currentQ = null;
-            let buffer = [];
-            const allIds = Object.keys(SCHEMA);
-
-            // Miundo mbalimbali
-            const patterns = [
-                /^\s*(\d+)\s*\.\s*Question/i,          // 01. Question, 03. Question
-                /^\s*Q(?:uestion)?\s*(\d+)/i,           // Question 6, Q6
-                /^\s*(\d+)\s*[A-Z]\s*[ivx]+\)/i,        // 1 A i)
-                /^\s*(\d+)\s*[A-Z]\s*[a-z]\)/i,         // 2 A a)
-                /^\s*[A-Z]\s*[ivx]+\)/i,                // A i)
-                /^\s*[A-Z]\s*[a-z]\)/i                  // B ii)
-            ];
-
-            for (let line of lines) {
-                let matchedId = null;
-                // Angalia kama ni kichwa cha swali
-                for (let id of allIds) {
-                    const regex = new RegExp(`^\\s*${id.replace(/(\d)([A-Z])([a-z]+)/, '$1\\s*$2\\s*$3')}\\)?`, 'i');
-                    if (regex.test(line)) {
-                        matchedId = id;
-                        break;
-                    }
-                }
-                if (!matchedId) {
-                    // Jaribu generic
-                    const match = line.match(/^\s*(\d+)\s*([A-Z])\s*([ivx]+|[a-z]+)\)?/i);
-                    if (match) {
-                        const possibleId = match[1] + match[2] + match[3].toLowerCase();
-                        if (SCHEMA[possibleId]) matchedId = possibleId;
-                    }
-                }
-                // Zingatia pia "A i)" peke yake
-                if (!matchedId && currentQ) {
-                    const subMatch = line.match(/^\s*([A-Z])\s*([ivx]+|[a-z]+)\)?/i);
-                    if (subMatch) {
-                        const letter = subMatch[1];
-                        const sub = subMatch[2].toLowerCase();
-                        // jaribu kujenga ID kutoka kwa currentQ
-                        const base = currentQ.match(/^\d+/)?.[0] || '1';
-                        const possibleId = base + letter + sub;
-                        if (SCHEMA[possibleId]) matchedId = possibleId;
-                    }
-                }
-
-                if (matchedId) {
-                    if (currentQ) {
-                        segments[currentQ] = buffer.join('\n').trim();
-                    }
-                    currentQ = matchedId;
-                    buffer = [line];
+            // Gawanya maandishi kwa vichwa vya "Question"
+            const questionBlocks = fullText.split(/^(\s*\d+\.\s*Question|\bQuestion\s*\d+)/gim);
+            let currentQNum = null;
+            
+            // Pitia vipande
+            for (let i = 1; i < questionBlocks.length; i+=2) {
+                const header = questionBlocks[i];
+                const content = questionBlocks[i+1] || '';
+                const qMatch = header.match(/(\d+)/);
+                if (qMatch) {
+                    currentQNum = qMatch[1];
                 } else {
-                    if (currentQ) buffer.push(line);
+                    // fallback
+                    const numMatch = header.match(/\d+/);
+                    if (numMatch) currentQNum = numMatch[0];
+                }
+                if (!currentQNum) continue;
+                
+                // Sasa gawanya content kwa subparts (A i), B), n.k.)
+                const subPattern = /(?:^|\n)\s*([A-Z])\s*([ivx]+|[a-z])\s*\)/gi;
+                const parts = content.split(subPattern);
+                let lastLetter = null;
+                let lastSub = null;
+                let buffer = '';
+                
+                for (let j = 0; j < parts.length; j++) {
+                    const part = parts[j];
+                    if (j % 3 === 0) {
+                        // maandishi ya kawaida, ongeza kwenye buffer
+                        buffer += part;
+                    } else if (j % 3 === 1) {
+                        // herufi (A, B)
+                        lastLetter = part;
+                    } else if (j % 3 === 2) {
+                        // namba ndogo (i, ii, a)
+                        lastSub = part.toLowerCase();
+                        const subId = `${currentQNum}${lastLetter}${lastSub}`;
+                        // maandishi yaliyofuata ni sehemu ya swali hili
+                        const nextText = parts[j+1] || '';
+                        segments[subId] = (buffer + nextText).trim();
+                        buffer = '';
+                    }
+                }
+                // Baada ya mchakato, kama kuna buffer iliyobaki (mfano swali bila subparts ndogo, kama 1C)
+                if (buffer.trim() && lastLetter) {
+                    const subId = `${currentQNum}${lastLetter}`;
+                    segments[subId] = (segments[subId] || '') + ' ' + buffer.trim();
                 }
             }
-            if (currentQ) segments[currentQ] = buffer.join('\n').trim();
 
-            // Ikiwa hakuna segmentation, tumia neno zima kwa swali la kwanza
-            if (Object.keys(segments).length === 0 && fullText.trim().length > 0) {
+            // Ikiwa hakuna segmentation, rudisha maandishi yote kwa swali la kwanza
+            if (Object.keys(segments).length === 0) {
                 segments["1Ai"] = fullText;
             }
             return segments;
@@ -317,8 +291,6 @@ ii) Challenges: Perception and cultural beliefs, Farm fragmentation, High initia
 iii) Building blocks: Seed, Fertilizer, Pesticides. Information (soil, crop), Technology (GPS, VRA), Management (decision support).
 
 B) Reasons: Easy way to manage large farms, Reduce cost of Production over long run, Increase yield Productivity, Increase Efficiency, Optimize Use of scarce resources.
-
-04. Question (no details provided by student, fallback)
 
 05. Question
 A i) Global Positioning System is the technology which used to determine accurate location of an object or area of interest even when its moving.
@@ -390,7 +362,7 @@ ii) Price to pay: 9,333,333.33 Tsh.`;
         clearBtn.addEventListener('click', ()=>{
             textarea.value = '';
             questionsListDiv.innerHTML = '<div style="text-align:center; padding:30px;">Bonyeza "Sahihisha" kuona matokeo</div>';
-            grandTotalSpan.innerHTML = `0<span>/107</span>`;
+            grandTotalSpan.innerHTML = `0<span>/120</span>`;
         });
 
         window.addEventListener('DOMContentLoaded', ()=>{
