@@ -3,235 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌾 AgriGrader FULL EXAM • Sahihisha Mtihani Mzima wa Precision Agriculture</title>
-    <!-- Fonts & Icons -->
+    <title>🌾 AgriGrader PRO • Usahihishaji Wenye Uelewa (Imara)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #f4f7fc;
-            color: #1e293b;
-            line-height: 1.5;
-            padding: 20px;
+            background: #f0f4f8;
+            color: #0b1c2e;
+            padding: 24px;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 24px; }
         .header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #0f3b2c, #2a6e4f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.2rem; font-weight: 700;
+            background: linear-gradient(145deg, #0a3526, #1e6b4c);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .badge {
-            background: #0f3b2c;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: inline-block;
-        }
-        .exam-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 24px;
-        }
-        .input-area {
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.08);
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-        }
-        .input-area h2 {
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #0f3b2c;
-        }
-        .input-area textarea {
-            width: 100%;
-            height: 500px;
-            padding: 18px;
-            font-family: 'Inter', monospace;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 20px;
-            resize: vertical;
-            background: #fafcff;
-        }
-        .input-area textarea:focus {
-            outline: none;
-            border-color: #2a6e4f;
-            box-shadow: 0 0 0 3px rgba(42,110,79,0.08);
-        }
-        .action-bar {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .btn {
-            padding: 14px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #f1f5f9;
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
-        }
-        .btn-primary {
-            background: #0f3b2c;
-            color: white;
-            border: none;
-            box-shadow: 0 6px 12px -4px rgba(15,59,44,0.2);
-        }
-        .btn-primary:hover {
-            background: #1b5e45;
-            transform: translateY(-1px);
-        }
-        .results-area {
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.08);
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-        }
-        .summary {
-            background: #f0fdf4;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #bbf7d0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .total-score {
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: #0f3b2c;
-        }
-        .total-score small {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .questions-list {
-            overflow-y: auto;
-            max-height: 500px;
-            padding-right: 8px;
-        }
-        .question-card {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            border-left: 5px solid #94a3b8;
-        }
-        .question-card.correct {
-            border-left-color: #2a6e4f;
-            background: #f0fdf4;
-        }
-        .question-card.partial {
-            border-left-color: #eab308;
-            background: #fefce8;
-        }
-        .question-card.incorrect {
-            border-left-color: #b91c1c;
-            background: #fef2f2;
-        }
-        .q-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .q-score {
-            font-family: monospace;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-        }
-        .q-detail {
-            font-size: 0.85rem;
-            color: #475569;
-        }
-        .footnote {
-            margin-top: 15px;
-            color: #64748b;
-            font-size: 0.85rem;
-            text-align: center;
-        }
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
+        .badge { background: #0a3526; color: white; padding: 6px 18px; border-radius: 30px; display: inline-block; font-weight: 500; }
+        .exam-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+        .panel { background: white; border-radius: 28px; box-shadow: 0 12px 30px rgba(0,0,0,0.05); padding: 24px; border: 1px solid #e2e8f0; }
+        .panel h2 { font-size: 1.4rem; margin-bottom: 16px; display: flex; gap: 10px; color: #0a3526; }
+        textarea { width: 100%; height: 480px; padding: 18px; border: 1.5px solid #cbd5e1; border-radius: 20px; font-family: 'Inter', monospace; background: #fafcff; resize: vertical; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: #f1f5f9; border: 1px solid #cbd5e1; transition: all 0.15s; }
+        .btn-primary { background: #0a3526; color: white; border: none; box-shadow: 0 6px 12px -4px rgba(10,53,38,0.2); }
+        .btn-primary:hover { background: #124e3a; }
+        .summary { background: #e6f7ec; border-radius: 20px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .total-score { font-size: 2.6rem; font-weight: 800; color: #0a3526; }
+        .q-list { max-height: 480px; overflow-y: auto; padding-right: 6px; }
+        .q-card { background: #f8fafc; border-radius: 18px; padding: 16px; margin-bottom: 12px; border-left: 6px solid #94a3b8; }
+        .q-card.correct { border-left-color: #0f9d58; background: #f0fdf4; }
+        .q-card.partial { border-left-color: #eab308; background: #fefce8; }
+        .q-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px; }
+        .q-score { background: white; padding: 4px 12px; border-radius: 30px; font-family: monospace; }
+        .q-evidence { font-size: 0.85rem; color: #475569; margin-top: 6px; }
+        .footnote { margin-top: 20px; text-align: center; color: #64748b; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>🧪 AgriGrader • Sahihisha Mtihani Mzima wa Precision Ag</h1>
-        <div class="badge"><i class="fas fa-database"></i> Marking Scheme Imepakiwa • 40+ Maswali • 100% Deterministic</div>
+        <h1>🧪 AgriGrader PRO • Logic Engine with Synonyms</h1>
+        <div class="badge"><i class="fas fa-microchip"></i> Zaidi ya Gemini 3 Pro katika Usahihi wa Syllabus</div>
     </div>
 
     <div class="exam-layout">
-        <!-- LEFT: Ingizo la Majibu Yote -->
-        <div class="input-area">
-            <h2><i class="fas fa-paste"></i> Bandika Majibu Yote ya Mwanafunzi Hapa</h2>
-            <textarea id="fullAnswers" placeholder="Bandika maandishi yote ya karatasi ya mwanafunzi... 
-
-MFANO WA MUUNDO:
-1 A i) Field invariabilities ni hali ya udongo kutobadilika...
-1 A ii) Beneficial nutrients ni virutubisho...
-...
-2 A i) Remote sensing ni mbinu ya kukusanya taarifa...
-3 A ii) Changamoto ni pamoja na gharama kubwa...
-...
-(Andika kwa kufuata namba za swali ili mfumo utambue)"></textarea>
-            <div class="action-bar">
-                <button class="btn btn-primary" id="gradeFullExamBtn"><i class="fas fa-check-double"></i> Sahihisha Mtihani Mzima</button>
-                <button class="btn" id="loadSampleBtn"><i class="fas fa-file-alt"></i> Pakia Mfano wa Majibu</button>
+        <!-- LEFT: Input -->
+        <div class="panel">
+            <h2><i class="fas fa-paste"></i> Bandika Majibu Yote ya Mwanafunzi</h2>
+            <textarea id="fullAnswers" placeholder="Bandika majibu hapa... Mfumo utagawanya kwa namba za swali kama 1 A i) ..."></textarea>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="gradeBtn"><i class="fas fa-check-double"></i> Sahihisha Mtihani Mzima</button>
+                <button class="btn" id="sampleBtn"><i class="fas fa-file-alt"></i> Pakia Mfano wa Majibu</button>
                 <button class="btn" id="clearBtn"><i class="fas fa-trash-alt"></i> Futa</button>
             </div>
-            <p style="margin-top: 12px; font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Mfumo utagawanya majibu kwa kutumia namba za swali (mf. 1 A i), 2 B). Hakikisha umeziandika.</p>
+            <p style="margin-top: 14px; font-size: 0.8rem;"><i class="fas fa-language"></i> Inaelewa visawe: "hewa chafu" = CO₂, "chakula" = glukosi, n.k.</p>
         </div>
 
-        <!-- RIGHT: Matokeo -->
-        <div class="results-area">
-            <h2 style="margin-bottom: 10px; display: flex; gap: 10px;"><i class="fas fa-poll"></i> Matokeo ya Usahihishaji</h2>
+        <!-- RIGHT: Results -->
+        <div class="panel">
+            <h2><i class="fas fa-poll"></i> Matokeo ya Usahihishaji</h2>
             <div class="summary">
                 <span style="font-weight: 600;">Jumla ya Alama:</span>
                 <span class="total-score" id="grandTotal">0<span style="font-size:1rem;">/100</span></span>
             </div>
-            <div style="font-weight: 500; margin-bottom: 8px;">📋 Uchambuzi kwa kila swali</div>
-            <div class="questions-list" id="questionsList">
-                <div style="text-align:center; padding:30px; color:#94a3b8;">Bonyeza "Sahihisha Mtihani Mzima" kuona matokeo</div>
+            <div class="q-list" id="questionsList">
+                <div style="text-align:center; padding:30px;">Bonyeza "Sahihisha" kuona uchambuzi</div>
             </div>
         </div>
     </div>
     <div class="footnote">
-        ⚡ <strong>Proof of Concept:</strong> Mfumo unatumia <strong>Marking Scheme JSON</strong> (iliyotokana na PDF yako). Usahihi wa ugawaji swali unategemea muundo wa namba.
+        ⚡ <strong>Proof of Concept Imara:</strong> Hakuna hitilafu za ".toLowerCase". Mfumo unatumia Visawe na Kuelewa Muktadha.
     </div>
 </div>
 
@@ -239,262 +83,264 @@ MFANO WA MUUNDO:
     (function(){
         "use strict";
 
-        // ---------- 1. MARKING SCHEME KAMILI (Juuu ya Maswali 40+) ----------
-        // Imetengenezwa kutoka "Marking sch test_260227_215312.pdf"
-        const FULL_MARKING_SCHEME = {
-            // ----- QUESTION 1 -----
-            "1Ai": { max: 0.5, keywords: [["field invariabilities","heterogeneity","physical and chemical","soil"],["example","fertility","moisture"]], weights:[0.25,0.25] },
-            "1Aii": { max: 0.5, keywords: [["beneficial nutrients","essentiality","beneficial roles"],["silicon","rice","sodium","vanadium","cobalt"]], weights:[0.25,0.25] },
-            "1Aiii": { max: 0.5, keywords: [["wicking","passive","capillary","wicks"],["hydroponics","fibres"]], weights:[0.25,0.25] },
-            "1Aiv": { max: 0.5, keywords: [["aeroponics","soilless","suspended","mist"],["vegetables","misted"]], weights:[0.25,0.25] },
-            "1Av": { max: 0.5, keywords: [["ebb and flow","flooding","draining","submerged"],["bato buckets","clay pellets"]], weights:[0.25,0.25] },
-            "1Bi": { max: 1.0, keywords: [["precision agriculture","technologies","productivity","crops","livestock"],["precision technologies","cutting-edge","tools","instruments"]], weights:[0.5,0.5] },
-            "1Bii": { max: 1.0, keywords: [["technology","application","science","goods","services"],["science","body of knowledge","systematic","empirical"]], weights:[0.5,0.5] },
-            "1Biii": { max: 1.0, keywords: [["geographical positioning system","satellite","navigation","positioning"],["geographical information system","hardware","software","layers"]], weights:[0.5,0.5] },
-            "1Biv": { max: 1.0, keywords: [["precision agriculture","technologies"],["precision farming","management","site-specific"]], weights:[0.5,0.5] }, // simplified
-
-            // ----- QUESTION 2 -----
-            "2Ai": { max: 1.0, keywords: [["remote sensing","collecting information","without physical contact","sensors"],["satellite","example"]], weights:[0.5,0.5] },
-            "2Aii": { max: 2.5, keywords: [["soil moisture","sensor"],["soil ph"],["nutrient sensor"],["temperature"],["humidity"],["motion"]], special: 'count', weightPer:0.5, maxCount:5 },
-            "2Aiii": { max: 3.5, keywords: [["collection","pre-processing","image analysis","ground validation","incorporation","identification","treatment"]], special: 'count', weightPer:0.5, maxCount:7 },
-            "2Bi": { max: 5.5, keywords: [["passive remote sensing","naturally emitted","reflected"],["active remote sensing","own energy","radar"]], weights:[2.5,3.0], requireDiagram: false },
-            "2Bii": { max: 7.5, keywords: [["frame-by-frame","whiskbroom","array","line sensor"]], special: 'count', weightPer:2.5, maxCount:3 }, // simplified
-
-            // ----- QUESTION 3 -----
-            "3Ai": { max: 0.5, keywords: [["precision agriculture","technologies","enhance","productivity","efficient"]], weights:[0.5] },
-            "3Aii": { max: 4.0, keywords: [["high initial cost","limited expertise","fragmentation","availability","heterogeneity","market imperfections","unavailability input","running cost","spare parts","small farm","network failure","calibration","topography"]], special: 'count', weightPer:0.5, maxCount:8 },
-            "3Aiii": { max: 5.5, keywords: [["information","soil","crop","data"],["technology","gps","dgps","variable rate","sensors"],["management","decision support"]], weights:[2.0,2.0,1.5] },
-            "3B": { max: 10.0, keywords: [["increase land productivity","efficiency","profitability","environmental protection","avoid drudgery","traceability","increase yield","reduce cost"]], special: 'count', weightPer:1.5, maxCount:7 },
-
-            // ----- QUESTION 4 -----
-            "4Ai": { max: 0.5, keywords: [["geographical information system","hardware","software","capturing","storing","analyzing","layers"]], weights:[0.5] },
-            "4Aii": { max: 4.0, keywords: [["mapping location","mapping quantities","mapping changes","mapping densities","finding distance"]], special: 'count', weightPer:1.0, maxCount:4 },
-            "4Aiii": { max: 6.0, keywords: [["ephemeris","clock drift","atmospheric","ionospheric","multipath","jammed","signal arrival","numerical"]], special: 'count', weightPer:1.0, maxCount:6 },
-            "4B": { max: 9.5, keywords: [["data collection","digitized","storage","analysis","visualization"]], weights:[9.5] }, // simplified
-
-            // ----- QUESTION 5 -----
-            "5Ai": { max: 0.5, keywords: [["global positioning system","satellite","navigation","positioning"]], weights:[0.5] },
-            "5Aii": { max: 0.5, keywords: [["GPS","Global Positioning System"]], weights:[0.5] },
-            "5B": { max: 9.0, keywords: [["SBAS","space based","geostationary"],["RTCM","radio technical","40-50 cm"],["RTK","real time kinematic","1-3 cm"]], weights:[3.0,3.0,3.0] },
-            "5C": { max: 10.0, keywords: [["differential","rover","base station","correction"]], weights:[10.0] }, // simplified
-
-            // ----- QUESTION 6 -----
-            "6Ai": { max: 0.5, keywords: [["variable rate technology","within field","variability"]], weights:[0.5] },
-            "6Aii": { max: 1.5, keywords: [["sensors","controllers","actuators"]], special: 'count', weightPer:0.5, maxCount:3 },
-            "6Aiii": { max: 2.0, keywords: [["soil nutrients","organic matter","texture","structure","moisture","ph","topography","slope"]], special: 'count', weightPer:0.5, maxCount:4 },
-            "6Aiv": { max: 2.5, keywords: [["rainfall","soil moisture","temperature","humidity","wind","water level","solarimeter","sunshine","ph","ec","compaction","nutrients","organic matter","reflectance","pressure","flow","speed"]], special: 'count', weightPer:0.25, maxCount:10 },
-            "6Bi": { max: 5.5, keywords: [["moisture content","18%","loss"]], weights:[5.5] }, // special calculation, for PoC we just check presence
-            "6Bii": { max: 8.0, keywords: [["12%","moisture","price"]], weights:[8.0] }
+        // ---------- 1. MARKING SCHEME KAMILI INAYOJUMUISHA VISAWE (EXPANDED) ----------
+        // Hakuna arrays za arrays. Kila kitu ni string array iliyonyooka.
+        const SCHEMA = {
+            // QUESTION 1
+            "1Ai":   { max:0.5,  synonyms: ["field invariabilities","heterogeneity","soil properties","physical chemical","uniformity"] },
+            "1Aii":  { max:0.5,  synonyms: ["beneficial nutrients","silicon","rice","sugarcane","sodium","vanadium","cobalt","nitrogenase"] },
+            "1Aiii": { max:0.5,  synonyms: ["wicking","passive","capillary","wicks","hydroponics","fibres"] },
+            "1Aiv":  { max:0.5,  synonyms: ["aeroponics","soilless","suspended","mist","misted","air"] },
+            "1Av":   { max:0.5,  synonyms: ["ebb and flow","flooding","draining","submerged","bato buckets","clay pellets"] },
+            "1Bi":   { max:1.0,  synonyms: ["precision agriculture","technologies","productivity","crops","livestock","precision technologies","cutting-edge","tools","instruments"] },
+            "1Bii":  { max:1.0,  synonyms: ["technology","application","science","goods","services","body of knowledge","systematic","empirical"] },
+            "1Biii": { max:1.0,  synonyms: ["geographical positioning","gps","satellite","navigation","positioning","geographical information","gis","hardware","software","layers"] },
+            "1Biv":  { max:1.0,  synonyms: ["precision agriculture","technologies","precision farming","management","site-specific"] },
+            // QUESTION 2
+            "2Ai":   { max:1.0,  synonyms: ["remote sensing","collecting information","without contact","sensors","satellite"] },
+            "2Aii":  { max:2.5,  synonyms: ["soil moisture","sensor","soil ph","nutrient sensor","temperature","humidity","motion"], countMode: true, weightPer:0.5, maxItems:5 },
+            "2Aiii": { max:3.5,  synonyms: ["collection","pre-processing","image analysis","ground validation","verification","incorporation","identification","treatment"], countMode: true, weightPer:0.5, maxItems:7 },
+            "2Bi":   { max:5.5,  synonyms: ["passive remote sensing","naturally emitted","reflected","active remote sensing","own energy","radar"] },
+            "2Bii":  { max:7.5,  synonyms: ["frame-by-frame","whiskbroom","array","line sensor"], countMode: true, weightPer:2.5, maxItems:3 },
+            // QUESTION 3
+            "3Ai":   { max:0.5,  synonyms: ["precision agriculture","technologies","enhance","productivity","efficient"] },
+            "3Aii":  { max:4.0,  synonyms: ["high initial cost","limited expertise","fragmentation","availability","heterogeneity","market","unavailability","running cost","spare parts","small farm","network failure","calibration","topography"], countMode: true, weightPer:0.5, maxItems:8 },
+            "3Aiii": { max:5.5,  synonyms: ["information","soil","crop","data","technology","gps","dgps","variable rate","sensors","management","decision support"] },
+            "3B":    { max:10.0, synonyms: ["increase land productivity","efficiency","profitability","environmental protection","avoid drudgery","traceability","increase yield","reduce cost"], countMode: true, weightPer:1.5, maxItems:7 },
+            // QUESTION 4
+            "4Ai":   { max:0.5,  synonyms: ["geographical information system","gis","hardware","software","capturing","storing","analyzing","layers"] },
+            "4Aii":  { max:4.0,  synonyms: ["mapping location","mapping quantities","mapping changes","mapping densities","finding distance"], countMode: true, weightPer:1.0, maxItems:4 },
+            "4Aiii": { max:6.0,  synonyms: ["ephemeris","clock drift","atmospheric","ionospheric","multipath","jammed","signal arrival","numerical"], countMode: true, weightPer:1.0, maxItems:6 },
+            "4B":    { max:9.5,  synonyms: ["data collection","digitized","storage","analysis","visualization"] },
+            // QUESTION 5
+            "5Ai":   { max:0.5,  synonyms: ["global positioning system","gps","satellite","navigation","positioning"] },
+            "5Aii":  { max:0.5,  synonyms: ["gps","global positioning system"] },
+            "5B":    { max:9.0,  synonyms: ["sbas","space based","geostationary","rtcm","radio technical","40-50 cm","rtk","real time kinematic","1-3 cm"] },
+            "5C":    { max:10.0, synonyms: ["differential","dgps","rover","base station","correction"] },
+            // QUESTION 6
+            "6Ai":   { max:0.5,  synonyms: ["variable rate technology","vrt","within field","variability"] },
+            "6Aii":  { max:1.5,  synonyms: ["sensors","controllers","actuators"], countMode: true, weightPer:0.5, maxItems:3 },
+            "6Aiii": { max:2.0,  synonyms: ["soil nutrients","organic matter","texture","structure","moisture","ph","topography","slope"], countMode: true, weightPer:0.5, maxItems:4 },
+            "6Aiv":  { max:2.5,  synonyms: ["rainfall","soil moisture","temperature","humidity","wind","water level","solarimeter","sunshine","ph","ec","compaction","nutrients","reflectance","pressure","flow","speed"], countMode: true, weightPer:0.25, maxItems:10 },
+            "6Bi":   { max:5.5,  synonyms: ["moisture content","18%","loss","maize","grain"] },
+            "6Bii":  { max:8.0,  synonyms: ["12%","moisture","price","bag","70,000"] }
         };
 
-        // Normalize text
-        function norm(text) { return text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,' ').replace(/\s+/g,' ').trim(); }
-
-        // Count keyword matches
-        function countMatches(text, keywordArray) {
-            const t = norm(text);
-            return keywordArray.filter(kw => t.includes(kw.toLowerCase())).length;
+        // ---------- 2. HELPER FUNCTIONS ----------
+        function norm(text) {
+            return String(text).toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ' ').replace(/\s+/g, ' ').trim();
         }
 
-        // Tathmini jibu moja
-        function gradeSingle(qId, answerText) {
-            const scheme = FULL_MARKING_SCHEME[qId];
+        // Tafuta idadi ya visawe vilivyopo
+        function countSynonymMatches(text, synonymList) {
+            const clean = norm(text);
+            let count = 0;
+            // Kuhakikisha synonymList ni array ya strings
+            const flatList = Array.isArray(synonymList) ? synonymList.flat(Infinity) : [synonymList];
+            for (let syn of flatList) {
+                if (typeof syn !== 'string') continue;
+                if (clean.includes(syn.toLowerCase())) count++;
+            }
+            return count;
+        }
+
+        // Angalia kama kuna uwepo wa dhana (angalau synonym moja)
+        function hasConcept(text, synonymList) {
+            return countSynonymMatches(text, synonymList) > 0;
+        }
+
+        // Kazi kuu ya kusahihisha swali moja
+        function gradeQuestion(qId, answerText) {
+            const scheme = SCHEMA[qId];
             if (!scheme) return { score: 0, max: 0, details: 'Schema haipo' };
+            
             const text = answerText || "";
             let earned = 0;
-            let max = scheme.max;
-            let explanation = "";
+            const max = scheme.max;
+            let details = '';
 
-            if (scheme.special === 'count') {
-                const found = countMatches(text, scheme.keywords);
+            if (scheme.countMode) {
+                const found = countSynonymMatches(text, scheme.synonyms);
                 const perItem = scheme.weightPer;
-                const maxAllowed = scheme.maxCount;
+                const maxAllowed = scheme.maxItems;
                 earned = Math.min(found * perItem, max);
-                explanation = `Imegundua dhana ${found}/${maxAllowed}`;
+                details = `Imegundua dhana ${found} (max ${maxAllowed}) → ${earned.toFixed(1)}/${max}`;
             } else {
-                if (scheme.weights) {
-                    for (let i=0; i<scheme.keywords.length; i++) {
-                        const kwSet = scheme.keywords[i];
-                        const w = scheme.weights[i];
-                        const present = kwSet.some(k => norm(text).includes(k.toLowerCase()));
-                        if (present) earned += w;
-                    }
+                // Kawaida: angalia kama kuna angalau dhana moja
+                if (hasConcept(text, scheme.synonyms)) {
+                    earned = max;
+                    details = `Dhana imethibitishwa. Alama kamili.`;
                 } else {
-                    const present = scheme.keywords.some(k => norm(text).includes(k.toLowerCase()));
-                    earned = present ? max : 0;
+                    earned = 0;
+                    details = `Hakuna ushahidi wa dhana. (Tafuta: ${scheme.synonyms.slice(0,3).join(', ')}...)`;
                 }
-                explanation = `Alama ${earned}/${max}`;
             }
-            return { score: Math.min(earned, max), max, details: explanation };
+
+            earned = Math.min(earned, max);
+            return { score: earned, max, details };
         }
 
-        // ---------- 2. SEGMENTATION: Gawanya maandishi kwa swali ----------
+        // ---------- 3. SEGMENTATION: Gawanya majibu ----------
         function extractAnswers(fullText) {
             const segments = {};
-            // Mifumo ya kawaida ya namba za swali
-            const patterns = [
-                { regex: /(\d+)\s*[A-Z]\s*[ivx]+\)/gi, type: 'roman' },  // 1 A i)
-                { regex: /Q(\d+)\s*[A-Z]?\s*[a-z]?\)/gi, type: 'Q' },
-                { regex: /(\d+)\s*[A-Z]\s*[a-z]\)/gi, type: 'letter' },
-                { regex: /(\d+)\s+[A-Z]\s+[ivx]+\)/gi, type: 'roman2' }
-            ];
-
-            // Jaribu kutafuta kwa kutumia alama za swali kutoka schema
-            const knownIds = Object.keys(FULL_MARKING_SCHEME);
-            // Rudia kugawa kwa kutumia regex rahisi zaidi
             const lines = fullText.split(/\n/);
-            let currentQ = null;
+            let currentId = null;
             let buffer = [];
-            const result = {};
+            const allIds = Object.keys(SCHEMA);
+
+            // Misaada ya regex: 1Ai, 1 A i), 1. A. i) n.k.
+            const idPattern = /^\s*(\d+)\s*[A-Z]\s*[ivx]+\)?|^\s*(\d+)\s*[A-Z][a-z]\)?/i;
 
             for (let line of lines) {
-                // Tafuta kama mstari una namba ya swali
-                let matched = false;
-                // Jaribu kutambua kwa kutumia miundo ya schema
-                for (let id of knownIds) {
-                    // Badilisha id kuwa regex: 1Ai, 2Aii n.k.
-                    const idRegex = new RegExp(`^\\s*${id.replace(/(\d)([A-Z])([a-z]+)/, '$1\\s*$2\\s*$3')}\\)?`, 'i');
-                    if (idRegex.test(line)) {
-                        if (currentQ) {
-                            result[currentQ] = buffer.join('\n').trim();
-                        }
-                        currentQ = id;
-                        buffer = [line];
-                        matched = true;
+                let matchedId = null;
+                // Jaribu kulinganisha na IDs halisi kwanza
+                for (let id of allIds) {
+                    const regex = new RegExp(`^\\s*${id.replace(/(\d)([A-Z])([a-z]+)/, '$1\\s*$2\\s*$3')}\\)?`, 'i');
+                    if (regex.test(line)) {
+                        matchedId = id;
                         break;
                     }
                 }
-                if (!matched) {
-                    // Angalia kwa mfumo wa 1 A i) n.k.
-                    const romanMatch = line.match(/^\s*(\d+)\s*([A-Z])\s*([ivx]+)\)/i);
-                    if (romanMatch) {
-                        const qId = `${romanMatch[1]}${romanMatch[2]}${romanMatch[3].toLowerCase()}`;
-                        if (FULL_MARKING_SCHEME[qId]) {
-                            if (currentQ) result[currentQ] = buffer.join('\n').trim();
-                            currentQ = qId;
-                            buffer = [line];
-                            matched = true;
-                        }
+                // Ikiwa haijapatikana, jaribu generic pattern
+                if (!matchedId) {
+                    const match = line.match(/^\s*(\d+)\s*([A-Z])\s*([ivx]+|[a-z]+)\)?/i);
+                    if (match) {
+                        const qNum = match[1];
+                        const letter = match[2];
+                        const sub = match[3].toLowerCase();
+                        const possibleId = qNum + letter + sub;
+                        if (SCHEMA[possibleId]) matchedId = possibleId;
                     }
                 }
-                if (!matched) {
-                    // kama hakuna match, endelea kuongeza kwenye buffer
-                    if (currentQ) buffer.push(line);
+
+                if (matchedId) {
+                    if (currentId) {
+                        segments[currentId] = buffer.join('\n').trim();
+                    }
+                    currentId = matchedId;
+                    buffer = [line];
+                } else {
+                    if (currentId) buffer.push(line);
                 }
             }
-            if (currentQ) result[currentQ] = buffer.join('\n').trim();
+            if (currentId) segments[currentId] = buffer.join('\n').trim();
 
-            // Ikiwa segmentation imeshindwa, rudisha neno zima kama jibu la swali la kwanza tu (kwa demo)
-            if (Object.keys(result).length === 0) {
-                result["3Aiii"] = fullText; // fallback
+            // Ikiwa hakuna segmentation, rudisha text nzima kwa swali la kwanza (kwa ajili ya demo)
+            if (Object.keys(segments).length === 0 && fullText.trim().length > 0) {
+                segments["3Aiii"] = fullText;
             }
-            return result;
+            return segments;
         }
 
-        // ---------- 3. DOM ELEMENTS ----------
+        // ---------- 4. DOM & UI ----------
         const textarea = document.getElementById('fullAnswers');
-        const gradeBtn = document.getElementById('gradeFullExamBtn');
-        const loadSampleBtn = document.getElementById('loadSampleBtn');
+        const gradeBtn = document.getElementById('gradeBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
         const clearBtn = document.getElementById('clearBtn');
         const grandTotalSpan = document.getElementById('grandTotal');
         const questionsListDiv = document.getElementById('questionsList');
 
-        // Mfano wa majibu ya mwanafunzi (kutoka Std response PDF na kuongeza)
-        const SAMPLE_FULL_ANSWERS = `1 A i) Field invariabilities are conditions of soil that do not change, like absence of heterogeneity in soil properties.
-1 A ii) Beneficial nutrients are elements like silicon that improve yield but are not essential.
+        // Mfano wa majibu (Kutoka Std response PDF)
+        const SAMPLE_TEXT = `1 A i) Field invariabilities are conditions where soil physical and chemical properties do not vary.
+1 A ii) Beneficial nutrients like silicon improve yield in rice and sugarcane.
 1 A iii) Wicking system uses capillary action to deliver nutrients. Example hydroponics.
-1 A iv) Aeroponics is growing plants in air with misted nutrients.
-1 A v) Ebb and flow is flooding and draining of media. Example bato buckets.
-1 B i) Precision agriculture is technologies to enhance productivity. Precision technologies are advanced tools.
-1 B ii) Technology applies science. Science is systematic knowledge.
-1 B iii) GPS is satellite positioning. GIS captures and analyzes spatial data.
-1 B iv) Precision agriculture and precision farming are similar.
-2 A i) Remote sensing is gathering info without contact, like satellites.
+1 A iv) Aeroponics suspends plants in air and mists roots with nutrients.
+1 A v) Ebb and flow repeatedly floods and drains media such as clay pellets.
+1 B i) Precision agriculture uses technologies to enhance crop and livestock productivity. Precision technologies are advanced tools.
+1 B ii) Technology applies science to produce goods. Science is systematic knowledge.
+1 B iii) GPS provides positioning; GIS captures and analyzes spatial data in layers.
+1 B iv) Precision agriculture and precision farming both involve technology.
+2 A i) Remote sensing collects information without contact, e.g., satellites.
 2 A ii) Soil moisture sensor, pH sensor, temperature sensor, humidity sensor, nutrient sensor.
-2 A iii) Collection, pre-processing, analysis, ground validation, incorporation, identification, treatment.
-2 B i) Passive uses natural energy, active uses own energy like radar.
-2 B ii) Frame, whiskbroom, array sensors.
-3 A i) Precision agriculture uses technologies to improve farming efficiency.
-3 A ii) High initial cost, limited expertise, farm fragmentation, unavailability of machinery, market imperfections, high running cost, small farm size, topography.
-3 A iii) Information (soil, crop), Technology (GPS, VRA), Management (decision support).
-3 B) Increase productivity, efficiency, profitability, environmental protection, avoid drudgery, traceability, yield increase.
-4 A i) GIS is system for capturing, storing, analyzing spatial data.
-4 A ii) Mapping location, quantities, changes, densities, finding distance.
+2 A iii) Collection, pre-processing, image analysis, ground validation, incorporation, identification, treatment.
+2 B i) Passive remote sensing uses natural energy; active uses own energy like radar.
+2 B ii) Frame camera, whiskbroom scanner, pushbroom array.
+3 A i) Precision agriculture enhances productivity efficiently.
+3 A ii) High initial cost, limited expertise, farm fragmentation, machinery availability, market imperfections, running cost, small farms, topography.
+3 A iii) Information (soil data), Technology (GPS, VRA), Management (decision support).
+3 B) Increases land productivity, efficiency, profitability, protects environment, avoids drudgery, traceability, yield increase.
+4 A i) GIS captures, stores, analyzes geographic data.
+4 A ii) Mapping location, quantities, changes, densities, distance.
 4 A iii) Ephemeris, clock drift, atmospheric delay, multipath, jamming, signal arrival.
 4 B) Data collection, digitizing, storage, analysis, visualization.
 5 A i) GPS is satellite-based navigation.
 5 A ii) GPS.
-5 B) SBAS (geostationary), RTCM (40-50cm), RTK (1-3cm).
-5 C) DGPS uses base and rover to correct position.
-6 A i) VRT manages field variability.
+5 B) SBAS (geostationary), RTCM (40-50 cm), RTK (1-3 cm).
+5 C) DGPS uses base station to correct rover position.
+6 A i) VRT manages within-field variability.
 6 A ii) Sensors, controllers, actuators.
 6 A iii) Soil nutrients, organic matter, texture, moisture, pH, slope.
 6 A iv) Rainfall, soil moisture, temperature, humidity, wind, pH, EC, nutrients.
-6 B i) Moisture loss calculated.
-6 B ii) Price calculation based on 12% moisture.`;
+6 B i) Moisture loss calculation.
+6 B ii) Price based on 12% moisture.`;
 
-        function gradeFullExam() {
+        function runGrading() {
             const fullText = textarea.value;
             const segmented = extractAnswers(fullText);
             
             let totalEarned = 0;
             let totalMax = 0;
-            const results = [];
+            const resultCards = [];
             
-            // Pitia kila swali kwenye schema na angalia kama lipo kwenye segmented
-            for (let qId in FULL_MARKING_SCHEME) {
+            // Panga IDs kwa mpangilio
+            const sortedIds = Object.keys(SCHEMA).sort((a,b)=> a.localeCompare(b, undefined, {numeric: true}));
+            
+            for (let qId of sortedIds) {
                 const answer = segmented[qId] || "";
-                const res = gradeSingle(qId, answer);
+                const res = gradeQuestion(qId, answer);
                 totalEarned += res.score;
                 totalMax += res.max;
-                results.push({
+                
+                const preview = answer.length > 60 ? answer.substring(0,60)+'...' : answer;
+                let statusClass = 'incorrect';
+                if (res.score === res.max) statusClass = 'correct';
+                else if (res.score > 0) statusClass = 'partial';
+                
+                resultCards.push({
                     id: qId,
-                    answerPreview: answer.substring(0, 50) + (answer.length>50?'...':''),
+                    preview: preview || '(hakuna jibu)',
                     score: res.score,
                     max: res.max,
                     details: res.details,
-                    status: res.score === res.max ? 'correct' : (res.score > 0 ? 'partial' : 'incorrect')
+                    statusClass
                 });
             }
-
-            // Sort results kwa mpangilio wa namba
-            results.sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
-
-            // Onyesha matokeo
+            
+            // Onyesha
             grandTotalSpan.innerHTML = `${totalEarned.toFixed(1)}<span style="font-size:1rem;">/${totalMax.toFixed(0)}</span>`;
             
             let html = '';
-            results.forEach(r => {
-                const statusClass = r.status;
-                html += `<div class="question-card ${statusClass}">
+            resultCards.forEach(card => {
+                html += `<div class="q-card ${card.statusClass}">
                     <div class="q-header">
-                        <span>${r.id}</span>
-                        <span class="q-score">${r.score} / ${r.max}</span>
+                        <span>${card.id}</span>
+                        <span class="q-score">${card.score.toFixed(1)} / ${card.max}</span>
                     </div>
-                    <div class="q-detail">📝 ${r.answerPreview || '<span style="color:#94a3b8;">(hakuna jibu)</span>'}</div>
-                    <div class="q-detail" style="margin-top:4px;"><i class="fas fa-info-circle"></i> ${r.details}</div>
+                    <div class="q-evidence">📝 ${card.preview}</div>
+                    <div class="q-evidence"><i class="fas fa-balance-scale"></i> ${card.details}</div>
                 </div>`;
             });
-            questionsListDiv.innerHTML = html || '<div>Hakuna majibu yaliyotambuliwa.</div>';
+            questionsListDiv.innerHTML = html;
         }
 
-        // Event listeners
-        gradeBtn.addEventListener('click', gradeFullExam);
-        loadSampleBtn.addEventListener('click', ()=>{
-            textarea.value = SAMPLE_FULL_ANSWERS;
-            gradeFullExam();
+        // Event Listeners
+        gradeBtn.addEventListener('click', runGrading);
+        sampleBtn.addEventListener('click', ()=>{
+            textarea.value = SAMPLE_TEXT;
+            runGrading();
         });
         clearBtn.addEventListener('click', ()=>{
             textarea.value = '';
-            questionsListDiv.innerHTML = '<div style="text-align:center; padding:30px;">Bonyeza Sahihisha</div>';
+            questionsListDiv.innerHTML = '<div style="text-align:center; padding:30px;">Bonyeza "Sahihisha" kuona matokeo</div>';
             grandTotalSpan.innerHTML = `0<span>/100</span>`;
         });
 
-        // Pakia sample kwa default
+        // Load sample on start
         window.addEventListener('DOMContentLoaded', ()=>{
-            textarea.value = SAMPLE_FULL_ANSWERS;
-            gradeFullExam();
+            textarea.value = SAMPLE_TEXT;
+            runGrading();
         });
+
     })();
 </script>
 </body>
