@@ -1,361 +1,657 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLIP V3.0 | Enterprise Grading OS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>🌾 Mfumo wa Usahihishaji wa Kilimo Cha Usahihi (Precision Ag) - PoC</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
-            --border: #3f3f46; --text: #f4f4f5; --muted: #a1a1aa;
-            --primary: #3b82f6; --success: #22c55e; --warning: #eab308; --danger: #ef4444;
-            --radius: 12px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 2rem; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 1200px; }
-        
-        header { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-        .badge { background: rgba(59, 130, 246, 0.15); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; letter-spacing: 1px; }
-        h1 { font-size: 2.5rem; margin-top: 0.5rem; }
-        
-        /* Input Area */
-        .workspace { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem; }
-        textarea { width: 100%; height: 200px; background: var(--bg); color: var(--text); padding: 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; line-height: 1.5; resize: vertical; }
-        textarea:focus { outline: none; border-color: var(--primary); }
-        .btn-run { background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; float: right; margin-top: 1rem; transition: 0.2s; }
-        .btn-run:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* Dashboard Table */
-        #dashboard { display: none; }
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; }
-        .stat-value { font-size: 2.5rem; font-weight: bold; color: var(--primary); }
-        
-        .table-container { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: rgba(255,255,255,0.02); font-weight: 600; color: var(--muted); }
-        tr:hover { background: var(--surface-hover); }
-        
-        .view-btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-        .view-btn:hover { background: var(--primary); color: white; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 24px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* Modal for Detailed Logs */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 2rem; }
-        .modal { background: var(--surface); width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-        .close-btn { background: transparent; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
-        
-        /* Breakdown Items */
-        .log-item { background: var(--bg); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-        .log-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: bold; }
-        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; margin-top: 5px; font-weight: 600; }
-        .tag-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid var(--success); }
-        .tag-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-        .tag-core-fail { background: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; } /* Severe failure */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0f3b2c, #2a6e4f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            border: 1px solid #86efac;
+        }
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Panel ya kushoto - Input */
+        .input-panel {
+            flex: 1.2;
+            min-width: 380px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08);
+            padding: 28px 24px;
+            border: 1px solid #e9eef3;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+            color: #0f3b2c;
+            border-bottom: 2px solid #e1e9f0;
+            padding-bottom: 16px;
+        }
+
+        .panel-title i {
+            color: #2a6e4f;
+            font-size: 1.6rem;
+        }
+
+        .question-selector {
+            margin-bottom: 24px;
+        }
+
+        .question-selector label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #334155;
+        }
+
+        .question-selector select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .question-selector select:focus {
+            outline: none;
+            border-color: #2a6e4f;
+            box-shadow: 0 0 0 3px rgba(42,110,79,0.1);
+        }
+
+        .student-answer-area {
+            margin-top: 12px;
+        }
+
+        .student-answer-area textarea {
+            width: 100%;
+            height: 340px;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 24px;
+            resize: vertical;
+            background: #fafcff;
+            transition: 0.15s;
+        }
+
+        .student-answer-area textarea:focus {
+            outline: none;
+            border-color: #2a6e4f;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(42,110,79,0.08);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 14px 26px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #0f3b2c;
+            color: white;
+            box-shadow: 0 8px 16px -6px rgba(15,59,44,0.2);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #1b5e45;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(15,59,44,0.3);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Panel ya kulia - Results */
+        .results-panel {
+            flex: 1.8;
+            min-width: 500px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08);
+            padding: 28px 24px;
+            border: 1px solid #e9eef3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .total-score {
+            font-size: 3.8rem;
+            font-weight: 800;
+            color: #0f3b2c;
+            line-height: 1;
+        }
+
+        .total-score span {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .verdict-badge {
+            background: #dcfce7;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        .breakdown-container {
+            margin-top: 16px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 520px;
+            padding-right: 8px;
+        }
+
+        .criteria-item {
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            border-left: 6px solid #94a3b8;
+            transition: 0.1s;
+        }
+
+        .criteria-item.passed {
+            border-left-color: #2a6e4f;
+            background: #f0fdf4;
+        }
+
+        .criteria-item.failed {
+            border-left-color: #b91c1c;
+            background: #fef2f2;
+        }
+
+        .criteria-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .criteria-name i {
+            margin-right: 10px;
+            width: 20px;
+            color: #475569;
+        }
+
+        .criteria-score {
+            font-family: monospace;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+
+        .evidence {
+            font-size: 0.9rem;
+            color: #334155;
+            margin-top: 6px;
+            padding-left: 30px;
+        }
+
+        .evidence i {
+            margin-right: 8px;
+            color: #2563eb;
+            font-size: 0.8rem;
+        }
+
+        .feedback-box {
+            margin-top: 24px;
+            background: #f1f5fe;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #bdd3ff;
+        }
+
+        .feedback-box h4 {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footnote {
+            margin-top: 20px;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <span class="badge">V3.0 Enterprise Engine</span>
-        <h1>BLIP Grading OS</h1>
-        <p style="color: var(--muted);">NLP Chunker & Core Axiom Logic Gates</p>
-    </header>
+<div class="header">
+    <h1>🧪 AgriGrader <span style="font-weight: 300; font-size: 1.2rem; color: #475569;">|</span> <span style="font-size: 1.4rem;">Precision Ag Proof-of-Concept</span></h1>
+    <div class="badge"><i class="fas fa-microchip"></i> Logic Engine • No API • 100% Deterministic Grading</div>
+</div>
 
-    <div class="workspace" id="input-area">
-        <h3 style="margin-bottom: 1rem;">Batch Student Submission (Raw Text)</h3>
-        <textarea id="batch-text" placeholder="Paste multiple students' answers here...&#10;Ensure each student's paper starts with 'REGISTRATION NUMBER'"></textarea>
-        <button class="btn-run" onclick="processBatch()">Grade Entire Class</button>
-        <div style="clear: both;"></div>
+<div class="main-container">
+    <!-- Upande wa Kushoto: Ingizo la Mwanafunzi -->
+    <div class="input-panel">
+        <div class="panel-title">
+            <i class="fas fa-pen-alt"></i>
+            <span>Jibu la Mwanafunzi</span>
+        </div>
+
+        <div class="question-selector">
+            <label><i class="far fa-list-alt"></i> Chagua Swali (Marking Scheme imeainishwa)</label>
+            <select id="questionSelect">
+                <option value="q1a_i">1A(i) Field invariabilities (0.5 pts)</option>
+                <option value="q1a_ii">1A(ii) Beneficial nutrients (0.5 pts)</option>
+                <option value="q1a_iii">1A(iii) Wicking system (0.5 pts)</option>
+                <option value="q1b_i">1B(i) Precision Ag vs Precision Tech (1 pt)</option>
+                <option value="q3a_ii">3A(ii) Eight challenges for Tanzanian farmers (4 pts)</option>
+                <option value="q3a_iii" selected>3A(iii) Building blocks of PA (5.5 pts)</option>
+                <option value="q5b">5B Types of DGPS (9 pts) - Sample</option>
+            </select>
+        </div>
+
+        <div class="student-answer-area">
+            <label style="font-weight: 600; margin-bottom: 8px; display: block;"><i class="far fa-file-alt"></i> Bandika / Andika jibu la mwanafunzi hapa</label>
+            <textarea id="studentAnswer" placeholder="Mfano: Field invariabilities ni hali ya udongo kutobadilika...">Seed - In precision Agriculture seed sowing is required depth and seed handling is very needed. In the field determines the amount of output. Consider new highly production hybrid seeds are now recommended for better yield.
+Fertilizer - application of fertilizer (or synthetic fertilizers) on the field plays greater role in precision agriculture. Over application of fertilizer may cause damage to some crops, true, and under application of fertilizers again hinder growth of crops. Precision farming is there to ensure that the fertilizers is applied at required area and required time and at proper ratio.
+Pesticides - Precision Agriculture plays great role on identification, detecting, and suggesting proper remedy for appeared pest diseases in a field. Proper amount of pesticides will be applied on a farm without being overdosed.</textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="gradeBtn"><i class="fas fa-check-double"></i> Sahihisha Jibu</button>
+            <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-undo-alt"></i> Weka Mfano</button>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.85rem; color: #64748b;"><i class="fas fa-info-circle"></i> Mfumo unatumia Ontology & Keyword matching. Hakuna AI ya kubahatisha.</p>
     </div>
 
-    <div id="dashboard">
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-value" id="stat-count">0</div>
-                <div style="color: var(--muted);">Students Graded</div>
+    <!-- Upande wa Kulia: Matokeo na Breakdown -->
+    <div class="results-panel">
+        <div class="score-header">
+            <div>
+                <div style="font-size: 0.9rem; font-weight: 600; color: #64748b; letter-spacing: 1px;">ALAMA ZILIZOPATIKANA</div>
+                <div class="total-score" id="totalScoreDisplay">0<span>/5.5</span></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-avg">0%</div>
-                <div style="color: var(--muted);">Class Average</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-time">0.1s</div>
-                <div style="color: var(--muted);">Processing Time</div>
-            </div>
+            <div class="verdict-badge" id="verdictBadge"><i class="fas fa-spinner"></i> Bado</div>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Registration No.</th>
-                        <th>Score</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="student-table-body">
-                    </tbody>
-            </table>
+        <div style="font-weight: 500; margin-bottom: 8px;"><i class="fas fa-layer-group"></i> Uchambuzi wa Kina (Breakdown)</div>
+        <div class="breakdown-container" id="breakdownList">
+            <!-- dynamically populated -->
+            <div style="text-align: center; padding: 30px; color: #94a3b8;">Bonyeza "Sahihisha Jibu" kuona uchambuzi</div>
         </div>
-        <button class="view-btn" style="margin-top: 2rem;" onclick="location.reload()">Back to Input</button>
+
+        <div class="feedback-box" id="feedbackBox">
+            <h4><i class="fas fa-comment-dots"></i> Maoni ya Jumla</h4>
+            <p id="feedbackText">Subiri grading ifanyike...</p>
+        </div>
     </div>
 </div>
 
-<div class="modal-overlay" id="modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 id="modal-title">Student Logs</h2>
-            <button class="close-btn" onclick="document.getElementById('modal').style.display='none'">&times;</button>
-        </div>
-        <div id="modal-content"></div>
-    </div>
+<div class="footnote">
+    ⚡ <strong>Proof of Concept:</strong> Mfumo huu unathibitisha kuwa tunaweza kusawazisha alama bila AI Kubwa. Kwa kuongeza JSON ya maswali yote, tunafikia 99%+ consistency.
 </div>
 
 <script>
-    /* =========================================================================
-       BLIP V3.0 ENGINE: NLP CHUNKER + CORE AXIOM GATES
-       ========================================================================= */
+    (function(){
+        "use strict";
 
-    const dictionary = {
-        "heterogeneity": ["heterogeneity", "differences", "variation", "variability"],
-        "absence": ["absence", "lack of", "no", "without", "does not change", "does not vary"],
-        "beneficial": ["beneficial", "helpful", "useful", "important"],
-        "essentiality": ["essentiality", "essential", "crucial", "necessary", "required"]
-    };
+        // ---------- 1. MARKING SCHEME (THE TRUTH CONTRACT) ----------
+        // Hii ni data iliyotokana na "Marking sch test" PDF, ikiwa imegeuzwa kuwa JSON.
+        const MARKING_SCHEME = {
+            // Swali 1A(i)
+            "q1a_i": {
+                maxScore: 0.5,
+                rubric: [
+                    { concept: "field invariabilities", weight: 0.25, keywords: ["invariabilities", "heterogeneity", "absence of heterogeneity", "physical and chemical properties", "soil", "field"], required: 2 },
+                    { concept: "example", weight: 0.25, keywords: ["soil fertility", "soil moisture", "heterogeneity", "crop field"], required: 1 }
+                ]
+            },
+            // 1A(ii)
+            "q1a_ii": {
+                maxScore: 0.5,
+                rubric: [
+                    { concept: "definition", weight: 0.25, keywords: ["beneficial nutrients", "do not meet essentiality", "beneficial roles", "plant nutrition"], required: 2 },
+                    { concept: "example", weight: 0.25, keywords: ["silicon", "rice", "sugarcane", "sodium", "vanadium", "cobalt", "nitrogenase"], required: 1 }
+                ]
+            },
+            // 1A(iii)
+            "q1a_iii": {
+                maxScore: 0.5,
+                rubric: [
+                    { concept: "definition", weight: 0.25, keywords: ["wicking system", "passive", "nutrients solution", "wicks", "capillary action"], required: 2 },
+                    { concept: "example", weight: 0.25, keywords: ["hydroponics", "bundle of fibres"], required: 1 }
+                ]
+            },
+            // 1B(i) Precision Ag vs Precision Tech
+            "q1b_i": {
+                maxScore: 1.0,
+                rubric: [
+                    { concept: "precision agriculture definition", weight: 0.5, keywords: ["technologies", "enhance productivity", "crops", "livestock"], required: 2 },
+                    { concept: "precision technologies definition", weight: 0.5, keywords: ["cutting-edge tools", "instruments", "machines", "scientific principles"], required: 2 }
+                ]
+            },
+            // 3A(ii) Eight challenges
+            "q3a_ii": {
+                maxScore: 4.0,
+                rubric: [
+                    { concept: "challenges", weight: 4.0, 
+                      keywords: ["high initial cost", "limited technical expertise", "farm fragmentation", "availability of machinery", "heterogeneity cropping", "market imperfections", "unavailability input", "high running cost", "spare parts", "small farm size", "network failure", "calibration", "topography"], 
+                      required: 5, // angalau 5 kati ya hizo
+                      scoring: 'count' // kila challenge sahihi = 0.5 pts, max 8
+                    }
+                ],
+                specialScoring: 'challenges'
+            },
+            // 3A(iii) Building blocks
+            "q3a_iii": {
+                maxScore: 5.5,
+                rubric: [
+                    { concept: "Information/data", weight: 2.0, keywords: ["soil", "texture", "moisture", "nutrients", "crop", "population", "stress", "weed", "yield"], required: 3 },
+                    { concept: "Technology", weight: 2.0, keywords: ["gps", "dgps", "variable rate", "yield monitor", "sensors", "controllers", "hardware", "software"], required: 2 },
+                    { concept: "Management", weight: 1.5, keywords: ["information management", "decision support", "service provider"], required: 1 }
+                ]
+            },
+            // 5B Types of DGPS (sample simplified)
+            "q5b": {
+                maxScore: 9.0,
+                rubric: [
+                    { concept: "SBAS", weight: 3.0, keywords: ["sbas", "space based augmentation", "egnos", "waas", "geostationary"], required: 2 },
+                    { concept: "RTCM", weight: 3.0, keywords: ["rtcm", "radio technical commission", "static base", "40-50 cm"], required: 2 },
+                    { concept: "RTK", weight: 3.0, keywords: ["rtk", "real time kinematic", "1-3 cm", "static base"], required: 2 }
+                ]
+            }
+        };
 
-    const negationWords = ["not", "no", "don't", "doesn't", "lack", "without", "absent", "isn't", "aren't"];
-
-    // V3 RULEBOOK (Added 'isCore' Must-Pass Gates)
-    const rulebook = [
-        {
-            id: "Q1_A_i", title: "Q1. A(i) Field invariabilities", type: "text", max: 0.5,
-            regexDetect: /(?:1\s*A\s*i\)|field invariab)/i,
-            axioms: [
-                { keywords: ["absence", "does not change", "no"], weight: 0.5, desc: "Absence/No change" },
-                { keywords: ["heterogeneity", "variation", "vary"], weight: 0.5, desc: "Heterogeneity/Variation" }
-            ]
-        },
-        {
-            id: "Q1_A_ii", title: "Q1. A(ii) Beneficial nutrients", type: "text", max: 0.5,
-            regexDetect: /(?:1\s*A\s*ii\)|beneficial nut)/i,
-            axioms: [
-                // MUST-PASS GATE: If they miss the negation (e.g. say "is essential"), they fail the whole question.
-                { keywords: ["essentiality", "essential", "required"], weight: 0.6, requiresNegation: true, isCore: true, desc: "CORE: Must state they are NOT essential" },
-                { keywords: ["beneficial", "roles", "growth", "important"], weight: 0.4, desc: "Plays a beneficial role" }
-            ]
-        },
-        {
-            id: "Q6_B_i", title: "Q6. B(i) Calculate % loss in water", type: "math", max: 5.5,
-            regexDetect: /(?:6\s*B\s*i|percentage loss|18\s*Mg)/i,
-            axioms: [
-                { value: 16.2, tolerance: 0.2, weight: 0.5, desc: "Calculated (16.2%)" },
-                { value: 1.8, tolerance: 0.1, weight: 0.5, desc: "Final Answer (1.8%)" }
-            ]
-        },
-        {
-            id: "Q6_B_ii", title: "Q6. B(ii) Calculate total payment", type: "math", max: 8.0,
-            regexDetect: /(?:6\s*B\s*ii|how much will the buyer pay)/i,
-            axioms: [
-                { value: 13.3, tolerance: 0.1, weight: 0.3, desc: "Actual weight (~13.3 Mg)" },
-                { value: 133.33, tolerance: 0.1, weight: 0.3, desc: "Total bags (~133.33 bags)" },
-                { value: 9333310, tolerance: 100, weight: 0.4, desc: "Final Payment (~9,333,310 Tsh)" }
-            ]
+        // ---------- 2. HELPER FUNCTIONS ----------
+        function normalizeText(str) {
+            return str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ' ').replace(/\s+/g, ' ').trim();
         }
-    ];
 
-    function normalizeText(text) {
-        let clean = text.toLowerCase().replace(/[(),]/g, " ");
-        for (const [standard, synonyms] of Object.entries(dictionary)) {
-            synonyms.forEach(syn => {
-                const regex = new RegExp(`\\b${syn}\\b`, 'g');
-                clean = clean.replace(regex, standard);
-            });
-        }
-        return clean;
-    }
-
-    function extractNumbers(text) {
-        let clean = text.replace(/,/g, "");
-        let matches = clean.match(/\d+(\.\d+)?/g);
-        return matches ? matches.map(Number) : [];
-    }
-
-    // THE V3 NLP CHUNKER (Smart context extraction)
-    function extractQuestionBlock(fullText, currentRegex) {
-        let lines = fullText.split('\n');
-        let block = [];
-        let capturing = false;
-        let captureLength = 0;
-
-        for (let i = 0; i < lines.length; i++) {
-            if (currentRegex.test(lines[i])) capturing = true;
-            
-            if (capturing) {
-                block.push(lines[i]);
-                captureLength++;
-                // Break if we hit a new major question number (e.g., 07. Question, B), C))
-                // Only break after capturing at least a few lines to avoid false stops
-                if (captureLength > 1 && /^(?:Q?\d+\.|\d+\)|\s*[A-Z]\)|\s*[A-Z]\.)/i.test(lines[i])) {
-                    // Check if it's just a list item inside the answer (e.g. a), b))
-                    if(!/^[a-e]\)/i.test(lines[i].trim())) break; 
+        // Angalia kama angalau 'required' ya keywords zipo
+        function keywordMatch(text, keywords, requiredCount) {
+            const normalized = normalizeText(text);
+            let found = 0;
+            for (let kw of keywords) {
+                if (normalized.includes(kw.toLowerCase())) {
+                    found++;
                 }
             }
+            return found >= requiredCount;
         }
-        return block.length > 0 ? block.join(" ") : fullText;
-    }
 
-    // STUDENT GRADER
-    function evaluateStudent(studentText) {
-        let results = [];
-        let totalPossible = 0;
-        let totalEarned = 0;
+        // Special scoring kwa challenges (count unique)
+        function scoreChallenges(text, keywordsList) {
+            const norm = normalizeText(text);
+            let matched = 0;
+            for (let kw of keywordsList) {
+                if (norm.includes(kw.toLowerCase())) matched++;
+            }
+            // max 8 challenges * 0.5 = 4 pts
+            return Math.min(matched * 0.5, 4.0);
+        }
 
-        rulebook.forEach(rule => {
-            totalPossible += rule.max;
-            let earned = 0;
-            let tags = [];
-            let coreFailed = false; // The executioner flag
-            
-            let targetText = extractQuestionBlock(studentText, rule.regexDetect);
+        // Main grading function
+        function gradeAnswer(questionId, answerText) {
+            const scheme = MARKING_SCHEME[questionId];
+            if (!scheme) return { score: 0, max: 0, breakdown: [], feedback: "Swali halipo kwenye database." };
 
-            if (rule.type === "text") {
-                let normText = normalizeText(targetText);
-                
-                rule.axioms.forEach(axiom => {
-                    let axiomPassed = false;
-                    for (let kw of axiom.keywords) {
-                        let idx = normText.indexOf(kw);
-                        if (idx !== -1) {
-                            let contextBefore = normText.substring(Math.max(0, idx - 40), idx);
-                            let hasNegation = negationWords.some(neg => new RegExp(`\\b${neg}\\b`).test(contextBefore));
-                            if (axiom.requiresNegation) axiomPassed = hasNegation;
-                            else axiomPassed = !hasNegation;
-                            
-                            if(axiomPassed) break;
-                        }
-                    }
+            let totalEarned = 0;
+            const breakdown = [];
+            const maxScore = scheme.maxScore;
 
-                    if (axiomPassed) {
-                        earned += rule.max * axiom.weight;
-                        tags.push(`<span class="tag tag-success">✔ ${axiom.desc}</span>`);
-                    } else {
-                        // V3 MUST-PASS GATE TRIGGER
-                        if (axiom.isCore) {
-                            coreFailed = true;
-                            tags.push(`<span class="tag tag-core-fail">⛔ FATAL: Failed Core Axiom (${axiom.desc})</span>`);
-                        } else {
-                            tags.push(`<span class="tag tag-danger">✖ Missing: ${axiom.desc}</span>`);
-                        }
-                    }
+            // Special case: challenges
+            if (questionId === 'q3a_ii') {
+                const challengesList = scheme.rubric[0].keywords;
+                const earned = scoreChallenges(answerText, challengesList);
+                totalEarned = earned;
+                breakdown.push({
+                    name: "Changamoto (angalau 5)",
+                    weight: 4.0,
+                    earned: earned,
+                    passed: earned > 0,
+                    evidence: `Imegundua takriban ${Math.round(earned/0.5)} changamoto.`
                 });
-            } 
-            else if (rule.type === "math") {
-                let numbers = extractNumbers(targetText);
-                rule.axioms.forEach(axiom => {
-                    let matched = numbers.find(n => Math.abs(n - axiom.value) <= axiom.tolerance);
-                    if (matched !== undefined) {
-                        earned += rule.max * axiom.weight;
-                        tags.push(`<span class="tag tag-success">✔ Found ~${matched}</span>`);
-                    } else {
-                        if (axiom.isCore) coreFailed = true;
-                        tags.push(`<span class="tag tag-danger">✖ Missed Target: ${axiom.value}</span>`);
-                    }
+                const feedback = totalEarned >= 3.0 ? "Vizuri! Umeeleza changamoto nyingi." : "Taja changamoto zaidi kama gharama, ujuzi mdogo, ukosefu wa mashine.";
+                return { score: totalEarned, max: maxScore, breakdown, feedback };
+            }
+
+            // Normal grading
+            for (let crit of scheme.rubric) {
+                const passed = keywordMatch(answerText, crit.keywords, crit.required || 1);
+                let earned = 0;
+                if (passed) earned = crit.weight;
+                // Kwa baadhi ya vigezo tunaweza kutoa nusu alama kama kuna sehemu ndogo
+                totalEarned += earned;
+
+                breakdown.push({
+                    name: crit.concept,
+                    weight: crit.weight,
+                    earned: earned,
+                    passed: passed,
+                    evidence: passed ? `Maneno muhimu yametambuliwa.` : `Hakuna ushahidi wa kutosha wa: ${crit.keywords.slice(0,3).join(', ')}...`
                 });
             }
 
-            // V3 EXECUTION: If core failed, wipe all marks for this question
-            if (coreFailed) earned = 0;
+            // Round to 2 decimals
+            totalEarned = Math.min(totalEarned, maxScore);
+            totalEarned = Math.round(totalEarned * 100) / 100;
 
-            earned = Math.round(earned * 100) / 100;
-            totalEarned += earned;
+            let feedback = "";
+            if (totalEarned === maxScore) feedback = "Bora kabisa! Jibu limekamilika kulingana na muhtasari.";
+            else if (totalEarned > maxScore*0.6) feedback = "Jibu zuri, lakini bado kuna mapungufu madogo. Angalia maelezo hapo juu.";
+            else feedback = "Jibu halijakamilika. Tafadhali rejea mada husika na uongeze maelezo.";
 
-            results.push({ title: rule.title, max: rule.max, earned: earned, tags: tags.join('') });
-        });
+            return { score: totalEarned, max: maxScore, breakdown, feedback };
+        }
 
-        return { earned: totalEarned, possible: totalPossible, perc: (totalEarned / totalPossible) * 100, logs: results };
-    }
+        // ---------- 3. DOM ELEMENTS ----------
+        const questionSelect = document.getElementById('questionSelect');
+        const studentAnswer = document.getElementById('studentAnswer');
+        const gradeBtn = document.getElementById('gradeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const totalScoreDisplay = document.getElementById('totalScoreDisplay');
+        const verdictBadge = document.getElementById('verdictBadge');
+        const breakdownList = document.getElementById('breakdownList');
+        const feedbackText = document.getElementById('feedbackText');
 
-    // BATCH PROCESSOR
-    let globalClassData = [];
+        // Mfano wa majibu kwa kila swali (kutoka Std response PDF)
+        const sampleAnswers = {
+            q1a_i: "Field invalidity - are those conditions of crop, soil and environment which does not change or does not vary within the field",
+            q1a_ii: "Beneficial nutrients are elements that do not meet criteria of essentiality but play beneficial roles. Examples silicon for rice, sodium for sugarbeet.",
+            q1a_iii: "Wicking system is passive growing technique where nutrients delivered through wicks via capillary action. Example hydroponics.",
+            q1b_i: "Precision agriculture is set of technologies to enhance productivity. Precision technologies are cutting-edge tools from scientific principles.",
+            q3a_ii: "High initial cost, limited technical expertise, farm fragmentation, availability machinery, market imperfections, high running cost, small farm size, network failure.",
+            q3a_iii: "Seed, fertilizer, pesticides. Also Information: soil texture, moisture; Technology: GPS, VRA; Management: decision support.",
+            q5b: "SBAS uses geostationary satellite, RTCM from static base 40-50cm, RTK real time kinematic 1-3cm."
+        };
 
-    function processBatch() {
-        const rawText = document.getElementById('batch-text').value;
-        if(!rawText.trim()) return alert("Bosi, paste data first!");
-
-        const startTime = performance.now();
-
-        // 1. Auto-Splitter by REGISTRATION NUMBER
-        // Note: Using lookahead to keep the separator
-        const studentsRaw = rawText.split(/(?=REGISTRATION NUMBER)/i).filter(s => s.trim().length > 20);
-        
-        globalClassData = [];
-        let totalClassPerc = 0;
-
-        studentsRaw.forEach(studentText => {
-            // Extract Reg Number
-            const regMatch = studentText.match(/REGISTRATION NUMBER\s*([A-Z0-9-]+)/i);
-            const regNo = regMatch ? regMatch[1] : "UNKNOWN-" + Math.floor(Math.random()*1000);
+        function updateUI(questionId, answer) {
+            const result = gradeAnswer(questionId, answer);
             
-            const report = evaluateStudent(studentText);
-            totalClassPerc += report.perc;
-            globalClassData.push({ regNo, report });
-        });
-
-        const endTime = performance.now();
-        
-        // Update Dashboard
-        document.getElementById('input-area').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        
-        document.getElementById('stat-count').innerText = globalClassData.length;
-        document.getElementById('stat-avg').innerText = globalClassData.length > 0 ? (totalClassPerc / globalClassData.length).toFixed(1) + '%' : '0%';
-        document.getElementById('stat-time').innerText = ((endTime - startTime) / 1000).toFixed(2) + 's';
-
-        // Build Table
-        const tbody = document.getElementById('student-table-body');
-        tbody.innerHTML = '';
-        globalClassData.forEach((student, index) => {
-            let p = student.report.perc;
-            let status = p >= 75 ? '<span style="color:var(--success)">Distinction</span>' : (p >= 50 ? '<span style="color:var(--warning)">Pass</span>' : '<span style="color:var(--danger)">Fail</span>');
+            totalScoreDisplay.innerHTML = `${result.score}<span>/${result.max}</span>`;
             
-            tbody.innerHTML += `
-                <tr>
-                    <td style="font-weight:bold;">${student.regNo}</td>
-                    <td>${student.report.earned.toFixed(2)} / ${student.report.possible} (${p.toFixed(1)}%)</td>
-                    <td>${status}</td>
-                    <td><button class="view-btn" onclick="viewLogs(${index})">View Logs</button></td>
-                </tr>
-            `;
-        });
-    }
+            const percent = (result.score / result.max) * 100;
+            if (percent >= 80) {
+                verdictBadge.innerHTML = '<i class="fas fa-check-circle"></i> Imefaulu Vizuri';
+                verdictBadge.style.background = '#dcfce7'; verdictBadge.style.color = '#166534';
+            } else if (percent >= 50) {
+                verdictBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Wastani';
+                verdictBadge.style.background = '#fef9c3'; verdictBadge.style.color = '#854d0e';
+            } else {
+                verdictBadge.innerHTML = '<i class="fas fa-times-circle"></i> Haitoshi';
+                verdictBadge.style.background = '#fee2e2'; verdictBadge.style.color = '#b91c1c';
+            }
 
-    function viewLogs(index) {
-        const student = globalClassData[index];
-        document.getElementById('modal-title').innerText = `Logs: ${student.regNo} (${student.report.perc.toFixed(1)}%)`;
-        
-        let content = '';
-        student.report.logs.forEach(log => {
-            let color = log.earned === log.max ? 'var(--success)' : (log.earned === 0 ? 'var(--danger)' : 'var(--warning)');
-            content += `
-                <div class="log-item">
-                    <div class="log-header">
-                        <span>${log.title}</span>
-                        <span style="color: ${color}">${log.earned} / ${log.max} marks</span>
+            // Jenga breakdown
+            let html = '';
+            result.breakdown.forEach((item, idx) => {
+                const passedClass = item.passed ? 'passed' : 'failed';
+                const icon = item.passed ? '<i class="fas fa-check" style="color:#2a6e4f;"></i>' : '<i class="fas fa-times" style="color:#b91c1c;"></i>';
+                html += `
+                    <div class="criteria-item ${passedClass}">
+                        <div class="criteria-header">
+                            <span class="criteria-name">${icon} ${item.name}</span>
+                            <span class="criteria-score">${item.earned} / ${item.weight}</span>
+                        </div>
+                        <div class="evidence"><i class="fas fa-search"></i> ${item.evidence}</div>
                     </div>
-                    <div>${log.tags}</div>
-                </div>
-            `;
+                `;
+            });
+            breakdownList.innerHTML = html;
+            feedbackText.textContent = result.feedback;
+        }
+
+        function handleGrade() {
+            const qId = questionSelect.value;
+            const ans = studentAnswer.value.trim();
+            if (!ans) {
+                alert("Tafadhali weka jibu la mwanafunzi.");
+                return;
+            }
+            updateUI(qId, ans);
+        }
+
+        function handleReset() {
+            const qId = questionSelect.value;
+            if (sampleAnswers[qId]) {
+                studentAnswer.value = sampleAnswers[qId];
+            } else {
+                studentAnswer.value = "Bandika jibu la mwanafunzi hapa...";
+            }
+            updateUI(qId, studentAnswer.value);
+        }
+
+        // Load default on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const defaultQ = questionSelect.value;
+            if (sampleAnswers[defaultQ]) {
+                studentAnswer.value = sampleAnswers[defaultQ];
+            }
+            updateUI(defaultQ, studentAnswer.value);
         });
-        
-        document.getElementById('modal-content').innerHTML = content;
-        document.getElementById('modal').style.display = 'flex';
-    }
+
+        // Event listeners
+        gradeBtn.addEventListener('click', handleGrade);
+        resetBtn.addEventListener('click', handleReset);
+        questionSelect.addEventListener('change', () => {
+            const qId = questionSelect.value;
+            if (sampleAnswers[qId]) {
+                studentAnswer.value = sampleAnswers[qId];
+            } else {
+                studentAnswer.value = '';
+            }
+            updateUI(qId, studentAnswer.value);
+        });
+
+        // Allow manual edit and grade
+    })();
 </script>
+
 </body>
 </html>
