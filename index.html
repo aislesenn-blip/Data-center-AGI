@@ -2,254 +2,159 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BLIP Grading OS v2.0 | Precision Agriculture</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLIP V3.0 | Enterprise Grading OS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ========================================================
-           BLIP OS V2.0 PREMIUM STYLESHEET 
-           ======================================================== */
         :root {
-            --bg-color: #0b0d10;
-            --surface-color: #161920;
-            --surface-hover: #1e222b;
-            --border-color: #272c38;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-primary: #10b981; /* Changed to Emerald Green for V2 */
-            --accent-glow: rgba(16, 185, 129, 0.4);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --border-radius: 16px;
-            --transition: all 0.3s ease;
+            --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
+            --border: #3f3f46; --text: #f4f4f5; --muted: #a1a1aa;
+            --primary: #3b82f6; --success: #22c55e; --warning: #eab308; --danger: #ef4444;
+            --radius: 12px;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 2rem; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 1200px; }
         
-        body {
-            background-color: var(--bg-color); color: var(--text-primary);
-            min-height: 100vh; padding: 2rem 1rem;
-            display: flex; justify-content: center;
-        }
-
-        .container {
-            width: 100%; max-width: 1100px;
-            display: flex; flex-direction: column; gap: 2rem;
-        }
-
-        /* --- Header --- */
-        header { text-align: center; margin-bottom: 1rem; }
-        .badge {
-            display: inline-block; padding: 0.3rem 0.8rem; border-radius: 999px;
-            background: rgba(16, 185, 129, 0.1); color: var(--accent-primary);
-            font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;
-            border: 1px solid rgba(16, 185, 129, 0.2); letter-spacing: 1px; text-transform: uppercase;
-        }
-        h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 0.5rem; }
-        p.subtitle { color: var(--text-secondary); font-size: 1.1rem; }
-
-        /* --- Workspace Area --- */
-        .workspace {
-            background: var(--surface-color); border: 1px solid var(--border-color);
-            border-radius: var(--border-radius); padding: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
+        header { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .badge { background: rgba(59, 130, 246, 0.15); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; letter-spacing: 1px; }
+        h1 { font-size: 2.5rem; margin-top: 0.5rem; }
         
-        .section-title {
-            font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);
-            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
-            text-transform: uppercase; letter-spacing: 1.5px;
-        }
+        /* Input Area */
+        .workspace { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem; }
+        textarea { width: 100%; height: 200px; background: var(--bg); color: var(--text); padding: 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; line-height: 1.5; resize: vertical; }
+        textarea:focus { outline: none; border-color: var(--primary); }
+        .btn-run { background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; float: right; margin-top: 1rem; transition: 0.2s; }
+        .btn-run:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        textarea {
-            width: 100%; height: 300px; background: #0b0d10;
-            border: 1px solid var(--border-color); border-radius: 12px;
-            color: var(--text-primary); padding: 1.2rem; font-size: 1.05rem;
-            resize: vertical; transition: var(--transition); line-height: 1.6;
-        }
-        textarea:focus {
-            outline: none; border-color: var(--accent-primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        }
-
-        .btn-container { display: flex; justify-content: flex-end; margin-top: 1rem; }
+        /* Dashboard Table */
+        #dashboard { display: none; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; }
+        .stat-value { font-size: 2.5rem; font-weight: bold; color: var(--primary); }
         
-        button {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white; border: none; padding: 1rem 2.5rem;
-            border-radius: 12px; font-size: 1rem; font-weight: 700;
-            cursor: pointer; transition: var(--transition);
-            box-shadow: 0 4px 20px var(--accent-glow);
-            display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.5px;
-        }
-        button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
-        button:active { transform: translateY(0); }
-
-        /* --- Loading Engine --- */
-        #loader { display: none; text-align: center; padding: 3rem; color: var(--accent-primary); }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(16, 185, 129, 0.2);
-            border-top-color: var(--accent-primary); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem auto;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* --- Bento Grid Results --- */
-        #results-container { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bento-grid {
-            display: grid; grid-template-columns: repeat(12, 1fr);
-            gap: 1.5rem; margin-bottom: 2rem;
-        }
-
-        .bento-box {
-            background: var(--surface-color); border: 1px solid var(--border-color);
-            border-radius: var(--border-radius); padding: 2rem;
-        }
-
-        .score-box { grid-column: span 4; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .feedback-box { grid-column: span 8; display: flex; flex-direction: column; justify-content: center; }
-        .breakdown-box { grid-column: span 12; }
-
-        .big-score { font-size: 4.5rem; font-weight: 800; line-height: 1; margin: 0.5rem 0; color: var(--success); }
-        .total-marks { color: var(--text-secondary); font-size: 1.2rem; font-weight: 500; }
+        .table-container { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: rgba(255,255,255,0.02); font-weight: 600; color: var(--muted); }
+        tr:hover { background: var(--surface-hover); }
         
-        .human-feedback { font-size: 1.2rem; font-weight: 400; line-height: 1.8; color: #e2e8f0; font-style: italic; border-left: 4px solid var(--accent-primary); padding-left: 1.5rem; }
+        .view-btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+        .view-btn:hover { background: var(--primary); color: white; }
 
-        /* --- Breakdown Rows --- */
-        .item-row {
-            background: #0b0d10; border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;
-            display: flex; justify-content: space-between; align-items: flex-start;
-        }
-        .item-content h3 { font-size: 1.15rem; margin-bottom: 0.5rem; color: #f8fafc; font-weight: 600; }
-        .item-content p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .item-status { font-weight: 700; font-size: 1.5rem; }
+        /* Modal for Detailed Logs */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 2rem; }
+        .modal { background: var(--surface); width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .close-btn { background: transparent; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
         
-        .status-perfect { color: var(--success); }
-        .status-partial { color: var(--warning); }
-        .status-fail { color: var(--danger); }
-
-        .missed-axiom {
-            display: inline-block; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
-            color: var(--danger); padding: 0.3rem 0.6rem; border-radius: 6px;
-            font-size: 0.8rem; margin-right: 0.5rem; margin-top: 0.5rem; font-weight: 500;
-        }
-        .found-axiom {
-            display: inline-block; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
-            color: var(--success); padding: 0.3rem 0.6rem; border-radius: 6px;
-            font-size: 0.8rem; margin-right: 0.5rem; margin-top: 0.5rem; font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .score-box, .feedback-box { grid-column: span 12; }
-            h1 { font-size: 2.2rem; }
-            .item-row { flex-direction: column; gap: 1rem; }
-        }
+        /* Breakdown Items */
+        .log-item { background: var(--bg); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .log-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: bold; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; margin-top: 5px; font-weight: 600; }
+        .tag-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .tag-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .tag-core-fail { background: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; } /* Severe failure */
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <span class="badge">Neuro-Symbolic Engine V2.0</span>
-        <h1>BLIP Auto-Grader</h1>
-        <p class="subtitle">Deterministic Logic & Math Tolerance Core</p>
+        <span class="badge">V3.0 Enterprise Engine</span>
+        <h1>BLIP Grading OS</h1>
+        <p style="color: var(--muted);">NLP Chunker & Core Axiom Logic Gates</p>
     </header>
 
-    <main class="workspace" id="input-workspace">
-        <div class="section-title">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Student Submission Data
-        </div>
-        <textarea id="student-text" placeholder="Paste the raw student answers here..."></textarea>
-        
-        <div class="btn-container">
-            <button id="run-btn" onclick="runEngine()">
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Run Diagnostics & Grade
-            </button>
-        </div>
-    </main>
-
-    <div id="loader">
-        <div class="spinner"></div>
-        <h3>Processing Abstract Syntax Trees...</h3>
-        <p style="color:var(--text-secondary); margin-top:0.5rem;">Applying Negation Checks & Math Tolerance Matrices</p>
+    <div class="workspace" id="input-area">
+        <h3 style="margin-bottom: 1rem;">Batch Student Submission (Raw Text)</h3>
+        <textarea id="batch-text" placeholder="Paste multiple students' answers here...&#10;Ensure each student's paper starts with 'REGISTRATION NUMBER'"></textarea>
+        <button class="btn-run" onclick="processBatch()">Grade Entire Class</button>
+        <div style="clear: both;"></div>
     </div>
 
-    <div id="results-container">
-        <div class="bento-grid">
-            <div class="bento-box score-box">
-                <div class="section-title" style="justify-content: center;">Final Integrity Score</div>
-                <div class="big-score" id="total-score-ui">0%</div>
-                <div class="total-marks" id="marks-ui">0.00 / 0.00 Marks</div>
+    <div id="dashboard">
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-count">0</div>
+                <div style="color: var(--muted);">Students Graded</div>
             </div>
-
-            <div class="bento-box feedback-box">
-                <div class="section-title">Architect's Summary</div>
-                <p class="human-feedback" id="human-feedback-ui"></p>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-avg">0%</div>
+                <div style="color: var(--muted);">Class Average</div>
             </div>
-
-            <div class="bento-box breakdown-box">
-                <div class="section-title">Detailed Execution Logs (Rules & Axioms)</div>
-                <div id="breakdown-list"></div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-time">0.1s</div>
+                <div style="color: var(--muted);">Processing Time</div>
             </div>
         </div>
-        
-        <div class="btn-container">
-            <button onclick="resetEngine()" style="background: transparent; box-shadow: none; border: 1px solid var(--border-color); color: var(--text-primary);">
-                Load Next Student
-            </button>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Registration No.</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    </tbody>
+            </table>
         </div>
+        <button class="view-btn" style="margin-top: 2rem;" onclick="location.reload()">Back to Input</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modal-title">Student Logs</h2>
+            <button class="close-btn" onclick="document.getElementById('modal').style.display='none'">&times;</button>
+        </div>
+        <div id="modal-content"></div>
     </div>
 </div>
 
 <script>
     /* =========================================================================
-       BLIP V2.0 ENGINE CORE (MATH TOLERANCE & NEGATION CHECKER)
+       BLIP V3.0 ENGINE: NLP CHUNKER + CORE AXIOM GATES
        ========================================================================= */
-    
-    // Semantic Equivalent Dictionary
+
     const dictionary = {
-        "heterogeneity": ["heterogeneity", "differences", "variation", "variability", "changes"],
+        "heterogeneity": ["heterogeneity", "differences", "variation", "variability"],
         "absence": ["absence", "lack of", "no", "without", "does not change", "does not vary"],
-        "beneficial": ["beneficial", "helpful", "useful", "advantageous", "important"],
-        "essentiality": ["essentiality", "essential", "crucial", "must-have", "necessary", "required"],
-        "hydroponic": ["hydroponic", "water-based", "soilless water"],
-        "misted": ["misted", "sprayed", "aerosolized"],
-        "submerged": ["submerged", "flooded", "drowned"]
+        "beneficial": ["beneficial", "helpful", "useful", "important"],
+        "essentiality": ["essentiality", "essential", "crucial", "necessary", "required"]
     };
 
-    // Words that flip the logic
     const negationWords = ["not", "no", "don't", "doesn't", "lack", "without", "absent", "isn't", "aren't"];
 
-    // THE MASTER RULEBOOK (V2 with Tolerance and Logic Flags)
+    // V3 RULEBOOK (Added 'isCore' Must-Pass Gates)
     const rulebook = [
         {
             id: "Q1_A_i", title: "Q1. A(i) Field invariabilities", type: "text", max: 0.5,
             regexDetect: /(?:1\s*A\s*i\)|field invariab)/i,
             axioms: [
-                { keywords: ["absence", "does not change", "no"], weight: 0.3, desc: "Absence/No change" },
-                { keywords: ["heterogeneity", "variation", "vary"], weight: 0.4, desc: "Heterogeneity/Variation" },
-                { keywords: ["soil", "physical", "chemical", "environment"], weight: 0.3, desc: "Soil/Environment properties" }
+                { keywords: ["absence", "does not change", "no"], weight: 0.5, desc: "Absence/No change" },
+                { keywords: ["heterogeneity", "variation", "vary"], weight: 0.5, desc: "Heterogeneity/Variation" }
             ]
         },
         {
             id: "Q1_A_ii", title: "Q1. A(ii) Beneficial nutrients", type: "text", max: 0.5,
             regexDetect: /(?:1\s*A\s*ii\)|beneficial nut)/i,
             axioms: [
-                { keywords: ["essentiality", "essential", "required"], weight: 0.6, requiresNegation: true, desc: "Must state they are NOT essential" },
-                { keywords: ["beneficial", "roles", "growth", "important"], weight: 0.4, desc: "Plays a beneficial role in growth" }
+                // MUST-PASS GATE: If they miss the negation (e.g. say "is essential"), they fail the whole question.
+                { keywords: ["essentiality", "essential", "required"], weight: 0.6, requiresNegation: true, isCore: true, desc: "CORE: Must state they are NOT essential" },
+                { keywords: ["beneficial", "roles", "growth", "important"], weight: 0.4, desc: "Plays a beneficial role" }
             ]
         },
         {
             id: "Q6_B_i", title: "Q6. B(i) Calculate % loss in water", type: "math", max: 5.5,
             regexDetect: /(?:6\s*B\s*i|percentage loss|18\s*Mg)/i,
             axioms: [
-                { value: 16.2, tolerance: 0.2, weight: 0.5, desc: "Calculated Intermediate (16.2%)" },
+                { value: 16.2, tolerance: 0.2, weight: 0.5, desc: "Calculated (16.2%)" },
                 { value: 1.8, tolerance: 0.1, weight: 0.5, desc: "Final Answer (1.8%)" }
             ]
         },
@@ -257,14 +162,13 @@
             id: "Q6_B_ii", title: "Q6. B(ii) Calculate total payment", type: "math", max: 8.0,
             regexDetect: /(?:6\s*B\s*ii|how much will the buyer pay)/i,
             axioms: [
-                { value: 13.3, tolerance: 0.05, weight: 0.3, desc: "Actual weight (~13.3 Mg)" },
+                { value: 13.3, tolerance: 0.1, weight: 0.3, desc: "Actual weight (~13.3 Mg)" },
                 { value: 133.33, tolerance: 0.1, weight: 0.3, desc: "Total bags (~133.33 bags)" },
-                { value: 9333310, tolerance: 100, weight: 0.4, desc: "Final Payment (~9,333,310 Tsh)" } // Tolerance of 100 Tsh to allow for rounding differences (e.g. 9333333)
+                { value: 9333310, tolerance: 100, weight: 0.4, desc: "Final Payment (~9,333,310 Tsh)" }
             ]
         }
     ];
 
-    // Helper: Normalize Text
     function normalizeText(text) {
         let clean = text.toLowerCase().replace(/[(),]/g, " ");
         for (const [standard, synonyms] of Object.entries(dictionary)) {
@@ -276,33 +180,37 @@
         return clean;
     }
 
-    // Helper: Extract Math Numbers
     function extractNumbers(text) {
-        let clean = text.replace(/,/g, ""); // Remove commas in 9,333,310
+        let clean = text.replace(/,/g, "");
         let matches = clean.match(/\d+(\.\d+)?/g);
         return matches ? matches.map(Number) : [];
     }
 
-    // Helper: Smart Context Parsing (Isolates questions to avoid bleed-over)
+    // THE V3 NLP CHUNKER (Smart context extraction)
     function extractQuestionBlock(fullText, currentRegex) {
         let lines = fullText.split('\n');
         let block = [];
         let capturing = false;
+        let captureLength = 0;
 
         for (let i = 0; i < lines.length; i++) {
-            if (currentRegex.test(lines[i])) {
-                capturing = true;
-            } else if (capturing && /^(?:Q?\d+\s*[A-Z]|\d+\.\s*Question)/i.test(lines[i])) {
-                // Stop capturing if we hit what looks like the next major question heading
-                break;
+            if (currentRegex.test(lines[i])) capturing = true;
+            
+            if (capturing) {
+                block.push(lines[i]);
+                captureLength++;
+                // Break if we hit a new major question number (e.g., 07. Question, B), C))
+                // Only break after capturing at least a few lines to avoid false stops
+                if (captureLength > 1 && /^(?:Q?\d+\.|\d+\)|\s*[A-Z]\)|\s*[A-Z]\.)/i.test(lines[i])) {
+                    // Check if it's just a list item inside the answer (e.g. a), b))
+                    if(!/^[a-e]\)/i.test(lines[i].trim())) break; 
+                }
             }
-            if (capturing) block.push(lines[i]);
         }
-        // Fallback: If regex didn't catch a clean block, return the whole text (V1 behavior)
         return block.length > 0 ? block.join(" ") : fullText;
     }
 
-    // MAIN EVALUATOR V2
+    // STUDENT GRADER
     function evaluateStudent(studentText) {
         let results = [];
         let totalPossible = 0;
@@ -311,10 +219,9 @@
         rulebook.forEach(rule => {
             totalPossible += rule.max;
             let earned = 0;
-            let missedLogics = [];
-            let foundLogics = [];
+            let tags = [];
+            let coreFailed = false; // The executioner flag
             
-            // Smart Extraction
             let targetText = extractQuestionBlock(studentText, rule.regexDetect);
 
             if (rule.type === "text") {
@@ -322,129 +229,132 @@
                 
                 rule.axioms.forEach(axiom => {
                     let axiomPassed = false;
-                    
                     for (let kw of axiom.keywords) {
                         let idx = normText.indexOf(kw);
                         if (idx !== -1) {
-                            // Flaw 2 Fix: Check for Negation
                             let contextBefore = normText.substring(Math.max(0, idx - 40), idx);
                             let hasNegation = negationWords.some(neg => new RegExp(`\\b${neg}\\b`).test(contextBefore));
+                            if (axiom.requiresNegation) axiomPassed = hasNegation;
+                            else axiomPassed = !hasNegation;
                             
-                            if (axiom.requiresNegation) {
-                                if (hasNegation) axiomPassed = true; // Correct! They negated it.
-                            } else {
-                                if (!hasNegation) axiomPassed = true; // Correct! Standard statement.
-                            }
                             if(axiomPassed) break;
                         }
                     }
 
                     if (axiomPassed) {
                         earned += rule.max * axiom.weight;
-                        foundLogics.push(axiom.desc);
+                        tags.push(`<span class="tag tag-success">✔ ${axiom.desc}</span>`);
                     } else {
-                        missedLogics.push(axiom.desc);
+                        // V3 MUST-PASS GATE TRIGGER
+                        if (axiom.isCore) {
+                            coreFailed = true;
+                            tags.push(`<span class="tag tag-core-fail">⛔ FATAL: Failed Core Axiom (${axiom.desc})</span>`);
+                        } else {
+                            tags.push(`<span class="tag tag-danger">✖ Missing: ${axiom.desc}</span>`);
+                        }
                     }
                 });
             } 
             else if (rule.type === "math") {
                 let numbers = extractNumbers(targetText);
-                
                 rule.axioms.forEach(axiom => {
-                    // Flaw 1 Fix: Math Tolerance Range
                     let matched = numbers.find(n => Math.abs(n - axiom.value) <= axiom.tolerance);
-                    
                     if (matched !== undefined) {
                         earned += rule.max * axiom.weight;
-                        foundLogics.push(`Found ~${matched} (Target: ${axiom.value})`);
+                        tags.push(`<span class="tag tag-success">✔ Found ~${matched}</span>`);
                     } else {
-                        missedLogics.push(axiom.desc);
+                        if (axiom.isCore) coreFailed = true;
+                        tags.push(`<span class="tag tag-danger">✖ Missed Target: ${axiom.value}</span>`);
                     }
                 });
             }
 
-            // Cleanup precision
+            // V3 EXECUTION: If core failed, wipe all marks for this question
+            if (coreFailed) earned = 0;
+
             earned = Math.round(earned * 100) / 100;
             totalEarned += earned;
 
-            results.push({
-                title: rule.title, max: rule.max, earned: earned,
-                missed: missedLogics, found: foundLogics
-            });
+            results.push({ title: rule.title, max: rule.max, earned: earned, tags: tags.join('') });
         });
 
-        return {
-            totalEarned: totalEarned, totalPossible: totalPossible,
-            percentage: (totalEarned / totalPossible) * 100,
-            breakdown: results
-        };
+        return { earned: totalEarned, possible: totalPossible, perc: (totalEarned / totalPossible) * 100, logs: results };
     }
 
-    function getHumanFeedback(percentage) {
-        if(percentage >= 95) return "Exceptional. The student has demonstrated pinpoint accuracy in both logical axioms and mathematical variance. Ready for A-Grade certification.";
-        if(percentage >= 75) return "Strong performance. Computations and reasoning are largely sound, though a few strict rules or exact tolerances were slightly misaligned.";
-        if(percentage >= 50) return "Moderate understanding. The engine detected severe semantic contradictions (e.g., affirming a negated axiom) or calculation drift outside acceptable tolerance limits.";
-        return "Critical failure. Mathematical logic is absent or completely skewed, and text axioms violate fundamental marking scheme rules. Review required.";
-    }
+    // BATCH PROCESSOR
+    let globalClassData = [];
 
-    // UI RENDERING
-    function runEngine() {
-        const text = document.getElementById('student-text').value;
-        if(!text.trim()) { alert("Bosi! Weka data za mwanafunzi kwanza."); return; }
+    function processBatch() {
+        const rawText = document.getElementById('batch-text').value;
+        if(!rawText.trim()) return alert("Bosi, paste data first!");
 
-        document.getElementById('input-workspace').style.display = 'none';
-        document.getElementById('loader').style.display = 'block';
+        const startTime = performance.now();
 
-        setTimeout(() => {
-            const report = evaluateStudent(text);
-            renderResults(report);
-        }, 1200);
-    }
-
-    function renderResults(report) {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('results-container').style.display = 'block';
-
-        let perc = report.percentage.toFixed(1);
-        let scoreEl = document.getElementById('total-score-ui');
-        scoreEl.innerText = `${perc}%`;
+        // 1. Auto-Splitter by REGISTRATION NUMBER
+        // Note: Using lookahead to keep the separator
+        const studentsRaw = rawText.split(/(?=REGISTRATION NUMBER)/i).filter(s => s.trim().length > 20);
         
-        if(perc >= 80) scoreEl.style.color = 'var(--success)';
-        else if(perc >= 50) scoreEl.style.color = 'var(--warning)';
-        else scoreEl.style.color = 'var(--danger)';
+        globalClassData = [];
+        let totalClassPerc = 0;
 
-        document.getElementById('marks-ui').innerText = `${report.totalEarned.toFixed(2)} / ${report.totalPossible.toFixed(2)} Marks`;
-        document.getElementById('human-feedback-ui').innerText = `"${getHumanFeedback(perc)}"`;
+        studentsRaw.forEach(studentText => {
+            // Extract Reg Number
+            const regMatch = studentText.match(/REGISTRATION NUMBER\s*([A-Z0-9-]+)/i);
+            const regNo = regMatch ? regMatch[1] : "UNKNOWN-" + Math.floor(Math.random()*1000);
+            
+            const report = evaluateStudent(studentText);
+            totalClassPerc += report.perc;
+            globalClassData.push({ regNo, report });
+        });
 
-        const listEl = document.getElementById('breakdown-list');
-        listEl.innerHTML = ''; 
+        const endTime = performance.now();
+        
+        // Update Dashboard
+        document.getElementById('input-area').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        
+        document.getElementById('stat-count').innerText = globalClassData.length;
+        document.getElementById('stat-avg').innerText = globalClassData.length > 0 ? (totalClassPerc / globalClassData.length).toFixed(1) + '%' : '0%';
+        document.getElementById('stat-time').innerText = ((endTime - startTime) / 1000).toFixed(2) + 's';
 
-        report.breakdown.forEach(item => {
-            let statusClass = "status-perfect"; let statusIcon = "✅";
-            if(item.earned === 0) { statusClass = "status-fail"; statusIcon = "❌"; }
-            else if(item.earned < item.max) { statusClass = "status-partial"; statusIcon = "⚠️"; }
-
-            let tags = item.missed.map(m => `<span class="missed-axiom">Failed/Missing: ${m}</span>`).join('');
-            tags += item.found.map(f => `<span class="found-axiom">Verified: ${f}</span>`).join('');
-            if(!tags) tags = `<span style="color:var(--text-secondary); font-size:0.85rem;">No rules processed.</span>`;
-
-            listEl.innerHTML += `
-                <div class="item-row">
-                    <div class="item-content">
-                        <h3>${item.title}</h3>
-                        <p>Awarded: <strong>${item.earned} / ${item.max}</strong></p>
-                        <div style="margin-top: 8px;">${tags}</div>
-                    </div>
-                    <div class="item-status ${statusClass}">${statusIcon}</div>
-                </div>
+        // Build Table
+        const tbody = document.getElementById('student-table-body');
+        tbody.innerHTML = '';
+        globalClassData.forEach((student, index) => {
+            let p = student.report.perc;
+            let status = p >= 75 ? '<span style="color:var(--success)">Distinction</span>' : (p >= 50 ? '<span style="color:var(--warning)">Pass</span>' : '<span style="color:var(--danger)">Fail</span>');
+            
+            tbody.innerHTML += `
+                <tr>
+                    <td style="font-weight:bold;">${student.regNo}</td>
+                    <td>${student.report.earned.toFixed(2)} / ${student.report.possible} (${p.toFixed(1)}%)</td>
+                    <td>${status}</td>
+                    <td><button class="view-btn" onclick="viewLogs(${index})">View Logs</button></td>
+                </tr>
             `;
         });
     }
 
-    function resetEngine() {
-        document.getElementById('student-text').value = '';
-        document.getElementById('results-container').style.display = 'none';
-        document.getElementById('input-workspace').style.display = 'block';
+    function viewLogs(index) {
+        const student = globalClassData[index];
+        document.getElementById('modal-title').innerText = `Logs: ${student.regNo} (${student.report.perc.toFixed(1)}%)`;
+        
+        let content = '';
+        student.report.logs.forEach(log => {
+            let color = log.earned === log.max ? 'var(--success)' : (log.earned === 0 ? 'var(--danger)' : 'var(--warning)');
+            content += `
+                <div class="log-item">
+                    <div class="log-header">
+                        <span>${log.title}</span>
+                        <span style="color: ${color}">${log.earned} / ${log.max} marks</span>
+                    </div>
+                    <div>${log.tags}</div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('modal-content').innerHTML = content;
+        document.getElementById('modal').style.display = 'flex';
     }
 </script>
 </body>
