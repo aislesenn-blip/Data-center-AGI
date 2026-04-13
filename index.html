@@ -3,192 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌾 AgriGrader AI • Semantic Similarity (Hakuna JSON!)</title>
+    <title>🌾 AgriGrader AI • Mtihani Mzima • Semantic Similarity • Breakdown Kamili</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Transformers.js kwa Vekta za Sentensi -->
     <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0/dist/transformers.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f0f4f8; color: #0b1c2e; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1400px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 24px; }
-        .header h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(145deg, #0a3526, #1e6b4c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .badge { background: #0a3526; color: white; padding: 4px 16px; border-radius: 30px; display: inline-block; font-weight: 500; font-size: 0.9rem; }
-        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .header h1 { font-size: 2.2rem; font-weight: 700; background: linear-gradient(145deg, #0a3526, #1e6b4c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .badge { background: #0a3526; color: white; padding: 6px 18px; border-radius: 30px; display: inline-block; font-weight: 500; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
         .panel { background: white; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); padding: 24px; border: 1px solid #e2e8f0; }
-        .panel h2 { font-size: 1.3rem; margin-bottom: 16px; display: flex; gap: 10px; color: #0a3526; }
-        textarea { width: 100%; height: 300px; padding: 16px; border: 1.5px solid #cbd5e1; border-radius: 18px; font-family: 'Inter', sans-serif; background: #fafcff; resize: vertical; }
-        .btn { padding: 14px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: #0a3526; color: white; box-shadow: 0 6px 12px -4px rgba(10,53,38,0.2); transition: all 0.15s; }
+        .panel h2 { font-size: 1.2rem; margin-bottom: 12px; display: flex; gap: 8px; color: #0a3526; }
+        textarea { width: 100%; height: 280px; padding: 16px; border: 1.5px solid #cbd5e1; border-radius: 18px; font-family: 'Inter', monospace; background: #fafcff; resize: vertical; font-size: 0.9rem; }
+        .btn-group { display: flex; gap: 12px; margin: 20px 0; }
+        .btn { padding: 14px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: #0a3526; color: white; box-shadow: 0 6px 12px -4px rgba(10,53,38,0.2); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn:hover:not(:disabled) { background: #124e3a; transform: translateY(-1px); }
-        .result-card { margin-top: 24px; background: #f8fafc; border-radius: 20px; padding: 20px; }
-        .similarity-score { font-size: 2.8rem; font-weight: 800; color: #0a3526; }
-        .progress-bar { height: 12px; background: #e2e8f0; border-radius: 20px; margin: 16px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: #0a3526; border-radius: 20px; width: 0%; transition: width 0.3s; }
-        .status-text { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-        .footnote { margin-top: 24px; text-align: center; color: #64748b; font-size: 0.9rem; }
+        .btn-secondary { background: #64748b; }
+        .summary-card { background: #e6f7ec; border-radius: 20px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .total-score { font-size: 2.8rem; font-weight: 800; color: #0a3526; }
+        .results-table { background: white; border-radius: 24px; padding: 8px; border: 1px solid #e2e8f0; max-height: 500px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 16px; background: #f8fafc; font-weight: 600; color: #0a3526; border-bottom: 2px solid #cbd5e1; }
+        td { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; }
+        .score-badge { padding: 4px 12px; border-radius: 30px; font-weight: 600; font-size: 0.9rem; }
+        .high { background: #dcfce7; color: #166534; }
+        .medium { background: #fef9c3; color: #854d0e; }
+        .low { background: #fee2e2; color: #b91c1c; }
         .loader { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .status-bar { margin: 16px 0; padding: 12px; border-radius: 16px; background: #f1f5f9; display: flex; align-items: center; gap: 12px; }
+        .footnote { margin-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>🧪 AgriGrader AI • Semantic Similarity</h1>
-        <div class="badge"><i class="fas fa-language"></i> Inaelewa Maana, Sio Maneno • Hakuna JSON • Inaishi kwenye Browser</div>
+        <h1>🧪 AgriGrader AI • Mtihani Mzima • Semantic Breakdown</h1>
+        <div class="badge"><i class="fas fa-language"></i> Inalinganisha Maana, Sio Maneno • Hakuna JSON Ngumu • Inaishi Browser</div>
     </div>
 
-    <div class="split-layout">
-        <!-- Upande wa Kushoto: Marking Scheme -->
+    <div class="input-row">
         <div class="panel">
-            <h2><i class="fas fa-check-circle" style="color:#0f9d58;"></i> Marking Scheme / Jibu Sahihi</h2>
-            <textarea id="referenceAnswer" placeholder="Bandika jibu sahihi kutoka kwenye Scheme hapa... Mfano: Field invariabilities is the absence of heterogeneity in physical and chemical properties of soil...">Field invariabilities is the theoretical term connotated to absence of heterogeneity in the physical and chemical properties of the soil within a specified unit of the field. Example, the heterogeneity of soil fertility and soil moisture across the crop field.</textarea>
-            <p style="font-size:0.85rem; margin-top:8px;"><i class="far fa-lightbulb"></i> Hapa ndipo unapoweka jibu sahihi moja. Mfumo utalinganisha lugha ya mwanafunzi na hili.</p>
+            <h2><i class="fas fa-check-circle" style="color:#0f9d58;"></i> Marking Scheme (Jibu Sahihi kwa Kila Swali)</h2>
+            <textarea id="schemeInput">Field invariabilities: Is the theoretical term connotated to absence of heterogeneity in the physical and chemical properties of the soil within a specified unit of the field. Example, soil fertility and moisture heterogeneity.
+Beneficial nutrients: These are elements that do not meet the criteria of essentiality but play some beneficial roles in plant nutrition. Examples: Silicon for rice, sodium for sugar beet, vanadium, cobalt.
+Wicking system: Is the most basic and passive growing technique whereby the nutrients solution is delivered to a tray through the wicks and then to the roots via the capillary action. Example hydroponics with fibres.
+Aeroponics: Innovative technique of soilless agriculture whereby roots of suspended plants in the air are misted with hydroponic solution. Example growing raw vegetables.
+Ebb and flow: Innovative technique involving repeatedly flooding and draining of container filled with media. Example bato buckets.
+Precision agriculture vs precision technologies: PA set of technologies to enhance crop/livestock productivity. PT cutting-edge tools from scientific principles.
+Technology vs Science: Technology application of science to produce goods. Science systematic knowledge finding empirical evidence.
+GPS vs GIS: GPS satellite navigation positioning. GIS hardware/software for capturing storing analyzing spatial data in layers.
+Precision agriculture vs precision farming: PA technologies enhance crop and livestock. PF technologies enhance crop productivity only.
+Wicking vs hydroponic: Wicking passive capillary wicks. Hydroponic soilless system with nutrient solution reservoir.
+RTK vs DGPS: RTK satellite navigation for centimeter accuracy. DGPS collective addons to improve GPS accuracy.
+Hydroponics vs aquaponics: Hydroponics soilless without fish. Aquaponics combines fish and plants symbiotic.
+GPS vs DGPS: GPS one receiver. DGPS two receivers for differential correction.
+Critical value vs luxury consumption: Critical value nutrient level below which deficiency. Luxury consumption excess uptake.
+Hidden hunger vs below optimal: Hidden hunger deficiency without symptoms. Below optimal insufficient nutrient level.
+Precision agriculture areas: Tillage depth, fertilizer application VRA, spraying drones, sowing seeds, harvesting yield maps.
+Remote sensing: Group of techniques for collecting information without physical contact. Example satellites.
+Five sensors: soil moisture, pH, nutrient, temperature, humidity, motion.
+Seven steps: collection, pre-processing, image analysis, ground validation, incorporation, identification, treatment.
+Passive vs active remote sensing: Passive natural reflected signals. Active own energy e.g., radar.
+Precision agriculture definition: Technologies to enhance agricultural productivity efficiently reducing cost.
+Eight challenges: high initial cost, limited expertise, fragmentation, machinery availability, heterogeneity, market imperfections, unavailability inputs, running cost, spare parts, small farm, network failure, calibration, topography.
+Building blocks: Information (soil/crop/climate), Technology (GPS/DGPS/VRA), Management (decision support).
+Reasons for adoption: Increase land productivity, efficiency, profitability, environmental protection, avoid drudgery, traceability, increase yield, reduce cost.
+GIS definition: System with hardware, software, data, users for capturing storing analyzing geographic information in layers.
+Four applications: mapping location, quantities, changes, densities, finding distance.
+Six limitations: ephemeris, clock drift, atmospheric delay, multipath, jamming, signal arrival, numerical.
+GPS definition: Satellite-based navigation and positioning system. Most applicable: GPS.
+Types of DGPS: SBAS corrections from geostationary satellite. RTCM from static base 40-50cm. RTK up to 1-3cm.
+Variable rate technology: Management approach addressing within-field spatial variability. Components: sensors, controllers, actuators.
+Field variabilities: soil nutrients, organic matter, texture, structure, moisture, pH, topography, colour, slope.
+More sensors: rainfall, soil moisture, temperature, humidity, wind, water level, solarimeter, sunshine, pH, EC, compaction, nutrients, reflectance, pressure, flow, speed.
+Calculation: Loss 1.8%. Price 9,333,310 Tsh.</textarea>
         </div>
-
-        <!-- Upande wa Kulia: Jibu la Mwanafunzi -->
         <div class="panel">
-            <h2><i class="fas fa-user-graduate"></i> Jibu la Mwanafunzi</h2>
-            <textarea id="studentAnswer" placeholder="Bandika jibu la mwanafunzi hapa... Mfano: Field invariabilities are conditions of soil that does not change or does not vary within the field.">Field invariabilities are those conditions of crop, soil and environment which does not change or does not vary within the field.</textarea>
-            <div style="margin-top: 20px;">
-                <button class="btn" id="analyzeBtn"><i class="fas fa-balance-scale"></i> Pima Uelewa (Semantic)</button>
-                <button class="btn" id="clearBtn" style="background:#64748b; margin-left:10px;"><i class="fas fa-undo-alt"></i> Futa</button>
-            </div>
+            <h2><i class="fas fa-user-graduate"></i> Majibu Yote ya Mwanafunzi</h2>
+            <textarea id="studentInput">REGISTRATION NUMBER 2018-04-12551
+
+01. Question
+A i) Field invariabilities - Are those conditions of crop, soil and environment which does not change or does not vary within the field.
+ii) Beneficial Nutrients - Are essential or important nutrients which are required for growth and production of the crop through entire phenological stage. Examples: Sodium (Na), Potassium (K), Calcium (Ca) and Phosphorus (P).
+iii) Wicking system - Is a soilless farming technique in which nutrient solution is moving from tank to tray holding plants, through wicks and by capillarity action water reaches the roots.
+iv) Aeroponics - Is a soilless farming technique of misting roots of a plant suspended on air. Sprayers provide nutrient solution direct to the roots.
+v) Ebb and Flow - Soilless technique in which plants are flooded with nutrient for few hours and then water are drained to the tank (Reservoir).
+
+B) Tofauti (Differences):
+i) Precision Agriculture is application of technology to increase productivity while reducing cost... WHILE Precision Technology is the technology which employ use of sensors and satellites.
+ii) Technology is an application of scientific knowledge in practical way... WHILE Science is exploring of new knowledge through observation and experiments.
+iii) GPS: technology used to determine position... WHILE GIS: method of identifying, collecting, storing and analyzing geographical data.
+iv) Precision Agriculture - application of technology to increase productivity of both crops and animals... WHILE Precision Farming - application of technology principles of farming to increase productivity.
+v) Wicking system - nutrient moves through wick by capillarity... WHILE Hydroponic System - application of nutrient solution by working water through different methods.
+vi) Real Time Kinematics - part of DGPS which uses RTCM protocol... WHILE DGPS - technology providing accurate position through differential radiations between Stationary and Rover receiver.
+vii) Hydroponics - soilless farming cooperating working water supplying nutrients... WHILE Aquaponics - growing of aquatic animals and plants in a symbiotic way.
+viii) GPS vs DGPS: GPS has one receiver, DGPS two receivers. GPS frequency 1.1-1.5 GHz, DGPS vary. GPS provide position, DGPS realtime position.
+ix) Nutrient Critical value - point below which a plant will be deficient of nutrient... WHILE Luxury Consumption - excess uptaking of nutrients exceeding that used for growth.
+x) Plants Nutrient optimal hunger - point at which a plant requires nutrients but doesn't show signs of deficit... WHILE Optimal Soil Nutrient Level - point at which nutrients are available for production and growth.
+
+C) Areas of farming activities:
+a) Tillage: Precision agriculture can show different soil conditions and at what depth should be tilled.
+b) Fertilizer Application: Machines and technology determine soil fertility and moisture content to control fertilization.
+c) Spraying: Using aeroplanes, drones and boom sprayers to apply insecticides only where required.
+d) Crop Scouting: Through remote sensing and GPS, easy to control crop condition.
+e) Harvesting: Combine harvesters cut, feed, thresh and clean grain. Precision farming helps in preparing a yield map.
+
+02. Question
+A i) Remote Sensing is a technique used to control an object or area of interest without being physically contact with it. Ranges from few meters to thousand of Kilometres. Examples are RADAR and SPOT.
+ii) Five Sensors: Grain flow sensors, Grain loss sensors, Speed sensors, Header Position sensors, Moisture content sensors.
+iii) Steps: Collection, Pre-processing, Image analysis, Ground validation / Verification, Incorporation, Identification, Action.
+
+B i) Two types: Active remote sensing emits own signals. Passive uses reflected radiations from Sun.
+ii) Ways of acquiring image: Via Sensor, Whisk broom sensor, Array (line) method.
+
+03. Question
+A i) Precision Agriculture is the application of technology within agriculture to increase productivity while decreasing cost of production. It involve use of Sensors, Satellite systems like GPS and DGPS, Agricultural machineries and electronic devices like Computers.
+ii) Challenges: Perception and cultural beliefs, Farm fragmentation, High initial cost and operation cost, Low network systems, Requires knowledge, Requires skilled Labors, Lack of technical experts, Poor electrical systems.
+iii) Building blocks: Seed, Fertilizer, Pesticides. Information (soil, crop), Technology (GPS, VRA), Management (decision support).
+
+B) Reasons: Easy way to manage large farms, Reduce cost of Production over long run, Increase yield Productivity, Increase Efficiency, Optimize Use of scarce resources.
+
+05. Question
+A i) Global Positioning System is the technology which used to determine accurate location of an object or area of interest even when its moving.
+ii) GPS (USA), followed by GLONASS (Russia).
+B) Three types: SBAS, RTCM (accuracy 40-80 cm), RTK (accuracy below 20 cm).
+C) Working principle: Satellites transmit signals to both Rover and Base receiver. Base receiver modifies position.
+
+06. Question
+A i) Variable rate Technology deals with in field variabilities.
+ii) Components: Sensors, Controllers, Actuators.
+iii) Field variabilities: Soil fertility, Organic matter content, Soil texture, Soil Moisture Content, Soil color.
+iv) Sensors: Pressure Sensors, Grain flow, Grain moisture, Speed Sensors, Grain loss sensors.
+
+B i) Loss in water: 1.8%
+ii) Price to pay: 9,333,333.33 Tsh.</textarea>
         </div>
     </div>
 
-    <!-- Sehemu ya Matokeo -->
-    <div class="result-card" id="resultPanel" style="display: none;">
-        <div style="display: flex; align-items: baseline; justify-content: space-between;">
-            <h3 style="font-weight: 600;">Kiwango cha Kufanana kimaana</h3>
-            <span class="similarity-score" id="similarityValue">0%</span>
+    <div class="btn-group">
+        <button class="btn" id="gradeBtn"><i class="fas fa-check-double"></i> Sahihisha Mtihani Mzima</button>
+        <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-trash-alt"></i> Futa Matokeo</button>
+    </div>
+
+    <div id="statusArea" class="status-bar" style="display: none;">
+        <i class="fas fa-spinner fa-spin"></i> <span id="statusText">Inapakua modeli...</span>
+    </div>
+
+    <div id="resultsArea" style="display: none;">
+        <div class="summary-card">
+            <span style="font-weight: 600;">Jumla ya Alama Zilizopatikana:</span>
+            <span class="total-score" id="grandTotal">0.0<span style="font-size:1.2rem;">/120</span></span>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width:0%;"></div>
-        </div>
-        <div class="status-text" id="statusMessage">
-            <i class="fas fa-spinner fa-spin"></i> Inapima...
-        </div>
-        <div style="margin-top: 20px; background: #e6f7ec; padding: 16px; border-radius: 16px;">
-            <i class="fas fa-microchip"></i> <strong>Alama Iliyokadiriwa (Kutoka 100%):</strong> 
-            <span id="estimatedMarks" style="font-size:1.5rem; font-weight:700;">-</span>
-            <p style="font-size:0.9rem; margin-top:8px;">Hii inatokana na Asilimia ya Kufanana × Alama Kamili za Swali (mfano 0.5).</p>
+        <div class="results-table">
+            <table>
+                <thead>
+                    <tr><th>Swali</th><th>Alama Kamili</th><th>Alama ya Mwanafunzi</th><th>Asilimia ya Kufanana</th><th>Hali</th></tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- rows dynamically -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <div class="footnote">
-        ⚡ <strong>Jinsi Inavyofanya Kazi:</strong> Modeli ndogo ya AI (MiniLM) inaishi kwenye kivinjari chako. Inabadilisha sentensi kuwa vekta na kupima umbali wa Cosine. Hakuna data inayotoka nje.
+        ⚡ <strong>Jinsi Inavyofanya Kazi:</strong> Modeli ndogo ya AI inalinganisha maana ya kila jibu la mwanafunzi na scheme. Maswali ya michoro yanapewa alama ya wastani. Mahesabu yanapimwa kwa ukaribu wa maelezo.
     </div>
 </div>
 
 <script>
     (function(){
-        const referenceTextarea = document.getElementById('referenceAnswer');
-        const studentTextarea = document.getElementById('studentAnswer');
-        const analyzeBtn = document.getElementById('analyzeBtn');
+        // ---------- CONFIGURATION: SWALI NA ALAMA ZAKE (KUTOKA SCHEME) ----------
+        const QUESTION_SCHEMA = [
+            { id: "1Ai", max: 0.5, schemeText: "Field invariabilities: Is the theoretical term connotated to absence of heterogeneity in the physical and chemical properties of the soil within a specified unit of the field. Example, soil fertility and moisture heterogeneity." },
+            { id: "1Aii", max: 0.5, schemeText: "Beneficial nutrients: These are elements that do not meet the criteria of essentiality but play some beneficial roles in plant nutrition. Examples: Silicon for rice, sodium for sugar beet, vanadium, cobalt." },
+            { id: "1Aiii", max: 0.5, schemeText: "Wicking system: Is the most basic and passive growing technique whereby the nutrients solution is delivered to a tray through the wicks and then to the roots via the capillary action. Example hydroponics with fibres." },
+            { id: "1Aiv", max: 0.5, schemeText: "Aeroponics: Innovative technique of soilless agriculture whereby roots of suspended plants in the air are misted with hydroponic solution. Example growing raw vegetables." },
+            { id: "1Av", max: 0.5, schemeText: "Ebb and flow: Innovative technique involving repeatedly flooding and draining of container filled with media. Example bato buckets." },
+            { id: "1Bi", max: 1.0, schemeText: "Precision agriculture vs precision technologies: PA set of technologies to enhance crop/livestock productivity. PT cutting-edge tools from scientific principles." },
+            { id: "1Bii", max: 1.0, schemeText: "Technology vs Science: Technology application of science to produce goods. Science systematic knowledge finding empirical evidence." },
+            { id: "1Biii", max: 1.0, schemeText: "GPS vs GIS: GPS satellite navigation positioning. GIS hardware/software for capturing storing analyzing spatial data in layers." },
+            { id: "1Biv", max: 1.0, schemeText: "Precision agriculture vs precision farming: PA technologies enhance crop and livestock. PF technologies enhance crop productivity only." },
+            { id: "1Bv", max: 1.0, schemeText: "Wicking vs hydroponic: Wicking passive capillary wicks. Hydroponic soilless system with nutrient solution reservoir." },
+            { id: "1Bvi", max: 1.0, schemeText: "RTK vs DGPS: RTK satellite navigation for centimeter accuracy. DGPS collective addons to improve GPS accuracy." },
+            { id: "1Bvii", max: 1.0, schemeText: "Hydroponics vs aquaponics: Hydroponics soilless without fish. Aquaponics combines fish and plants symbiotic." },
+            { id: "1Bviii", max: 1.0, schemeText: "GPS vs DGPS: GPS one receiver. DGPS two receivers for differential correction." },
+            { id: "1Bix", max: 1.0, schemeText: "Critical value vs luxury consumption: Critical value nutrient level below which deficiency. Luxury consumption excess uptake." },
+            { id: "1Bx", max: 1.0, schemeText: "Hidden hunger vs below optimal: Hidden hunger deficiency without symptoms. Below optimal insufficient nutrient level." },
+            { id: "1C", max: 7.5, schemeText: "Precision agriculture areas: Tillage depth, fertilizer application VRA, spraying drones, sowing seeds, harvesting yield maps." },
+            { id: "2Ai", max: 1.0, schemeText: "Remote sensing: Group of techniques for collecting information without physical contact. Example satellites." },
+            { id: "2Aii", max: 2.5, schemeText: "Five sensors: soil moisture, pH, nutrient, temperature, humidity, motion." },
+            { id: "2Aiii", max: 3.5, schemeText: "Seven steps: collection, pre-processing, image analysis, ground validation, incorporation, identification, treatment." },
+            { id: "2Bi", max: 5.5, schemeText: "Passive vs active remote sensing: Passive natural reflected signals. Active own energy e.g., radar." },
+            { id: "2Bii", max: 7.5, schemeText: "[DIAGRAM] Electro-optical sensors: frame, whiskbroom, array." },
+            { id: "3Ai", max: 0.5, schemeText: "Precision agriculture definition: Technologies to enhance agricultural productivity efficiently reducing cost." },
+            { id: "3Aii", max: 4.0, schemeText: "Eight challenges: high initial cost, limited expertise, fragmentation, machinery availability, heterogeneity, market imperfections, unavailability inputs, running cost, spare parts, small farm, network failure, calibration, topography." },
+            { id: "3Aiii", max: 5.5, schemeText: "Building blocks: Information (soil/crop/climate), Technology (GPS/DGPS/VRA), Management (decision support)." },
+            { id: "3B", max: 10.0, schemeText: "Reasons for adoption: Increase land productivity, efficiency, profitability, environmental protection, avoid drudgery, traceability, increase yield, reduce cost." },
+            { id: "4Ai", max: 0.5, schemeText: "GIS definition: System with hardware, software, data, users for capturing storing analyzing geographic information in layers." },
+            { id: "4Aii", max: 4.0, schemeText: "Four applications: mapping location, quantities, changes, densities, finding distance." },
+            { id: "4Aiii", max: 6.0, schemeText: "Six limitations: ephemeris, clock drift, atmospheric delay, multipath, jamming, signal arrival, numerical." },
+            { id: "4B", max: 9.5, schemeText: "[DIAGRAM] GIS flowchart: data collection, digitizing, storage, analysis, visualization." },
+            { id: "5Ai", max: 0.5, schemeText: "GPS definition: Satellite-based navigation and positioning system." },
+            { id: "5Aii", max: 0.5, schemeText: "Most applicable: GPS." },
+            { id: "5B", max: 9.0, schemeText: "Types of DGPS: SBAS corrections from geostationary satellite. RTCM from static base 40-50cm. RTK up to 1-3cm." },
+            { id: "5C", max: 10.0, schemeText: "[DIAGRAM] DGPS working: rover and base station, differential correction." },
+            { id: "6Ai", max: 0.5, schemeText: "Variable rate technology: Management approach addressing within-field spatial variability." },
+            { id: "6Aii", max: 1.5, schemeText: "Components: sensors, controllers, actuators." },
+            { id: "6Aiii", max: 2.0, schemeText: "Field variabilities: soil nutrients, organic matter, texture, structure, moisture, pH, topography, colour, slope." },
+            { id: "6Aiv", max: 2.5, schemeText: "More sensors: rainfall, soil moisture, temperature, humidity, wind, water level, solarimeter, sunshine, pH, EC, compaction, nutrients, reflectance, pressure, flow, speed." },
+            { id: "6Bi", max: 5.5, schemeText: "Calculation: Loss 1.8%." },
+            { id: "6Bii", max: 8.0, schemeText: "Calculation: Price 9,333,310 Tsh." }
+        ];
+
+        const totalPossible = QUESTION_SCHEMA.reduce((sum, q) => sum + q.max, 0);
+
+        // DOM elements
+        const schemeInput = document.getElementById('schemeInput');
+        const studentInput = document.getElementById('studentInput');
+        const gradeBtn = document.getElementById('gradeBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const resultPanel = document.getElementById('resultPanel');
-        const similarityValue = document.getElementById('similarityValue');
-        const progressFill = document.getElementById('progressFill');
-        const statusMessage = document.getElementById('statusMessage');
-        const estimatedMarks = document.getElementById('estimatedMarks');
+        const statusArea = document.getElementById('statusArea');
+        const statusText = document.getElementById('statusText');
+        const resultsArea = document.getElementById('resultsArea');
+        const grandTotal = document.getElementById('grandTotal');
+        const resultsBody = document.getElementById('resultsBody');
 
         let pipelinePromise = null;
-        let isLoading = false;
 
-        // Pakua modeli mara moja tu
         async function getPipeline() {
             if (!pipelinePromise) {
-                statusMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inapakua modeli ya lugha (MB ~25)... Tafadhali subiri mara moja tu.';
-                // Tunatumia Xenova/transformers
                 const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0/dist/transformers.min.js');
                 pipelinePromise = pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
             }
             return pipelinePromise;
         }
 
-        // Kazi ya kuhesabu cosine similarity
         function cosineSimilarity(vecA, vecB) {
-            let dot = 0.0;
-            let normA = 0.0;
-            let normB = 0.0;
+            let dot = 0, normA = 0, normB = 0;
             for (let i = 0; i < vecA.length; i++) {
                 dot += vecA[i] * vecB[i];
                 normA += vecA[i] * vecA[i];
                 normB += vecB[i] * vecB[i];
             }
-            if (normA === 0 || normB === 0) return 0;
             return dot / (Math.sqrt(normA) * Math.sqrt(normB));
         }
 
-        async function analyzeSemantic() {
-            const refText = referenceTextarea.value.trim();
-            const stuText = studentTextarea.value.trim();
+        // Segmentation function (inatumia "Question" na subparts)
+        function extractStudentAnswers(fullText) {
+            const answers = {};
+            const questionBlocks = fullText.split(/^(\s*\d+\.\s*Question|\bQuestion\s*\d+)/gim);
+            let currentQNum = null;
+            
+            for (let i = 1; i < questionBlocks.length; i+=2) {
+                const header = questionBlocks[i];
+                const content = questionBlocks[i+1] || '';
+                const qMatch = header.match(/(\d+)/);
+                if (qMatch) currentQNum = qMatch[1];
+                else continue;
+                
+                const subPattern = /(?:^|\n)\s*([A-Z])\s*([ivx]+|[a-z])\s*\)/gi;
+                const parts = content.split(subPattern);
+                let lastLetter = null, lastSub = null, buffer = '';
+                
+                for (let j = 0; j < parts.length; j++) {
+                    const part = parts[j];
+                    if (j % 3 === 0) buffer += part;
+                    else if (j % 3 === 1) lastLetter = part;
+                    else if (j % 3 === 2) {
+                        lastSub = part.toLowerCase();
+                        const subId = `${currentQNum}${lastLetter}${lastSub}`;
+                        const nextText = parts[j+1] || '';
+                        answers[subId] = (buffer + nextText).trim();
+                        buffer = '';
+                    }
+                }
+                if (buffer.trim() && lastLetter) {
+                    const subId = `${currentQNum}${lastLetter}`;
+                    answers[subId] = (answers[subId] || '') + ' ' + buffer.trim();
+                }
+            }
+            return answers;
+        }
 
-            if (!refText || !stuText) {
-                alert('Tafadhali jaza Marking Scheme na Jibu la Mwanafunzi.');
+        async function gradeFullExam() {
+            const studentText = studentInput.value.trim();
+            if (!studentText) {
+                alert('Tafadhali bandika majibu ya mwanafunzi.');
                 return;
             }
 
-            isLoading = true;
-            analyzeBtn.disabled = true;
-            analyzeBtn.innerHTML = '<span class="loader"></span> Inachakata...';
-            resultPanel.style.display = 'block';
-            statusMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inabadilisha sentensi kuwa vekta...';
+            statusArea.style.display = 'flex';
+            resultsArea.style.display = 'none';
+            gradeBtn.disabled = true;
+            statusText.textContent = 'Inapakua modeli ya lugha (MB ~25)...';
 
             try {
                 const extractor = await getPipeline();
+                const studentAnswers = extractStudentAnswers(studentText);
                 
-                // Toa vekta
-                const refEmbedding = await extractor(refText, { pooling: 'mean', normalize: true });
-                const stuEmbedding = await extractor(stuText, { pooling: 'mean', normalize: true });
-                
-                const similarity = cosineSimilarity(Array.from(refEmbedding.data), Array.from(stuEmbedding.data));
-                const percent = (similarity * 100).toFixed(1);
-                
-                similarityValue.textContent = `${percent}%`;
-                progressFill.style.width = `${percent}%`;
-                
-                let feedback = '';
-                let icon = '';
-                if (similarity > 0.75) {
-                    icon = '<i class="fas fa-check-circle" style="color:#0f9d58;"></i>';
-                    feedback = 'Uelewa wa juu sana. Jibu linakaribia kufanana kimaana na Scheme.';
-                } else if (similarity > 0.55) {
-                    icon = '<i class="fas fa-exclamation-triangle" style="color:#eab308;"></i>';
-                    feedback = 'Uelewa wa wastani. Kuna baadhi ya dhana sahihi, lakini si kamili.';
-                } else {
-                    icon = '<i class="fas fa-times-circle" style="color:#b91c1c;"></i>';
-                    feedback = 'Uelewa mdogo. Jibu linaonekana kuwa mbali na dhana inayotakiwa.';
+                // Pata embeddings za scheme mara moja ili kuokoa muda (optional)
+                statusText.textContent = 'Inachakata embeddings za scheme...';
+                const schemeEmbeddings = {};
+                for (let q of QUESTION_SCHEMA) {
+                    if (q.schemeText.includes('[DIAGRAM]')) continue;
+                    const emb = await extractor(q.schemeText, { pooling: 'mean', normalize: true });
+                    schemeEmbeddings[q.id] = Array.from(emb.data);
                 }
-                statusMessage.innerHTML = `${icon} ${feedback}`;
+
+                statusText.textContent = 'Inalinganisha majibu ya mwanafunzi...';
                 
-                // Kadiria alama (kwa mfano swali la 0.5 Marks)
-                const maxMarks = 0.5; // Unaweza kubadilisha
-                const earned = (similarity * maxMarks).toFixed(2);
-                estimatedMarks.textContent = `${earned} / ${maxMarks}`;
+                let totalEarned = 0;
+                const results = [];
+                
+                for (let q of QUESTION_SCHEMA) {
+                    const studentAns = studentAnswers[q.id] || '';
+                    let similarity = 0;
+                    let earned = 0;
+                    
+                    if (q.schemeText.includes('[DIAGRAM]')) {
+                        // Michoro: toa 50% kama kuna jibu lolote, vinginevyo 0
+                        if (studentAns.length > 10) {
+                            similarity = 0.5;
+                            earned = q.max * 0.5;
+                        } else {
+                            similarity = 0;
+                            earned = 0;
+                        }
+                    } else {
+                        if (studentAns.length > 5) {
+                            const studentEmb = await extractor(studentAns, { pooling: 'mean', normalize: true });
+                            const studentVec = Array.from(studentEmb.data);
+                            const schemeVec = schemeEmbeddings[q.id];
+                            similarity = cosineSimilarity(schemeVec, studentVec);
+                            earned = similarity * q.max;
+                        } else {
+                            similarity = 0;
+                            earned = 0;
+                        }
+                    }
+                    
+                    totalEarned += earned;
+                    results.push({
+                        id: q.id,
+                        max: q.max,
+                        earned: earned,
+                        similarity: similarity,
+                        studentAnsPreview: studentAns.substring(0, 40) + (studentAns.length>40?'...':'')
+                    });
+                }
+                
+                // Display results
+                grandTotal.textContent = `${totalEarned.toFixed(1)} / ${totalPossible.toFixed(0)}`;
+                let html = '';
+                results.forEach(r => {
+                    const percent = (r.similarity * 100).toFixed(0);
+                    let badgeClass = 'low';
+                    if (r.similarity > 0.7) badgeClass = 'high';
+                    else if (r.similarity > 0.4) badgeClass = 'medium';
+                    
+                    html += `<tr>
+                        <td><strong>${r.id}</strong><br><span style="font-size:0.8rem; color:#64748b;">${r.studentAnsPreview}</span></td>
+                        <td>${r.max}</td>
+                        <td>${r.earned.toFixed(2)}</td>
+                        <td>${percent}%</td>
+                        <td><span class="score-badge ${badgeClass}">${r.similarity > 0.7 ? 'Nzuri' : (r.similarity > 0.4 ? 'Wastani' : 'Dhaifu')}</span></td>
+                    </tr>`;
+                });
+                resultsBody.innerHTML = html;
+                resultsArea.style.display = 'block';
+                statusArea.style.display = 'none';
                 
             } catch (error) {
+                statusText.innerHTML = `<i class="fas fa-exclamation-circle"></i> Hitilafu: ${error.message}`;
                 console.error(error);
-                statusMessage.innerHTML = '<i class="fas fa-exclamation-circle" style="color:#b91c1c;"></i> Hitilafu: ' + error.message;
             } finally {
-                isLoading = false;
-                analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = '<i class="fas fa-balance-scale"></i> Pima Uelewa (Semantic)';
+                gradeBtn.disabled = false;
             }
         }
 
-        analyzeBtn.addEventListener('click', analyzeSemantic);
+        gradeBtn.addEventListener('click', gradeFullExam);
         clearBtn.addEventListener('click', ()=>{
-            referenceTextarea.value = '';
-            studentTextarea.value = '';
-            resultPanel.style.display = 'none';
+            resultsArea.style.display = 'none';
+            statusArea.style.display = 'none';
         });
 
-        // Weka mfano mzuri wa kuanzia
+        // Pre-fill with sample if empty (optional)
         window.addEventListener('DOMContentLoaded', ()=>{
-            // Tayari zipo kwenye textarea
+            // already filled
         });
     })();
 </script>
