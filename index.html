@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BLIP Grading OS | Precision Agriculture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================================
+           BLIP OS PREMIUM STYLESHEET (Bento-Grid & Mobile-First)
+           ======================================================== */
+        :root {
+            --bg-color: #0f1115;
+            --surface-color: #1a1d24;
+            --surface-hover: #232730;
+            --border-color: #2e3340;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg-color); color: var(--text-primary);
+            min-height: 100vh; line-height: 1.6; padding: 2rem 1rem;
+            display: flex; justify-content: center;
+        }
+
+        .container {
+            width: 100%; max-width: 1000px;
+            display: flex; flex-direction: column; gap: 2rem;
+        }
+
+        /* --- Header --- */
+        header { text-align: center; margin-bottom: 1rem; }
+        .badge {
+            display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px;
+            background: rgba(59, 130, 246, 0.1); color: var(--accent-primary);
+            font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem;
+            border: 1px solid rgba(59, 130, 246, 0.2); letter-spacing: 0.5px;
+        }
+        h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 0.5rem; }
+        p.subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+
+        /* --- Workspace / Input Area --- */
+        .workspace {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            font-size: 1rem; font-weight: 600; color: var(--text-secondary);
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%; height: 250px; background: #0f1115;
+            border: 1px solid var(--border-color); border-radius: 12px;
+            color: var(--text-primary); padding: 1rem; font-size: 1rem;
+            resize: vertical; transition: var(--transition);
+            line-height: 1.5;
+        }
+        textarea:focus {
+            outline: none; border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-container { display: flex; justify-content: flex-end; margin-top: 1rem; }
+        
+        button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; border: none; padding: 0.875rem 2rem;
+            border-radius: 12px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: var(--transition);
+            box-shadow: 0 4px 15px var(--accent-glow);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+        button:active { transform: translateY(0); }
+
+        /* --- Engine Processing Animation --- */
+        #loader {
+            display: none; text-align: center; padding: 2rem;
+            color: var(--accent-primary); font-weight: 500;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--accent-primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 1rem auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Bento Grid Results Area --- */
+        #results-container { display: none; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem; margin-bottom: 2rem;
+        }
+
+        .bento-box {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); padding: 1.5rem;
+        }
+
+        /* Specific Grid Placements */
+        .score-box { grid-column: span 4; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .feedback-box { grid-column: span 8; display: flex; flex-direction: column; justify-content: center; }
+        .breakdown-box { grid-column: span 12; }
+
+        .big-score { font-size: 4rem; font-weight: 800; line-height: 1; margin: 0.5rem 0; color: var(--success); }
+        .total-marks { color: var(--text-secondary); font-size: 1.1rem; }
+        
+        .human-feedback {
+            font-size: 1.25rem; font-weight: 400; line-height: 1.7;
+            color: #e2e8f0; font-style: italic;
+        }
+
+        /* --- Detailed Breakdown List --- */
+        .item-row {
+            background: #0f1115; border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            transition: var(--transition);
+        }
+        .item-row:hover { border-color: var(--text-secondary); }
+        .item-content h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #f8fafc; }
+        .item-content p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+        .item-status { font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .status-perfect { color: var(--success); }
+        .status-partial { color: var(--warning); }
+        .status-fail { color: var(--danger); }
+
+        .missed-axiom {
+            display: inline-block; background: rgba(239, 68, 68, 0.1);
+            color: var(--danger); padding: 0.2rem 0.5rem; border-radius: 4px;
+            font-size: 0.8rem; margin-right: 0.5rem; margin-top: 0.5rem;
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .score-box { grid-column: span 12; }
+            .feedback-box { grid-column: span 12; }
+            h1 { font-size: 2rem; }
+            .item-row { flex-direction: column; gap: 1rem; }
+            .item-status { align-self: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="badge">Offline Semantic Engine v1.0</span>
+        <h1>BLIP Grading OS</h1>
+        <p class="subtitle">Precision Agriculture Examiner (Deterministic Approach)</p>
+    </header>
+
+    <main class="workspace" id="input-workspace">
+        <div class="section-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Student Submission
+        </div>
+        <textarea id="student-text" placeholder="Paste the student's exam answers here...&#10;&#10;Example format:&#10;Q1 A i) Field invariabilities is when the soil has no heterogeneity in its physical and chemical properties..."></textarea>
+        
+        <div class="btn-container">
+            <button id="run-btn" onclick="runEngine()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Execute Auto-Grade
+            </button>
+        </div>
+    </main>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Compiling Abstract Syntax Trees...<br><small style="color:var(--text-secondary)">Applying Penalty Matrices</small></p>
+    </div>
+
+    <div id="results-container">
+        <div class="bento-grid">
+            
+            <div class="bento-box score-box">
+                <div class="section-title" style="justify-content: center;">Final Verdict</div>
+                <div class="big-score" id="total-score-ui">0%</div>
+                <div class="total-marks" id="marks-ui">0 / 0 Marks</div>
+            </div>
+
+            <div class="bento-box feedback-box">
+                <div class="section-title">Instructor's Note</div>
+                <p class="human-feedback" id="human-feedback-ui"></p>
+            </div>
+
+            <div class="bento-box breakdown-box">
+                <div class="section-title">Axiom Analysis & Rule Matching</div>
+                <div id="breakdown-list">
+                    </div>
+            </div>
+
+        </div>
+        
+        <div class="btn-container">
+            <button onclick="resetEngine()" style="background: var(--surface-hover); box-shadow: none; border: 1px solid var(--border-color);">
+                Grade Another Student
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* =========================================================================
+       BLIP NEURO-SYMBOLIC GRADING ENGINE (Core Logic)
+       ========================================================================= */
+    
+    // 1. THE DICTIONARY (Semantic Equivalents)
+    // Helps the engine understand student synonyms mapping to the Scheme.
+    const dictionary = {
+        "heterogeneity": ["heterogeneity", "differences", "variation", "variability", "changes"],
+        "absence": ["absence", "lack of", "no", "without"],
+        "beneficial": ["beneficial", "helpful", "useful", "advantageous"],
+        "essentiality": ["essentiality", "essential", "crucial", "must-have", "necessary"],
+        "hydroponic": ["hydroponic", "water-based", "soilless water"],
+        "misted": ["misted", "sprayed", "aerosolized"],
+        "submerged": ["submerged", "flooded", "drowned"]
+    };
+
+    // 2. THE MASTER RULEBOOK (JSON Logic translated from your Marking Scheme)
+    // We cover Q1. A (i-v) and Q6. B (Math) to show both text and calculation logic.
+    const rulebook = [
+        {
+            id: "Q1_A_i", title: "Q1. A(i) Field invariabilities",
+            total_marks: 0.5,
+            type: "text",
+            axioms: [
+                { keywords: ["absence", "lack of", "no"], weight: 0.2 },
+                { keywords: ["heterogeneity", "differences", "variation"], weight: 0.4 },
+                { keywords: ["physical", "chemical", "properties"], weight: 0.2 },
+                { keywords: ["soil"], weight: 0.2 }
+            ],
+            regexDetect: /1\s*A\s*i|field invariab/i
+        },
+        {
+            id: "Q1_A_ii", title: "Q1. A(ii) Beneficial nutrients",
+            total_marks: 0.5,
+            type: "text",
+            axioms: [
+                { keywords: ["not", "do not meet", "don't"], weight: 0.2 },
+                { keywords: ["criteria", "essentiality", "essential"], weight: 0.4 },
+                { keywords: ["beneficial", "roles", "useful"], weight: 0.2 },
+                { keywords: ["plant nutrition", "growth"], weight: 0.2 }
+            ],
+            regexDetect: /1\s*A\s*ii|beneficial nut/i
+        },
+        {
+            id: "Q1_A_iii", title: "Q1. A(iii) Wicking system",
+            total_marks: 0.5,
+            type: "text",
+            axioms: [
+                { keywords: ["passive", "basic"], weight: 0.3 },
+                { keywords: ["solution", "delivered", "tray", "roots"], weight: 0.4 },
+                { keywords: ["capillary action", "wick", "fibres"], weight: 0.3 }
+            ],
+            regexDetect: /1\s*A\s*iii|wicking syst/i
+        },
+        {
+            id: "Q1_A_iv", title: "Q1. A(iv) Aeroponics",
+            total_marks: 0.5,
+            type: "text",
+            axioms: [
+                { keywords: ["soilless", "technique"], weight: 0.3 },
+                { keywords: ["suspended", "air"], weight: 0.3 },
+                { keywords: ["misted", "sprayed", "solution"], weight: 0.4 }
+            ],
+            regexDetect: /1\s*A\s*iv|aeroponic/i
+        },
+        {
+            id: "Q1_A_v", title: "Q1. A(v) Ebb and flow",
+            total_marks: 0.5,
+            type: "text",
+            axioms: [
+                { keywords: ["repeatedly", "flooding", "draining"], weight: 0.6 },
+                { keywords: ["media", "gravels", "clay", "pallets", "submerged"], weight: 0.4 }
+            ],
+            regexDetect: /1\s*A\s*v|ebb and flow/i
+        },
+        {
+            id: "Q6_B_i", title: "Q6. B(i) Calculate % loss in water",
+            total_marks: 5.5,
+            type: "math",
+            axioms: [
+                { value: "18", weight: 0.2, desc: "Remaining maize (18 Mg)" },
+                { value: "16.2", weight: 0.4, desc: "Calculated Y (16.2%)" },
+                { value: "1.8", weight: 0.4, desc: "Final Answer (1.8%)" }
+            ],
+            regexDetect: /6\s*B\s*i|percentage loss|20\s*Mg/i
+        },
+        {
+            id: "Q6_B_ii", title: "Q6. B(ii) Calculate total payment",
+            total_marks: 8.0,
+            type: "math",
+            axioms: [
+                { value: "13.3", weight: 0.3, desc: "Actual weight (13.3 Mg)" },
+                { value: "133.333", weight: 0.3, desc: "Total bags (133.333 bags)" },
+                { value: "9333310", weight: 0.4, desc: "Final Payment (9,333,310/=)" }
+            ],
+            regexDetect: /6\s*B\s*ii|how much will the buyer pay/i
+        }
+    ];
+
+    // 3. THE TEXT NORMALIZER (Preprocessing Pipeline)
+    function normalizeText(text) {
+        let clean = text.toLowerCase().replace(/[.,()]/g, " ");
+        // Apply synonyms dictionary to normalize tokens
+        for (const [standard, synonyms] of Object.entries(dictionary)) {
+            synonyms.forEach(syn => {
+                const regex = new RegExp(`\\b${syn}\\b`, 'g');
+                clean = clean.replace(regex, standard);
+            });
+        }
+        return clean;
+    }
+
+    function extractNumbers(text) {
+        // Removes commas from large numbers (e.g., 9,333,310 -> 9333310) and extracts floats
+        let clean = text.replace(/,/g, "");
+        let matches = clean.match(/\d+(\.\d+)?/g);
+        return matches ? matches : [];
+    }
+
+    // 4. THE GRADING ENGINE
+    function evaluateStudent(studentText) {
+        let results = [];
+        let totalPossible = 0;
+        let totalEarned = 0;
+        let blocks = studentText.split('\n\n'); // Simple heuristic to split answers by paragraphs
+
+        rulebook.forEach(rule => {
+            totalPossible += rule.total_marks;
+            let earned = 0;
+            let missedAxioms = [];
+            
+            // Find the relevant block of text for this rule
+            let targetText = studentText; // Fallback to whole text
+            for(let block of blocks) {
+                if(rule.regexDetect.test(block)) {
+                    targetText = block;
+                    break;
+                }
+            }
+
+            if(rule.type === "text") {
+                let normText = normalizeText(targetText);
+                rule.axioms.forEach(axiom => {
+                    let axiomFound = false;
+                    for(let kw of axiom.keywords) {
+                        if(normText.includes(kw)) {
+                            axiomFound = true;
+                            break;
+                        }
+                    }
+                    if(axiomFound) {
+                        earned += rule.total_marks * axiom.weight;
+                    } else {
+                        missedAxioms.push(axiom.keywords[0]);
+                    }
+                });
+            } 
+            else if (rule.type === "math") {
+                let numbers = extractNumbers(targetText);
+                rule.axioms.forEach(axiom => {
+                    if(numbers.includes(axiom.value)) {
+                        earned += rule.total_marks * axiom.weight;
+                    } else {
+                        missedAxioms.push(axiom.desc);
+                    }
+                });
+            }
+
+            // Clean up floating point math (e.g., 0.499999 -> 0.5)
+            earned = Math.round(earned * 100) / 100;
+            totalEarned += earned;
+
+            results.push({
+                title: rule.title,
+                max: rule.total_marks,
+                earned: earned,
+                missed: missedAxioms
+            });
+        });
+
+        return {
+            totalEarned: totalEarned,
+            totalPossible: totalPossible,
+            percentage: (totalEarned / totalPossible) * 100,
+            breakdown: results
+        };
+    }
+
+    // 5. HUMAN-LIKE FEEDBACK GENERATOR
+    function getHumanFeedback(percentage) {
+        if(percentage >= 90) return "Excellent work! The student demonstrates a profound understanding of precision agriculture, matching both technical definitions and complex mathematical calculations flawlessly.";
+        if(percentage >= 70) return "Solid performance. They have a strong grasp of the core concepts, though they missed a few specific technical terms or steps in the mathematical reasoning. A minor review of terminology will push them to perfection.";
+        if(percentage >= 50) return "Average effort. The student understands the general idea but struggles with scientific precision. They are relying too much on layman terms rather than the formal definitions required by the marking scheme.";
+        if(percentage > 0) return "Poor performance. The student is missing critical axioms in their definitions and likely failed the calculation logic completely. Extensive review of the syllabus is highly recommended.";
+        return "No scorable material detected. The submission completely missed the core tenets of the provided marking scheme or was left blank.";
+    }
+
+    // 6. UI/DOM MANIPULATION (Tying it all together)
+    function runEngine() {
+        const text = document.getElementById('student-text').value;
+        if(!text.trim()) { alert("Bosi, please paste some student text first!"); return; }
+
+        // UI State Transitions
+        document.getElementById('input-workspace').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+
+        // Simulate processing time (2 seconds to feel the 'weight' of the computation)
+        setTimeout(() => {
+            const report = evaluateStudent(text);
+            renderResults(report);
+        }, 1500);
+    }
+
+    function renderResults(report) {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('results-container').style.display = 'block';
+
+        // Update Scores
+        let perc = report.percentage.toFixed(1);
+        let scoreEl = document.getElementById('total-score-ui');
+        scoreEl.innerText = `${perc}%`;
+        
+        // Color coding score
+        if(perc >= 75) scoreEl.style.color = 'var(--success)';
+        else if(perc >= 40) scoreEl.style.color = 'var(--warning)';
+        else scoreEl.style.color = 'var(--danger)';
+
+        document.getElementById('marks-ui').innerText = `${report.totalEarned.toFixed(2)} / ${report.totalPossible} Total Marks`;
+        document.getElementById('human-feedback-ui').innerText = `"${getHumanFeedback(perc)}"`;
+
+        // Render Breakdown
+        const listEl = document.getElementById('breakdown-list');
+        listEl.innerHTML = ''; // clear old
+
+        report.breakdown.forEach(item => {
+            let statusClass = "status-perfect";
+            let statusIcon = "✅";
+            if(item.earned === 0) { statusClass = "status-fail"; statusIcon = "❌"; }
+            else if(item.earned < item.max) { statusClass = "status-partial"; statusIcon = "⚠️"; }
+
+            let missedTags = item.missed.map(m => `<span class="missed-axiom">Missing logic: '${m}'</span>`).join('');
+            if(item.missed.length === 0) missedTags = `<span style="color:var(--text-secondary); font-size:0.85rem;">All axioms satisfied.</span>`;
+
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="item-content">
+                    <h3>${item.title}</h3>
+                    <p>Scored: <strong>${item.earned} / ${item.max}</strong> marks</p>
+                    <div style="margin-top: 8px;">${missedTags}</div>
+                </div>
+                <div class="item-status ${statusClass}">${statusIcon}</div>
+            `;
+            listEl.appendChild(row);
+        });
+    }
+
+    function resetEngine() {
+        document.getElementById('student-text').value = '';
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('input-workspace').style.display = 'block';
+    }
+
+</script>
+</body>
+</html>
