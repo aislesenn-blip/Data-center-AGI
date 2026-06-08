@@ -1,139 +1,128 @@
-# Upembuzi Yakinifu wa Kina: Mfumo Kamili wa Kifedha wa Kizazi Kipya (Tanzania Super-App)
+# Upembuzi Yakinifu wa Kina: OpenTransfer - Mfumo wa Kifedha wa Kizazi Kipya (Tanzania Super-App)
 
-**Tahadhari ya Kisheria na Kiufundi:** Hati hii inategemea uchambuzi wa kina wa API zilizopo (Selcom, AzamPay), mifumo ya kiserikali (TIPS, BoT), na sheria za mamlaka za kifedha Tanzania (CMSA, BoT). Kila madai yanaambatana na ushahidi au makadirio ya kiwango cha uhakika (confidence level).
+**Tahadhari ya Kisheria na Kiufundi:** Hati hii inategemea uchambuzi wa kina wa API zilizopo (Selcom, AzamPay), mifumo ya kiserikali (TIPS, BoT), na sheria za mamlaka za kifedha Tanzania (CMSA, BoT). Kila madai yanaambatana na ushahidi, nukuu halisi (quotes), au makadirio ya kiwango cha uhakika (confidence level). Pale ambapo data haipo wazi public, imeelezwa wazi kuwa itahitaji Makubaliano Rasmi (SLA).
 
 ---
 
 ## 1. Muhtasari wa Kiutendaji (Executive Summary)
-Mradi huu unalenga kutengeneza jukwaa/app inayoleta pamoja huduma zote za kifedha (M-Pesa, Tigo Pesa, Airtel Money, Halopesa, CRDB, NMB) katika sehemu moja, ikiwa na muonekano (UX) rahisi zaidi unaofanana na "M-Pesa App" lakini inajumuisha mitandao yote.
-**Muhimu Kibiashara:** Mfumo **HAUSHIKILII** pesa za wateja (Zero Float), na makato kwa mteja yanakuwa **sawa kabisa (Makato yale yale)** kama akitumia mtandao wake wa asili. Sisi tunapata mapato yetu kupitia kamisheni (commissions) kutoka kwa watoa huduma kama Selcom/Tanesco.
-**Ubunifu wa Kisheria (CMSA Workaround):** Ili kuepuka kuvunja sheria za CMSA zinazokataza kuuza hisa au 'fractional shares' bila leseni, mteja wetu hatanunua hisa. Badala yake, kampuni yetu itawekeza kamisheni tunazopata kwenye masoko ya hisa. Faida ikipatikana, inarudishwa kwa mteja kama "Gawio la Faida" (Cashback rewards) ambalo linaonekana kukua kwa asilimia kulingana na soko, na mteja atalipwa kama Pesa Taslimu.
-*Kiwango cha Uhakika:* 95%.
+**OpenTransfer** ni mradi unaolenga kutengeneza jukwaa inayoleta pamoja huduma zote za kifedha (M-Pesa, Tigo Pesa, Airtel Money, Halopesa, CRDB, NMB) katika sehemu moja. Ni *M-Pesa clone* inayofanya kila kitu (kasoro kutoa pesa kwa wakala) kupitia injini ya **Selcom**. Mfumo **HAUSHIKILII** pesa za wateja (Zero Float), na makato yanakuwa **sawa kabisa (Makato yale yale)** kama akitumia mtandao wake wa asili. Ubunifu mkubwa ni CMSA Workaround ambapo mteja anapata "Cashback/Gawio" linaloakisi soko la hisa. UX itajengwa kwa kutumia **WhatsApp Flows** kwa kiwango cha exclusivity (Kiingereza pekee) kutoa hadhi ya "Billion-dollar App".
 
-## 2. Usanifu wa Bidhaa (Product Architecture)
+## 2. Mkakati wa Uwekezaji na Masoko (VC Pitch & Marketing Hook)
+Ili kuvutia wawekezaji wa Ulaya (European VCs) na wateja wa ndani, OpenTransfer inatumia saikolojia ya **Wealth Creation bila Tozo Mpya**.
+- *Ujumbe kwa Mteja:* "Ukifanya muamala, kamisheni ambazo Vodacom au Tanesco wangezipata, sisi OpenTransfer tunazirudisha kwako na kukuwekezea kwenye Hisa, kama NSSF yako binafsi."
+- *Nguvu yake:* Inaficha asilimia halisi za faida (Trade Secret), na badala yake inajenga uaminifu mkubwa kwa mtumiaji.
+
+## 3. Usanifu wa Bidhaa (Product Architecture)
 Bidhaa inafanya kazi kama Daraja (Orchestration Layer).
-- **Mteja (User Layer):** App ya simu au WhatsApp Mini App inayomruhusu mteja kutuma pesa, kulipia bili, au kulipa wafanyabiashara kwa urahisi sana.
-- **Utambulisho (Identity):** Mteja anaunganisha namba zake za simu au akaunti za benki kwenye App yetu.
-- **Muamala:** Mteja anachagua "Tuma 10,000/= kwa Juma". App inamuuliza "Utoe wapi?". Mteja akichagua "M-Pesa", tunatuma maombi Selcom API. Selcom inatuma ujumbe kwenye simu ya mteja (STK Push) kumtaka aweke PIN yake ya M-Pesa. Baada ya hapo, muamala unakamilika. Makato ni yale yale ya M-Pesa.
-*Ushahidi:* Mtindo huu wa STK Push ndio unaotumika na Apps nyingi za malipo Tanzania (km. Nala, au malipo ya mtandaoni kwa Vodacom).
+- **Mteja (User Layer - WhatsApp Flows):** Hatutumii App ya kudownload. Tunatumia UI components za ndani ya WhatsApp.
+- **Utambulisho na "Invisible Onboarding":** Hakuna fomu za kusajili (No Sign-ups). Akifanya muamala wa kwanza, mfumo unatambua mtandao wake na kuhifadhi namba. Siku nyingine akirudi, anakutana na UI iliyohifadhi mtandao na kadi zake (Machine-learning UX approach).
+- **Muamala M-Pesa:** Mteja akichagua "M-Pesa", tunatuma maombi Selcom API. Selcom inatuma ujumbe kwenye simu ya mteja (STK Push) kumtaka aweke PIN.
+- **Muamala Benki (CRDB/NMB):** Inatumia Card Tokenization ambapo UI (Flows) itapaswa kuwa na uwezo wa kudhibiti OTP au Direct Debit kulingana na API.
 
-## 3. Usanifu wa Kiufundi (Technical Architecture)
-- **Front-end:** React Native (iOS/Android) & WhatsApp Business API (kwa Mini App). Lengo ni kuiga urahisi wa "WhatsApp M-Pesa Bot".
-- **Back-end:** Microservices zilizoandikwa kwa Node.js/Go, zikisimamiwa kwenye AWS.
-- **API Gateways:** Miunganisho ya moja kwa moja na Selcom na AzamPay Webhooks.
-- **Hifadhidata (State Management):** Hatuhifadhi "Wallet Balance" ya mteja. Tunahifadhi "Transaction Status" tu kupitia Kafka au RabbitMQ.
+## 4. Usanifu wa Kiufundi (Technical Architecture)
+- **Front-end:** WhatsApp Business API kupitia huduma ya *WhatsApp Flows* ili kutengeneza interactive UIs (Dropdowns, Radios, Bundles Categorization).
+- **Back-end:** Microservices (Node.js/Go) zinazosimamiwa kwenye AWS.
+- **API Gateways:** Miunganisho ya moja kwa moja na Selcom. Hatuhifadhi "Wallet Balance". Tunahifadhi "Transaction Status" na "User Preferences" pekee.
 
-## 4. Jedwali la Uwezo wa APIs (API Capability Matrix)
-| Kipengele (Feature) | Selcom API | AzamPay API | TIPS (BoT) | Benki (CRDB/NMB) |
+## 5. Jedwali la Uwezo wa APIs (API Capability Matrix)
+| Kipengele | Selcom API | AzamPay API | TIPS (BoT) | Benki |
 | :--- | :--- | :--- | :--- | :--- |
-| **Kutuma Pesa (P2P)** | Ndiyo (Qwiksend) | Kiasi (Disbursements) | Ndiyo (Interoperability) | Ndiyo (A2A) |
-| **Kulipia Bili (Utility)**| Zote (Luku, Maji n.k) | Baadhi | Hapana | Zote |
-| **Lipa Namba (Merchant)** | Ndiyo (Masterpass/QR) | Ndiyo | Ndiyo | Ndiyo |
-| **Makato / Float** | Zero-float (STK Push) | Zero-float (STK Push)| Escrow / Settle | Float inahitajika |
-| **Kamisheni kwa App** | Ndiyo (Revenue Share) | Ndiyo | Hapana | Inatofautiana |
+| **Kutuma Pesa (P2P)** | Ndiyo (Qwiksend) | Kiasi | Ndiyo | Ndiyo |
+| **Lipa Namba Cross-Network** | Ndiyo (Selcom Lipa/TanQR) | Ndiyo | Ndiyo | Ndiyo |
+| **Kutoa Pesa (Cash-out)**| **HAPANA** | Hapana | Hapana | Hapana |
+| **Malipo ya Bili Zote** | Ndiyo (LUKU, DAWASA, Faini, QR) | Ndiyo | Hapana | Ndiyo |
+| **Makato / Float** | Zero-float (STK Push/OTP) | Zero-float (STK Push)| Escrow / Settle | Float inahitajika |
 
-## 5. Uchambuzi wa Kina wa Selcom (Selcom Deep Analysis)
-**Uwezo:** Selcom ndio injini yetu kuu. Ina API za Utility Payments, Merchant Payments, na Qwiksend.
-**Makato (Fees):** Tukiitumia Selcom, tunaweza kuwa "Aggregator/Sub-merchant". Hii inaruhusu mteja alipe kiasi kile kile bila Tozo ya ziada, huku sisi tukigawana faida/kamisheni na Selcom kutoka kwa asilimia wanayolipwa na Tanesco au M-Pesa.
-**Utendaji:** Selcom inaunga mkono STK Push au USSD kwa mteja kuidhinisha.
-*Kiwango cha Uhakika:* 95%. Selcom Developer portal inaonyesha wazi endpoint za Qwiksend na Checkout.
+## 6. Uchambuzi wa Kina wa Selcom (Selcom Deep Analysis)
+**Uwezo na Uhakika wa Selcom Kutukubali:** Selcom wamejenga mfumo wao mahususi kwa ajili ya kutumiwa na watu wa kati.
+*Msaada kwa Developers:* Selcom hupendwa zaidi (37.5%) na startups nchini (iPF Survey) kwa sababu ya API zao rahisi na kutohitaji viwango vikubwa sana vya upfront fees.
+*Ushahidi wa White-labelling:* Kwenye tovuti rasmi ya 'Selcom Pay' wanasema wazi: *"The solution is white-labelled and caters for all mobile networks."*
+*Ushahidi wa SDK Github:* Selcom wana developer repo rasmi GitHub inatoa zana (`node-selcom`).
 
-## 6. Uchambuzi wa Kina wa AzamPay (AzamPay Deep Analysis)
-**Uwezo:** AzamPay ni nzuri kwa "Payment Gateway" hasa kwenye mtandao (Online Checkout) na ina miunganisho imara kwa kadi (Mastercard/Visa) na mitandao ya simu (M-Pesa, Tigo Pesa, Halopesa).
-**Matumizi Yake Kwetu:** Itatumika kama "Backup Gateway" endapo Selcom API ipo chini (Downtime), au mteja anapotaka kulipa kwa njia ya Kadi za benki.
-*Hatari:* AzamPay inajikita zaidi katika C2B (Customer to Business), ikifanya P2P (Customer to Customer) kuwa ngumu kidogo bila kupitia akaunti yetu ya Escrow.
+**Kuunganisha Mabenki (CRDB, NMB) vs M-Pesa:**
+Selcom inaruhusu kuunganisha mabenki. Kwa M-Pesa/Tigo Pesa, inatumia **STK Push**. Kwa Benki (CRDB/NMB), inatumia Card Verification ambapo SLA itatoa mwongozo kama itahitaji OTP.
 
-## 7. Upembuzi wa Miamala ya P2P (P2P Feasibility Analysis)
-**Dhana:** Je, mteja anaweza kutuma P2P (mfano M-Pesa kwenda Tigo Pesa) ndani ya App yetu na pesa isipite kwenye akaunti zetu?
-**Ukweli (Findings):** Kwa kutumia Selcom Qwiksend API au kupitia ujumuishwaji wao na TIPS (Tanzania Instant Payment System), muamala huu unaweza kufanyika moja kwa moja kwa mteja kutumia STK Push. Hata hivyo, mara nyingi kisheria mtoa huduma (Selcom) anapitisha hizi pesa sekunde chache kwenye mfumo wao mkuu kisha kuzi-disburse. Kwa sisi kama "Super-App Orchestrator", hatutagusa pesa, mteja anakuwa "Initiator" tu. Makato yatakuwa yale yale anayokatwa kwenye mitandao husika.
+**Malipo ya Kina (Utilities, Faini, DAWASA, na QR):** Selcom inatoa muunganiko kamili na GePG kuruhusu malipo yote ya kiserikali kama *Traffic Fines (Faini za Polisi)*, DAWASA (Maji), na LUKU. Kuhusu *QR Codes*, Selcom inaunga mkono Scan-to-Pay (Masterpass QR).
 
-## 8. Uchambuzi wa Mwingiliano (Interoperability Analysis)
-Mfumo wa TIPS umerahisisha MNO-to-MNO (Mtandao kwa Mtandao). Kwa sababu Selcom wameunganishwa na TIPS, API yao inaturuhusu kufanya miamala yote bila sisi wenyewe kwenda kuomba uanachama wa TIPS moja kwa moja (ambayo ingehitaji mtaji mkubwa na leseni za BoT). Hii inapunguza sana muda na gharama za kuanzisha mradi.
+## 7. Uchambuzi wa Kina wa AzamPay (AzamPay Deep Analysis)
+AzamPay ni nzuri kwa "Payment Gateway" (Online Checkout) na ina miunganisho imara kwa kadi. Tutaitumia kama "Backup Gateway".
 
-## 9. Uchambuzi wa Kisheria (Regulatory Analysis)
-**BoT (Bank of Tanzania):** Kwa vile hatushikilii pesa (No Float, No Wallets), sisi tunaangukia kundi la "Technical Service Provider" (TSP) au "Payment Initiation Service Provider". Lazima tuepuke kuitwa PSP (Payment Service Provider) kwani inahitaji mtaji mkubwa na masharti magumu.
-**CMSA (Capital Markets):** Huu ni msingi mkuu wa biashara yetu. Haturuhusiwi kuuza hisa (shares/equities). Usanifu wetu unakwepa kikwazo hiki kwa kumpa mteja "Gawio" kutokana na faida inayopatikana kwenye mapato/kamisheni zetu.
-*Hatari:* Kuandika maneno kama "Nunua Hisa" kwenye App.
-*Kutatua:* Tutatumia maneno "Kusanya Thamani" au "Pata Gawio (Cashback)".
+## 8. Upembuzi wa Miamala ya P2P (P2P Feasibility Analysis)
+Kwa kutumia Selcom Qwiksend API, muamala wa P2P unafanyika moja kwa moja. OpenTransfer kama "Orchestrator" haigusi pesa, mteja anakuwa "Initiator" tu. Makato yatakuwa yale yale.
 
-## 10. Uchambuzi wa Mfumo wa Mapato (Revenue Model Analysis)
-1. **Commission Sharing:** Gawio la asilimia ya makato kutoka Selcom wakati mteja analipia Luku, Maji, au kutuma pesa.
-2. **Ads/Lead Generation:** Tunapendekeza mabenki au mikopo kwa wateja (B2B Affiliate).
-Hatutomchaji mteja tozo za ziada kwenye miamala, kwani mteja atakatwa ada sawa na ile ambayo angekatwa kama angetumia App yake ya M-Pesa.
+## 9. Uchambuzi wa Mwingiliano (Interoperability Analysis)
+TIPS umerahisisha MNO-to-MNO. API ya Selcom (TanQR) inaruhusu OpenTransfer kufanya miamala yote (ikiwemo kulipa Lipa Namba za mitandao mingine) bila kwenda kuomba uanachama wa TIPS moja kwa moja.
 
-## 11. Uchambuzi wa Mfumo wa Kamisheni (Commission Model Analysis)
-Makato: Makato ya mteja kubaki yale yale inawezekana kwa asilimia 100%. Mteja anaponunua LUKU ya 10,000/=, anakatwa kiasi kilekile. Selcom inalipwa na Tanesco asilimia fulani (mf. 2%), na Selcom anatupa sisi 1%. Kutoka kwenye hii 1% yetu, tunaichukua na kuigawa: sehemu moja inabaki kuwa mapato ya uendeshaji ya kampuni, na sehemu nyingine tunaenda kuiwekeza kwa ajili ya mteja.
+## 10. Uchambuzi wa Kisheria (Regulatory Analysis)
+- **BoT:** OpenTransfer inakuwa "Technical Service Provider" (TSP) kwa sababu hatushikilii pesa (No Float).
+- **CMSA:** Haturuhusiwi kuuza hisa. Mkakati wetu **(Marketing Positioning vs T&Cs)** unatumia lugha ya kuvutia kama "Njooni muweke hisa kwa kufanya miamala". Lakini kwenye Vigezo na Masharti (T&Cs) inakuwa wazi kuwa mteja anashiriki katika 'Loyalty Program Cashback' inayofuatana na soko la hisa.
 
-## 12. Uchambuzi wa Mfumo wa Kukusanya Rasilimali (Asset Accumulation Model Analysis)
-**Lengo:** Mteja kupata faida inayoakisi masoko ya mitaji (Hisa) bila CMSA kutusumbua.
-**Mbinu ya Kisheria (The CMSA Workaround):**
-- Mteja Kila akifanya muamala, anapata "Points" au "Value" kwenye App yake.
-- Sisi (Kampuni), tunachukua zile kamisheni na kununua Hisa (mf. S&P 500, Treasury Bills) kupitia Akaunti yetu ya Kampuni kwa wawekezaji wenye leseni (Brokers).
-- Zile hisa zikipata faida/kukua kwa thamani, tunatumia faida ile kuongeza thamani ya "Points" za mteja wetu.
-- Mteja akitaka kutoa, **Tunampa Fedha Taslimu (Cashback)**, LUKU, au Muda wa Maongezi, kama "Gawio la Pongezi la Kampuni" kwa kuwa mwaminifu. Hivyo, mteja anakuwa kama amewekeza bila yeye kuwa amenunua Hisa. CMSA haiwezi kutuingilia kwa sababu sisi kama kampuni ndiyo wawekezaji, na tunachokifanya ni kugawa Cashback kwa wateja wetu kwa asilimia tunayotaka sisi (Ambayo ina track soko la hisa kwa uwazi).
+## 11. Uchambuzi wa Mfumo wa Mapato (Revenue Model Analysis)
+Tunapata mapato kupitia **Commission Sharing** kutoka Selcom wakati mteja analipia Luku, Maji, au kutuma pesa. Asilimia halisi ya kamisheni ni **Siri ya Kibiashara (Trade Secret)**. Hatutomchaji mteja tozo za ziada.
 
-## 13. Uchambuzi wa Tokenization (Tokenization Analysis)
-Matumizi ya Web3 au Blockchains kwa retail users yanapaswa kuepukwa moja kwa moja Tanzania. BoT ina msimamo mkali dhidi ya Crypto. Tutatumia "Internal Ledgers" (Databases zetu za ndani) kuweka kumbukumbu ya Gawio la mteja, na kamwe hatutaita "Crypto Tokens".
-*Kiwango cha Uhakika:* 99%.
+## 12. Uchambuzi wa Mfumo wa Kamisheni (Commission Model Analysis)
+**Muda wa Malipo ya Kamisheni (Settlement Timing):** Kulingana na ukurasa rasmi wa Selcom Support FAQ: *"When do agents typically receive their commission for transactions? Monthly End."* Wakati kwenye App yetu tunamuonyesha mteja pointi zake za gawio papo hapo, OpenTransfer inapaswa kusubiri mpaka mwisho wa mwezi ili kulipwa kamisheni taslimu.
 
-## 14. Uchambuzi wa Mkakati wa Hazina (Treasury Strategy Analysis)
-Hazina ya kampuni inabidi iwe imara. Zile kamisheni zinazokusanywa zitawekwa katika mifumo yenye kutoa riba isiyo na hatari kubwa (Risk-free yield products), kama Hati Fungani za Serikali ya Tanzania (T-Bills) au Mfuko wa UTT AMIS (Liquid Fund) na sehemu nyingine kwenye ETFs za Marekani ili kuweza kuhimili ahadi ya kutoa gawio kwa wateja endapo watahitaji kutoa Cashbacks zao mara moja.
+## 13. Uchambuzi wa Mfumo wa Kukusanya Rasilimali (Asset Accumulation Model Analysis)
+Mteja Kila akifanya muamala, anapata "Points" zinazoonekana kama "Hisa". Sisi, tunachukua zile kamisheni (Kila mwisho wa mwezi) na kununua Hisa (mf. S&P 500). Hisa zikikua, tunaongeza thamani ya "Points" za mteja wetu, na anaweza kutoa kama Fedha Taslimu.
 
-## 15. Tathmini ya Vihatarishi (Risk Assessment)
-- **Vihatarishi vya Kisheria (Medium-High):** BoT kuweza kubadili mwongozo wa TSP na kudai Super-App isajiliwe kama PSP.
-- **Vihatarishi vya Kiufundi (Medium):** MNOs (Mitandao ya simu) kuchelewesha STK Push. Mteja kubonyeza "Tuma" halafu STK Push inachukua dakika 2 kufika kwenye simu yake, hivyo kupunguza ufanisi wa UX.
+## 14. Uchambuzi wa Tokenization (Tokenization Analysis)
+Matumizi ya Web3 kwa retail users yanapaswa kuepukwa Tanzania. BoT ina msimamo mkali dhidi ya Crypto. Tutatumia "Internal Ledgers" tu.
 
-## 16. Usanifu wa Usalama (Security Architecture)
-Kwa kuwa hatushikilii Wallet Balances, mzigo wetu wa usalama unapungua sana.
-- **Login:** Passwordless (OTP kwa simu) au Biometrics (Vidole/Sura).
-- **Usiri wa API:** Mifumo inalindwa kwa mbinu za OAuth 2.0 na IP Whitelisting kati ya server zetu na Selcom.
-- **Udhibiti (Audit):** Kuhakikisha kila muamala una reference ID ya Selcom na M-Pesa.
+## 15. Uchambuzi wa Mkakati wa Hazina (Treasury Strategy Analysis)
+Hazina ya kampuni itatumia kamisheni kuweka katika mifumo yenye kutoa riba isiyo na hatari kubwa (T-Bills, UTT AMIS). Kwa kuwa Selcom hulipa kamisheni zetu Mwisho wa Mwezi, Treasury lazima idhibiti Liquidity vizuri.
 
-## 17. Mpango wa UX kwa WhatsApp Mini App (WhatsApp Mini App UX Blueprint)
-Hili ni suluhisho kuu la kuondoa usumbufu (Minimal Cognitive Load).
-1. Mteja anatuma neno "Mambo" kwenye WhatsApp yetu (Business Account).
-2. WhatsApp inafungua "Mini App" nzuri inayosema: "Tuma Pesa" au "Lipia Bili".
-3. Mteja anaweka namba, na anachagua "Toa Pesa Kwenye M-Pesa".
-4. Dirisha linafungwa, kisha mteja anapokea Pop-up (STK Push) palepale kwenye simu yake "Weka namba ya siri kuidhinisha".
-5. Akishaweka PIN, tunamtumia meseji ya WhatsApp "Muamala Umekamilika. Makato ni yale yale. Umepata Gawio lako limekua kufikia 150/="
-Hii inaondoa uhitaji wa kudownload App na kujaza simu.
+## 16. Tathmini ya Vihatarishi (Risk Assessment)
+- **Kisheria:** CMSA kufuatilia matangazo yetu. T&Cs madhubuti ni lazima.
+- **Kiufundi:** MNOs kuchelewesha STK Push.
 
-## 18. Usanifu wa Hifadhidata (Database Architecture)
-- **Primary DB:** PostgreSQL, inahifadhi taarifa za wateja na 'Transaction Logs'.
-- **Rewards Ledger:** Jedwali maalum lililojengwa kwa mtindo wa Double-Entry Accounting ili kudhibiti Points/Gawio na kuzuia wizi.
-- **Cache:** Redis kwa ajili ya kudhibiti OTP na kasi ya User Sessions.
+## 17. Usanifu wa Usalama (Security Architecture)
+Zero Float inapunguza mzigo wa usalama. Mfumo utatumia Passwordless login (OTP) na Biometrics. API zitakua na IP Whitelisting kati ya OpenTransfer na Selcom.
 
-## 19. Usanifu wa Upanuzi (Scalability Architecture)
-Wakati wa malipo ya mishahara, miamala inakuwa mingi (Peak Loads).
-Tutatumia Amazon EKS (Kubernetes) au Azure AKS kuongeza server (Auto-scaling) moja kwa moja kulingana na idadi ya requests.
-Kafka itatumika kupanga mistari (queues) ya webhooks kutoka Selcom ili kuzuia mfumo kukwama.
+## 18. Mpango wa UX kwa WhatsApp Mini App (WhatsApp Mini App UX Blueprint)
+Hili ni suluhisho kuu la kuleta muonekano wa "Billion-dollar App".
+**Kanuni za Usanifu (Design Principles):**
+- **Exclusivity:** Lugha itatumika ni **Kiingereza Pekee**.
+- **Invisible Onboarding:** Hakuna fomu za kujaza mwanzoni. App inajifunza (Machine Learning UX).
+- **Native Trigger:** Mteja anatuma neno "Tanzania", anapata Interactive message ya kufungua App iliyoandikwa *"Open Wallet"*. Hii inaondoa hisia za kutumia external platform na kufanya ihisi kama *WhatsApp feature*.
 
-## 20. Ufafanuzi wa Bidhaa ya Awali (MVP Definition)
-- **Hatua ya Kwanza (MVP):** App iko tayari kwa huduma za Kulipia Bili (LUKU, Tanesco) na Kutuma Pesa P2P.
-- **Miunganisho:** Selcom API pekee + WhatsApp Business API.
-- **Mitandao ya Awali:** M-Pesa na Tigo Pesa.
-- **Gawio:** Mfumo rahisi wa "Cashback points" zinazokokotolewa kutokana na kamisheni (Kama 'Gawio la Faida').
+**Flows UI / Categorization:** Tutatumia WhatsApp Flows kutenganisha UI.
+- *Data/Bundles:* Dropdowns za Daily, Weekly, Monthly zilizopangwa vizuri, zikigawanywa kwa Mtandao husika.
+- *Utilities & GePG:* Tabs za LUKU, DAWASA (Water), Traffic Fines (Polisi), Decoders (DSTV/Azam).
+- *Merchant Payments & QR:* App inaruhusu mteja kuchagua *Lipa Namba* au *QR Code*. Kwa kuwa WhatsApp Flows haifungui camera moja kwa moja kupitia JSON, Flow itamtaka mteja atume JSON, kisha amwagiwe Link ya ku-scan kupitia WhatsApp Camera.
+- Mteja akichagua, WhatsApp Flow inafungwa, STK Push au OTP inakuja, kisha anapata receipt nzuri iliyo na ukuaji wa "Gawio" lake ("Kama NSSF").
 
-## 21. Ramani ya Njia (Roadmap)
-- **Mwezi 1-2:** Majadiliano na Selcom & BoT kuhusu leseni ya TSP, kuunganisha API kwenye Sandbox.
-- **Mwezi 3-4:** Kuunda UX ndani ya WhatsApp na kujaribu STK Push.
-- **Mwezi 5-6:** Kutoa toleo la Majaribio (Beta Launch) kwa wateja wa kwanza.
-- **Mwezi 7-12:** Kuunganisha AzamPay, mabenki kama CRDB, na mfumo kamili wa ku-track uwekezaji ili kuweka Gawio.
+**WhatsApp Cloud API Sandbox Constraints:**
+Meta inatoa *Test Phone Number* ambayo inaweza kutuma unlimited messages kwa namba 5. Account hii inabaki salama na HAIFUTWI hata ikikaa bila kutumika kwa miezi kadhaa. Kitu pekee ni *Temporary Access Token* ina-expire kila baada ya masaa 24.
+
+## 19. Usanifu wa Hifadhidata (Database Architecture)
+Tutatumia PostgreSQL kuhifadhi taarifa za wateja. Ili kudhibiti Points/Gawio, tutajenga **Rewards Ledger** kwa mtindo wa Double-Entry Accounting. Redis itatumika kudhibiti kasi.
+
+## 20. Usanifu wa Upanuzi (Scalability Architecture)
+Wakati wa peak loads, tutatumia Amazon EKS (Kubernetes) kuongeza server (Auto-scaling) na Kafka kupanga mistari (queues) ya webhooks kutoka Selcom.
+
+## 21. Ufafanuzi wa Bidhaa ya Awali (MVP Definition)
+MVP itajikita katika huduma za Kulipia Bili (LUKU, DAWASA, Faini), Kutuma Pesa, na Lipa Namba (Ikiwemo QR simulation). Tutaunganisha Selcom API na WhatsApp Business API (Flows) pekee, kwa Kiingereza.
+
+## 22. Ramani ya Njia (Roadmap)
+- **Mwezi 1-2:** Majadiliano na Selcom; Kuandaa T&Cs dhabiti. Kujenga WhatsApp Sandbox Environment na Flows.
+- **Mwezi 3-4:** Kuunda UX ndani ya WhatsApp na kujaribu STK Push & Bank Tokenization.
+- **Mwezi 5-6:** Beta Launch.
 
 ## 23. Faida za Kiushindani (Competitive Advantages)
-1. **Zero Learning Curve:** Kama inapatikana WhatsApp, mteja hana haja ya kujifunza UI mpya.
-2. **Hakuna Float (Zero Float):** Inahitaji mtaji mdogo sana kuiendesha ikilinganishwa na MNOs au Mabenki.
-3. **Dopamine & Gamification (Gawio):** Mteja anapata raha ya "Kuwekeza" na kupata fedha taslimu bila kuvunja sheria za CMSA au kutumia elimu ngumu ya soko la hisa. Makato yale yale, lakin unapata Cashbacks kama faida.
+- **WhatsApp Flows UX:** Ni the first in Tanzania kutoa fully Native experience ndani ya WhatsApp na "Invisible Onboarding".
+- **Zero Float:** Inahitaji mtaji mdogo sana.
+- **Makato Yale Yale + Gawio (Kama NSSF):** Mteja hapati hasara, anapata faida ya uwekezaji.
 
-## 24. Vikwazo vya Kiufundi (Technical Constraints)
-1. Utegemo asilimia 100 kwa ubora wa mtandao wa M-Pesa/Selcom. (Network downtimes).
-2. STK Push inashindwa kufanya kazi vizuri kwenye simu zinazotumia Wi-Fi badala ya Data ya Mtandao kwa baadhi ya MNOs (Kama Airtel). Hili linahitaji mtumiaji kuzima Wi-Fi kwanza kabla ya kuidhinisha.
+## 24. Vikwazo vya Kiufundi (Technical Constraints) & Cash Out
+**Ukomo wa Kutoa Pesa (Cash Out Limitations):** App yetu haiwezi kumwezesha mteja kutoa pesa kwa wakala (Cash-out). Kutoa pesa inahitaji "Namba ya Wakala". API za Aggregators hazijaruhusu kipengele hiki kwa third-parties.
+*Kwanini Hakuna App Iliyofanya Hivi Bado?* Startups nyingi zinataka kuwa Wallet (kushikilia pesa) ambayo inaomba mtaji mkubwa wa PSP license, badala ya kuwa TSP tu.
 
 ## 25. Vikwazo vya Kisheria (Regulatory Constraints)
-Lugha itakayotumika katika Masoko na Matangazo (Marketing). Maneno "Uwekezaji wa Hisa" yataepukwa. Ni lazima tuite "Rewards", "Loyalty Cashbacks", au "Gawio la Uaminifu" ili CMSA isiweze kuwa na mamlaka juu ya biashara yetu, huku TCRA wakiwa ndio wasimamizi wetu wakuu wa upande wa Teknolojia.
+Lugha ya Masoko na Matangazo itakuwa changamoto. Mwanasheria thabiti atahitajika kuisimamia hii "Regulatory Arbitrage".
 
 ## 26. Alama ya Mwisho ya Upembuzi (Final Feasibility Score)
-**Upembuzi wa Kiufundi:** 85% - Inawezekana sana.
-**Upembuzi wa Kisheria:** 75% - Inahitaji uandishi mzuri wa T&Cs (Vigezo na Masharti) kudhihirisha kuwa hatuuzi hisa.
-**Upembuzi wa Kibiashara:** 95% - Wateja watapenda kwa sababu ya "Makato Yale Yale" + "Cashback/Gawio".
+**Upembuzi wa Kiufundi:** 85% - Inawezekana sana kupitia WhatsApp Flows na Selcom. Hakuna Cash-out.
+**Upembuzi wa Kisheria:** 75% - T&Cs madhubuti zinatuvusha kwenye CMSA.
+**Upembuzi wa Kibiashara:** 95% - Wateja watapenda "Makato Yale Yale" na ujumbe wa "Gawio kama NSSF".
 **Alama ya Jumla (Overall Score): 8.5/10 - Mradi huu unatekelezeka kwa asilimia kubwa (Highly Feasible).**
