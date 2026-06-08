@@ -1,0 +1,200 @@
+{
+  "version": "3.1",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "OPEN_TRANSFER_HOME": [
+      "SERVICES_MENU"
+    ],
+    "SERVICES_MENU": [
+      "BUY_BUNDLES"
+    ],
+    "BUY_BUNDLES": [
+      "CONFIRMATION_SCREEN"
+    ],
+    "CONFIRMATION_SCREEN": []
+  },
+  "screens": [
+    {
+      "id": "OPEN_TRANSFER_HOME",
+      "title": "OpenTransfer 🌍",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Welcome to OpenTransfer"
+          },
+          {
+            "type": "TextBody",
+            "text": "Your financial operating system. Zero extra fees. Daily wealth creation."
+          },
+          {
+            "type": "TextBody",
+            "text": "Track your Apple, Tesla, and Disney shares as they grow with your daily transactions!"
+          },
+          {
+            "type": "Footer",
+            "label": "Continue to Services",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "SERVICES_MENU"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "SERVICES_MENU",
+      "title": "Services 💼",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextBody",
+            "text": "Choose a service to proceed. We will remember your preferred funding network."
+          },
+          {
+            "type": "RadioButtonsGroup",
+            "name": "service_category",
+            "label": "Categories",
+            "required": true,
+            "choices": [
+              {
+                "id": "transfer",
+                "title": "💸 Transfer Money"
+              },
+              {
+                "id": "bundles",
+                "title": "📱 Buy Bundles"
+              },
+              {
+                "id": "luku",
+                "title": "⚡ Pay LUKU & Bills"
+              },
+              {
+                "id": "gift",
+                "title": "🎁 Gift Shares"
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Select",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "BUY_BUNDLES"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "BUY_BUNDLES",
+      "title": "Buy Bundles 📱",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextInput",
+            "name": "phone_number",
+            "label": "Phone Number",
+            "required": true,
+            "input_type": "number"
+          },
+          {
+            "type": "Dropdown",
+            "name": "network_provider",
+            "label": "Select Network",
+            "required": true,
+            "choices": [
+              {
+                "id": "vodacom",
+                "title": "🔴 Vodacom"
+              },
+              {
+                "id": "tigo",
+                "title": "🔵 Tigo"
+              },
+              {
+                "id": "airtel",
+                "title": "🔴 Airtel"
+              },
+              {
+                "id": "halotel",
+                "title": "🟠 Halotel"
+              }
+            ]
+          },
+          {
+            "type": "RadioButtonsGroup",
+            "name": "bundle_type",
+            "label": "Bundle Category",
+            "required": true,
+            "choices": [
+              {
+                "id": "daily",
+                "title": "Daily Internet"
+              },
+              {
+                "id": "weekly",
+                "title": "Weekly Mega"
+              },
+              {
+                "id": "router",
+                "title": "Home Routers (4G/5G)"
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Continue",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "CONFIRMATION_SCREEN"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "CONFIRMATION_SCREEN",
+      "title": "Confirm Order ✅",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Ready to execute"
+          },
+          {
+            "type": "TextBody",
+            "text": "You will receive an STK Push on your phone to enter your PIN. No extra fees will be charged."
+          },
+          {
+            "type": "Footer",
+            "label": "Send STK Push",
+            "on_click_action": {
+              "name": "complete",
+              "payload": {
+                "action": "execute_stk_push"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
