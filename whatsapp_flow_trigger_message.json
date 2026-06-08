@@ -24,7 +24,7 @@
         "flow_cta": "Open Wallet",
         "flow_action": "navigate",
         "flow_action_payload": {
-          "screen": "OPEN_TRANSFER_HOME"
+          "screen": "ONBOARDING_WELCOME"
         }
       }
     }

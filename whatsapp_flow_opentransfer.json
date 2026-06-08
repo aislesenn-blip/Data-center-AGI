@@ -2,6 +2,12 @@
   "version": "3.1",
   "data_api_version": "3.0",
   "routing_model": {
+    "ONBOARDING_WELCOME": [
+      "ONBOARDING_TCS"
+    ],
+    "ONBOARDING_TCS": [
+      "OPEN_TRANSFER_HOME"
+    ],
     "OPEN_TRANSFER_HOME": [
       "SERVICES_MENU",
       "INVESTMENT_TRACKER",
@@ -11,7 +17,8 @@
       "BUY_BUNDLES",
       "PAY_UTILITIES",
       "P2P_TRANSFER",
-      "PAY_MERCHANT"
+      "PAY_MERCHANT",
+      "SHARE_APP"
     ],
     "BUY_BUNDLES": [
       "CONFIRMATION_SCREEN"
@@ -28,14 +35,99 @@
     "PAY_MERCHANT": [
       "CONFIRMATION_SCREEN"
     ],
-    "SETTINGS": [],
+    "SHARE_APP": [
+      "CONFIRMATION_SCREEN"
+    ],
+    "SETTINGS": [
+      "STOCK_SELECTION"
+    ],
+    "STOCK_SELECTION": [],
     "INVESTMENT_TRACKER": [],
     "CONFIRMATION_SCREEN": []
   },
   "screens": [
     {
+      "id": "ONBOARDING_WELCOME",
+      "title": "Welcome to OpenTransfer",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Empower Your Finances"
+          },
+          {
+            "type": "TextBody",
+            "text": "Welcome to OpenTransfer, the premier financial routing layer. We guarantee zero extra fees; you are charged the exact equivalent of native network tariffs."
+          },
+          {
+            "type": "TextBody",
+            "text": "However, unlike standard applications, OpenTransfer transforms network commissions into your personal wealth portfolio."
+          },
+          {
+            "type": "Footer",
+            "label": "Proceed",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "ONBOARDING_TCS"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ONBOARDING_TCS",
+      "title": "Terms & Conditions",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "User Agreement"
+          },
+          {
+            "type": "TextBody",
+            "text": "To comply with regulatory frameworks, please acknowledge that OpenTransfer operates a synthetic 'Loyalty Cashback' protocol mirroring global equity markets. You hold no direct securities, but accrue exact equivalent monetary value."
+          },
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "CheckboxGroup",
+                "name": "terms_agreement",
+                "required": true,
+                "choices": [
+                  {
+                    "id": "agree",
+                    "title": "I accept the Terms & Conditions"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Accept & Continue",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "OPEN_TRANSFER_HOME"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "id": "OPEN_TRANSFER_HOME",
-      "title": "OpenTransfer",
+      "title": "OpenTransfer Hub",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
@@ -49,28 +141,34 @@
             "text": "The Financial Operating System. Zero friction. Zero extra fees."
           },
           {
-            "type": "RadioButtonsGroup",
-            "name": "home_menu",
-            "label": "Select Module",
-            "required": true,
-            "choices": [
+            "type": "Form",
+            "name": "form",
+            "children": [
               {
-                "id": "SERVICES_MENU",
-                "title": "Payments & Services"
-              },
-              {
-                "id": "INVESTMENT_TRACKER",
-                "title": "Wealth Portfolio"
-              },
-              {
-                "id": "SETTINGS",
-                "title": "Account Settings"
+                "type": "RadioButtonsGroup",
+                "name": "home_menu",
+                "label": "Select Module",
+                "required": true,
+                "choices": [
+                  {
+                    "id": "SERVICES_MENU",
+                    "title": "Payments & Services"
+                  },
+                  {
+                    "id": "INVESTMENT_TRACKER",
+                    "title": "Wealth Portfolio"
+                  },
+                  {
+                    "id": "SETTINGS",
+                    "title": "Account Settings"
+                  }
+                ]
               }
             ]
           },
           {
             "type": "Footer",
-            "label": "Continue",
+            "label": "Launch Module",
             "on_click_action": {
               "name": "navigate",
               "next": {
@@ -84,36 +182,42 @@
     },
     {
       "id": "SERVICES_MENU",
-      "title": "Services",
+      "title": "Services Directory",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Select Service"
+            "text": "Select Transaction"
           },
           {
-            "type": "RadioButtonsGroup",
-            "name": "service_category",
-            "label": "Categories",
-            "required": true,
-            "choices": [
+            "type": "Form",
+            "name": "form",
+            "children": [
               {
-                "id": "P2P_TRANSFER",
-                "title": "Transfer Funds"
-              },
-              {
-                "id": "BUY_BUNDLES",
-                "title": "Data & Bundles"
-              },
-              {
-                "id": "PAY_UTILITIES",
-                "title": "Utilities & Government"
-              },
-              {
-                "id": "PAY_MERCHANT",
-                "title": "Pay Merchant (QR / Lipa Namba)"
+                "type": "RadioButtonsGroup",
+                "name": "service_category",
+                "label": "Categories",
+                "required": true,
+                "choices": [
+                  {
+                    "id": "P2P_TRANSFER",
+                    "title": "Transfer Funds"
+                  },
+                  {
+                    "id": "BUY_BUNDLES",
+                    "title": "Airtime & Bundles"
+                  },
+                  {
+                    "id": "PAY_UTILITIES",
+                    "title": "Utilities & Government"
+                  },
+                  {
+                    "id": "PAY_MERCHANT",
+                    "title": "Pay Merchant (QR / Lipa Namba)"
+                  }
+                ]
               }
             ]
           },
@@ -139,37 +243,44 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Dropdown",
-            "name": "network_provider",
-            "label": "Network Provider",
-            "required": true,
-            "choices": [
-              { "id": "vodacom", "title": "Vodacom" },
-              { "id": "tigo", "title": "Tigo" },
-              { "id": "airtel", "title": "Airtel" },
-              { "id": "halotel", "title": "Halotel" }
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "network_provider",
+                "label": "Network Provider",
+                "required": true,
+                "choices": [
+                  { "id": "vodacom", "title": "Vodacom" },
+                  { "id": "tigo", "title": "Tigo" },
+                  { "id": "airtel", "title": "Airtel" },
+                  { "id": "halotel", "title": "Halotel" }
+                ]
+              },
+              {
+                "type": "Dropdown",
+                "name": "bundle_type",
+                "label": "Purchase Type",
+                "required": true,
+                "choices": [
+                  { "id": "airtime", "title": "Direct Airtime" },
+                  { "id": "daily", "title": "Daily Internet" },
+                  { "id": "weekly", "title": "Weekly Mega" },
+                  { "id": "monthly", "title": "Monthly Premium" },
+                  { "id": "night", "title": "Night Packs" },
+                  { "id": "student", "title": "University Packs" },
+                  { "id": "router", "title": "Home Routers (4G/5G)" }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "phone_number",
+                "label": "Target Phone Number",
+                "required": true,
+                "input_type": "number"
+              }
             ]
-          },
-          {
-            "type": "Dropdown",
-            "name": "bundle_type",
-            "label": "Bundle Category",
-            "required": true,
-            "choices": [
-              { "id": "daily", "title": "Daily Internet" },
-              { "id": "weekly", "title": "Weekly Mega" },
-              { "id": "monthly", "title": "Monthly Premium" },
-              { "id": "night", "title": "Night Packs (Usiku)" },
-              { "id": "student", "title": "University Packs" },
-              { "id": "router", "title": "Home Routers (4G/5G)" }
-            ]
-          },
-          {
-            "type": "TextInput",
-            "name": "phone_number",
-            "label": "Target Phone Number",
-            "required": true,
-            "input_type": "number"
           },
           {
             "type": "Footer",
@@ -193,36 +304,42 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Dropdown",
-            "name": "utility_type",
-            "label": "Utility Provider",
-            "required": true,
-            "choices": [
-              { "id": "luku", "title": "LUKU (Electricity)" },
-              { "id": "dawasa", "title": "DAWASA (Water)" },
-              { "id": "tukuza", "title": "Zanzibar Electricity (TUKUZA)" },
-              { "id": "dstv", "title": "DSTV" },
-              { "id": "azamtv", "title": "Azam TV" },
-              { "id": "zuku", "title": "Zuku TV" },
-              { "id": "startimes", "title": "Startimes" },
-              { "id": "traffic_fines", "title": "Police Traffic Fines" },
-              { "id": "tra", "title": "TRA (Tanzania Revenue Authority)" },
-              { "id": "gepg_other", "title": "Other Government Payments (GePG)" }
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "utility_type",
+                "label": "Utility Provider",
+                "required": true,
+                "choices": [
+                  { "id": "luku", "title": "LUKU (Electricity)" },
+                  { "id": "dawasa", "title": "DAWASA (Water)" },
+                  { "id": "tukuza", "title": "Zanzibar Electricity (TUKUZA)" },
+                  { "id": "dstv", "title": "DSTV" },
+                  { "id": "azamtv", "title": "Azam TV" },
+                  { "id": "zuku", "title": "Zuku TV" },
+                  { "id": "startimes", "title": "Startimes" },
+                  { "id": "traffic_fines", "title": "Police Traffic Fines" },
+                  { "id": "tra", "title": "Tanzania Revenue Authority (TRA)" },
+                  { "id": "gepg_other", "title": "Government Payments (GePG)" }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "account_number",
+                "label": "Account / Meter / Reference Number",
+                "required": true,
+                "input_type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "amount",
+                "label": "Amount (TZS)",
+                "required": true,
+                "input_type": "number"
+              }
             ]
-          },
-          {
-            "type": "TextInput",
-            "name": "account_number",
-            "label": "Account / Meter / Reference Number",
-            "required": true,
-            "input_type": "text"
-          },
-          {
-            "type": "TextInput",
-            "name": "amount",
-            "label": "Amount (TZS)",
-            "required": true,
-            "input_type": "number"
           },
           {
             "type": "Footer",
@@ -247,45 +364,51 @@
         "children": [
           {
             "type": "TextBody",
-            "text": "Enter the recipient's details to verify their name before sending."
+            "text": "Enter the recipient's details to verify their identity before routing."
           },
           {
-            "type": "Dropdown",
-            "name": "transfer_type",
-            "label": "Destination Network",
-            "required": true,
-            "choices": [
-              { "id": "vodacom", "title": "M-Pesa" },
-              { "id": "tigo", "title": "Tigo Pesa" },
-              { "id": "airtel", "title": "Airtel Money" },
-              { "id": "halotel", "title": "HaloPesa" },
-              { "id": "crdb", "title": "CRDB Bank" },
-              { "id": "nmb", "title": "NMB Bank" },
-              { "id": "nbc", "title": "NBC Bank" },
-              { "id": "equity", "title": "Equity Bank" },
-              { "id": "pbz", "title": "PBZ Bank" },
-              { "id": "kcb", "title": "KCB Bank" },
-              { "id": "stanbic", "title": "Stanbic Bank" },
-              { "id": "dtb", "title": "DTB Bank" }
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "transfer_type",
+                "label": "Destination Network",
+                "required": true,
+                "choices": [
+                  { "id": "vodacom", "title": "M-Pesa" },
+                  { "id": "tigo", "title": "Tigo Pesa" },
+                  { "id": "airtel", "title": "Airtel Money" },
+                  { "id": "halotel", "title": "HaloPesa" },
+                  { "id": "crdb", "title": "CRDB Bank" },
+                  { "id": "nmb", "title": "NMB Bank" },
+                  { "id": "nbc", "title": "NBC Bank" },
+                  { "id": "equity", "title": "Equity Bank" },
+                  { "id": "pbz", "title": "PBZ Bank" },
+                  { "id": "kcb", "title": "KCB Bank" },
+                  { "id": "stanbic", "title": "Stanbic Bank" },
+                  { "id": "dtb", "title": "DTB Bank" }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "recipient_number",
+                "label": "Mobile or Bank Account Number",
+                "required": true,
+                "input_type": "number"
+              },
+              {
+                "type": "TextInput",
+                "name": "amount",
+                "label": "Amount (TZS)",
+                "required": true,
+                "input_type": "number"
+              }
             ]
           },
           {
-            "type": "TextInput",
-            "name": "recipient_number",
-            "label": "Mobile or Bank Account Number",
-            "required": true,
-            "input_type": "number"
-          },
-          {
-            "type": "TextInput",
-            "name": "amount",
-            "label": "Amount (TZS)",
-            "required": true,
-            "input_type": "number"
-          },
-          {
             "type": "Footer",
-            "label": "Verify Name",
+            "label": "Verify Recipient",
             "on_click_action": {
               "name": "data_exchange",
               "payload": {
@@ -305,11 +428,11 @@
       "data": {
         "recipient_name": {
           "type": "string",
-          "__example__": "JUMA JUMA"
+          "__example__": "JOHN DOE"
         },
         "network": {
           "type": "string",
-          "__example__": "TIGO PESA"
+          "__example__": "M-PESA"
         }
       },
       "layout": {
@@ -317,7 +440,7 @@
         "children": [
           {
             "type": "TextHeading",
-            "text": "Recipient Details"
+            "text": "Recipient Identity"
           },
           {
             "type": "TextBody",
@@ -343,38 +466,44 @@
     },
     {
       "id": "PAY_MERCHANT",
-      "title": "Pay Merchant",
+      "title": "Merchant Payments",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Dropdown",
-            "name": "merchant_method",
-            "label": "Payment Method",
-            "required": true,
-            "choices": [
-              { "id": "lipa_namba", "title": "Enter Lipa Namba (Till Number)" },
-              { "id": "qr_code", "title": "Scan QR Code" }
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "merchant_method",
+                "label": "Payment Method",
+                "required": true,
+                "choices": [
+                  { "id": "lipa_namba", "title": "Enter Lipa Namba (Till Number)" },
+                  { "id": "qr_code", "title": "Scan QR Code" }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "merchant_number",
+                "label": "Lipa Namba (Leave blank if QR)",
+                "required": false,
+                "input_type": "number"
+              },
+              {
+                "type": "TextInput",
+                "name": "amount",
+                "label": "Amount (TZS)",
+                "required": true,
+                "input_type": "number"
+              }
             ]
           },
           {
             "type": "TextBody",
-            "text": "If scanning QR, submit this form first to open the native scanner prompt in the chat."
-          },
-          {
-            "type": "TextInput",
-            "name": "merchant_number",
-            "label": "Lipa Namba (Leave blank if QR)",
-            "required": false,
-            "input_type": "number"
-          },
-          {
-            "type": "TextInput",
-            "name": "amount",
-            "label": "Amount (TZS)",
-            "required": true,
-            "input_type": "number"
+            "text": "Note: For QR code processing, submit this form to initialize the native camera scanner within the chat."
           },
           {
             "type": "Footer",
@@ -391,31 +520,117 @@
       }
     },
     {
-      "id": "SETTINGS",
-      "title": "Settings",
+      "id": "SHARE_APP",
+      "title": "Share OpenTransfer",
       "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Keep OpenTransfer Accessible"
+            "text": "Expand Your Network"
           },
           {
             "type": "TextBody",
-            "text": "To ensure OpenTransfer never gets lost in your chats, please set up a chat filter."
-          },
-          {
-            "type": "TextBody",
-            "text": "1. Go to your main WhatsApp chat list.\n2. Tap and hold this chat.\n3. Add to 'Important', 'Favorites', or 'Payments' filter.\n4. Pin this chat to the top for instant access."
+            "text": "Distribute your unique OpenTransfer invitation directly to your WhatsApp Status or private contacts to grow the ecosystem."
           },
           {
             "type": "Footer",
-            "label": "Return",
+            "label": "Generate Link",
             "on_click_action": {
               "name": "complete",
               "payload": {
-                "action": "return_home"
+                "action": "generate_share_link"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "SETTINGS",
+      "title": "System Settings",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Preferences & Accessibility"
+          },
+          {
+            "type": "TextBody",
+            "text": "For rapid access, navigate to your main WhatsApp chat list, tap and hold the OpenTransfer thread, and pin it to 'Important' or 'Payments'."
+          },
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "RadioButtonsGroup",
+                "name": "settings_menu",
+                "label": "Configuration",
+                "required": true,
+                "choices": [
+                  {
+                    "id": "STOCK_SELECTION",
+                    "title": "Manage Equities & Assets"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Configure",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "${form.settings_menu}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "STOCK_SELECTION",
+      "title": "Asset Configuration",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Equity Allocation"
+          },
+          {
+            "type": "TextBody",
+            "text": "Browse the European API catalog. Select the primary asset to track your accumulated transaction commissions."
+          },
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "Dropdown",
+                "name": "chosen_stock",
+                "label": "Select Asset",
+                "required": true,
+                "choices": [
+                  { "id": "api_catalog", "title": "Load API Catalog..." }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Save Configuration",
+            "on_click_action": {
+              "name": "complete",
+              "payload": {
+                "action": "save_asset_preference"
               }
             }
           }
@@ -431,15 +646,19 @@
         "children": [
           {
             "type": "TextHeading",
-            "text": "Your Portfolio Value"
+            "text": "Portfolio Performance"
           },
           {
             "type": "TextBody",
-            "text": "Total Asset Value: USD 14.50"
+            "text": "Current Asset: S&P 500 Index"
           },
           {
             "type": "TextBody",
-            "text": "Holdings Breakdown:\nApple Inc: USD 5.20\nTesla: USD 4.10\nDisney: USD 5.20"
+            "text": "Total Accrued Value: USD 14.50"
+          },
+          {
+            "type": "TextBody",
+            "text": "Recent transactions credited USD 0.15 directly to your holding. Transactions continue to build long-term value securely."
           },
           {
             "type": "Footer",
@@ -467,7 +686,11 @@
           },
           {
             "type": "TextBody",
-            "text": "You will receive an authorization prompt on your device. Zero extra fees apply. Your portfolio will be credited immediately."
+            "text": "You will receive an authorization prompt on your device. Zero extra fees apply."
+          },
+          {
+            "type": "TextBody",
+            "text": "Your transaction commission will automatically be credited to your selected asset."
           },
           {
             "type": "Footer",
