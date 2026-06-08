@@ -3,44 +3,79 @@
   "data_api_version": "3.0",
   "routing_model": {
     "OPEN_TRANSFER_HOME": [
-      "SERVICES_MENU"
+      "SERVICES_MENU",
+      "INVESTMENT_TRACKER",
+      "SETTINGS"
     ],
     "SERVICES_MENU": [
-      "BUY_BUNDLES"
+      "BUY_BUNDLES",
+      "PAY_UTILITIES",
+      "P2P_TRANSFER",
+      "PAY_MERCHANT"
     ],
     "BUY_BUNDLES": [
       "CONFIRMATION_SCREEN"
     ],
+    "PAY_UTILITIES": [
+      "CONFIRMATION_SCREEN"
+    ],
+    "P2P_TRANSFER": [
+      "P2P_VERIFY_NAME"
+    ],
+    "P2P_VERIFY_NAME": [
+      "CONFIRMATION_SCREEN"
+    ],
+    "PAY_MERCHANT": [
+      "CONFIRMATION_SCREEN"
+    ],
+    "SETTINGS": [],
+    "INVESTMENT_TRACKER": [],
     "CONFIRMATION_SCREEN": []
   },
   "screens": [
     {
       "id": "OPEN_TRANSFER_HOME",
-      "title": "OpenTransfer 🌍",
+      "title": "OpenTransfer",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Welcome to OpenTransfer"
+            "text": "OpenTransfer"
           },
           {
             "type": "TextBody",
-            "text": "Your financial operating system. Zero extra fees. Daily wealth creation."
+            "text": "The Financial Operating System. Zero friction. Zero extra fees."
           },
           {
-            "type": "TextBody",
-            "text": "Track your Apple, Tesla, and Disney shares as they grow with your daily transactions!"
+            "type": "RadioButtonsGroup",
+            "name": "home_menu",
+            "label": "Select Module",
+            "required": true,
+            "choices": [
+              {
+                "id": "SERVICES_MENU",
+                "title": "Payments & Services"
+              },
+              {
+                "id": "INVESTMENT_TRACKER",
+                "title": "Wealth Portfolio"
+              },
+              {
+                "id": "SETTINGS",
+                "title": "Account Settings"
+              }
+            ]
           },
           {
             "type": "Footer",
-            "label": "Continue to Services",
+            "label": "Continue",
             "on_click_action": {
               "name": "navigate",
               "next": {
                 "type": "screen",
-                "name": "SERVICES_MENU"
+                "name": "${form.home_menu}"
               }
             }
           }
@@ -49,14 +84,14 @@
     },
     {
       "id": "SERVICES_MENU",
-      "title": "Services 💼",
+      "title": "Services",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "TextBody",
-            "text": "Choose a service to proceed. We will remember your preferred funding network."
+            "type": "TextHeading",
+            "text": "Select Service"
           },
           {
             "type": "RadioButtonsGroup",
@@ -65,31 +100,31 @@
             "required": true,
             "choices": [
               {
-                "id": "transfer",
-                "title": "💸 Transfer Money"
+                "id": "P2P_TRANSFER",
+                "title": "Transfer Funds"
               },
               {
-                "id": "bundles",
-                "title": "📱 Buy Bundles"
+                "id": "BUY_BUNDLES",
+                "title": "Data & Bundles"
               },
               {
-                "id": "luku",
-                "title": "⚡ Pay LUKU & Bills"
+                "id": "PAY_UTILITIES",
+                "title": "Utilities & Government"
               },
               {
-                "id": "gift",
-                "title": "🎁 Gift Shares"
+                "id": "PAY_MERCHANT",
+                "title": "Pay Merchant (QR / Lipa Namba)"
               }
             ]
           },
           {
             "type": "Footer",
-            "label": "Select",
+            "label": "Proceed",
             "on_click_action": {
               "name": "navigate",
               "next": {
                 "type": "screen",
-                "name": "BUY_BUNDLES"
+                "name": "${form.service_category}"
               }
             }
           }
@@ -98,65 +133,47 @@
     },
     {
       "id": "BUY_BUNDLES",
-      "title": "Buy Bundles 📱",
+      "title": "Data & Bundles",
       "terminal": false,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "TextInput",
-            "name": "phone_number",
-            "label": "Phone Number",
-            "required": true,
-            "input_type": "number"
-          },
-          {
             "type": "Dropdown",
             "name": "network_provider",
-            "label": "Select Network",
+            "label": "Network Provider",
             "required": true,
             "choices": [
-              {
-                "id": "vodacom",
-                "title": "🔴 Vodacom"
-              },
-              {
-                "id": "tigo",
-                "title": "🔵 Tigo"
-              },
-              {
-                "id": "airtel",
-                "title": "🔴 Airtel"
-              },
-              {
-                "id": "halotel",
-                "title": "🟠 Halotel"
-              }
+              { "id": "vodacom", "title": "Vodacom" },
+              { "id": "tigo", "title": "Tigo" },
+              { "id": "airtel", "title": "Airtel" },
+              { "id": "halotel", "title": "Halotel" }
             ]
           },
           {
-            "type": "RadioButtonsGroup",
+            "type": "Dropdown",
             "name": "bundle_type",
             "label": "Bundle Category",
             "required": true,
             "choices": [
-              {
-                "id": "daily",
-                "title": "Daily Internet"
-              },
-              {
-                "id": "weekly",
-                "title": "Weekly Mega"
-              },
-              {
-                "id": "router",
-                "title": "Home Routers (4G/5G)"
-              }
+              { "id": "daily", "title": "Daily Internet" },
+              { "id": "weekly", "title": "Weekly Mega" },
+              { "id": "monthly", "title": "Monthly Premium" },
+              { "id": "night", "title": "Night Packs (Usiku)" },
+              { "id": "student", "title": "University Packs" },
+              { "id": "router", "title": "Home Routers (4G/5G)" }
             ]
           },
           {
+            "type": "TextInput",
+            "name": "phone_number",
+            "label": "Target Phone Number",
+            "required": true,
+            "input_type": "number"
+          },
+          {
             "type": "Footer",
-            "label": "Continue",
+            "label": "Review Order",
             "on_click_action": {
               "name": "navigate",
               "next": {
@@ -169,23 +186,292 @@
       }
     },
     {
-      "id": "CONFIRMATION_SCREEN",
-      "title": "Confirm Order ✅",
+      "id": "PAY_UTILITIES",
+      "title": "Utilities & GePG",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Dropdown",
+            "name": "utility_type",
+            "label": "Utility Provider",
+            "required": true,
+            "choices": [
+              { "id": "luku", "title": "LUKU (Electricity)" },
+              { "id": "dawasa", "title": "DAWASA (Water)" },
+              { "id": "tukuza", "title": "Zanzibar Electricity (TUKUZA)" },
+              { "id": "dstv", "title": "DSTV" },
+              { "id": "azamtv", "title": "Azam TV" },
+              { "id": "zuku", "title": "Zuku TV" },
+              { "id": "startimes", "title": "Startimes" },
+              { "id": "traffic_fines", "title": "Police Traffic Fines" },
+              { "id": "tra", "title": "TRA (Tanzania Revenue Authority)" },
+              { "id": "gepg_other", "title": "Other Government Payments (GePG)" }
+            ]
+          },
+          {
+            "type": "TextInput",
+            "name": "account_number",
+            "label": "Account / Meter / Reference Number",
+            "required": true,
+            "input_type": "text"
+          },
+          {
+            "type": "TextInput",
+            "name": "amount",
+            "label": "Amount (TZS)",
+            "required": true,
+            "input_type": "number"
+          },
+          {
+            "type": "Footer",
+            "label": "Review Payment",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "CONFIRMATION_SCREEN"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2P_TRANSFER",
+      "title": "Transfer Funds",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextBody",
+            "text": "Enter the recipient's details to verify their name before sending."
+          },
+          {
+            "type": "Dropdown",
+            "name": "transfer_type",
+            "label": "Destination Network",
+            "required": true,
+            "choices": [
+              { "id": "vodacom", "title": "M-Pesa" },
+              { "id": "tigo", "title": "Tigo Pesa" },
+              { "id": "airtel", "title": "Airtel Money" },
+              { "id": "halotel", "title": "HaloPesa" },
+              { "id": "crdb", "title": "CRDB Bank" },
+              { "id": "nmb", "title": "NMB Bank" },
+              { "id": "nbc", "title": "NBC Bank" },
+              { "id": "equity", "title": "Equity Bank" },
+              { "id": "pbz", "title": "PBZ Bank" },
+              { "id": "kcb", "title": "KCB Bank" },
+              { "id": "stanbic", "title": "Stanbic Bank" },
+              { "id": "dtb", "title": "DTB Bank" }
+            ]
+          },
+          {
+            "type": "TextInput",
+            "name": "recipient_number",
+            "label": "Mobile or Bank Account Number",
+            "required": true,
+            "input_type": "number"
+          },
+          {
+            "type": "TextInput",
+            "name": "amount",
+            "label": "Amount (TZS)",
+            "required": true,
+            "input_type": "number"
+          },
+          {
+            "type": "Footer",
+            "label": "Verify Name",
+            "on_click_action": {
+              "name": "data_exchange",
+              "payload": {
+                "action": "resolve_name",
+                "recipient_number": "${form.recipient_number}",
+                "network": "${form.transfer_type}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2P_VERIFY_NAME",
+      "title": "Verify Recipient",
+      "terminal": false,
+      "data": {
+        "recipient_name": {
+          "type": "string",
+          "__example__": "JUMA JUMA"
+        },
+        "network": {
+          "type": "string",
+          "__example__": "TIGO PESA"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Recipient Details"
+          },
+          {
+            "type": "TextBody",
+            "text": "Name: ${data.recipient_name}\nNetwork: ${data.network}"
+          },
+          {
+            "type": "TextBody",
+            "text": "Please confirm these details match your intended recipient."
+          },
+          {
+            "type": "Footer",
+            "label": "Confirm & Proceed",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "CONFIRMATION_SCREEN"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "PAY_MERCHANT",
+      "title": "Pay Merchant",
+      "terminal": false,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Dropdown",
+            "name": "merchant_method",
+            "label": "Payment Method",
+            "required": true,
+            "choices": [
+              { "id": "lipa_namba", "title": "Enter Lipa Namba (Till Number)" },
+              { "id": "qr_code", "title": "Scan QR Code" }
+            ]
+          },
+          {
+            "type": "TextBody",
+            "text": "If scanning QR, submit this form first to open the native scanner prompt in the chat."
+          },
+          {
+            "type": "TextInput",
+            "name": "merchant_number",
+            "label": "Lipa Namba (Leave blank if QR)",
+            "required": false,
+            "input_type": "number"
+          },
+          {
+            "type": "TextInput",
+            "name": "amount",
+            "label": "Amount (TZS)",
+            "required": true,
+            "input_type": "number"
+          },
+          {
+            "type": "Footer",
+            "label": "Proceed",
+            "on_click_action": {
+              "name": "navigate",
+              "next": {
+                "type": "screen",
+                "name": "CONFIRMATION_SCREEN"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "SETTINGS",
+      "title": "Settings",
       "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Ready to execute"
+            "text": "Keep OpenTransfer Accessible"
           },
           {
             "type": "TextBody",
-            "text": "You will receive an STK Push on your phone to enter your PIN. No extra fees will be charged."
+            "text": "To ensure OpenTransfer never gets lost in your chats, please set up a chat filter."
+          },
+          {
+            "type": "TextBody",
+            "text": "1. Go to your main WhatsApp chat list.\n2. Tap and hold this chat.\n3. Add to 'Important', 'Favorites', or 'Payments' filter.\n4. Pin this chat to the top for instant access."
           },
           {
             "type": "Footer",
-            "label": "Send STK Push",
+            "label": "Return",
+            "on_click_action": {
+              "name": "complete",
+              "payload": {
+                "action": "return_home"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "INVESTMENT_TRACKER",
+      "title": "Wealth Portfolio",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Your Portfolio Value"
+          },
+          {
+            "type": "TextBody",
+            "text": "Total Asset Value: USD 14.50"
+          },
+          {
+            "type": "TextBody",
+            "text": "Holdings Breakdown:\nApple Inc: USD 5.20\nTesla: USD 4.10\nDisney: USD 5.20"
+          },
+          {
+            "type": "Footer",
+            "label": "Close Portfolio",
+            "on_click_action": {
+              "name": "complete",
+              "payload": {
+                "action": "viewed_portfolio"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "CONFIRMATION_SCREEN",
+      "title": "Review Order",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Ready to Execute"
+          },
+          {
+            "type": "TextBody",
+            "text": "You will receive an authorization prompt on your device. Zero extra fees apply. Your portfolio will be credited immediately."
+          },
+          {
+            "type": "Footer",
+            "label": "Authorize Payment",
             "on_click_action": {
               "name": "complete",
               "payload": {

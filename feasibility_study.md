@@ -30,6 +30,7 @@ Bidhaa inafanya kazi kama Daraja (Orchestration Layer).
 | **Kutuma Pesa (P2P)** | Ndiyo (Qwiksend) | Kiasi | Ndiyo | Ndiyo |
 | **Lipa Namba Cross-Network** | Ndiyo (Selcom Lipa/TanQR) | Ndiyo | Ndiyo | Ndiyo |
 | **Kutoa Pesa (Cash-out)**| **HAPANA** | Hapana | Hapana | Hapana |
+| **Malipo ya Bili Zote** | Ndiyo (LUKU, DAWASA, Faini, QR) | Ndiyo | Hapana | Ndiyo |
 | **Makato / Float** | Zero-float (STK Push/OTP) | Zero-float (STK Push)| Escrow / Settle | Float inahitajika |
 
 ## 6. Uchambuzi wa Kina wa Selcom (Selcom Deep Analysis)
@@ -40,6 +41,8 @@ Bidhaa inafanya kazi kama Daraja (Orchestration Layer).
 
 **Kuunganisha Mabenki (CRDB, NMB) vs M-Pesa:**
 Selcom inaruhusu kuunganisha mabenki. Kwa M-Pesa/Tigo Pesa, inatumia **STK Push**. Kwa Benki (CRDB/NMB), inatumia Card Verification ambapo SLA itatoa mwongozo kama itahitaji OTP.
+
+**Malipo ya Kina (Utilities, Faini, DAWASA, na QR):** Selcom inatoa muunganiko kamili na GePG kuruhusu malipo yote ya kiserikali kama *Traffic Fines (Faini za Polisi)*, DAWASA (Maji), na LUKU. Kuhusu *QR Codes*, Selcom inaunga mkono Scan-to-Pay (Masterpass QR).
 
 ## 7. Uchambuzi wa Kina wa AzamPay (AzamPay Deep Analysis)
 AzamPay ni nzuri kwa "Payment Gateway" (Online Checkout) na ina miunganisho imara kwa kadi. Tutaitumia kama "Backup Gateway".
@@ -81,9 +84,12 @@ Hili ni suluhisho kuu la kuleta muonekano wa "Billion-dollar App".
 **Kanuni za Usanifu (Design Principles):**
 - **Exclusivity:** Lugha itatumika ni **Kiingereza Pekee**.
 - **Invisible Onboarding:** Hakuna fomu za kujaza mwanzoni. App inajifunza (Machine Learning UX).
+- **Native Trigger:** Mteja anatuma neno "Tanzania", anapata Interactive message ya kufungua App iliyoandikwa *"Open Wallet"*. Hii inaondoa hisia za kutumia external platform na kufanya ihisi kama *WhatsApp feature*.
+
 **Flows UI / Categorization:** Tutatumia WhatsApp Flows kutenganisha UI.
 - *Data/Bundles:* Dropdowns za Daily, Weekly, Monthly zilizopangwa vizuri, zikigawanywa kwa Mtandao husika.
-- *Utilities:* Tabs za LUKU, Water, Decoders (DSTV/Azam).
+- *Utilities & GePG:* Tabs za LUKU, DAWASA (Water), Traffic Fines (Polisi), Decoders (DSTV/Azam).
+- *Merchant Payments & QR:* App inaruhusu mteja kuchagua *Lipa Namba* au *QR Code*. Kwa kuwa WhatsApp Flows haifungui camera moja kwa moja kupitia JSON, Flow itamtaka mteja atume JSON, kisha amwagiwe Link ya ku-scan kupitia WhatsApp Camera.
 - Mteja akichagua, WhatsApp Flow inafungwa, STK Push au OTP inakuja, kisha anapata receipt nzuri iliyo na ukuaji wa "Gawio" lake ("Kama NSSF").
 
 **WhatsApp Cloud API Sandbox Constraints:**
@@ -96,7 +102,7 @@ Tutatumia PostgreSQL kuhifadhi taarifa za wateja. Ili kudhibiti Points/Gawio, tu
 Wakati wa peak loads, tutatumia Amazon EKS (Kubernetes) kuongeza server (Auto-scaling) na Kafka kupanga mistari (queues) ya webhooks kutoka Selcom.
 
 ## 21. Ufafanuzi wa Bidhaa ya Awali (MVP Definition)
-MVP itajikita katika huduma za Kulipia Bili na Kutuma Pesa. Tutaunganisha Selcom API na WhatsApp Business API (Flows) pekee, kwa Kiingereza.
+MVP itajikita katika huduma za Kulipia Bili (LUKU, DAWASA, Faini), Kutuma Pesa, na Lipa Namba (Ikiwemo QR simulation). Tutaunganisha Selcom API na WhatsApp Business API (Flows) pekee, kwa Kiingereza.
 
 ## 22. Ramani ya Njia (Roadmap)
 - **Mwezi 1-2:** Majadiliano na Selcom; Kuandaa T&Cs dhabiti. Kujenga WhatsApp Sandbox Environment na Flows.
