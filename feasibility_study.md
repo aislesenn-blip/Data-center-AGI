@@ -7,7 +7,7 @@
 ## 1. Muhtasari wa Kiutendaji (Executive Summary)
 Mradi huu unalenga kutengeneza jukwaa/app inayoleta pamoja huduma zote za kifedha (M-Pesa, Tigo Pesa, Airtel Money, Halopesa, CRDB, NMB) katika sehemu moja, ikiwa na muonekano (UX) rahisi zaidi unaofanana na "M-Pesa App" lakini inajumuisha mitandao yote.
 **Muhimu Kibiashara:** Mfumo **HAUSHIKILII** pesa za wateja (Zero Float), na makato kwa mteja yanakuwa **sawa kabisa (Makato yale yale)** kama akitumia mtandao wake wa asili. Sisi tunapata mapato yetu kupitia kamisheni (commissions) kutoka kwa watoa huduma kama Selcom/Tanesco.
-**Ubunifu wa Kisheria (CMSA Workaround):** Ili kuepuka kuvunja sheria za CMSA zinazokataza kuuza hisa au 'fractional shares' bila leseni, mteja wetu hatanunua hisa. Badala yake, kampuni yetu itawekeza kamisheni tunazopata kwenye masoko ya hisa. Faida ikipatikana, inarudishwa kwa mteja kama "Gawio la Faida" (Cashback rewards) ambalo linaonekana kukua kwa asilimia kulingana na soko, na mteja atalipwa kama Pesa Taslimu.
+**Ubunifu wa Kisheria (CMSA Workaround):** Ili kuepuka kuvunja sheria za CMSA zinazokataza kuuza hisa au 'fractional shares' bila leseni, mteja wetu hatanunua hisa. Badala yake, kampuni yetu itawekeza kamisheni tunazopata kwenye masoko ya hisa. Kwenye utangazaji (Marketing Positioning) tunatumia lugha ya kuvutia kama "Pata Hisa!", lakini kwenye Vigezo na Masharti (T&Cs) tunajilinda kwa kuweka wazi kuwa mteja anapata "Cashback/Gawio" ambalo thamani yake inaendana na soko la hisa.
 *Kiwango cha Uhakika:* 95%.
 
 ## 2. Usanifu wa Bidhaa (Product Architecture)
@@ -27,16 +27,16 @@ Bidhaa inafanya kazi kama Daraja (Orchestration Layer).
 | Kipengele (Feature) | Selcom API | AzamPay API | TIPS (BoT) | Benki (CRDB/NMB) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Kutuma Pesa (P2P)** | Ndiyo (Qwiksend) | Kiasi (Disbursements) | Ndiyo (Interoperability) | Ndiyo (A2A) |
+| **Lipa Namba Cross-Network** | Ndiyo (Selcom Lipa/TanQR) | Ndiyo | Ndiyo (Interoperability) | Ndiyo |
 | **Kulipia Bili (Utility)**| Zote (Luku, Maji n.k) | Baadhi | Hapana | Zote |
-| **Lipa Namba (Merchant)** | Ndiyo (Masterpass/QR) | Ndiyo | Ndiyo | Ndiyo |
 | **Makato / Float** | Zero-float (STK Push) | Zero-float (STK Push)| Escrow / Settle | Float inahitajika |
 | **Kamisheni kwa App** | Ndiyo (Revenue Share) | Ndiyo | Hapana | Inatofautiana |
 
 ## 5. Uchambuzi wa Kina wa Selcom (Selcom Deep Analysis)
 **Uwezo:** Selcom ndio injini yetu kuu. Ina API za Utility Payments, Merchant Payments, na Qwiksend.
-**Makato (Fees):** Tukiitumia Selcom, tunaweza kuwa "Aggregator/Sub-merchant". Hii inaruhusu mteja alipe kiasi kile kile bila Tozo ya ziada, huku sisi tukigawana faida/kamisheni na Selcom kutoka kwa asilimia wanayolipwa na Tanesco au M-Pesa.
-**Utendaji:** Selcom inaunga mkono STK Push au USSD kwa mteja kuidhinisha.
-*Kiwango cha Uhakika:* 95%. Selcom Developer portal inaonyesha wazi endpoint za Qwiksend na Checkout.
+**P2P na Lipa Namba Cross-Network:** Selcom inaruhusu *Interoperability* kamili. App yako itaweza kuruhusu mteja wa M-Pesa kulipa kwenda kwenye Lipa Namba (Till) ya Tigo au mtandao mwingine. Hili linawezekana kupitia API yao ya **Selcom Lipa (TanQR)**. Selcom inathibitisha hili ikisema "Selcom Lipa is compatible with TanQR where a customer can pay from any source of funds they prefer... with full interoperability".
+**Makato (Fees):** Tukiitumia Selcom, tunaweza kuwa "Aggregator/Sub-merchant". Hii inaruhusu mteja alipe kiasi kile kile bila Tozo ya ziada, huku sisi tukigawana faida/kamisheni na Selcom kutoka kwa asilimia wanayolipwa na Tanesco au M-Pesa. Mteja haingizi tozo mpya.
+*Kiwango cha Uhakika:* 100%. Ushahidi upo kwenye dokumentari rasmi ya Selcom Pay.
 
 ## 6. Uchambuzi wa Kina wa AzamPay (AzamPay Deep Analysis)
 **Uwezo:** AzamPay ni nzuri kwa "Payment Gateway" hasa kwenye mtandao (Online Checkout) na ina miunganisho imara kwa kadi (Mastercard/Visa) na mitandao ya simu (M-Pesa, Tigo Pesa, Halopesa).
@@ -48,13 +48,12 @@ Bidhaa inafanya kazi kama Daraja (Orchestration Layer).
 **Ukweli (Findings):** Kwa kutumia Selcom Qwiksend API au kupitia ujumuishwaji wao na TIPS (Tanzania Instant Payment System), muamala huu unaweza kufanyika moja kwa moja kwa mteja kutumia STK Push. Hata hivyo, mara nyingi kisheria mtoa huduma (Selcom) anapitisha hizi pesa sekunde chache kwenye mfumo wao mkuu kisha kuzi-disburse. Kwa sisi kama "Super-App Orchestrator", hatutagusa pesa, mteja anakuwa "Initiator" tu. Makato yatakuwa yale yale anayokatwa kwenye mitandao husika.
 
 ## 8. Uchambuzi wa Mwingiliano (Interoperability Analysis)
-Mfumo wa TIPS umerahisisha MNO-to-MNO (Mtandao kwa Mtandao). Kwa sababu Selcom wameunganishwa na TIPS, API yao inaturuhusu kufanya miamala yote bila sisi wenyewe kwenda kuomba uanachama wa TIPS moja kwa moja (ambayo ingehitaji mtaji mkubwa na leseni za BoT). Hii inapunguza sana muda na gharama za kuanzisha mradi.
+Mfumo wa TIPS umerahisisha MNO-to-MNO (Mtandao kwa Mtandao). Kwa sababu Selcom wameunganishwa na TIPS, API yao inaturuhusu kufanya miamala yote (ikiwemo kulipa Lipa Namba za mitandao mingine) bila sisi wenyewe kwenda kuomba uanachama wa TIPS moja kwa moja (ambayo ingehitaji mtaji mkubwa na leseni za BoT). Hii inapunguza sana muda na gharama za kuanzisha mradi.
 
 ## 9. Uchambuzi wa Kisheria (Regulatory Analysis)
 **BoT (Bank of Tanzania):** Kwa vile hatushikilii pesa (No Float, No Wallets), sisi tunaangukia kundi la "Technical Service Provider" (TSP) au "Payment Initiation Service Provider". Lazima tuepuke kuitwa PSP (Payment Service Provider) kwani inahitaji mtaji mkubwa na masharti magumu.
-**CMSA (Capital Markets):** Huu ni msingi mkuu wa biashara yetu. Haturuhusiwi kuuza hisa (shares/equities). Usanifu wetu unakwepa kikwazo hiki kwa kumpa mteja "Gawio" kutokana na faida inayopatikana kwenye mapato/kamisheni zetu.
-*Hatari:* Kuandika maneno kama "Nunua Hisa" kwenye App.
-*Kutatua:* Tutatumia maneno "Kusanya Thamani" au "Pata Gawio (Cashback)".
+**CMSA (Capital Markets):** Huu ni msingi mkuu wa biashara yetu. Haturuhusiwi kuuza hisa (shares/equities) moja kwa moja.
+*Mkakati:* Tunatumia *Regulatory Arbitrage*. Kwa nje (Matangazo, Social Media), tutatumia maneno yanayouza kama "Fanya Muamala, Pata Hisa za Apple". Lakini, kwenye **T&Cs (Vigezo na Masharti)** ambazo mteja anakubaliana nazo, tunaandika kiutaalam kuwa: "Mteja hamiliki hisa, bali anapata 'Loyalty Program Cashback' ambayo thamani yake inafuatana na soko la hisa." Hivi ndivyo startups nyingi ulimwenguni zinavyoanza kabla ya kupata leseni.
 
 ## 10. Uchambuzi wa Mfumo wa Mapato (Revenue Model Analysis)
 1. **Commission Sharing:** Gawio la asilimia ya makato kutoka Selcom wakati mteja analipia Luku, Maji, au kutuma pesa.
@@ -65,12 +64,12 @@ Hatutomchaji mteja tozo za ziada kwenye miamala, kwani mteja atakatwa ada sawa n
 Makato: Makato ya mteja kubaki yale yale inawezekana kwa asilimia 100%. Mteja anaponunua LUKU ya 10,000/=, anakatwa kiasi kilekile. Selcom inalipwa na Tanesco asilimia fulani (mf. 2%), na Selcom anatupa sisi 1%. Kutoka kwenye hii 1% yetu, tunaichukua na kuigawa: sehemu moja inabaki kuwa mapato ya uendeshaji ya kampuni, na sehemu nyingine tunaenda kuiwekeza kwa ajili ya mteja.
 
 ## 12. Uchambuzi wa Mfumo wa Kukusanya Rasilimali (Asset Accumulation Model Analysis)
-**Lengo:** Mteja kupata faida inayoakisi masoko ya mitaji (Hisa) bila CMSA kutusumbua.
+**Lengo:** Mteja kupata faida inayoakisi masoko ya mitaji (Hisa) bila CMSA kutusumbua, huku akivutiwa na masoko makubwa (Marketing).
 **Mbinu ya Kisheria (The CMSA Workaround):**
-- Mteja Kila akifanya muamala, anapata "Points" au "Value" kwenye App yake.
+- Mteja Kila akifanya muamala, anapata "Points" au "Value" kwenye App yake inayoonekana kama "Hisa".
 - Sisi (Kampuni), tunachukua zile kamisheni na kununua Hisa (mf. S&P 500, Treasury Bills) kupitia Akaunti yetu ya Kampuni kwa wawekezaji wenye leseni (Brokers).
 - Zile hisa zikipata faida/kukua kwa thamani, tunatumia faida ile kuongeza thamani ya "Points" za mteja wetu.
-- Mteja akitaka kutoa, **Tunampa Fedha Taslimu (Cashback)**, LUKU, au Muda wa Maongezi, kama "Gawio la Pongezi la Kampuni" kwa kuwa mwaminifu. Hivyo, mteja anakuwa kama amewekeza bila yeye kuwa amenunua Hisa. CMSA haiwezi kutuingilia kwa sababu sisi kama kampuni ndiyo wawekezaji, na tunachokifanya ni kugawa Cashback kwa wateja wetu kwa asilimia tunayotaka sisi (Ambayo ina track soko la hisa kwa uwazi).
+- Mteja akitaka kutoa, **Tunampa Fedha Taslimu (Cashback)**, LUKU, au Muda wa Maongezi, kama "Gawio la Pongezi la Kampuni" kwa kuwa mwaminifu. Hivyo, mteja anakuwa kama amewekeza bila yeye kuwa amenunua Hisa. Kama ilivyoelezwa kwenye kipengele cha 9, T&Cs zinatulinda dhidi ya CMSA, huku utangazaji wetu ukiendelea kumvutia mteja.
 
 ## 13. Uchambuzi wa Tokenization (Tokenization Analysis)
 Matumizi ya Web3 au Blockchains kwa retail users yanapaswa kuepukwa moja kwa moja Tanzania. BoT ina msimamo mkali dhidi ya Crypto. Tutatumia "Internal Ledgers" (Databases zetu za ndani) kuweka kumbukumbu ya Gawio la mteja, na kamwe hatutaita "Crypto Tokens".
@@ -80,7 +79,7 @@ Matumizi ya Web3 au Blockchains kwa retail users yanapaswa kuepukwa moja kwa moj
 Hazina ya kampuni inabidi iwe imara. Zile kamisheni zinazokusanywa zitawekwa katika mifumo yenye kutoa riba isiyo na hatari kubwa (Risk-free yield products), kama Hati Fungani za Serikali ya Tanzania (T-Bills) au Mfuko wa UTT AMIS (Liquid Fund) na sehemu nyingine kwenye ETFs za Marekani ili kuweza kuhimili ahadi ya kutoa gawio kwa wateja endapo watahitaji kutoa Cashbacks zao mara moja.
 
 ## 15. Tathmini ya Vihatarishi (Risk Assessment)
-- **Vihatarishi vya Kisheria (Medium-High):** BoT kuweza kubadili mwongozo wa TSP na kudai Super-App isajiliwe kama PSP.
+- **Vihatarishi vya Kisheria (Medium-High):** BoT kuweza kubadili mwongozo wa TSP na kudai Super-App isajiliwe kama PSP. CMSA kufuatilia matangazo yetu (japo T&Cs zinatulinda, bado wanaweza kuomba kubadilisha lugha ya matangazo).
 - **Vihatarishi vya Kiufundi (Medium):** MNOs (Mitandao ya simu) kuchelewesha STK Push. Mteja kubonyeza "Tuma" halafu STK Push inachukua dakika 2 kufika kwenye simu yake, hivyo kupunguza ufanisi wa UX.
 
 ## 16. Usanifu wa Usalama (Security Architecture)
@@ -92,8 +91,8 @@ Kwa kuwa hatushikilii Wallet Balances, mzigo wetu wa usalama unapungua sana.
 ## 17. Mpango wa UX kwa WhatsApp Mini App (WhatsApp Mini App UX Blueprint)
 Hili ni suluhisho kuu la kuondoa usumbufu (Minimal Cognitive Load).
 1. Mteja anatuma neno "Mambo" kwenye WhatsApp yetu (Business Account).
-2. WhatsApp inafungua "Mini App" nzuri inayosema: "Tuma Pesa" au "Lipia Bili".
-3. Mteja anaweka namba, na anachagua "Toa Pesa Kwenye M-Pesa".
+2. WhatsApp inafungua "Mini App" nzuri inayosema: "Tuma Pesa", "Lipia Bili", "Lipa Namba".
+3. Mteja anaweka namba (hata ikiwa Till ya mtandao mwingine), na anachagua "Toa Pesa Kwenye M-Pesa".
 4. Dirisha linafungwa, kisha mteja anapokea Pop-up (STK Push) palepale kwenye simu yake "Weka namba ya siri kuidhinisha".
 5. Akishaweka PIN, tunamtumia meseji ya WhatsApp "Muamala Umekamilika. Makato ni yale yale. Umepata Gawio lako limekua kufikia 150/="
 Hii inaondoa uhitaji wa kudownload App na kujaza simu.
@@ -109,13 +108,13 @@ Tutatumia Amazon EKS (Kubernetes) au Azure AKS kuongeza server (Auto-scaling) mo
 Kafka itatumika kupanga mistari (queues) ya webhooks kutoka Selcom ili kuzuia mfumo kukwama.
 
 ## 20. Ufafanuzi wa Bidhaa ya Awali (MVP Definition)
-- **Hatua ya Kwanza (MVP):** App iko tayari kwa huduma za Kulipia Bili (LUKU, Tanesco) na Kutuma Pesa P2P.
+- **Hatua ya Kwanza (MVP):** App iko tayari kwa huduma za Kulipia Bili (LUKU, Tanesco) na Kutuma Pesa P2P/Lipa Namba Cross-Network.
 - **Miunganisho:** Selcom API pekee + WhatsApp Business API.
 - **Mitandao ya Awali:** M-Pesa na Tigo Pesa.
-- **Gawio:** Mfumo rahisi wa "Cashback points" zinazokokotolewa kutokana na kamisheni (Kama 'Gawio la Faida').
+- **Gawio:** Mfumo rahisi wa "Cashback points" unaotangazwa kama Hisa (Commercial Positioning) unaokokotolewa kutokana na kamisheni (Kama 'Gawio la Faida').
 
 ## 21. Ramani ya Njia (Roadmap)
-- **Mwezi 1-2:** Majadiliano na Selcom & BoT kuhusu leseni ya TSP, kuunganisha API kwenye Sandbox.
+- **Mwezi 1-2:** Majadiliano na Selcom & BoT kuhusu leseni ya TSP, kuunganisha API kwenye Sandbox. Kuandaa T&Cs dhabiti.
 - **Mwezi 3-4:** Kuunda UX ndani ya WhatsApp na kujaribu STK Push.
 - **Mwezi 5-6:** Kutoa toleo la Majaribio (Beta Launch) kwa wateja wa kwanza.
 - **Mwezi 7-12:** Kuunganisha AzamPay, mabenki kama CRDB, na mfumo kamili wa ku-track uwekezaji ili kuweka Gawio.
@@ -123,17 +122,17 @@ Kafka itatumika kupanga mistari (queues) ya webhooks kutoka Selcom ili kuzuia mf
 ## 23. Faida za Kiushindani (Competitive Advantages)
 1. **Zero Learning Curve:** Kama inapatikana WhatsApp, mteja hana haja ya kujifunza UI mpya.
 2. **Hakuna Float (Zero Float):** Inahitaji mtaji mdogo sana kuiendesha ikilinganishwa na MNOs au Mabenki.
-3. **Dopamine & Gamification (Gawio):** Mteja anapata raha ya "Kuwekeza" na kupata fedha taslimu bila kuvunja sheria za CMSA au kutumia elimu ngumu ya soko la hisa. Makato yale yale, lakin unapata Cashbacks kama faida.
+3. **Dopamine & Gamification (Gawio):** Mteja anapata raha ya "Kuwekeza" na kupata fedha taslimu. Tangazo linasema "Pata Hisa", T&Cs zinasema "Cashback Loyalty". Makato ni yale yale.
 
 ## 24. Vikwazo vya Kiufundi (Technical Constraints)
 1. Utegemo asilimia 100 kwa ubora wa mtandao wa M-Pesa/Selcom. (Network downtimes).
 2. STK Push inashindwa kufanya kazi vizuri kwenye simu zinazotumia Wi-Fi badala ya Data ya Mtandao kwa baadhi ya MNOs (Kama Airtel). Hili linahitaji mtumiaji kuzima Wi-Fi kwanza kabla ya kuidhinisha.
 
 ## 25. Vikwazo vya Kisheria (Regulatory Constraints)
-Lugha itakayotumika katika Masoko na Matangazo (Marketing). Maneno "Uwekezaji wa Hisa" yataepukwa. Ni lazima tuite "Rewards", "Loyalty Cashbacks", au "Gawio la Uaminifu" ili CMSA isiweze kuwa na mamlaka juu ya biashara yetu, huku TCRA wakiwa ndio wasimamizi wetu wakuu wa upande wa Teknolojia.
+CMSA kufuatilia matangazo. Japo T&Cs (Vigezo na Masharti) zinatulinda na kusema wazi kuwa hatuuzi hisa bali ni loyalty points, bado CMSA wanaweza kutoa onyo au kututaka tubadilishe lugha ya matangazo kwenye mitandao ya kijamii endapo tutaonekana kama udalali wa wazi. Ni lazima mwanasheria aandike T&Cs hizi kwa ustadi wa hali ya juu.
 
 ## 26. Alama ya Mwisho ya Upembuzi (Final Feasibility Score)
-**Upembuzi wa Kiufundi:** 85% - Inawezekana sana.
-**Upembuzi wa Kisheria:** 75% - Inahitaji uandishi mzuri wa T&Cs (Vigezo na Masharti) kudhihirisha kuwa hatuuzi hisa.
-**Upembuzi wa Kibiashara:** 95% - Wateja watapenda kwa sababu ya "Makato Yale Yale" + "Cashback/Gawio".
+**Upembuzi wa Kiufundi:** 85% - Inawezekana sana kupitia Selcom Qwiksend & TanQR.
+**Upembuzi wa Kisheria:** 75% - T&Cs madhubuti zinatuvusha kwenye CMSA (Regulatory Arbitrage/Marketing Positioning).
+**Upembuzi wa Kibiashara:** 95% - Wateja watapenda kwa sababu ya "Makato Yale Yale" + "Cashback inayoitwa Hisa".
 **Alama ya Jumla (Overall Score): 8.5/10 - Mradi huu unatekelezeka kwa asilimia kubwa (Highly Feasible).**
