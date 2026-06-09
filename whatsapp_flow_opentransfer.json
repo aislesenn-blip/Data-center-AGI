@@ -9,16 +9,12 @@
       "OPEN_TRANSFER_HOME"
     ],
     "OPEN_TRANSFER_HOME": [
-      "SERVICES_MENU",
-      "INVESTMENT_TRACKER",
-      "SETTINGS"
-    ],
-    "SERVICES_MENU": [
+      "P2P_TRANSFER",
       "BUY_BUNDLES",
       "PAY_UTILITIES",
-      "P2P_TRANSFER",
       "PAY_MERCHANT",
-      "SHARE_APP"
+      "INVESTMENT_TRACKER",
+      "SETTINGS"
     ],
     "BUY_BUNDLES": [
       "CONFIRMATION_SCREEN"
@@ -55,15 +51,19 @@
         "children": [
           {
             "type": "TextHeading",
-            "text": "Empower Your Finances"
+            "text": "An Account That Works Like Your Bank"
           },
           {
             "type": "TextBody",
-            "text": "Welcome to OpenTransfer, the premier financial routing layer. We guarantee zero extra fees; you are charged the exact equivalent of native network tariffs."
+            "text": "How do banks make a profit? They take your money, lend it to others for interest, and keep all the profit."
           },
           {
             "type": "TextBody",
-            "text": "However, unlike standard applications, OpenTransfer transforms network commissions into your personal wealth portfolio."
+            "text": "OpenTransfer changes the game. When you pay bills or send money, we take the commission providers pay us and invest it in global markets. The interest returns to you as USD yield."
+          },
+          {
+            "type": "TextBody",
+            "text": "Smart people don't pay fees. Welcome to OpenTransfer."
           },
           {
             "type": "Footer",
@@ -92,7 +92,7 @@
           },
           {
             "type": "TextBody",
-            "text": "To comply with regulatory frameworks, please acknowledge that OpenTransfer operates a synthetic 'Loyalty Cashback' protocol mirroring global equity markets. You hold no direct securities, but accrue exact equivalent monetary value."
+            "text": "By proceeding, you agree to our Terms. OpenTransfer is a loyalty program. We accumulate transaction commissions on your behalf, which are lent to secure global markets (Stablecoin Liquidity Pools) to generate yield. You do not hold direct bank accounts or public securities."
           },
           {
             "type": "Form",
@@ -151,16 +151,28 @@
                 "required": true,
                 "choices": [
                   {
-                    "id": "SERVICES_MENU",
-                    "title": "Payments & Services"
+                    "id": "P2P_TRANSFER",
+                    "title": "Send Money"
+                  },
+                  {
+                    "id": "BUY_BUNDLES",
+                    "title": "Buy Airtime & Bundles"
+                  },
+                  {
+                    "id": "PAY_UTILITIES",
+                    "title": "Pay Utilities & Bills"
+                  },
+                  {
+                    "id": "PAY_MERCHANT",
+                    "title": "Pay Merchant (QR / Lipa Namba)"
                   },
                   {
                     "id": "INVESTMENT_TRACKER",
-                    "title": "Wealth Portfolio"
+                    "title": "\ud83d\udcb0 View Portfolio"
                   },
                   {
                     "id": "SETTINGS",
-                    "title": "Account Settings"
+                    "title": "\u2699\ufe0f Account Settings"
                   }
                 ]
               }
@@ -181,61 +193,6 @@
       }
     },
     {
-      "id": "SERVICES_MENU",
-      "title": "Services Directory",
-      "terminal": false,
-      "layout": {
-        "type": "SingleColumnLayout",
-        "children": [
-          {
-            "type": "TextHeading",
-            "text": "Select Transaction"
-          },
-          {
-            "type": "Form",
-            "name": "form",
-            "children": [
-              {
-                "type": "RadioButtonsGroup",
-                "name": "service_category",
-                "label": "Categories",
-                "required": true,
-                "choices": [
-                  {
-                    "id": "P2P_TRANSFER",
-                    "title": "Transfer Funds"
-                  },
-                  {
-                    "id": "BUY_BUNDLES",
-                    "title": "Airtime & Bundles"
-                  },
-                  {
-                    "id": "PAY_UTILITIES",
-                    "title": "Utilities & Government"
-                  },
-                  {
-                    "id": "PAY_MERCHANT",
-                    "title": "Pay Merchant (QR / Lipa Namba)"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "Footer",
-            "label": "Proceed",
-            "on_click_action": {
-              "name": "navigate",
-              "next": {
-                "type": "screen",
-                "name": "${form.service_category}"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
       "id": "BUY_BUNDLES",
       "title": "Data & Bundles",
       "terminal": false,
@@ -243,42 +200,55 @@
         "type": "SingleColumnLayout",
         "children": [
           {
+            "type": "TextBody",
+            "text": "Select your network and exact bundle. (Note: In production, these dropdowns fetch real-time from Selcom API based on the entered number)."
+          },
+          {
             "type": "Form",
             "name": "form",
             "children": [
               {
-                "type": "Dropdown",
-                "name": "network_provider",
-                "label": "Network Provider",
+                "type": "TextInput",
+                "name": "phone_number",
+                "label": "Phone Number (Starts with 07.. or 06..)",
                 "required": true,
-                "choices": [
-                  { "id": "vodacom", "title": "Vodacom" },
-                  { "id": "tigo", "title": "Tigo" },
-                  { "id": "airtel", "title": "Airtel" },
-                  { "id": "halotel", "title": "Halotel" }
-                ]
+                "input_type": "number"
               },
               {
                 "type": "Dropdown",
                 "name": "bundle_type",
-                "label": "Purchase Type",
+                "label": "Select Exact Bundle",
                 "required": true,
                 "choices": [
-                  { "id": "airtime", "title": "Direct Airtime" },
-                  { "id": "daily", "title": "Daily Internet" },
-                  { "id": "weekly", "title": "Weekly Mega" },
-                  { "id": "monthly", "title": "Monthly Premium" },
-                  { "id": "night", "title": "Night Packs" },
-                  { "id": "student", "title": "University Packs" },
-                  { "id": "router", "title": "Home Routers (4G/5G)" }
+                  {
+                    "id": "airtime",
+                    "title": "Airtime (Enter amount next screen)"
+                  },
+                  {
+                    "id": "daily_1",
+                    "title": "Daily: 1GB - TZS 1,000"
+                  },
+                  {
+                    "id": "weekly_1",
+                    "title": "Weekly: 1GB + 100 Min - TZS 3,000"
+                  },
+                  {
+                    "id": "weekly_2",
+                    "title": "Weekly: 4.5GB - TZS 5,000"
+                  },
+                  {
+                    "id": "monthly_1",
+                    "title": "Monthly: 12GB - TZS 10,000"
+                  },
+                  {
+                    "id": "monthly_2",
+                    "title": "Monthly: 30GB + 300 Min - TZS 20,000"
+                  },
+                  {
+                    "id": "night_1",
+                    "title": "Night Bundle: 5GB - TZS 1,500"
+                  }
                 ]
-              },
-              {
-                "type": "TextInput",
-                "name": "phone_number",
-                "label": "Target Phone Number",
-                "required": true,
-                "input_type": "number"
               }
             ]
           },
@@ -313,16 +283,46 @@
                 "label": "Utility Provider",
                 "required": true,
                 "choices": [
-                  { "id": "luku", "title": "LUKU (Electricity)" },
-                  { "id": "dawasa", "title": "DAWASA (Water)" },
-                  { "id": "tukuza", "title": "Zanzibar Electricity (TUKUZA)" },
-                  { "id": "dstv", "title": "DSTV" },
-                  { "id": "azamtv", "title": "Azam TV" },
-                  { "id": "zuku", "title": "Zuku TV" },
-                  { "id": "startimes", "title": "Startimes" },
-                  { "id": "traffic_fines", "title": "Police Traffic Fines" },
-                  { "id": "tra", "title": "Tanzania Revenue Authority (TRA)" },
-                  { "id": "gepg_other", "title": "Government Payments (GePG)" }
+                  {
+                    "id": "luku",
+                    "title": "LUKU (Electricity)"
+                  },
+                  {
+                    "id": "dawasa",
+                    "title": "DAWASA (Water)"
+                  },
+                  {
+                    "id": "tukuza",
+                    "title": "Zanzibar Electricity (TUKUZA)"
+                  },
+                  {
+                    "id": "dstv",
+                    "title": "DSTV"
+                  },
+                  {
+                    "id": "azamtv",
+                    "title": "Azam TV"
+                  },
+                  {
+                    "id": "zuku",
+                    "title": "Zuku TV"
+                  },
+                  {
+                    "id": "startimes",
+                    "title": "Startimes"
+                  },
+                  {
+                    "id": "traffic_fines",
+                    "title": "Police Traffic Fines"
+                  },
+                  {
+                    "id": "tra",
+                    "title": "Tanzania Revenue Authority (TRA)"
+                  },
+                  {
+                    "id": "gepg_other",
+                    "title": "Government Payments (GePG)"
+                  }
                 ]
               },
               {
@@ -376,18 +376,54 @@
                 "label": "Destination Network",
                 "required": true,
                 "choices": [
-                  { "id": "vodacom", "title": "M-Pesa" },
-                  { "id": "tigo", "title": "Tigo Pesa" },
-                  { "id": "airtel", "title": "Airtel Money" },
-                  { "id": "halotel", "title": "HaloPesa" },
-                  { "id": "crdb", "title": "CRDB Bank" },
-                  { "id": "nmb", "title": "NMB Bank" },
-                  { "id": "nbc", "title": "NBC Bank" },
-                  { "id": "equity", "title": "Equity Bank" },
-                  { "id": "pbz", "title": "PBZ Bank" },
-                  { "id": "kcb", "title": "KCB Bank" },
-                  { "id": "stanbic", "title": "Stanbic Bank" },
-                  { "id": "dtb", "title": "DTB Bank" }
+                  {
+                    "id": "vodacom",
+                    "title": "M-Pesa"
+                  },
+                  {
+                    "id": "tigo",
+                    "title": "Tigo Pesa"
+                  },
+                  {
+                    "id": "airtel",
+                    "title": "Airtel Money"
+                  },
+                  {
+                    "id": "halotel",
+                    "title": "HaloPesa"
+                  },
+                  {
+                    "id": "crdb",
+                    "title": "CRDB Bank"
+                  },
+                  {
+                    "id": "nmb",
+                    "title": "NMB Bank"
+                  },
+                  {
+                    "id": "nbc",
+                    "title": "NBC Bank"
+                  },
+                  {
+                    "id": "equity",
+                    "title": "Equity Bank"
+                  },
+                  {
+                    "id": "pbz",
+                    "title": "PBZ Bank"
+                  },
+                  {
+                    "id": "kcb",
+                    "title": "KCB Bank"
+                  },
+                  {
+                    "id": "stanbic",
+                    "title": "Stanbic Bank"
+                  },
+                  {
+                    "id": "dtb",
+                    "title": "DTB Bank"
+                  }
                 ]
               },
               {
@@ -481,8 +517,14 @@
                 "label": "Payment Method",
                 "required": true,
                 "choices": [
-                  { "id": "lipa_namba", "title": "Enter Lipa Namba (Till Number)" },
-                  { "id": "qr_code", "title": "Scan QR Code" }
+                  {
+                    "id": "lipa_namba",
+                    "title": "Enter Lipa Namba (Till Number)"
+                  },
+                  {
+                    "id": "qr_code",
+                    "title": "Scan QR Code"
+                  }
                 ]
               },
               {
@@ -619,7 +661,10 @@
                 "label": "Select Asset",
                 "required": true,
                 "choices": [
-                  { "id": "api_catalog", "title": "Load API Catalog..." }
+                  {
+                    "id": "api_catalog",
+                    "title": "Load API Catalog..."
+                  }
                 ]
               }
             ]
@@ -639,30 +684,30 @@
     },
     {
       "id": "INVESTMENT_TRACKER",
-      "title": "Wealth Portfolio",
+      "title": "Dollar Yield Reserve",
       "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Portfolio Performance"
+            "text": "Your Financial Vault"
           },
           {
             "type": "TextBody",
-            "text": "Current Asset: S&P 500 Index"
+            "text": "Current Global Yield Rate: 5.2% APY"
           },
           {
             "type": "TextBody",
-            "text": "Total Accrued Value: USD 14.50"
+            "text": "Total Dollar Equivalent: USD 14.50"
           },
           {
             "type": "TextBody",
-            "text": "Recent transactions credited USD 0.15 directly to your holding. Transactions continue to build long-term value securely."
+            "text": "Recent transactions generated USD 0.15 in commissions. This amount has been lent to global liquidity pools and is currently earning interest."
           },
           {
             "type": "Footer",
-            "label": "Close Portfolio",
+            "label": "Close Vault",
             "on_click_action": {
               "name": "complete",
               "payload": {
