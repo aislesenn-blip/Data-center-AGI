@@ -55,15 +55,19 @@
         "children": [
           {
             "type": "TextHeading",
-            "text": "Empower Your Finances"
+            "text": "Akaunti Inayofanya Kazi Kama Benki Yako"
           },
           {
             "type": "TextBody",
-            "text": "Welcome to OpenTransfer, the premier financial routing layer. We guarantee zero extra fees; you are charged the exact equivalent of native network tariffs."
+            "text": "Mabenki yanatengenezaje faida? Wanachukua pesa yako, wanaikopesha kwa wengine kwa riba, kisha wanaweka faida yote mfukoni kwao."
           },
           {
             "type": "TextBody",
-            "text": "However, unlike standard applications, OpenTransfer transforms network commissions into your personal wealth portfolio."
+            "text": "Sisi OpenTransfer tumegeuza mchezo. Ukilipa LUKU au ukituma pesa, ile kamisheni ambayo Tanesco inatulipa sisi tunaiweka kwenye Akaunti yako. Kisha tunaipeleka kwenye masoko ya dunia kukopesha, na tukipata Riba, inarudi kwako kama Dola."
+          },
+          {
+            "type": "TextBody",
+            "text": "Mtu mwerevu hafanyi miamala na kuachia wengine tozo. Karibu OpenTransfer."
           },
           {
             "type": "Footer",
@@ -92,7 +96,7 @@
           },
           {
             "type": "TextBody",
-            "text": "To comply with regulatory frameworks, please acknowledge that OpenTransfer operates a synthetic 'Loyalty Cashback' protocol mirroring global equity markets. You hold no direct securities, but accrue exact equivalent monetary value."
+            "text": "By proceeding, you agree to our Terms. OpenTransfer is a loyalty program. We accumulate transaction commissions on your behalf, which are lent to secure global markets (Stablecoin Liquidity Pools) to generate yield. You do not hold direct bank accounts or public securities."
           },
           {
             "type": "Form",
@@ -243,42 +247,34 @@
         "type": "SingleColumnLayout",
         "children": [
           {
+            "type": "TextBody",
+            "text": "Select your network and exact bundle. (Note: In production, these dropdowns fetch real-time from Selcom API based on the entered number)."
+          },
+          {
             "type": "Form",
             "name": "form",
             "children": [
               {
-                "type": "Dropdown",
-                "name": "network_provider",
-                "label": "Network Provider",
+                "type": "TextInput",
+                "name": "phone_number",
+                "label": "Phone Number (Starts with 07.. or 06..)",
                 "required": true,
-                "choices": [
-                  { "id": "vodacom", "title": "Vodacom" },
-                  { "id": "tigo", "title": "Tigo" },
-                  { "id": "airtel", "title": "Airtel" },
-                  { "id": "halotel", "title": "Halotel" }
-                ]
+                "input_type": "number"
               },
               {
                 "type": "Dropdown",
                 "name": "bundle_type",
-                "label": "Purchase Type",
+                "label": "Select Exact Bundle",
                 "required": true,
                 "choices": [
-                  { "id": "airtime", "title": "Direct Airtime" },
-                  { "id": "daily", "title": "Daily Internet" },
-                  { "id": "weekly", "title": "Weekly Mega" },
-                  { "id": "monthly", "title": "Monthly Premium" },
-                  { "id": "night", "title": "Night Packs" },
-                  { "id": "student", "title": "University Packs" },
-                  { "id": "router", "title": "Home Routers (4G/5G)" }
+                  { "id": "airtime", "title": "Airtime (Enter amount next screen)" },
+                  { "id": "daily_1", "title": "Daily: 1GB - TZS 1,000" },
+                  { "id": "weekly_1", "title": "Weekly: 1GB + 100 Min - TZS 3,000" },
+                  { "id": "weekly_2", "title": "Weekly: 4.5GB - TZS 5,000" },
+                  { "id": "monthly_1", "title": "Monthly: 12GB - TZS 10,000" },
+                  { "id": "monthly_2", "title": "Monthly: 30GB + 300 Min - TZS 20,000" },
+                  { "id": "night_1", "title": "Night Bundle: 5GB - TZS 1,500" }
                 ]
-              },
-              {
-                "type": "TextInput",
-                "name": "phone_number",
-                "label": "Target Phone Number",
-                "required": true,
-                "input_type": "number"
               }
             ]
           },
@@ -639,30 +635,30 @@
     },
     {
       "id": "INVESTMENT_TRACKER",
-      "title": "Wealth Portfolio",
+      "title": "Dollar Yield Reserve",
       "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
             "type": "TextHeading",
-            "text": "Portfolio Performance"
+            "text": "Your Financial Vault"
           },
           {
             "type": "TextBody",
-            "text": "Current Asset: S&P 500 Index"
+            "text": "Current Global Yield Rate: 5.2% APY"
           },
           {
             "type": "TextBody",
-            "text": "Total Accrued Value: USD 14.50"
+            "text": "Total Dollar Equivalent: USD 14.50"
           },
           {
             "type": "TextBody",
-            "text": "Recent transactions credited USD 0.15 directly to your holding. Transactions continue to build long-term value securely."
+            "text": "Recent transactions generated USD 0.15 in commissions. This amount has been lent to global liquidity pools and is currently earning interest."
           },
           {
             "type": "Footer",
-            "label": "Close Portfolio",
+            "label": "Close Vault",
             "on_click_action": {
               "name": "complete",
               "payload": {
