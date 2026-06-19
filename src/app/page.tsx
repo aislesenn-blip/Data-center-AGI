@@ -10,25 +10,8 @@ import { motion } from "framer-motion"
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen px-6 pt-12">
-      {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="flex justify-between items-center mb-8"
-      >
-        <div className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center overflow-hidden">
-          {/* Avatar placeholder */}
-          <div className="w-full h-full bg-gradient-to-br from-surface-700 to-surface-900" />
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-medium text-surface-400 tracking-widest uppercase">Network Active</span>
-        </div>
-      </motion.header>
-
       {/* Hero Card */}
-      <div className="mb-10 w-full flex justify-center">
+      <div className="mt-8 mb-10 w-full flex justify-center">
         <SpaceCard balance={12450.00} name="Jules Dev" handle="jules" />
       </div>
 
@@ -36,7 +19,7 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.1 }}
         className="grid grid-cols-2 gap-4 mb-12"
       >
         <Link href="/transfer" className="block">
@@ -45,10 +28,12 @@ export default function Home() {
             Send
           </Button>
         </Link>
-        <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-          <ArrowDownLeft className="w-5 h-5 text-surface-400" />
-          Deposit
-        </Button>
+        <Link href="/deposit" className="block">
+          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
+            <ArrowDownLeft className="w-5 h-5 text-surface-400" />
+            Deposit
+          </Button>
+        </Link>
       </motion.div>
 
       {/* Activity Section */}
@@ -75,7 +60,7 @@ export default function Home() {
                 <p className="text-sm text-surface-500">Today, 9:41 AM</p>
               </div>
             </div>
-            <p className="font-medium text-base">- $12.50</p>
+            <p className="font-medium text-base">- TZS 12,500</p>
           </div>
 
           <div className="flex items-center justify-between">
@@ -88,13 +73,20 @@ export default function Home() {
                 <p className="text-sm text-surface-500">Yesterday</p>
               </div>
             </div>
-            <p className="font-medium text-base text-white">+ $45.00</p>
+            <p className="font-medium text-base text-white">+ TZS 45,000</p>
           </div>
         </div>
       </motion.div>
 
+      {/* Admin Discoverability */}
+      <div className="mt-16 mb-24 flex justify-center">
+        <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-700 hover:text-surface-500 transition-colors">
+          Partners
+        </Link>
+      </div>
+
       {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 flex justify-center pb-8 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none">
+      <div className="fixed bottom-0 left-0 right-0 p-6 flex justify-center pb-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
         <Link href="/pay/demo-merchant" className="pointer-events-auto">
           <motion.div
             whileHover={{ scale: 1.05 }}
