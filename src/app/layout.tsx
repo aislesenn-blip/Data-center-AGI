@@ -35,11 +35,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark bg-black">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white min-h-screen selection:bg-white selection:text-black hide-scrollbar`}
+        className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white min-[100dvh] selection:bg-white selection:text-black hide-scrollbar overscroll-none`}
       >
-        <main className="max-w-md mx-auto min-h-screen relative overflow-hidden bg-black pb-24">
+        <main className="max-w-md mx-auto min-h-[100dvh] relative overflow-x-hidden bg-black flex flex-col pb-safe">
           {children}
         </main>
       </body>

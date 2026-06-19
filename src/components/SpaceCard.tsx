@@ -37,8 +37,8 @@ export function SpaceCard({ name = "John Doe", handle = "john", balance = 0, cla
 
       <div className="z-10 mt-2">
         <p className="text-xs font-medium text-surface-400 tracking-wider uppercase">Available Balance</p>
-        <p className="text-[40px] leading-tight font-medium tracking-tight mt-1">
-          <span className="text-surface-400">$</span>
+        <p className="text-[40px] leading-tight font-medium tracking-tight mt-1 flex items-baseline gap-1.5">
+          <span className="text-surface-400 text-xl font-medium tracking-normal">TZS</span>
           {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </p>
       </div>
