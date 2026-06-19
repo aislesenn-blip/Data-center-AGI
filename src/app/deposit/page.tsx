@@ -18,9 +18,9 @@ export default function DepositPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-[100dvh] px-6 pt-12 pb-8">
+    <div className="flex flex-col h-full bg-black">
       {step === "details" && (
-        <header className="flex items-center mb-10">
+        <header className="flex items-center px-6 pt-12 pb-6">
           <Link href="/">
             <button className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors">
               <ArrowLeft className="w-5 h-5" />
@@ -36,9 +36,9 @@ export default function DepositPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex-1 flex flex-col"
+            className="flex-1 flex flex-col overflow-hidden"
           >
-            <div className="flex-1">
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-6">
               <h1 className="text-3xl font-medium tracking-tight mb-2">Deposit Funds</h1>
               <p className="text-surface-400 mb-10">Enter your mobile money details.</p>
 
@@ -72,9 +72,9 @@ export default function DepositPage() {
               </div>
             </div>
 
-            <div className="pt-6">
+            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
               <Button
-                className="w-full h-16 text-lg"
+                className="w-full h-16 text-lg shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                 disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
                 onClick={handleDeposit}
               >

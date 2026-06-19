@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
-import { ArrowLeft, Check, Search, ShieldCheck } from "lucide-react"
+import { ArrowLeft, Check, Search } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -17,9 +17,9 @@ export default function TransferPage() {
   const isVerified = handle.length >= 3
 
   return (
-    <div className="flex flex-col min-h-[100dvh] px-6 pt-12 pb-8 bg-black">
+    <div className="flex flex-col h-full bg-black">
       {step === "form" && (
-        <header className="flex items-center mb-8">
+        <header className="flex items-center px-6 pt-12 pb-6">
           <Link href="/">
             <button className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors">
               <ArrowLeft className="w-5 h-5" />
@@ -36,9 +36,9 @@ export default function TransferPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="flex-1 flex flex-col"
+            className="flex-1 flex flex-col overflow-hidden"
           >
-            <div className="flex-1">
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-6">
               <div className="bg-surface-900/50 border border-surface-800 rounded-3xl p-6 mb-6">
                 <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-3 block">Recipient Handle</label>
                 <div className="relative flex items-center">
@@ -58,10 +58,12 @@ export default function TransferPage() {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.5 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="absolute right-0 flex items-center gap-2 bg-emerald-500/10 text-emerald-500 px-3 py-1.5 rounded-full"
+                      className="absolute right-0 flex items-center gap-2 bg-emerald-500/10 text-emerald-400 pl-2 pr-3 py-1 rounded-full border border-emerald-500/20"
                     >
-                      <ShieldCheck className="w-4 h-4" />
-                      <span className="text-xs font-medium uppercase tracking-wider">Verified</span>
+                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                        <Check className="w-3.5 h-3.5 text-black stroke-[3]" />
+                      </div>
+                      <span className="text-[11px] font-bold uppercase tracking-widest">Verified</span>
                     </motion.div>
                   )}
                   {isValidating && (
@@ -118,9 +120,9 @@ export default function TransferPage() {
               </AnimatePresence>
             </div>
 
-            <div className="pt-6">
+            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
               <Button
-                className="w-full h-16 text-lg shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                className="w-full h-16 text-lg shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                 disabled={!isVerified || !amount || parseFloat(amount) <= 0}
                 onClick={() => setStep("success")}
               >

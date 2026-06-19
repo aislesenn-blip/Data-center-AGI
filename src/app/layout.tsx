@@ -37,9 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark bg-black">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white min-[100dvh] selection:bg-white selection:text-black hide-scrollbar overscroll-none`}
+        className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white h-[100dvh] w-screen overflow-hidden selection:bg-white selection:text-black overscroll-none`}
       >
-        <main className="max-w-md mx-auto min-h-[100dvh] relative overflow-x-hidden bg-black flex flex-col pb-safe">
+        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-black flex flex-col">
           {children}
         </main>
       </body>
