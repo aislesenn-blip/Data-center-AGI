@@ -9,7 +9,7 @@ import { motion } from "framer-motion"
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12">
+    <div className="flex flex-col h-full overflow-y-auto hide-scrollbar px-6 pt-12 pb-24">
       {/* Hero Card */}
       <div className="mt-8 mb-10 w-full flex justify-center">
         <SpaceCard balance={12450.00} name="Jules Dev" handle="jules" />
@@ -79,14 +79,14 @@ export default function Home() {
       </motion.div>
 
       {/* Admin Discoverability */}
-      <div className="mt-16 mb-24 flex justify-center">
+      <div className="mt-16 flex justify-center">
         <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-700 hover:text-surface-500 transition-colors">
           Partners
         </Link>
       </div>
 
       {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 flex justify-center pb-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
         <Link href="/pay/demo-merchant" className="pointer-events-auto">
           <motion.div
             whileHover={{ scale: 1.05 }}

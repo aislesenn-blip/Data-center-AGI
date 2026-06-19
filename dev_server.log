@@ -21,3 +21,9 @@
  GET / 200 in 60ms (next.js: 4ms, application-code: 56ms)
  GET /transfer 200 in 63ms (next.js: 5ms, application-code: 58ms)
  GET /pay/coffee-roasters 200 in 186ms (next.js: 82ms, application-code: 104ms)
+✓ Compiled in 910ms
+ GET / 200 in 1272ms (next.js: 771ms, application-code: 501ms)
+ GET /transfer 200 in 167ms (next.js: 48ms, application-code: 118ms)
+ GET /pay/coffee-roasters 200 in 223ms (next.js: 97ms, application-code: 126ms)
+ GET / 200 in 74ms (next.js: 5ms, application-code: 69ms)
+ GET /pay/coffee-roasters 200 in 108ms (next.js: 27ms, application-code: 81ms)
