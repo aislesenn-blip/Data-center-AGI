@@ -3,37 +3,15 @@
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/Button"
-import { Check, ArrowLeft, Loader2, ShieldCheck } from "lucide-react"
+import { Check, ArrowLeft, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function PayPage() {
   const [amount, setAmount] = useState("")
-  const [step, setStep] = useState<"amount" | "pin" | "processing" | "success">("amount")
-  const [pin, setPin] = useState("")
+  const [step, setStep] = useState<"amount" | "processing" | "ready" | "success">("amount")
   const [currentTime, setCurrentTime] = useState("")
   const [refCode, setRefCode] = useState("000000")
-
-  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow digits
-    const digits = e.target.value.replace(/\D/g, '');
-    if (digits.length <= 4) {
-      setPin(digits);
-    }
-  }
-
-  // We explicitly log here to ensure it's doing what we want during testing
-  useEffect(() => {
-     console.log("PIN CHANGED TO:", pin);
-  }, [pin]);
-
-  // Effect to handle auto-submission when PIN is fully entered
-  useEffect(() => {
-    if (pin.length === 4 && step === "pin") {
-      const timer = setTimeout(() => setStep("processing"), 300)
-      return () => clearTimeout(timer)
-    }
-  }, [pin, step])
 
   useEffect(() => {
     // Generate ref code only on the client
@@ -58,7 +36,7 @@ export default function PayPage() {
   useEffect(() => {
     if (step === "processing") {
       const timer = setTimeout(() => {
-         setStep("success")
+         setStep("ready")
       }, 1500)
       return () => clearTimeout(timer)
     }
@@ -77,11 +55,10 @@ export default function PayPage() {
         </header>
       )}
 
-      {step === "pin" && (
+      {step === "ready" && (
         <header className="flex items-center px-6 pt-12 pb-6">
             <button
               onClick={() => {
-                setPin("")
                 setStep("amount")
               }}
               className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors"
@@ -140,58 +117,11 @@ export default function PayPage() {
                   <Button
                     className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                     disabled={!amount || parseFloat(amount) <= 0}
-                    onClick={() => setStep("pin")}
+                    onClick={() => setStep("processing")}
                   >
-                    Continue
+                    Create Payment
                   </Button>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {step === "pin" && (
-          <motion.div
-            key="pin-form"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex-1 flex flex-col items-center justify-center px-6 -mt-20"
-          >
-            <div className="w-16 h-16 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center mb-6">
-              <ShieldCheck className="w-8 h-8 text-emerald-500" />
-            </div>
-            <h2 className="text-2xl font-medium tracking-tight mb-2">Enter PIN</h2>
-            <p className="text-surface-400 text-sm mb-12 text-center">
-              Authorize payment of <strong className="text-white">TZS {parseInt(amount).toLocaleString()}</strong> to <strong className="text-white">Coffee Roasters</strong>.
-            </p>
-
-            <div className="relative w-full max-w-[300px] mx-auto">
-              {/* Invisible native input to handle ALL keyboard events perfectly */}
-              <input
-                autoFocus
-                type="tel"
-                inputMode="numeric"
-                maxLength={4}
-                className="absolute inset-0 w-full h-full opacity-0 text-[0px] caret-transparent outline-none z-20"
-                value={pin}
-                onChange={handlePinChange}
-              />
-
-              <div className="flex gap-4 justify-center pointer-events-none">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="relative w-14 h-14">
-                    {/* Visual dot overlay */}
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center border rounded-xl transition-all duration-300 ${
-                        pin[i] ? "border-emerald-500/50 bg-emerald-500/10" :
-                        (pin.length === i ? "border-surface-600 bg-surface-800" : "border-surface-800 bg-surface-900/50")
-                      }`}
-                    >
-                      <div className={`w-3 h-3 rounded-full transition-all ${pin[i] ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-transparent"}`} />
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </motion.div>
@@ -206,7 +136,66 @@ export default function PayPage() {
             className="flex-1 flex flex-col items-center justify-center"
           >
             <Loader2 className="w-12 h-12 animate-spin text-white mb-6" />
-            <p className="text-surface-400 font-medium animate-pulse">Processing secure payment...</p>
+            <p className="text-surface-400 font-medium animate-pulse">Saving payment info...</p>
+          </motion.div>
+        )}
+
+        {step === "ready" && (
+          <motion.div
+            key="ready"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex-1 flex flex-col items-center justify-center px-6 relative"
+          >
+            {/* Pulsing background effect */}
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+              <motion.div
+                animate={{
+                  scale: [1, 2, 2],
+                  opacity: [0.3, 0.1, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+                className="w-48 h-48 rounded-full bg-blue-500/20"
+              />
+              <motion.div
+                animate={{
+                  scale: [1, 2.5, 2.5],
+                  opacity: [0.2, 0.05, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  delay: 0.5,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+                className="absolute w-48 h-48 rounded-full bg-blue-500/20"
+              />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-24 h-24 bg-surface-900 border border-surface-800 rounded-full flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(59,130,246,0.15)] relative">
+                <svg className="w-10 h-10 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2C10.6667 6.66667 10.6667 17.3333 6 22M10.6667 4.33333C14.0762 7.74281 14.0762 16.2572 10.6667 19.6667M15.3333 6.66667C17.4856 8.81896 17.4856 15.181 15.3333 17.3333M20 9C20.6667 9.66667 20.6667 14.3333 20 15" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-medium tracking-tight mb-2 text-white">Ready to Pay</h2>
+              <p className="text-surface-400 text-center max-w-[250px]">
+                Hold your phone near the reader to authorize TZS {parseInt(amount || "0").toLocaleString()}
+              </p>
+
+              {/* HIDDEN BUTTON TO TRIGGER SUCCESS FOR TESTING / SIMULATION */}
+              <button
+                onClick={() => setStep("success")}
+                className="mt-12 text-surface-600 text-xs uppercase tracking-widest font-bold hover:text-surface-400 transition-colors"
+              >
+                (Simulate Tap)
+              </button>
+            </div>
           </motion.div>
         )}
 
