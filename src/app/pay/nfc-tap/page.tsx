@@ -12,6 +12,23 @@ export default function PayPage() {
   const [step, setStep] = useState<"amount" | "ready" | "processing" | "success">("amount")
   const [currentTime, setCurrentTime] = useState("")
   const [refCode, setRefCode] = useState("000000")
+  const [nfcSupported, setNfcSupported] = useState<boolean | null>(null)
+  const [nfcError, setNfcError] = useState<string | null>(null)
+
+
+  useEffect(() => {
+    // Check if Web NFC is supported.
+    // Use requestAnimationFrame to avoid synchronous setState warnings in effects if needed,
+    // or set it slightly delayed to ensure it's not synchronous on mount
+    const timer = setTimeout(() => {
+      if (typeof window !== "undefined" && "NDEFReader" in window) {
+        setNfcSupported(true)
+      } else {
+        setNfcSupported(false)
+      }
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     // Generate ref code only on the client
@@ -41,6 +58,36 @@ export default function PayPage() {
       return () => clearTimeout(timer)
     }
   }, [step])
+
+
+  useEffect(() => {
+    if (step === "ready" && nfcSupported) {
+      const startNfcScan = async () => {
+        try {
+          // @ts-expect-error - NDEFReader is not in standard TS lib yet
+          const ndef = new window.NDEFReader()
+          await ndef.scan()
+
+          ndef.addEventListener("readingerror", () => {
+            setNfcError("Cannot read data from the NFC tag. Try another one?")
+          })
+
+          ndef.addEventListener("reading", ({ message, serialNumber }: { message: { records: unknown[] }, serialNumber: string }) => {
+            console.log(`> Serial Number: ${serialNumber}`)
+            console.log(`> Records: (${message.records.length})`)
+
+            // Advance to processing state automatically upon successful read
+            setStep("processing")
+          })
+        } catch (error) {
+          console.error("NFC Scan Error:", error)
+          setNfcError(error instanceof Error ? error.message : "NFC access error")
+        }
+      }
+
+      startNfcScan()
+    }
+  }, [step, nfcSupported])
 
   return (
     <div className="flex flex-col h-full bg-black">
@@ -161,6 +208,20 @@ export default function PayPage() {
               <p className="text-surface-400 text-center max-w-[250px]">
                 Hold your phone near the reader to authorize TZS {parseInt(amount || "0").toLocaleString()}
               </p>
+
+              {nfcError && (
+                <p className="mt-4 text-red-400 text-sm font-medium text-center max-w-[250px]">
+                  {nfcError}
+                </p>
+              )}
+
+              {nfcSupported === false && (
+                <div className="mt-6 bg-surface-900/80 border border-surface-800 p-4 rounded-xl text-center">
+                  <p className="text-xs text-surface-400 mb-2">Web NFC not supported on this device/browser.</p>
+                  <p className="text-[10px] text-surface-500">Requires Chrome on Android.</p>
+                </div>
+              )}
+
 
               {/* HIDDEN BUTTON TO TRIGGER PROCESSING FOR TESTING / SIMULATION */}
               <button
