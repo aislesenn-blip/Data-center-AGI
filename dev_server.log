@@ -27,3 +27,18 @@
  GET /pay/coffee-roasters 200 in 223ms (next.js: 97ms, application-code: 126ms)
  GET / 200 in 74ms (next.js: 5ms, application-code: 69ms)
  GET /pay/coffee-roasters 200 in 108ms (next.js: 27ms, application-code: 81ms)
+✓ Compiled in 354ms
+ GET / 200 in 328ms (next.js: 54ms, application-code: 273ms)
+ GET /transfer 200 in 144ms (next.js: 24ms, application-code: 120ms)
+ GET / 200 in 110ms (next.js: 10ms, application-code: 101ms)
+ GET /transfer 200 in 89ms (next.js: 4ms, application-code: 85ms)
+ GET / 200 in 164ms (next.js: 10ms, application-code: 154ms)
+ GET /transfer 200 in 138ms (next.js: 8ms, application-code: 130ms)
+○ Compiling /deposit ...
+ GET /deposit 200 in 5.6s (next.js: 5.5s, application-code: 77ms)
+ GET / 200 in 60ms (next.js: 4ms, application-code: 56ms)
+ GET /transfer 200 in 60ms (next.js: 4ms, application-code: 56ms)
+ GET /deposit 200 in 55ms (next.js: 3ms, application-code: 52ms)
+ GET /pay/coffee-roasters 200 in 197ms (next.js: 74ms, application-code: 123ms)
+ GET / 200 in 60ms (next.js: 5ms, application-code: 55ms)
+ GET /pay/coffee-roasters 200 in 121ms (next.js: 31ms, application-code: 91ms)
