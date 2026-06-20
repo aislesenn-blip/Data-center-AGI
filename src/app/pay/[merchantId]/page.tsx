@@ -6,47 +6,30 @@ import { Button } from "@/components/ui/Button"
 import { Check, ArrowLeft, Loader2, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { useRef } from "react"
 
 export default function PayPage() {
   const [amount, setAmount] = useState("")
   const [step, setStep] = useState<"amount" | "pin" | "processing" | "success">("amount")
-  const [pin, setPin] = useState(["", "", "", ""])
+  const [pin, setPin] = useState("")
   const [currentTime, setCurrentTime] = useState("")
   const [refCode, setRefCode] = useState("000000")
-  const pinRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ]
 
-  const handlePinChange = (index: number, value: string) => {
+  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Only allow digits
-    const cleanValue = value.replace(/\D/g, '').slice(-1)
-
-    setPin(prevPin => {
-      const newPin = [...prevPin]
-      newPin[index] = cleanValue
-      return newPin
-    })
-
-    // Auto advance
-    if (cleanValue !== "" && index < 3) {
-      setTimeout(() => pinRefs[index + 1].current?.focus(), 10)
+    const digits = e.target.value.replace(/\D/g, '');
+    if (digits.length <= 4) {
+      setPin(digits);
     }
   }
 
-  const handlePinKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" && pin[index] === "" && index > 0) {
-      setTimeout(() => pinRefs[index - 1].current?.focus(), 10)
-    }
-  }
+  // We explicitly log here to ensure it's doing what we want during testing
+  useEffect(() => {
+     console.log("PIN CHANGED TO:", pin);
+  }, [pin]);
 
   // Effect to handle auto-submission when PIN is fully entered
   useEffect(() => {
-    const isComplete = pin.every(digit => digit !== "")
-    if (isComplete && step === "pin") {
+    if (pin.length === 4 && step === "pin") {
       const timer = setTimeout(() => setStep("processing"), 300)
       return () => clearTimeout(timer)
     }
@@ -98,7 +81,7 @@ export default function PayPage() {
         <header className="flex items-center px-6 pt-12 pb-6">
             <button
               onClick={() => {
-                setPin(["", "", "", ""])
+                setPin("")
                 setStep("amount")
               }}
               className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors"
@@ -183,32 +166,33 @@ export default function PayPage() {
               Authorize payment of <strong className="text-white">TZS {parseInt(amount).toLocaleString()}</strong> to <strong className="text-white">Coffee Roasters</strong>.
             </p>
 
-            <div className="flex gap-4 relative z-10 justify-center">
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="relative w-14 h-14">
-                  {/* Visual dot overlay */}
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center border rounded-xl pointer-events-none transition-all duration-300 ${
-                      pin[i] ? "border-emerald-500/50 bg-emerald-500/10" : "border-surface-800 bg-surface-900/50"
-                    }`}
-                  >
-                    <div className={`w-3 h-3 rounded-full transition-all ${pin[i] ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-transparent"}`} />
-                  </div>
+            <div className="relative w-full max-w-[300px] mx-auto">
+              {/* Invisible native input to handle ALL keyboard events perfectly */}
+              <input
+                autoFocus
+                type="tel"
+                inputMode="numeric"
+                maxLength={4}
+                className="absolute inset-0 w-full h-full opacity-0 text-[0px] caret-transparent outline-none z-20"
+                value={pin}
+                onChange={handlePinChange}
+              />
 
-                  {/* Actual input for mobile keyboard compatibility */}
-                  <input
-                    ref={pinRefs[i]}
-                    autoFocus={i === 0}
-                    type="tel"
-                    inputMode="numeric"
-                    maxLength={1}
-                    className="w-full h-full bg-transparent text-[0px] caret-transparent outline-none focus:ring-0 text-transparent selection:bg-transparent"
-                    value={pin[i]}
-                    onChange={(e) => handlePinChange(i, e.target.value)}
-                    onKeyDown={(e) => handlePinKeyDown(i, e)}
-                  />
-                </div>
-              ))}
+              <div className="flex gap-4 justify-center pointer-events-none">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="relative w-14 h-14">
+                    {/* Visual dot overlay */}
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center border rounded-xl transition-all duration-300 ${
+                        pin[i] ? "border-emerald-500/50 bg-emerald-500/10" :
+                        (pin.length === i ? "border-surface-600 bg-surface-800" : "border-surface-800 bg-surface-900/50")
+                      }`}
+                    >
+                      <div className={`w-3 h-3 rounded-full transition-all ${pin[i] ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-transparent"}`} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
