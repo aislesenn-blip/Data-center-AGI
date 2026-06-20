@@ -74,7 +74,8 @@ export default function PayPage() {
             key="amount-form"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col"
           >
             <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
@@ -118,6 +119,7 @@ export default function PayPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col items-center justify-center px-6 relative"
           >
             {/* Pulsing background effect */}
@@ -177,6 +179,7 @@ export default function PayPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col items-center justify-center"
           >
             <Loader2 className="w-12 h-12 animate-spin text-white mb-6" />
@@ -189,6 +192,7 @@ export default function PayPage() {
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col overflow-hidden px-6 pt-6 pb-6"
           >
             {/* The Digital Receipt Object - Massive and Official */}
