@@ -81,7 +81,7 @@ export default function Home() {
 
       {/* Bottom Floating Action Bar (NFC Pay) */}
       <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
-        <Link href="/pay/demo-merchant" className="pointer-events-auto">
+        <Link href="/pay/nfc-tap" className="pointer-events-auto">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

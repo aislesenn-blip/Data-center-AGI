@@ -7,20 +7,20 @@
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Premium Monochromatic Palette */
-  --color-background: #000000;
-  --color-foreground: #ffffff;
+  --color-background: #0b0c0d;
+  --color-foreground: #f3f4f6;
 
   --color-surface-50: #fafafa;
   --color-surface-100: #f4f4f5;
   --color-surface-200: #e4e4e7;
   --color-surface-300: #d4d4d8;
-  --color-surface-400: #a1a1aa;
-  --color-surface-500: #71717a;
-  --color-surface-600: #52525b;
-  --color-surface-700: #3f3f46;
-  --color-surface-800: #27272a;
-  --color-surface-900: #18181b;
-  --color-surface-950: #09090b;
+  --color-surface-400: #9ca3af;
+  --color-surface-500: #6b7280;
+  --color-surface-600: #4b5563;
+  --color-surface-700: #374151;
+  --color-surface-800: #1f2937;
+  --color-surface-900: #111827;
+  --color-surface-950: #030712;
 
   --color-brand: #ffffff;
   --color-brand-foreground: #000000;
@@ -31,10 +31,10 @@
 
 @layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
-    --surface: #09090b;
-    --border: #27272a;
+    --background: #0b0c0d;
+    --foreground: #f3f4f6;
+    --surface: #030712;
+    --border: #1f2937;
   }
 
   * {

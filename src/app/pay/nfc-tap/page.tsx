@@ -78,25 +78,10 @@ export default function PayPage() {
             className="flex-1 flex flex-col"
           >
             <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
-              <h1 className="text-2xl font-medium tracking-tight mb-2">Pay Partner</h1>
-              <p className="text-surface-400 text-sm mb-8">Enter payment details below.</p>
+              <h1 className="text-2xl font-medium tracking-tight mb-2">Enter Amount</h1>
+              <p className="text-surface-400 text-sm mb-8">Specify the amount you wish to authorize.</p>
 
               <div className="space-y-6">
-                <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-5 flex items-center justify-between">
-                  <div>
-                    <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-1 block">Partner</label>
-                    <p className="font-medium text-white text-lg">Coffee Roasters</p>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-surface-400 font-bold uppercase tracking-widest">Verified</span>
-                      <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.3)]">
-                        <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div>
                    <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Amount to pay</label>
                    <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 focus-within:bg-surface-900 transition-colors overflow-hidden">
