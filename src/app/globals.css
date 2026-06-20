@@ -6,8 +6,8 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* WhatsApp Dark Mode Inspired Palette */
-  --color-background: #111b21;
+  /* WhatsApp Dark Mode Palette */
+  --color-background: #0b141a;
   --color-foreground: #e9edef;
 
   --color-surface-50: #e9edef;
@@ -16,13 +16,14 @@
   --color-surface-300: #667781;
   --color-surface-400: #374045;
   --color-surface-500: #2a3942;
-  --color-surface-600: #233138;
+  --color-surface-600: #222d34;
   --color-surface-700: #202c33;
   --color-surface-800: #182229;
   --color-surface-900: #111b21;
   --color-surface-950: #0b141a;
 
   --color-brand: #00a884;
+  --color-brand-hover: #008f6f;
   --color-brand-foreground: #111b21;
 
   --animate-in: in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -31,9 +32,9 @@
 
 @layer base {
   :root {
-    --background: #111b21;
+    --background: #0b141a;
     --foreground: #e9edef;
-    --surface: #202c33;
+    --surface: #111b21;
     --border: #2a3942;
   }
 

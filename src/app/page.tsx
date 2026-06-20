@@ -23,9 +23,9 @@ export default function Home() {
         className="flex mb-12"
       >
         <Link href="/deposit" className="block w-full">
-          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-            <ArrowDownLeft className="w-5 h-5 text-surface-200" />
-            Deposit Funds
+          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base font-medium border border-surface-600 bg-surface-800 hover:bg-surface-700">
+            <ArrowDownLeft className="w-5 h-5 text-brand" />
+            Deposit
           </Button>
         </Link>
       </motion.div>
@@ -39,36 +39,36 @@ export default function Home() {
       >
         <div className="flex justify-between items-end mb-6">
           <h2 className="text-lg font-medium text-foreground">Recent Activity</h2>
-          <button className="text-sm text-surface-200 hover:text-foreground transition-colors">See all</button>
+          <button className="text-sm text-surface-400 hover:text-foreground transition-colors">See all</button>
         </div>
 
         <div className="space-y-6">
           {/* Transaction Item */}
-          <div className="flex items-center justify-between">
+          <Link href="/receipt/payment-1" className="flex items-center justify-between block hover:bg-surface-800/50 p-2 -mx-2 rounded-xl transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">WK</span>
+                <span className="font-mono text-sm text-surface-400">WK</span>
               </div>
               <div>
                 <p className="font-medium text-base text-foreground">Work Cafe</p>
-                <p className="text-sm text-surface-200">Today, 9:41 AM</p>
+                <p className="text-sm text-surface-400">Today, 9:41 AM</p>
               </div>
             </div>
             <p className="font-medium text-base text-foreground">- TZS 12,500</p>
-          </div>
+          </Link>
 
-          <div className="flex items-center justify-between">
+          <Link href="/receipt/deposit-1" className="flex items-center justify-between block hover:bg-surface-800/50 p-2 -mx-2 rounded-xl transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">AL</span>
+                <span className="font-mono text-sm text-surface-400">AL</span>
               </div>
               <div>
                 <p className="font-medium text-base text-foreground">$alex</p>
-                <p className="text-sm text-surface-200">Yesterday</p>
+                <p className="text-sm text-surface-400">Yesterday</p>
               </div>
             </div>
             <p className="font-medium text-base text-foreground">+ TZS 45,000</p>
-          </div>
+          </Link>
         </div>
       </motion.div>
 
@@ -80,12 +80,12 @@ export default function Home() {
       </div>
 
       {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
-        <Link href="/pay/demo-merchant" className="pointer-events-auto">
+      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none z-50">
+        <Link href="/pay/nfc-tap" className="pointer-events-auto">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="h-16 px-8 bg-brand text-brand-foreground rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(0,168,132,0.2)] cursor-pointer"
+            className="h-16 px-8 bg-brand text-brand-foreground rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(0,168,132,0.2)] cursor-pointer hover:bg-brand-hover transition-colors"
           >
             <ScanLine className="w-5 h-5" />
             <span className="font-medium text-base">Tap to Pay</span>

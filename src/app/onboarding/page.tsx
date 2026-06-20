@@ -24,7 +24,7 @@ export default function OnboardingPage() {
            const currentIndex = steps.indexOf(step)
            const isActive = i <= currentIndex
            return (
-             <div key={s} className={`h-1 flex-1 rounded-full ${isActive ? 'bg-white' : 'bg-surface-800'}`} />
+             <div key={s} className={`h-1 flex-1 rounded-full ${isActive ? 'bg-foreground' : 'bg-surface-800'}`} />
            )
          })}
       </div>
@@ -46,14 +46,14 @@ export default function OnboardingPage() {
 
               <div className="flex-1">
                 <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Phone Number</label>
-                <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 transition-colors">
-                  <span className="pl-4 pr-2 text-surface-500 font-medium">+255</span>
+                <div className="relative flex items-center h-14 bg-surface-900 border border-surface-600 rounded-xl focus-within:border-brand focus-within:ring-1 focus-within:ring-brand transition-colors overflow-hidden">
+                  <span className="pl-4 pr-2 text-surface-400 font-medium">+255</span>
                   <input
                     autoFocus
                     type="tel"
                     inputMode="numeric"
                     placeholder="712 345 678"
-                    className="w-full h-full bg-transparent text-lg text-white outline-none"
+                    className="w-full h-full bg-transparent text-lg text-foreground outline-none"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 9))}
                   />
@@ -91,7 +91,7 @@ export default function OnboardingPage() {
                   type="number"
                   inputMode="numeric"
                   placeholder="000000"
-                  className="w-full h-14 bg-surface-900/50 border border-surface-800 rounded-xl px-4 text-2xl tracking-[0.5em] font-mono text-center text-white outline-none focus:border-surface-600 transition-colors"
+                  className="w-full h-14 bg-surface-900 border border-surface-600 rounded-xl px-4 text-2xl tracking-[0.5em] font-mono text-center text-foreground outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors"
                   value={code}
                   onChange={(e) => {
                     const val = e.target.value.slice(0, 6)
@@ -126,25 +126,25 @@ export default function OnboardingPage() {
 
               <div className="flex-1">
                 <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">SpaceCard ID</label>
-                <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 transition-colors">
-                  <span className="pl-4 pr-1 text-surface-500 font-medium text-xl">$</span>
+                <div className="relative flex items-center h-14 bg-surface-900 border border-surface-600 rounded-xl focus-within:border-brand focus-within:ring-1 focus-within:ring-brand transition-colors overflow-hidden">
+                  <span className="pl-4 pr-1 text-surface-400 font-medium text-xl">$</span>
                   <input
                     autoFocus
                     type="text"
                     placeholder="jules"
-                    className="w-full h-full bg-transparent text-xl text-white outline-none lowercase"
+                    className="w-full h-full bg-transparent text-xl text-foreground outline-none lowercase"
                     value={handle}
                     onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''))}
                   />
                   {handle.length > 2 && (
                     <div className="pr-4">
-                      <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                        <Check className="w-3 h-3 text-emerald-500 stroke-[3]" />
+                      <div className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center">
+                        <Check className="w-3 h-3 text-brand stroke-[3]" />
                       </div>
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-surface-500 mt-3">Handles must be unique and alphanumeric.</p>
+                <p className="text-xs text-surface-400 mt-3">Handles must be unique and alphanumeric.</p>
               </div>
 
               <Button
@@ -172,7 +172,7 @@ export default function OnboardingPage() {
 
               <div className="flex-1">
                 <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Create PIN</label>
-                <div className="relative h-16 bg-surface-900/50 border border-surface-800 rounded-xl overflow-hidden focus-within:border-surface-600">
+                <div className="relative h-16 bg-surface-900 border border-surface-600 rounded-xl overflow-hidden focus-within:border-brand focus-within:ring-1 focus-within:ring-brand">
                   <input
                     autoFocus
                     type="tel"
@@ -196,10 +196,10 @@ export default function OnboardingPage() {
                         key={index}
                         className={`w-4 h-4 rounded-full transition-all duration-200 ${
                           pin.length > index
-                            ? "bg-white scale-100"
-                            : "bg-surface-800 scale-75"
+                            ? "bg-foreground scale-100"
+                            : "bg-surface-600 scale-75"
                         } ${
-                          pin.length === index ? "ring-2 ring-white/20 ring-offset-2 ring-offset-surface-900" : ""
+                          pin.length === index ? "ring-2 ring-foreground/20 ring-offset-2 ring-offset-surface-900" : ""
                         }`}
                       />
                     ))}

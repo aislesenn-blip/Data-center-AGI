@@ -33,7 +33,7 @@ export default function DepositPage() {
       {step === "details" && (
         <header className="flex items-center justify-between px-6 pt-12 pb-6">
           <Link href="/">
-            <button className="w-10 h-10 rounded-full bg-surface-800 border border-surface-700 flex items-center justify-center hover:bg-surface-700 transition-colors">
+            <button className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors">
               <ArrowLeft className="w-5 h-5 text-foreground" />
             </button>
           </Link>
@@ -53,25 +53,25 @@ export default function DepositPage() {
           >
             <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
               <h1 className="text-2xl font-medium tracking-tight mb-2 text-foreground">Deposit Funds</h1>
-              <p className="text-surface-200 text-sm mb-8">Enter your mobile money details.</p>
+              <p className="text-surface-400 text-sm mb-8">Enter your mobile money details.</p>
 
               <div className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-bold text-surface-300 uppercase tracking-widest mb-2 block">Phone Number</label>
+                  <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Phone Number</label>
                   <input
                     type="tel"
                     inputMode="tel"
                     placeholder="07XX XXX XXX"
-                    className="w-full h-14 bg-surface-800/50 border border-surface-700 rounded-xl px-4 text-lg text-foreground outline-none focus:border-surface-500 focus:bg-surface-800 transition-colors"
+                    className="w-full h-14 bg-surface-900 border border-surface-600 rounded-xl px-4 text-lg text-foreground outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors"
                     value={phone}
                     onChange={handlePhoneChange}
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-surface-300 uppercase tracking-widest mb-2 block">Amount to deposit</label>
-                  <div className="relative flex items-center h-14 bg-surface-800/50 border border-surface-700 rounded-xl focus-within:border-surface-500 focus-within:bg-surface-800 transition-colors overflow-hidden">
-                    <span className="pl-4 pr-2 text-surface-300 font-medium text-sm">TZS</span>
+                  <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Amount to deposit</label>
+                  <div className="relative flex items-center h-14 bg-surface-900 border border-surface-600 rounded-xl focus-within:border-brand focus-within:ring-1 focus-within:ring-brand transition-colors overflow-hidden">
+                    <span className="pl-4 pr-2 text-surface-400 font-medium text-sm">TZS</span>
                     <input
                       ref={amountInputRef}
                       type="number"
@@ -108,8 +108,8 @@ export default function DepositPage() {
             className="flex-1 flex flex-col items-center justify-center text-center"
           >
             <Loader2 className="w-12 h-12 animate-spin text-brand mb-6" />
-            <p className="text-surface-200 font-medium animate-pulse">Requesting deposit...</p>
-            <p className="text-sm text-surface-300 mt-2">Please check your phone to confirm the PIN.</p>
+            <p className="text-surface-400 font-medium animate-pulse">Requesting deposit...</p>
+            <p className="text-sm text-surface-400 mt-2">Please check your phone to confirm the PIN.</p>
           </motion.div>
         )}
 
@@ -126,7 +126,7 @@ export default function DepositPage() {
                 <Check className="w-10 h-10" />
               </div>
               <h1 className="text-3xl font-medium tracking-tight mb-2 text-foreground">Deposit Successful</h1>
-              <p className="text-surface-200 text-lg">
+              <p className="text-surface-400 text-lg">
                 TZS {parseInt(amount).toLocaleString()} added to your SpaceCard.
               </p>
             </div>
