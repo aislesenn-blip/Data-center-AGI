@@ -37,15 +37,7 @@ export default function DepositPage() {
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
-          <Button
-            variant="default"
-            size="sm"
-            className="h-10 px-6 font-semibold"
-            disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
-            onClick={handleDeposit}
-          >
-            Deposit
-          </Button>
+          <div className="flex-1" />
         </header>
       )}
 
@@ -56,39 +48,51 @@ export default function DepositPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex-1 flex flex-col px-6"
+            className="flex-1 flex flex-col"
           >
-            <h1 className="text-3xl font-medium tracking-tight mb-2">Deposit Funds</h1>
-            <p className="text-surface-400 mb-8">Enter your mobile money details.</p>
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar">
+              <h1 className="text-2xl font-medium tracking-tight mb-2">Deposit Funds</h1>
+              <p className="text-surface-400 text-sm mb-8">Enter your mobile money details.</p>
 
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Phone Number</label>
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  placeholder="07XX XXX XXX"
-                  className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl px-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Amount (TZS)</label>
-                <div className="relative">
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-surface-500 font-medium">TZS</span>
+              <div className="space-y-6">
+                <div>
+                  <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Phone Number</label>
                   <input
-                    ref={amountInputRef}
-                    type="number"
-                    inputMode="decimal"
-                    placeholder="0"
-                    className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl pl-16 pr-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    type="tel"
+                    inputMode="tel"
+                    placeholder="07XX XXX XXX"
+                    className="w-full h-14 bg-surface-900/50 border border-surface-800 rounded-xl px-4 text-lg text-white outline-none focus:border-surface-600 focus:bg-surface-900 transition-colors"
+                    value={phone}
+                    onChange={handlePhoneChange}
                   />
                 </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Amount to deposit</label>
+                  <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 focus-within:bg-surface-900 transition-colors overflow-hidden">
+                    <span className="pl-4 pr-2 text-surface-500 font-medium text-sm">TZS</span>
+                    <input
+                      ref={amountInputRef}
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="0"
+                      className="w-full h-full bg-transparent text-lg text-white outline-none"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
+              <Button
+                className="w-full h-14 text-base"
+                disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
+                onClick={handleDeposit}
+              >
+                Deposit
+              </Button>
             </div>
           </motion.div>
         )}

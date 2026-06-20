@@ -27,6 +27,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -39,7 +43,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white h-[100dvh] w-screen overflow-hidden selection:bg-white selection:text-black overscroll-none`}
       >
-        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-black flex flex-col">
+        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-black flex flex-col supports-[height:100cqh]:h-[100cqh]">
           {children}
         </main>
       </body>
