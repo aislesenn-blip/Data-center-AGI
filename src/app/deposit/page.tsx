@@ -47,7 +47,8 @@ export default function DepositPage() {
             key="details"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col"
           >
             <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
@@ -103,6 +104,7 @@ export default function DepositPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col items-center justify-center text-center"
           >
             <Loader2 className="w-12 h-12 animate-spin text-brand mb-6" />
@@ -116,6 +118,7 @@ export default function DepositPage() {
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="flex-1 flex flex-col"
           >
             <div className="flex-1 flex flex-col items-center justify-center">
