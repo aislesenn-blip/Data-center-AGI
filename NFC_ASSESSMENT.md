@@ -57,3 +57,22 @@ We have implemented real Web NFC hardware detection in `/pay/nfc-tap/page.tsx` u
 1. **Protocol Mismatch:** Web NFC only reads NDEF-formatted data. Bank cards use the EMV standard and communicate via low-level APDU (Application Protocol Data Unit) commands over ISO-DEP (ISO 14443-4). Web NFC does not support APDU communication.
 2. **Security Sandboxing:** Browsers intentionally block access to secure elements and financial protocols to prevent skimming and malicious code execution.
 3. **To read bank cards:** You must build a Native Application (Kotlin/Swift) with low-level NFC APIs (e.g., `NfcA`/`IsoDep` on Android or `CoreNFC` ISO7816 tags on iOS) to send the specific byte commands required to extract PAN (card number) and expiry data.
+
+## Addendum: Custom SpaceCard NFC Cards (Non-Bank Cards)
+
+### What if SpaceCard issues its own custom NFC Cards?
+If SpaceCard mints its own custom NFC cards (formatted as NDEF tags), the Web NFC approach has distinct outcomes based on the operating system:
+
+**Android Feasibility: High**
+Android fully supports foreground scanning via Chrome PWA (`NDEFReader`). The linear flow of `Amount -> Ready to Tap -> Scan Custom Card -> Authenticate -> Receipt` works flawlessly.
+
+**iOS Feasibility: Severely Limited (in PWA context)**
+Even with custom NDEF cards, **Apple's Safari does not support foreground NFC scanning** (`NDEFReader` API). An iPhone user cannot sit on the "Ready to Tap" screen and scan the custom card.
+The *only* way an iPhone interacts with an NFC card via Web is through **Background Tag Reading**. This forces a paradigm shift:
+1. The custom card must have an NDEF URI (e.g., `https://spacecard.app/auth?cardId=xyz`).
+2. The user taps the card while on their iPhone home screen.
+3. A notification pops up. Tapping it opens the PWA.
+4. The flow is inverted: `Tap Card (opens app) -> Input Amount -> Authenticate`.
+
+**Conclusion for Custom Cards:**
+If SpaceCard requires the exact `Input Amount -> Tap Card` linear flow for *both* Android and iOS, it **cannot** remain a pure PWA. The codebase must be wrapped in a Native container (e.g., Capacitor) or migrated to a Native App (React Native/Flutter) to bypass Safari's limitations and utilize `CoreNFC` on iOS.
