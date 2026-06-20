@@ -50,7 +50,7 @@ export default function DepositPage() {
             exit={{ opacity: 0, x: -20 }}
             className="flex-1 flex flex-col"
           >
-            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar">
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
               <h1 className="text-2xl font-medium tracking-tight mb-2">Deposit Funds</h1>
               <p className="text-surface-400 text-sm mb-8">Enter your mobile money details.</p>
 
@@ -82,17 +82,17 @@ export default function DepositPage() {
                     />
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
-              <Button
-                className="w-full h-14 text-base"
-                disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
-                onClick={handleDeposit}
-              >
-                Deposit
-              </Button>
+                <div className="pt-2">
+                  <Button
+                    className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
+                    onClick={handleDeposit}
+                  >
+                    Deposit
+                  </Button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

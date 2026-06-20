@@ -22,28 +22,35 @@ export default function PayPage() {
   ]
 
   const handlePinChange = (index: number, value: string) => {
-    const newPin = [...pin]
     // Only allow digits
     const cleanValue = value.replace(/\D/g, '').slice(-1)
-    newPin[index] = cleanValue
-    setPin(newPin)
+
+    setPin(prevPin => {
+      const newPin = [...prevPin]
+      newPin[index] = cleanValue
+      return newPin
+    })
 
     // Auto advance
     if (cleanValue !== "" && index < 3) {
-      pinRefs[index + 1].current?.focus()
-    }
-
-    // Auto submit on last
-    if (index === 3 && cleanValue !== "") {
-      setTimeout(() => setStep("processing"), 150)
+      setTimeout(() => pinRefs[index + 1].current?.focus(), 10)
     }
   }
 
   const handlePinKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && pin[index] === "" && index > 0) {
-      pinRefs[index - 1].current?.focus()
+      setTimeout(() => pinRefs[index - 1].current?.focus(), 10)
     }
   }
+
+  // Effect to handle auto-submission when PIN is fully entered
+  useEffect(() => {
+    const isComplete = pin.every(digit => digit !== "")
+    if (isComplete && step === "pin") {
+      const timer = setTimeout(() => setStep("processing"), 300)
+      return () => clearTimeout(timer)
+    }
+  }, [pin, step])
 
   useEffect(() => {
     // Generate ref code only on the client
@@ -67,7 +74,9 @@ export default function PayPage() {
 
   useEffect(() => {
     if (step === "processing") {
-      const timer = setTimeout(() => setStep("success"), 1200)
+      const timer = setTimeout(() => {
+         setStep("success")
+      }, 1500)
       return () => clearTimeout(timer)
     }
   }, [step])
@@ -88,7 +97,10 @@ export default function PayPage() {
       {step === "pin" && (
         <header className="flex items-center px-6 pt-12 pb-6">
             <button
-              onClick={() => setStep("amount")}
+              onClick={() => {
+                setPin(["", "", "", ""])
+                setStep("amount")
+              }}
               className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -105,7 +117,7 @@ export default function PayPage() {
             exit={{ opacity: 0, x: -20 }}
             className="flex-1 flex flex-col"
           >
-            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar">
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
               <h1 className="text-2xl font-medium tracking-tight mb-2">Pay Partner</h1>
               <p className="text-surface-400 text-sm mb-8">Enter payment details below.</p>
 
@@ -140,17 +152,17 @@ export default function PayPage() {
                       />
                    </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
-              <Button
-                className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-                disabled={!amount || parseFloat(amount) <= 0}
-                onClick={() => setStep("pin")}
-              >
-                Continue
-              </Button>
+                <div className="pt-2">
+                  <Button
+                    className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    disabled={!amount || parseFloat(amount) <= 0}
+                    onClick={() => setStep("pin")}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { SpaceCard } from "@/components/SpaceCard"
 import { Button } from "@/components/ui/Button"
-import { ArrowUpRight, ArrowDownLeft, ScanLine, } from "lucide-react"
+import { ArrowDownLeft, ScanLine, } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 
@@ -20,18 +20,12 @@ export default function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 gap-4 mb-12"
+        className="flex mb-12"
       >
-        <Link href="/transfer" className="block">
-          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-            <ArrowUpRight className="w-5 h-5 text-surface-400" />
-            Send
-          </Button>
-        </Link>
-        <Link href="/deposit" className="block">
+        <Link href="/deposit" className="block w-full">
           <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
             <ArrowDownLeft className="w-5 h-5 text-surface-400" />
-            Deposit
+            Deposit Funds
           </Button>
         </Link>
       </motion.div>
