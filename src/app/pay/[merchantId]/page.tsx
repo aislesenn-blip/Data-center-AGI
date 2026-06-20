@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export default function PayPage() {
   const [amount, setAmount] = useState("")
-  const [step, setStep] = useState<"amount" | "processing" | "ready" | "success">("amount")
+  const [step, setStep] = useState<"amount" | "ready" | "processing" | "success">("amount")
   const [currentTime, setCurrentTime] = useState("")
   const [refCode, setRefCode] = useState("000000")
 
@@ -36,7 +36,7 @@ export default function PayPage() {
   useEffect(() => {
     if (step === "processing") {
       const timer = setTimeout(() => {
-         setStep("ready")
+         setStep("success")
       }, 1500)
       return () => clearTimeout(timer)
     }
@@ -78,25 +78,10 @@ export default function PayPage() {
             className="flex-1 flex flex-col"
           >
             <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-[calc(2rem+env(safe-area-inset-bottom))]">
-              <h1 className="text-2xl font-medium tracking-tight mb-2">Pay Partner</h1>
-              <p className="text-surface-400 text-sm mb-8">Enter payment details below.</p>
+              <h1 className="text-2xl font-medium tracking-tight mb-2">New Payment</h1>
+              <p className="text-surface-400 text-sm mb-8">Enter the amount to pay.</p>
 
               <div className="space-y-6">
-                <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-5 flex items-center justify-between">
-                  <div>
-                    <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-1 block">Partner</label>
-                    <p className="font-medium text-white text-lg">Coffee Roasters</p>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-surface-400 font-bold uppercase tracking-widest">Verified</span>
-                      <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.3)]">
-                        <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div>
                    <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Amount to pay</label>
                    <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 focus-within:bg-surface-900 transition-colors overflow-hidden">
@@ -117,26 +102,13 @@ export default function PayPage() {
                   <Button
                     className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                     disabled={!amount || parseFloat(amount) <= 0}
-                    onClick={() => setStep("processing")}
+                    onClick={() => setStep("ready")}
                   >
-                    Create Payment
+                    Continue
                   </Button>
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-
-        {step === "processing" && (
-          <motion.div
-            key="processing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col items-center justify-center"
-          >
-            <Loader2 className="w-12 h-12 animate-spin text-white mb-6" />
-            <p className="text-surface-400 font-medium animate-pulse">Saving payment info...</p>
           </motion.div>
         )}
 
@@ -188,14 +160,27 @@ export default function PayPage() {
                 Hold your phone near the reader to authorize TZS {parseInt(amount || "0").toLocaleString()}
               </p>
 
-              {/* HIDDEN BUTTON TO TRIGGER SUCCESS FOR TESTING / SIMULATION */}
+              {/* HIDDEN BUTTON TO TRIGGER PROCESSING FOR TESTING / SIMULATION */}
               <button
-                onClick={() => setStep("success")}
+                onClick={() => setStep("processing")}
                 className="mt-12 text-surface-600 text-xs uppercase tracking-widest font-bold hover:text-surface-400 transition-colors"
               >
                 (Simulate Tap)
               </button>
             </div>
+          </motion.div>
+        )}
+
+        {step === "processing" && (
+          <motion.div
+            key="processing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col items-center justify-center"
+          >
+            <Loader2 className="w-12 h-12 animate-spin text-white mb-6" />
+            <p className="text-surface-400 font-medium animate-pulse">Authorizing payment...</p>
           </motion.div>
         )}
 

@@ -24,7 +24,7 @@ export default function Home() {
       >
         <Link href="/deposit" className="block w-full">
           <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-            <ArrowDownLeft className="w-5 h-5 text-surface-400" />
+            <ArrowDownLeft className="w-5 h-5 text-surface-200" />
             Deposit Funds
           </Button>
         </Link>
@@ -38,54 +38,54 @@ export default function Home() {
         className="flex-1"
       >
         <div className="flex justify-between items-end mb-6">
-          <h2 className="text-lg font-medium">Recent Activity</h2>
-          <button className="text-sm text-surface-400 hover:text-white transition-colors">See all</button>
+          <h2 className="text-lg font-medium text-foreground">Recent Activity</h2>
+          <button className="text-sm text-surface-200 hover:text-foreground transition-colors">See all</button>
         </div>
 
         <div className="space-y-6">
           {/* Transaction Item */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-900 border border-surface-800 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-300">WK</span>
+              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
+                <span className="font-mono text-sm text-surface-200">WK</span>
               </div>
               <div>
-                <p className="font-medium text-base">Work Cafe</p>
-                <p className="text-sm text-surface-500">Today, 9:41 AM</p>
+                <p className="font-medium text-base text-foreground">Work Cafe</p>
+                <p className="text-sm text-surface-200">Today, 9:41 AM</p>
               </div>
             </div>
-            <p className="font-medium text-base">- TZS 12,500</p>
+            <p className="font-medium text-base text-foreground">- TZS 12,500</p>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-900 border border-surface-800 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-300">AL</span>
+              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
+                <span className="font-mono text-sm text-surface-200">AL</span>
               </div>
               <div>
-                <p className="font-medium text-base">$alex</p>
-                <p className="text-sm text-surface-500">Yesterday</p>
+                <p className="font-medium text-base text-foreground">$alex</p>
+                <p className="text-sm text-surface-200">Yesterday</p>
               </div>
             </div>
-            <p className="font-medium text-base text-white">+ TZS 45,000</p>
+            <p className="font-medium text-base text-foreground">+ TZS 45,000</p>
           </div>
         </div>
       </motion.div>
 
       {/* Admin Discoverability */}
       <div className="mt-16 flex justify-center">
-        <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-700 hover:text-surface-500 transition-colors">
+        <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-400 hover:text-surface-200 transition-colors">
           Partners
         </Link>
       </div>
 
       {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
         <Link href="/pay/demo-merchant" className="pointer-events-auto">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="h-16 px-8 bg-white text-black rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(255,255,255,0.15)] cursor-pointer"
+            className="h-16 px-8 bg-brand text-brand-foreground rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(0,168,132,0.2)] cursor-pointer"
           >
             <ScanLine className="w-5 h-5" />
             <span className="font-medium text-base">Tap to Pay</span>
