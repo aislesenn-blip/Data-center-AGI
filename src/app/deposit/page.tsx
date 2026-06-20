@@ -3,29 +3,49 @@
 import * as React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
-import { ArrowLeft, ArrowRight, Loader2, Check } from "lucide-react"
+import { ArrowLeft, Loader2, Check } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+
+import { useRef } from "react"
 
 export default function DepositPage() {
   const [step, setStep] = useState<"details" | "processing" | "success">("details")
   const [phone, setPhone] = useState("")
   const [amount, setAmount] = useState("")
+  const amountInputRef = useRef<HTMLInputElement>(null)
 
   const handleDeposit = () => {
     setStep("processing")
     setTimeout(() => setStep("success"), 1500)
   }
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '')
+    setPhone(val)
+    if (val.length === 10) {
+      amountInputRef.current?.focus()
+    }
+  }
+
   return (
     <div className="flex flex-col h-full bg-black">
       {step === "details" && (
-        <header className="flex items-center px-6 pt-12 pb-6">
+        <header className="flex items-center justify-between px-6 pt-12 pb-6">
           <Link href="/">
             <button className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
+          <Button
+            variant="default"
+            size="sm"
+            className="h-10 px-6 font-semibold"
+            disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
+            onClick={handleDeposit}
+          >
+            Deposit
+          </Button>
         </header>
       )}
 
@@ -36,51 +56,39 @@ export default function DepositPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex-1 flex flex-col overflow-hidden"
+            className="flex-1 flex flex-col px-6"
           >
-            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar pb-6">
-              <h1 className="text-3xl font-medium tracking-tight mb-2">Deposit Funds</h1>
-              <p className="text-surface-400 mb-10">Enter your mobile money details.</p>
+            <h1 className="text-3xl font-medium tracking-tight mb-2">Deposit Funds</h1>
+            <p className="text-surface-400 mb-8">Enter your mobile money details.</p>
 
-              <div className="space-y-6">
-                <div>
-                  <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Phone Number</label>
+            <div className="space-y-6">
+              <div>
+                <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Phone Number</label>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  placeholder="07XX XXX XXX"
+                  className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl px-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Amount (TZS)</label>
+                <div className="relative">
+                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-surface-500 font-medium">TZS</span>
                   <input
-                    type="tel"
-                    inputMode="tel"
-                    placeholder="07XX XXX XXX"
-                    className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl px-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                    ref={amountInputRef}
+                    type="number"
+                    inputMode="decimal"
+                    placeholder="0"
+                    className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl pl-16 pr-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                   />
                 </div>
-
-                <div>
-                  <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-2 block">Amount (TZS)</label>
-                  <div className="relative">
-                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-surface-500 font-medium">TZS</span>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      placeholder="0"
-                      className="w-full h-16 bg-surface-900 border border-surface-800 rounded-2xl pl-16 pr-6 text-xl text-white outline-none focus:border-surface-600 transition-colors"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                    />
-                  </div>
-                </div>
               </div>
-            </div>
-
-            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
-              <Button
-                className="w-full h-16 text-lg shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-                disabled={phone.length < 9 || !amount || parseFloat(amount) <= 0}
-                onClick={handleDeposit}
-              >
-                Deposit TZS {amount ? parseInt(amount).toLocaleString() : "0"}
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
             </div>
           </motion.div>
         )}
