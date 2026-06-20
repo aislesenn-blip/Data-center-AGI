@@ -46,7 +46,7 @@ export default function Home() {
           {/* Transaction Item */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-surface-700 border border-surface-600 flex items-center justify-center">
                 <span className="font-mono text-sm text-surface-200">WK</span>
               </div>
               <div>
@@ -59,7 +59,7 @@ export default function Home() {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-surface-700 border border-surface-600 flex items-center justify-center">
                 <span className="font-mono text-sm text-surface-200">AL</span>
               </div>
               <div>
@@ -67,7 +67,7 @@ export default function Home() {
                 <p className="text-sm text-surface-200">Yesterday</p>
               </div>
             </div>
-            <p className="font-medium text-base text-foreground">+ TZS 45,000</p>
+            <p className="font-medium text-base text-brand">+ TZS 45,000</p>
           </div>
         </div>
       </motion.div>

@@ -19,7 +19,7 @@ export function SpaceCard({ name = "John Doe", handle = "john", balance = 0, cla
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "relative w-full max-w-sm aspect-[1.586/1] rounded-[24px] bg-gradient-to-tr from-surface-800 to-surface-700 text-foreground p-7 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-between border border-surface-600",
+        "relative w-full max-w-sm aspect-[1.586/1] rounded-[24px] bg-gradient-to-tr from-surface-800 to-surface-700 text-foreground p-7 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-between border border-surface-500",
         className
       )}
       {...props}

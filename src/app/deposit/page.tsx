@@ -33,7 +33,7 @@ export default function DepositPage() {
       {step === "details" && (
         <header className="flex items-center justify-between px-6 pt-12 pb-6">
           <Link href="/">
-            <button className="w-10 h-10 rounded-full bg-surface-800 border border-surface-700 flex items-center justify-center hover:bg-surface-700 transition-colors">
+            <button className="w-10 h-10 rounded-full bg-surface-700 border border-surface-600 flex items-center justify-center hover:bg-surface-600 transition-colors">
               <ArrowLeft className="w-5 h-5 text-foreground" />
             </button>
           </Link>
@@ -57,21 +57,21 @@ export default function DepositPage() {
 
               <div className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-bold text-surface-300 uppercase tracking-widest mb-2 block">Phone Number</label>
+                  <label className="text-[10px] font-bold text-surface-200 uppercase tracking-widest mb-2 block">Phone Number</label>
                   <input
                     type="tel"
                     inputMode="tel"
                     placeholder="07XX XXX XXX"
-                    className="w-full h-14 bg-surface-800/50 border border-surface-700 rounded-xl px-4 text-lg text-foreground outline-none focus:border-surface-500 focus:bg-surface-800 transition-colors"
+                    className="w-full h-14 bg-surface-700 border border-surface-600 rounded-xl px-4 text-lg text-foreground outline-none focus:border-brand focus:bg-surface-600 transition-colors"
                     value={phone}
                     onChange={handlePhoneChange}
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-surface-300 uppercase tracking-widest mb-2 block">Amount to deposit</label>
-                  <div className="relative flex items-center h-14 bg-surface-800/50 border border-surface-700 rounded-xl focus-within:border-surface-500 focus-within:bg-surface-800 transition-colors overflow-hidden">
-                    <span className="pl-4 pr-2 text-surface-300 font-medium text-sm">TZS</span>
+                  <label className="text-[10px] font-bold text-surface-200 uppercase tracking-widest mb-2 block">Amount to deposit</label>
+                  <div className="relative flex items-center h-14 bg-surface-700 border border-surface-600 rounded-xl focus-within:border-brand focus-within:bg-surface-600 transition-colors overflow-hidden">
+                    <span className="pl-4 pr-2 text-surface-200 font-medium text-sm">TZS</span>
                     <input
                       ref={amountInputRef}
                       type="number"

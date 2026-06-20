@@ -6,7 +6,7 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* WhatsApp Dark Mode Inspired Palette */
+  /* Precise WhatsApp Dark Mode Palette */
   --color-background: #111b21;
   --color-foreground: #e9edef;
 
@@ -16,7 +16,7 @@
   --color-surface-300: #667781;
   --color-surface-400: #374045;
   --color-surface-500: #2a3942;
-  --color-surface-600: #233138;
+  --color-surface-600: #222e35;
   --color-surface-700: #202c33;
   --color-surface-800: #182229;
   --color-surface-900: #111b21;
@@ -34,7 +34,7 @@
     --background: #111b21;
     --foreground: #e9edef;
     --surface: #202c33;
-    --border: #2a3942;
+    --border: #222e35;
   }
 
   * {
