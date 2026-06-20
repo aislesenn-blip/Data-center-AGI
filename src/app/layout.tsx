@@ -39,11 +39,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark bg-black">
+    <html lang="en" className="dark bg-background">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-black text-white h-[100dvh] w-screen overflow-hidden selection:bg-white selection:text-black overscroll-none`}
+        className={`${inter.variable} ${geistMono.variable} antialiased bg-background text-foreground h-[100dvh] w-screen overflow-hidden selection:bg-brand selection:text-brand-foreground overscroll-none`}
       >
-        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-black flex flex-col supports-[height:100cqh]:h-[100cqh]">
+        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-background flex flex-col supports-[height:100cqh]:h-[100cqh]">
           {children}
         </main>
       </body>

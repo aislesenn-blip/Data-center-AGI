@@ -6,24 +6,24 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Premium Monochromatic Palette */
-  --color-background: #000000;
-  --color-foreground: #ffffff;
+  /* WhatsApp Dark Mode Inspired Palette */
+  --color-background: #111b21;
+  --color-foreground: #e9edef;
 
-  --color-surface-50: #fafafa;
-  --color-surface-100: #f4f4f5;
-  --color-surface-200: #e4e4e7;
-  --color-surface-300: #d4d4d8;
-  --color-surface-400: #a1a1aa;
-  --color-surface-500: #71717a;
-  --color-surface-600: #52525b;
-  --color-surface-700: #3f3f46;
-  --color-surface-800: #27272a;
-  --color-surface-900: #18181b;
-  --color-surface-950: #09090b;
+  --color-surface-50: #e9edef;
+  --color-surface-100: #d1d7db;
+  --color-surface-200: #8696a0;
+  --color-surface-300: #667781;
+  --color-surface-400: #374045;
+  --color-surface-500: #2a3942;
+  --color-surface-600: #233138;
+  --color-surface-700: #202c33;
+  --color-surface-800: #182229;
+  --color-surface-900: #111b21;
+  --color-surface-950: #0b141a;
 
-  --color-brand: #ffffff;
-  --color-brand-foreground: #000000;
+  --color-brand: #00a884;
+  --color-brand-foreground: #111b21;
 
   --animate-in: in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --animate-out: out 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -31,10 +31,10 @@
 
 @layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
-    --surface: #09090b;
-    --border: #27272a;
+    --background: #111b21;
+    --foreground: #e9edef;
+    --surface: #202c33;
+    --border: #2a3942;
   }
 
   * {
