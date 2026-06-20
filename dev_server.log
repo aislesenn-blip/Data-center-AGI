@@ -45,3 +45,6 @@
 ✓ Compiled in 645ms
  GET / 200 in 459ms (next.js: 78ms, application-code: 381ms)
  GET /pay/coffee-roasters 200 in 286ms (next.js: 166ms, application-code: 120ms)
+ GET / 200 in 1552ms (next.js: 614ms, application-code: 938ms)
+ GET /deposit 200 in 297ms (next.js: 67ms, application-code: 229ms)
+ GET /pay/coffee-roasters 200 in 205ms (next.js: 111ms, application-code: 94ms)
