@@ -75,92 +75,128 @@ export default function PayPage() {
   return (
     <div className="flex flex-col h-full bg-black">
       {step === "amount" && (
-        <header className="flex items-start justify-between px-6 pt-12 pb-6">
+        <header className="flex items-center justify-between px-6 pt-12 pb-6">
           <Link href="/">
             <button className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
-          <div className="flex flex-col items-end gap-4">
-            <div className="text-right flex flex-col items-end">
-              <p className="font-medium text-lg">Coffee Roasters</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-surface-400 font-bold uppercase tracking-widest">Verified</span>
-                <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.3)]">
-                  <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-900 border border-surface-800">
-               <ShieldCheck className="w-3.5 h-3.5 text-surface-500" />
-               <span className="text-[10px] font-medium text-surface-400 uppercase tracking-widest">Encrypted</span>
-            </div>
-          </div>
+          <div className="flex-1" />
+        </header>
+      )}
+
+      {step === "pin" && (
+        <header className="flex items-center px-6 pt-12 pb-6">
+            <button
+              onClick={() => setStep("amount")}
+              className="w-10 h-10 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center hover:bg-surface-800 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
         </header>
       )}
 
       <AnimatePresence mode="wait">
-        {(step === "amount" || step === "pin") && (
+        {step === "amount" && (
           <motion.div
-            key="payment-form"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex-1 flex flex-col px-6 space-y-10"
+            key="amount-form"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="flex-1 flex flex-col"
           >
-            {/* Amount Section */}
-            <div className="bg-surface-900/50 border border-surface-800 rounded-3xl p-6 mt-2">
-              <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-3 block">Amount to Pay</label>
-              <div className="flex items-baseline">
-                <span className="text-surface-500 text-2xl font-medium mr-3">TZS</span>
-                <input
-                  autoFocus
-                  type="number"
-                  inputMode="numeric"
-                  placeholder="0"
-                  className="w-full bg-transparent outline-none text-[48px] font-medium tracking-tighter text-white placeholder:text-surface-700"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
+            <div className="flex-1 overflow-y-auto px-6 hide-scrollbar">
+              <h1 className="text-2xl font-medium tracking-tight mb-2">Pay Partner</h1>
+              <p className="text-surface-400 text-sm mb-8">Enter payment details below.</p>
+
+              <div className="space-y-6">
+                <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-5 flex items-center justify-between">
+                  <div>
+                    <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-1 block">Partner</label>
+                    <p className="font-medium text-white text-lg">Coffee Roasters</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-surface-400 font-bold uppercase tracking-widest">Verified</span>
+                      <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.3)]">
+                        <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                   <label className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-2 block">Amount to pay</label>
+                   <div className="relative flex items-center h-14 bg-surface-900/50 border border-surface-800 rounded-xl focus-within:border-surface-600 focus-within:bg-surface-900 transition-colors overflow-hidden">
+                      <span className="pl-4 pr-2 text-surface-500 font-medium text-sm">TZS</span>
+                      <input
+                        autoFocus
+                        type="number"
+                        inputMode="numeric"
+                        placeholder="0"
+                        className="w-full h-full bg-transparent text-lg text-white outline-none"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
+                   </div>
+                </div>
               </div>
             </div>
 
-            {/* PIN Section */}
-            <div className={`transition-opacity duration-500 ${amount && parseFloat(amount) > 0 ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
-              <div className="bg-surface-900/50 border border-surface-800 rounded-3xl p-6">
-                <label className="text-xs font-medium text-surface-400 uppercase tracking-wider mb-6 block flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                  Enter PIN to Authorize
-                </label>
+            <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-black border-t border-white/5">
+              <Button
+                className="w-full h-14 text-base shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                disabled={!amount || parseFloat(amount) <= 0}
+                onClick={() => setStep("pin")}
+              >
+                Continue
+              </Button>
+            </div>
+          </motion.div>
+        )}
 
-                <div className="flex gap-4 relative z-10 justify-center mb-2">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="relative w-12 h-16">
-                      {/* Visual dot overlay */}
-                      <div
-                        className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300 ${
-                          pin[i] ? "scale-110" : "scale-100"
-                        }`}
-                      >
-                        <div className={`w-5 h-5 rounded-full transition-all ${pin[i] ? "bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" : "bg-surface-800"}`} />
-                      </div>
+        {step === "pin" && (
+          <motion.div
+            key="pin-form"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex-1 flex flex-col items-center justify-center px-6 -mt-20"
+          >
+            <div className="w-16 h-16 rounded-full bg-surface-900 border border-surface-800 flex items-center justify-center mb-6">
+              <ShieldCheck className="w-8 h-8 text-emerald-500" />
+            </div>
+            <h2 className="text-2xl font-medium tracking-tight mb-2">Enter PIN</h2>
+            <p className="text-surface-400 text-sm mb-12 text-center">
+              Authorize payment of <strong className="text-white">TZS {parseInt(amount).toLocaleString()}</strong> to <strong className="text-white">Coffee Roasters</strong>.
+            </p>
 
-                      {/* Actual input for mobile keyboard compatibility */}
-                      <input
-                        ref={pinRefs[i]}
-                        type="tel"
-                        inputMode="numeric"
-                        maxLength={1}
-                        className="w-full h-full bg-transparent text-[0px] caret-transparent outline-none focus:ring-0 text-transparent selection:bg-transparent"
-                        value={pin[i]}
-                        onChange={(e) => handlePinChange(i, e.target.value)}
-                        onKeyDown={(e) => handlePinKeyDown(i, e)}
-                        disabled={!amount || parseFloat(amount) <= 0}
-                      />
-                    </div>
-                  ))}
+            <div className="flex gap-4 relative z-10 justify-center">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="relative w-14 h-14">
+                  {/* Visual dot overlay */}
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center border rounded-xl pointer-events-none transition-all duration-300 ${
+                      pin[i] ? "border-emerald-500/50 bg-emerald-500/10" : "border-surface-800 bg-surface-900/50"
+                    }`}
+                  >
+                    <div className={`w-3 h-3 rounded-full transition-all ${pin[i] ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-transparent"}`} />
+                  </div>
+
+                  {/* Actual input for mobile keyboard compatibility */}
+                  <input
+                    ref={pinRefs[i]}
+                    autoFocus={i === 0}
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={1}
+                    className="w-full h-full bg-transparent text-[0px] caret-transparent outline-none focus:ring-0 text-transparent selection:bg-transparent"
+                    value={pin[i]}
+                    onChange={(e) => handlePinChange(i, e.target.value)}
+                    onKeyDown={(e) => handlePinKeyDown(i, e)}
+                  />
                 </div>
-              </div>
+              ))}
             </div>
           </motion.div>
         )}
