@@ -8,7 +8,10 @@ test('Timebus E2E passenger and driver flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
 
   // Verify home page
-  await expect(page.getByText('Scheduled Rides Near You')).toBeVisible();
+  await expect(page.getByText('Where are you going?')).toBeVisible();
+
+  // Verify the new Passenger nav exists
+  await expect(page.getByText('My Tickets')).toBeVisible();
 
   // Click on a route (Kariakoo Market -> Masaki Terminal)
   await page.click('text=Kariakoo Market');
@@ -29,8 +32,13 @@ test('Timebus E2E passenger and driver flows', async ({ page }) => {
   await page.waitForURL(/.*\/route\/r1\/success/, { timeout: 6000 });
   await expect(page.getByText('Seat Reserved')).toBeVisible();
 
-  // Return Home
-  await page.click('text=Back to Home');
+  // Go to My Tickets
+  await page.click('text=View My Tickets');
+  await expect(page).toHaveURL('http://localhost:3000/tickets');
+  await expect(page.getByRole('heading', { name: 'My Tickets' })).toBeVisible();
+
+  // Return Home via Nav
+  await page.click('text=Explore');
   await expect(page).toHaveURL('http://localhost:3000/');
 
   // --- DRIVER FLOW ---

@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { Logo } from "@/components/ui/Logo"
 import { RouteCard } from "@/components/ui/RouteCard"
+import { Search, Compass } from "lucide-react"
+import { PassengerNav } from "@/components/layout/PassengerNav"
 
 // Mock marketplace data reflecting dynamic, time-based departures
 const leavingSoonRoutes = [
@@ -67,16 +69,32 @@ export default function HomePage() {
 
       <div className="flex-1 flex flex-col pt-6">
 
-        {/* Hero Section */}
-        <div className="px-6 space-y-2 mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-rich-black">
-            Scheduled Rides Near You
+        {/* Search / Hero Section */}
+        <div className="px-6 space-y-4 mb-8">
+          <h1 className="text-2xl font-bold tracking-tight text-rich-black">
+            Where are you going?
           </h1>
-          <p className="text-charcoal font-medium">Find your next route and reserve your seat.</p>
+
+          <div className="bg-light-gray p-2 rounded-2xl">
+            <div className="flex items-center space-x-3 bg-white p-3 rounded-xl border border-border shadow-sm focus-within:border-rich-black transition-colors">
+              <Search className="h-5 w-5 text-charcoal shrink-0" />
+              <input
+                type="text"
+                placeholder="Find your next ride..."
+                className="w-full bg-transparent border-none outline-none text-rich-black font-medium placeholder:text-charcoal/50"
+              />
+            </div>
+            {/* Quick Suggestions */}
+            <div className="flex space-x-2 mt-3 px-1 overflow-x-auto pb-1 no-scrollbar">
+              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Posta</span>
+              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Masaki</span>
+              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Mbezi</span>
+            </div>
+          </div>
         </div>
 
         {/* Dynamic Departure Feeds */}
-        <div className="px-6 space-y-10 pb-8">
+        <div className="px-6 space-y-8 pb-8">
 
           {/* Leaving Soon */}
           <section>
@@ -103,10 +121,10 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Morning Commute */}
+          {/* Next Available */}
           <section>
             <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
-              Morning Commute
+              Next Available
             </h2>
             <div className="space-y-4">
               {morningCommuteRoutes.map((route) => (
@@ -126,10 +144,10 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Evening Commute */}
+          {/* Popular Routes */}
           <section>
             <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
-              Evening Commute
+              Popular Routes
             </h2>
             <div className="space-y-4">
               {eveningCommuteRoutes.map((route) => (
@@ -149,9 +167,22 @@ export default function HomePage() {
             </div>
           </section>
 
+          {/* Discovery Section */}
+          <section className="mt-8 pt-8 pb-4 border-t border-border flex flex-col items-center text-center">
+             <div className="h-12 w-12 rounded-full bg-light-gray flex items-center justify-center mb-4">
+               <Compass className="h-6 w-6 text-charcoal" />
+             </div>
+             <h3 className="font-bold text-rich-black mb-1">Looking for a different time?</h3>
+             <p className="text-sm text-charcoal mb-4 max-w-[250px]">
+               Drivers publish new departures daily. Search above to find exactly what you need.
+             </p>
+          </section>
+
         </div>
 
       </div>
+
+      <PassengerNav />
     </div>
   )
 }
