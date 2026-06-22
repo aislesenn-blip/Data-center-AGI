@@ -64,18 +64,13 @@ export default function CreateRoutePage() {
           <section className="space-y-4">
              <h3 className="font-bold text-rich-black text-sm uppercase tracking-wider">Schedule</h3>
 
-             <div className="bg-white p-5 rounded-2xl border border-border grid grid-cols-2 gap-4">
-               <Select label="Date" required>
-                 <option value="tomorrow">Tomorrow</option>
-                 <option value="today">Today</option>
-                 <option value="monday">Monday</option>
-               </Select>
-
+             <div className="bg-white p-5 rounded-2xl border border-border">
                <Input
                  type="time"
                  label="Departure Time"
                  required
                />
+               <p className="text-xs text-charcoal/60 mt-3">Specify exactly when you plan to leave. You can publish routes on the fly.</p>
              </div>
           </section>
 
@@ -102,27 +97,26 @@ export default function CreateRoutePage() {
                </div>
 
                <Select label="Vehicle Type" required>
-                 <option value="Toyota Hiace">Toyota Hiace</option>
-                 <option value="Toyota Coaster">Toyota Coaster</option>
-                 <option value="Nissan Caravan">Nissan Caravan</option>
-                 <option value="Private Car">Private Sedan</option>
+                 <option value="Bajaj">Bajaj</option>
+                 <option value="Boda">Boda</option>
+                 <option value="Sedan">Sedan</option>
+                 <option value="Van">Van</option>
                </Select>
              </div>
           </section>
 
           {/* Pickup Details */}
           <section className="space-y-4">
-             <h3 className="font-bold text-rich-black text-sm uppercase tracking-wider">Passenger Instructions</h3>
+             <h3 className="font-bold text-rich-black text-sm uppercase tracking-wider">Pickup Location</h3>
 
-             <div className="bg-white p-5 rounded-2xl border border-border space-y-4">
-               <div className="space-y-2">
-                 <label className="text-sm font-semibold text-rich-black block">Specific Pickup Location</label>
-                 <textarea
-                   className="flex w-full rounded-xl border border-border bg-white px-4 py-3 text-base text-rich-black shadow-sm transition-all focus-visible:outline-none focus-visible:border-rich-black focus-visible:ring-1 focus-visible:ring-rich-black min-h-[100px] resize-none"
-                   placeholder="Exactly where should passengers wait? e.g. Outside the main Post Office entrance."
-                   required
-                 />
-               </div>
+             <div className="bg-white p-5 rounded-2xl border border-border">
+               <Input
+                 type="url"
+                 label="Google Maps Location Link"
+                 placeholder="https://maps.google.com/..."
+                 required
+               />
+               <p className="text-xs text-charcoal/60 mt-3">Paste a map link so passengers know exactly where to meet you.</p>
              </div>
           </section>
         </div>

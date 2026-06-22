@@ -51,10 +51,12 @@ export default function RouteReviewPage({ params }: { params: Promise<{ id: stri
 
         <div className="space-y-6">
           <section className="bg-white border border-border rounded-2xl p-5">
-             <h3 className="font-bold text-rich-black mb-3">Pickup Instructions</h3>
-             <p className="text-charcoal leading-relaxed text-sm">
-               {mockRoute.pickupInstructions}
-             </p>
+             <h3 className="font-bold text-rich-black mb-4">Pickup Location</h3>
+             <Button asChild variant="outline" className="w-full h-12">
+               <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer">
+                 Open Pickup Location
+               </a>
+             </Button>
           </section>
 
           <section className="bg-white border border-border rounded-2xl p-5">
@@ -70,9 +72,9 @@ export default function RouteReviewPage({ params }: { params: Promise<{ id: stri
              </div>
           </section>
 
-          <div className="flex items-center justify-center space-x-2 text-charcoal/80 bg-light-gray p-3 rounded-xl border border-border">
-            <ShieldCheck className="h-5 w-5" />
-            <span className="text-xs font-medium">Verified Driver on Timebus Network</span>
+          <div className="flex items-center justify-center space-x-1.5">
+            <ShieldCheck className="h-3 w-3 text-charcoal/40" />
+            <span className="text-[10px] text-charcoal/50 font-medium tracking-wide">Verified Driver</span>
           </div>
         </div>
 

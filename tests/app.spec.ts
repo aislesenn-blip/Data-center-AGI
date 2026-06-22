@@ -8,7 +8,7 @@ test('Timebus E2E passenger and driver flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
 
   // Verify home page
-  await expect(page.getByText('Where are you going tomorrow?')).toBeVisible();
+  await expect(page.getByText('Scheduled Rides Near You')).toBeVisible();
 
   // Click on a route (Kariakoo Market -> Masaki Terminal)
   await page.click('text=Kariakoo Market');
@@ -16,7 +16,7 @@ test('Timebus E2E passenger and driver flows', async ({ page }) => {
   // Verify Route Details
   await expect(page).toHaveURL(/.*\/route\/r1/);
   await expect(page.getByText('Review Route')).toBeVisible();
-  await expect(page.getByText('Pickup Instructions')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Pickup Location' })).toBeVisible();
 
   // Go to confirm page
   await page.click('text=Continue to Book Seat');
@@ -51,7 +51,7 @@ test('Timebus E2E passenger and driver flows', async ({ page }) => {
   await page.locator('input[type="time"]').fill('06:30');
   await page.locator('input[type="number"]').fill('4'); // Seats
   await page.locator('input').nth(4).fill('2000'); // Price
-  await page.locator('textarea').fill('Wait near the main Mbezi Beach Daladala stand.');
+  await page.locator('input[type="url"]').fill('https://maps.google.com/?q=-6.8,39.2'); // Map Link
 
   // Publish
   await page.getByRole('button', { name: 'Publish Route' }).click();

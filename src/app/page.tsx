@@ -3,11 +3,9 @@
 import Link from "next/link"
 import { Logo } from "@/components/ui/Logo"
 import { RouteCard } from "@/components/ui/RouteCard"
-import { Select } from "@/components/ui/Select"
-import { Search } from "lucide-react"
 
-// Mock marketplace data
-const availableRoutes = [
+// Mock marketplace data reflecting dynamic, time-based departures
+const leavingSoonRoutes = [
   {
     id: "r1",
     from: "Kariakoo Market",
@@ -17,7 +15,10 @@ const availableRoutes = [
     price: "TZS 1,500",
     driverName: "John M.",
     vehicleType: "Toyota Hiace"
-  },
+  }
+]
+
+const morningCommuteRoutes = [
   {
     id: "r2",
     from: "Ubungo Interchange",
@@ -40,6 +41,19 @@ const availableRoutes = [
   }
 ]
 
+const eveningCommuteRoutes = [
+  {
+    id: "r4",
+    from: "Posta City Center",
+    to: "Mbagala",
+    departureTime: "05:30 PM",
+    availableSeats: 4,
+    price: "TZS 2,000",
+    driverName: "Ali J.",
+    vehicleType: "Toyota Hiace"
+  }
+]
+
 export default function HomePage() {
   return (
     <div className="flex min-h-full flex-col pb-6">
@@ -53,58 +67,88 @@ export default function HomePage() {
 
       <div className="flex-1 flex flex-col pt-6">
 
-        {/* Search / Filter Section */}
-        <div className="px-6 space-y-5 mb-8">
+        {/* Hero Section */}
+        <div className="px-6 space-y-2 mb-8">
           <h1 className="text-3xl font-bold tracking-tight text-rich-black">
-            Where are you going tomorrow?
+            Scheduled Rides Near You
           </h1>
-
-          <div className="bg-light-gray p-4 rounded-2xl space-y-3">
-            <div className="flex items-center space-x-3 bg-white p-2 rounded-xl border border-border shadow-sm focus-within:border-rich-black transition-colors">
-              <Search className="h-5 w-5 text-charcoal ml-2 shrink-0" />
-              <input
-                type="text"
-                placeholder="Search destination..."
-                className="w-full bg-transparent border-none outline-none text-rich-black font-medium"
-              />
-            </div>
-
-            <div className="flex space-x-3">
-               <Select className="h-12 bg-white flex-1 text-sm">
-                 <option value="tomorrow">Tomorrow Morning</option>
-                 <option value="tomorrow-evening">Tomorrow Evening</option>
-               </Select>
-            </div>
-          </div>
+          <p className="text-charcoal font-medium">Find your next route and reserve your seat.</p>
         </div>
 
-        {/* Results List */}
-        <div className="px-6 pb-8">
-          <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
-            Available Routes
-          </h2>
+        {/* Dynamic Departure Feeds */}
+        <div className="px-6 space-y-10 pb-8">
 
-          <div className="space-y-4">
-            {availableRoutes.map((route) => (
-              <RouteCard
-                key={route.id}
-                id={route.id}
-                from={route.from}
-                to={route.to}
-                departureTime={route.departureTime}
-                availableSeats={route.availableSeats}
-                price={route.price}
-                driverName={route.driverName}
-                vehicleType={route.vehicleType}
-                onClick={() => window.location.href = `/route/${route.id}`}
-              />
-            ))}
-          </div>
+          {/* Leaving Soon */}
+          <section>
+            <h2 className="text-sm font-bold text-accent-orange uppercase tracking-wider mb-4 px-1 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-accent-orange mr-2 animate-pulse" />
+              Leaving Soon
+            </h2>
+            <div className="space-y-4">
+              {leavingSoonRoutes.map((route) => (
+                <RouteCard
+                  key={route.id}
+                  id={route.id}
+                  from={route.from}
+                  to={route.to}
+                  departureTime={route.departureTime}
+                  availableSeats={route.availableSeats}
+                  price={route.price}
+                  driverName={route.driverName}
+                  vehicleType={route.vehicleType}
+                  isLeavingSoon={true}
+                  onClick={() => window.location.href = `/route/${route.id}`}
+                />
+              ))}
+            </div>
+          </section>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-charcoal font-medium">Looking for a different time?</p>
-            <p className="text-xs text-charcoal/60 mt-1">More routes are published daily by drivers.</p>
-          </div>
+          {/* Morning Commute */}
+          <section>
+            <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
+              Morning Commute
+            </h2>
+            <div className="space-y-4">
+              {morningCommuteRoutes.map((route) => (
+                <RouteCard
+                  key={route.id}
+                  id={route.id}
+                  from={route.from}
+                  to={route.to}
+                  departureTime={route.departureTime}
+                  availableSeats={route.availableSeats}
+                  price={route.price}
+                  driverName={route.driverName}
+                  vehicleType={route.vehicleType}
+                  onClick={() => window.location.href = `/route/${route.id}`}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Evening Commute */}
+          <section>
+            <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
+              Evening Commute
+            </h2>
+            <div className="space-y-4">
+              {eveningCommuteRoutes.map((route) => (
+                <RouteCard
+                  key={route.id}
+                  id={route.id}
+                  from={route.from}
+                  to={route.to}
+                  departureTime={route.departureTime}
+                  availableSeats={route.availableSeats}
+                  price={route.price}
+                  driverName={route.driverName}
+                  vehicleType={route.vehicleType}
+                  onClick={() => window.location.href = `/route/${route.id}`}
+                />
+              ))}
+            </div>
+          </section>
+
         </div>
 
       </div>

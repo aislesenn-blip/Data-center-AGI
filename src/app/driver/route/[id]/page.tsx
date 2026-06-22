@@ -65,11 +65,11 @@ export default function DriverRoutePresentationPage({ params }: { params: Promis
            <ul className="space-y-3">
              <li className="flex items-start text-sm text-charcoal">
                <div className="h-1.5 w-1.5 rounded-full bg-rich-black mt-1.5 mr-2 shrink-0" />
-               Passengers browsing Timebus can now reserve seats.
+               Passengers looking for rides around {mockNewRoute.departureTime} will see your route.
              </li>
              <li className="flex items-start text-sm text-charcoal">
                <div className="h-1.5 w-1.5 rounded-full bg-rich-black mt-1.5 mr-2 shrink-0" />
-               You will be notified instantly when a seat is booked.
+               They can click your map link to find the exact pickup spot.
              </li>
            </ul>
         </div>
