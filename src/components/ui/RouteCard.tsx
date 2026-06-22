@@ -14,6 +14,7 @@ export interface RouteCardProps {
   onClick?: () => void;
   className?: string;
   isCompact?: boolean;
+  isLeavingSoon?: boolean;
 }
 
 export function RouteCard({
@@ -26,7 +27,8 @@ export function RouteCard({
   vehicleType,
   onClick,
   className,
-  isCompact = false
+  isCompact = false,
+  isLeavingSoon = false
 }: RouteCardProps) {
 
   const hasSeats = availableSeats > 0;
@@ -72,9 +74,16 @@ export function RouteCard({
         {/* Price & Time Badge */}
         <div className="text-right ml-4 shrink-0">
           <p className="text-2xl font-bold text-rich-black">{price}</p>
-          <div className="inline-flex items-center space-x-1 bg-light-gray px-2 py-1 rounded-md mt-1">
-            <Clock className="h-3.5 w-3.5 text-charcoal" />
-            <span className="text-sm font-semibold text-rich-black">{departureTime}</span>
+          <div className="inline-flex flex-col items-end mt-1">
+            <div className="inline-flex items-center space-x-1 bg-light-gray px-2 py-1 rounded-md">
+              <Clock className="h-3.5 w-3.5 text-charcoal" />
+              <span className="text-sm font-semibold text-rich-black">{departureTime}</span>
+            </div>
+            {isLeavingSoon && (
+              <p className="text-[10px] text-accent-orange font-bold uppercase tracking-wider mt-1.5 animate-pulse">
+                Leaving Soon
+              </p>
+            )}
           </div>
         </div>
       </div>
