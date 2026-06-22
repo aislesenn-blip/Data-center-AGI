@@ -1,96 +1,42 @@
 "use client"
 
-import * as React from "react"
-import { SpaceCard } from "@/components/SpaceCard"
-import { Button } from "@/components/ui/Button"
-import { ArrowDownLeft, ScanLine, } from "lucide-react"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { ShieldCheck } from "lucide-react"
+import { Button } from "@/components/ui/Button"
+import { TrustBadge } from "@/components/ui/TrustBadge"
 
-export default function Home() {
+export default function WelcomePage() {
   return (
-    <div className="flex flex-col h-full overflow-y-auto hide-scrollbar px-6 pt-12 pb-24">
-      {/* Hero Card */}
-      <div className="mt-8 mb-10 w-full flex justify-center">
-        <SpaceCard balance={12450.00} name="Jules Dev" handle="jules" />
-      </div>
-
-      {/* Primary Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="flex mb-12"
-      >
-        <Link href="/deposit" className="block w-full">
-          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-            <ArrowDownLeft className="w-5 h-5 text-surface-200" />
-            Deposit Funds
-          </Button>
-        </Link>
-      </motion.div>
-
-      {/* Activity Section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="flex-1"
-      >
-        <div className="flex justify-between items-end mb-6">
-          <h2 className="text-lg font-medium text-foreground">Recent Activity</h2>
-          <button className="text-sm text-surface-200 hover:text-foreground transition-colors">See all</button>
+    <div className="flex min-h-full flex-col p-6">
+      <div className="flex flex-1 flex-col items-center justify-center text-center space-y-8">
+        <div className="h-24 w-24 rounded-3xl bg-corporate-green flex items-center justify-center shadow-lg shadow-corporate-green/20">
+          <ShieldCheck className="h-12 w-12 text-white" />
         </div>
 
-        <div className="space-y-6">
-          {/* Transaction Item */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">WK</span>
-              </div>
-              <div>
-                <p className="font-medium text-base text-foreground">Work Cafe</p>
-                <p className="text-sm text-surface-200">Today, 9:41 AM</p>
-              </div>
-            </div>
-            <p className="font-medium text-base text-foreground">- TZS 12,500</p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">AL</span>
-              </div>
-              <div>
-                <p className="font-medium text-base text-foreground">$alex</p>
-                <p className="text-sm text-surface-200">Yesterday</p>
-              </div>
-            </div>
-            <p className="font-medium text-base text-foreground">+ TZS 45,000</p>
-          </div>
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            Secure their future.
+          </h1>
+          <p className="text-lg text-charcoal/80 max-w-xs mx-auto">
+            The institutional digital card platform built specifically for your child&apos;s long-term financial identity.
+          </p>
         </div>
-      </motion.div>
 
-      {/* Admin Discoverability */}
-      <div className="mt-16 flex justify-center">
-        <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-400 hover:text-surface-200 transition-colors">
-          Partners
-        </Link>
+        <TrustBadge variant="hero" message="Bank-Grade Security" className="pt-8" />
       </div>
 
-      {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
-        <Link href="/pay/demo-merchant" className="pointer-events-auto">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="h-16 px-8 bg-brand text-brand-foreground rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(0,168,132,0.2)] cursor-pointer"
-          >
-            <ScanLine className="w-5 h-5" />
-            <span className="font-medium text-base">Tap to Pay</span>
-          </motion.div>
-        </Link>
+      <div className="space-y-4 pt-8 pb-4">
+        <Button asChild size="lg" className="w-full">
+          <Link href="/onboarding/account">
+            Create Parent Account
+          </Link>
+        </Button>
+        <div className="text-center">
+          <span className="text-sm text-charcoal/60">Already registered? </span>
+          <Link href="/login" className="text-sm font-semibold text-corporate-green">
+            Log in securely
+          </Link>
+        </div>
       </div>
     </div>
   )
