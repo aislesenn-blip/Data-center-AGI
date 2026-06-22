@@ -37,50 +37,50 @@ export function RouteCard({
     <div
       onClick={onClick}
       className={cn(
-        "bg-white border border-border rounded-2xl p-5 shadow-sm transition-all relative overflow-hidden",
+        "bg-white border border-border rounded-xl p-4 shadow-sm transition-all relative overflow-hidden",
         onClick && "cursor-pointer hover:border-rich-black hover:shadow-md active:scale-[0.99]",
         !hasSeats && "opacity-75 grayscale-[0.2]",
         className
       )}
     >
       {/* Visual connection line */}
-      <div className="absolute left-[35px] top-[48px] bottom-[90px] w-0.5 bg-border z-0 hidden sm:block" />
+      <div className="absolute left-[26px] top-[40px] bottom-[75px] w-0.5 bg-border z-0 hidden sm:block" />
 
-      <div className="flex justify-between items-start mb-5 relative z-10">
-        <div className="space-y-4 flex-1">
+      <div className="flex justify-between items-start mb-4 relative z-10">
+        <div className="space-y-3 flex-1">
           {/* Origin */}
           <div className="flex items-start">
-            <div className="mt-1 mr-3 h-5 w-5 rounded-full bg-rich-black flex items-center justify-center shrink-0">
-               <div className="h-1.5 w-1.5 bg-white rounded-full" />
+            <div className="mt-1 mr-3 h-4 w-4 rounded-full bg-rich-black flex items-center justify-center shrink-0">
+               <div className="h-1 w-1 bg-white rounded-full" />
             </div>
             <div>
-              <p className="text-xs text-charcoal font-medium mb-0.5">Leaving from</p>
-              <p className="font-bold text-rich-black text-lg leading-tight">{from}</p>
+              <p className="text-[10px] text-charcoal font-medium uppercase tracking-wider mb-0.5">Leaving from</p>
+              <p className="font-bold text-rich-black text-base leading-tight">{from}</p>
             </div>
           </div>
 
           {/* Destination */}
           <div className="flex items-start">
-            <div className="mt-1 mr-3 h-5 w-5 rounded-sm bg-rich-black flex items-center justify-center shrink-0">
-               <div className="h-1.5 w-1.5 bg-white rounded-sm" />
+            <div className="mt-1 mr-3 h-4 w-4 rounded-sm bg-rich-black flex items-center justify-center shrink-0">
+               <div className="h-1 w-1 bg-white rounded-sm" />
             </div>
             <div>
-              <p className="text-xs text-charcoal font-medium mb-0.5">Going to</p>
-              <p className="font-bold text-rich-black text-lg leading-tight">{to}</p>
+              <p className="text-[10px] text-charcoal font-medium uppercase tracking-wider mb-0.5">Going to</p>
+              <p className="font-bold text-rich-black text-base leading-tight">{to}</p>
             </div>
           </div>
         </div>
 
         {/* Price & Time Badge */}
-        <div className="text-right ml-4 shrink-0">
-          <p className="text-2xl font-bold text-rich-black">{price}</p>
+        <div className="text-right ml-3 shrink-0">
+          <p className="text-lg font-bold text-rich-black">{price}</p>
           <div className="inline-flex flex-col items-end mt-1">
-            <div className="inline-flex items-center space-x-1 bg-light-gray px-2 py-1 rounded-md">
-              <Clock className="h-3.5 w-3.5 text-charcoal" />
-              <span className="text-sm font-semibold text-rich-black">{departureTime}</span>
+            <div className="inline-flex items-center space-x-1 bg-light-gray px-1.5 py-0.5 rounded mt-0.5">
+              <Clock className="h-3 w-3 text-charcoal" />
+              <span className="text-xs font-semibold text-rich-black">{departureTime}</span>
             </div>
             {isLeavingSoon && (
-              <p className="text-[10px] text-accent-orange font-bold uppercase tracking-wider mt-1.5 animate-pulse">
+              <p className="text-[9px] text-accent-orange font-bold uppercase tracking-wider mt-1 animate-pulse">
                 Leaving Soon
               </p>
             )}
@@ -88,19 +88,19 @@ export function RouteCard({
         </div>
       </div>
 
-      <div className="h-px bg-border w-full my-4" />
+      <div className="h-px bg-border w-full my-3" />
 
       {/* Footer details */}
-      <div className="flex items-center justify-between mt-auto pt-1">
-        <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-center space-x-3">
           {!isCompact && (
              <div className="flex items-center space-x-2">
-               <div className="h-8 w-8 rounded-full bg-light-gray flex items-center justify-center text-charcoal font-bold text-sm border border-border">
+               <div className="h-6 w-6 rounded-full bg-light-gray flex items-center justify-center text-charcoal font-bold text-xs border border-border">
                  {driverName.charAt(0)}
                </div>
                <div className="hidden sm:block">
-                 <p className="text-xs font-medium text-rich-black">{driverName}</p>
-                 <p className="text-[10px] text-charcoal flex items-center mt-0.5">
+                 <p className="text-xs font-semibold text-rich-black">{driverName}</p>
+                 <p className="text-[10px] text-charcoal flex items-center">
                    <Car className="h-3 w-3 mr-1" /> {vehicleType}
                  </p>
                </div>

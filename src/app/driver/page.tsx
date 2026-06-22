@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Users, TrendingUp, Clock, Plus } from "lucide-react"
+import { Users, Clock, Plus } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 
 // Mock Driver Data
@@ -43,28 +43,24 @@ export default function DriverDashboardPage() {
 
       <div className="px-6 flex-1 -mt-4 space-y-6">
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white border border-border p-4 rounded-2xl shadow-sm">
-            <div className="h-8 w-8 rounded-full bg-light-gray flex items-center justify-center mb-3">
-               <TrendingUp className="h-4 w-4 text-rich-black" />
-            </div>
-            <p className="text-xs text-charcoal font-semibold mb-1">Weekly Earnings</p>
-            <p className="font-bold text-xl text-rich-black">{driverData.stats.totalEarnings}</p>
-          </div>
-          <div className="bg-white border border-border p-4 rounded-2xl shadow-sm">
-            <div className="h-8 w-8 rounded-full bg-light-gray flex items-center justify-center mb-3">
-               <Users className="h-4 w-4 text-rich-black" />
-            </div>
-            <p className="text-xs text-charcoal font-semibold mb-1">Passengers</p>
-            <p className="font-bold text-xl text-rich-black">{driverData.stats.passengersMoved} this month</p>
-          </div>
+        {/* Recent Bookings Activity */}
+        <div className="bg-white border border-border rounded-xl p-4 shadow-sm mb-2 flex items-center justify-between">
+           <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 bg-accent-green/10 rounded-full flex items-center justify-center">
+                 <Users className="h-5 w-5 text-accent-green" />
+              </div>
+              <div>
+                <p className="font-bold text-rich-black text-sm">2 new bookings</p>
+                <p className="text-xs text-charcoal font-medium">in the last 15 minutes</p>
+              </div>
+           </div>
+           <Button variant="secondary" size="sm" className="h-8 px-3">View</Button>
         </div>
 
         {/* Active Route Focus */}
         <section>
            <div className="flex justify-between items-end mb-4 px-1">
-             <h2 className="text-lg font-bold text-rich-black">Upcoming Routes</h2>
+             <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider">Active Departures</h2>
            </div>
 
            {driverData.upcomingRoutes.length > 0 ? (
