@@ -1,74 +1,39 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-corporate-green: #0A4D3C;
+  --color-corporate-green-light: #126B55;
+  --color-corporate-green-dark: #053327;
+  --color-soft-gray: #F8FAFC;
+  --color-charcoal: #334155;
+  --color-professional-black: #0F172A;
 
-  /* WhatsApp Dark Mode Inspired Palette */
-  --color-background: #111b21;
-  --color-foreground: #e9edef;
+  --color-background: var(--color-soft-gray);
+  --color-foreground: var(--color-professional-black);
 
-  --color-surface-50: #e9edef;
-  --color-surface-100: #d1d7db;
-  --color-surface-200: #8696a0;
-  --color-surface-300: #667781;
-  --color-surface-400: #374045;
-  --color-surface-500: #2a3942;
-  --color-surface-600: #233138;
-  --color-surface-700: #202c33;
-  --color-surface-800: #182229;
-  --color-surface-900: #111b21;
-  --color-surface-950: #0b141a;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-input: #E2E8F0;
+  --color-ring: var(--color-corporate-green);
+}
 
-  --color-brand: #00a884;
-  --color-brand-foreground: #111b21;
-
-  --animate-in: in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-out: out 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
 }
 
 @layer base {
-  :root {
-    --background: #111b21;
-    --foreground: #e9edef;
-    --surface: #202c33;
-    --border: #2a3942;
+  * {
+    border-color: var(--color-border);
   }
 
-  * {
-    border-color: var(--border);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  html, body {
+    height: 100%;
+    overscroll-behavior-y: none;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
-    overscroll-behavior-y: none; /* Premium app feel */
   }
 }
-
-/* Utilities for premium feel */
-@layer utilities {
-  .glass {
-    background: rgba(24, 24, 27, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
