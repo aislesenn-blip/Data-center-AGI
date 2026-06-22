@@ -1,36 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-import type { Viewport } from "next";
-
-export const metadata: Metadata = {
-  title: "SpaceCard",
-  description: "The zero-fee payment network.",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "SpaceCard",
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: "#000000",
+export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+};
+
+export const metadata: Metadata = {
+  title: "Digital Child Card | Secure Their Future",
+  description: "Institutional-grade financial platform for parents to secure their children's future.",
 };
 
 export default function RootLayout({
@@ -39,11 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark bg-background">
-      <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-background text-foreground h-[100dvh] w-screen overflow-hidden selection:bg-brand selection:text-brand-foreground overscroll-none`}
-      >
-        <main className="max-w-md mx-auto h-full relative overflow-hidden bg-background flex flex-col supports-[height:100cqh]:h-[100cqh]">
+    <html lang="en">
+      <body className={`${inter.variable} font-sans antialiased bg-gray-50 text-gray-900`}>
+        <main className="mx-auto max-w-md h-[100dvh] bg-white shadow-2xl relative overflow-hidden flex flex-col">
           {children}
         </main>
       </body>
