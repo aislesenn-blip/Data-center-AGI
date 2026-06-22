@@ -1,42 +1,68 @@
 import { test, expect } from '@playwright/test';
 
-test('onboarding and dashboard flow', async ({ page }) => {
+test('Timebus E2E passenger and driver flows', async ({ page }) => {
   // Simulate mobile view
   await page.setViewportSize({ width: 375, height: 812 });
 
-  // 1. Welcome Page
+  // --- PASSENGER FLOW ---
   await page.goto('http://localhost:3000/');
-  await expect(page.getByText('Secure their future.')).toBeVisible();
-  await page.click('text=Create Parent Account');
 
-  // 2. Account Page
-  await expect(page).toHaveURL('http://localhost:3000/onboarding/account');
-  await page.fill('input[placeholder="Enter your legal name"]', 'Jane Doe');
-  await page.fill('input[placeholder="e.g. 0712 345 678"]', '0712345678');
-  await page.click('text=Continue Securely');
+  // Verify home page
+  await expect(page.getByText('Where are you going tomorrow?')).toBeVisible();
 
-  // 3. Verify Page
-  await expect(page).toHaveURL('http://localhost:3000/onboarding/verify');
-  // PIN entry is a hidden input
-  await page.locator('input[type="tel"]').fill('1234');
+  // Click on a route (Kariakoo Market -> Masaki Terminal)
+  await page.click('text=Kariakoo Market');
 
-  // Wait for the simulated delay
-  await page.waitForURL('http://localhost:3000/onboarding/child/details', { timeout: 3000 });
+  // Verify Route Details
+  await expect(page).toHaveURL(/.*\/route\/r1/);
+  await expect(page.getByText('Review Route')).toBeVisible();
+  await expect(page.getByText('Pickup Instructions')).toBeVisible();
 
-  // 4. Child Details Page
-  await page.fill('input[placeholder="Enter child\'s name"]', 'Elias');
-  await page.fill('input[type="date"]', '2015-05-15');
-  await page.click('text=Generate Digital Card');
+  // Go to confirm page
+  await page.click('text=Continue to Book Seat');
+  await expect(page).toHaveURL(/.*\/route\/r1\/confirm/);
 
-  // 5. Generating Page -> Success Page (Simulated delay)
-  await page.waitForURL(/.*\/onboarding\/success\?name=Elias/, { timeout: 6000 });
-  await expect(page.getByText('Future Secured')).toBeVisible();
-  await page.click('text=Enter Dashboard');
+  // Confirm reservation
+  await page.click('text=Confirm Reservation');
 
-  // 6. Dashboard Page
-  await expect(page).toHaveURL('http://localhost:3000/dashboard');
-  await expect(page.getByText('Digital Cards')).toBeVisible();
+  // Wait for success screen
+  await page.waitForURL(/.*\/route\/r1\/success/, { timeout: 6000 });
+  await expect(page.getByText('Seat Reserved')).toBeVisible();
 
-  // Check bottom nav
-  await expect(page.locator('nav').getByText('Home')).toBeVisible();
+  // Return Home
+  await page.click('text=Back to Home');
+  await expect(page).toHaveURL('http://localhost:3000/');
+
+  // --- DRIVER FLOW ---
+  // Enter Driver Area
+  await page.click('text=Driver Area');
+  await expect(page).toHaveURL('http://localhost:3000/driver');
+
+  // Verify dashboard
+  await expect(page.getByText('Good evening, John.')).toBeVisible();
+
+  // Navigate to Create Route
+  await page.click('text=Publish New Route');
+  await expect(page).toHaveURL('http://localhost:3000/driver/create');
+
+  // Fill route form
+  await page.locator('input').nth(0).fill('Mbezi Beach'); // Starting Area
+  await page.locator('input').nth(1).fill('Posta City Center'); // Destination Area
+  await page.locator('input[type="time"]').fill('06:30');
+  await page.locator('input[type="number"]').fill('4'); // Seats
+  await page.locator('input').nth(4).fill('2000'); // Price
+  await page.locator('textarea').fill('Wait near the main Mbezi Beach Daladala stand.');
+
+  // Publish
+  await page.getByRole('button', { name: 'Publish Route' }).click();
+
+  // Wait for route presentation success
+  await page.waitForURL(/.*\/driver\/route\/dr-new/, { timeout: 6000 });
+  await expect(page.getByText('Route Published')).toBeVisible();
+  await expect(page.getByText('Mbezi Beach')).toBeVisible();
+  await expect(page.getByText('Posta City Center')).toBeVisible();
+
+  // Return to Driver Dashboard
+  await page.click('text=Return to Dashboard');
+  await expect(page).toHaveURL('http://localhost:3000/driver');
 });

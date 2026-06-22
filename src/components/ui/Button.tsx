@@ -4,19 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-base font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-base font-semibold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-corporate-green text-white hover:bg-corporate-green-light active:bg-corporate-green-dark shadow-sm",
-        outline: "border-2 border-corporate-green text-corporate-green bg-transparent hover:bg-soft-gray",
-        ghost: "hover:bg-soft-gray text-charcoal",
-        link: "text-corporate-green underline-offset-4 hover:underline",
+        default: "bg-rich-black text-white hover:bg-rich-black/90 active:scale-[0.98]",
+        secondary: "bg-light-gray text-rich-black hover:bg-light-gray/80 active:scale-[0.98]",
+        outline: "border-2 border-border bg-transparent hover:bg-light-gray text-rich-black",
+        ghost: "hover:bg-light-gray text-charcoal",
+        accent: "bg-accent-blue text-white hover:bg-accent-blue/90 active:scale-[0.98]",
       },
       size: {
-        default: "h-14 px-6 py-4", // Large, touch-friendly tap targets
-        sm: "h-10 rounded-md px-3",
-        lg: "h-16 rounded-xl px-8 text-lg",
+        default: "h-14 px-6 py-4", // Generous touch targets
+        sm: "h-10 rounded-lg px-4 text-sm",
+        lg: "h-16 rounded-2xl px-8 text-lg",
         icon: "h-14 w-14",
       },
     },
@@ -35,8 +36,6 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    // We'd typically use @radix-ui/react-slot here, but falling back to standard element
-    // if not installed to avoid dependency issues for this specific test
     if (asChild) {
       return (
          <Slot
