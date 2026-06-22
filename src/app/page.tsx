@@ -1,96 +1,62 @@
 "use client"
 
 import * as React from "react"
-import { SpaceCard } from "@/components/SpaceCard"
-import { Button } from "@/components/ui/Button"
-import { ArrowDownLeft, ScanLine, } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { Button } from "@/components/ui/Button"
+import { ShieldCheck } from "lucide-react"
 
-export default function Home() {
+export default function WelcomePage() {
   return (
-    <div className="flex flex-col h-full overflow-y-auto hide-scrollbar px-6 pt-12 pb-24">
-      {/* Hero Card */}
-      <div className="mt-8 mb-10 w-full flex justify-center">
-        <SpaceCard balance={12450.00} name="Jules Dev" handle="jules" />
+    <div className="flex flex-col h-full bg-white relative">
+      {/* Premium Minimalist Header */}
+      <div className="pt-16 pb-8 px-8">
+        <div className="w-12 h-12 bg-corporate-green rounded-xl flex items-center justify-center mb-8 shadow-sm">
+          <ShieldCheck className="w-6 h-6 text-white" />
+        </div>
       </div>
 
-      {/* Primary Actions */}
+      {/* Core Value Proposition */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="flex mb-12"
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex-1 px-8 flex flex-col justify-center pb-20"
       >
-        <Link href="/deposit" className="block w-full">
-          <Button variant="secondary" className="w-full h-16 rounded-2xl flex gap-3 text-base">
-            <ArrowDownLeft className="w-5 h-5 text-surface-200" />
-            Deposit Funds
+        <h1 className="text-4xl font-semibold tracking-tight text-charcoal mb-4">
+          Secure Their<br />Future.
+        </h1>
+        <p className="text-lg text-gray-500 leading-relaxed max-w-[280px]">
+          The institutional platform for parents to build and protect their children&apos;s financial legacy.
+        </p>
+
+        {/* Trust Indicators */}
+        <div className="mt-12 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-corporate-green" />
+            <span className="text-sm font-medium text-gray-600">Bank-grade Security</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-corporate-green" />
+            <span className="text-sm font-medium text-gray-600">Immutable Records</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-corporate-green" />
+            <span className="text-sm font-medium text-gray-600">Long-term Value Preservation</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Sticky Bottom Action */}
+      <div className="px-8 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+        <Link href="/dashboard" className="block w-full">
+          <Button variant="primary">
+            Create Parent Account
           </Button>
         </Link>
-      </motion.div>
-
-      {/* Activity Section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="flex-1"
-      >
-        <div className="flex justify-between items-end mb-6">
-          <h2 className="text-lg font-medium text-foreground">Recent Activity</h2>
-          <button className="text-sm text-surface-200 hover:text-foreground transition-colors">See all</button>
-        </div>
-
-        <div className="space-y-6">
-          {/* Transaction Item */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">WK</span>
-              </div>
-              <div>
-                <p className="font-medium text-base text-foreground">Work Cafe</p>
-                <p className="text-sm text-surface-200">Today, 9:41 AM</p>
-              </div>
-            </div>
-            <p className="font-medium text-base text-foreground">- TZS 12,500</p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-surface-800 border border-surface-600 flex items-center justify-center">
-                <span className="font-mono text-sm text-surface-200">AL</span>
-              </div>
-              <div>
-                <p className="font-medium text-base text-foreground">$alex</p>
-                <p className="text-sm text-surface-200">Yesterday</p>
-              </div>
-            </div>
-            <p className="font-medium text-base text-foreground">+ TZS 45,000</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Admin Discoverability */}
-      <div className="mt-16 flex justify-center">
-        <Link href="/partner" className="text-[10px] uppercase tracking-widest text-surface-400 hover:text-surface-200 transition-colors">
-          Partners
-        </Link>
-      </div>
-
-      {/* Bottom Floating Action Bar (NFC Pay) */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-[env(safe-area-inset-bottom,2rem)] flex justify-center bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none">
-        <Link href="/pay/demo-merchant" className="pointer-events-auto">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="h-16 px-8 bg-brand text-brand-foreground rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(0,168,132,0.2)] cursor-pointer"
-          >
-            <ScanLine className="w-5 h-5" />
-            <span className="font-medium text-base">Tap to Pay</span>
-          </motion.div>
-        </Link>
+        <p className="text-center mt-6 text-sm text-gray-400 font-medium">
+          Already have an account? <button className="text-corporate-green hover:underline">Sign in</button>
+        </p>
       </div>
     </div>
   )
