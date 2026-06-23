@@ -1,281 +1,269 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { Search, SlidersHorizontal, ArrowLeft, CheckCircle2, Clock, MapPin, X } from "lucide-react"
+import { Scan, QrCode, ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Logo } from "@/components/ui/Logo"
-import { MapPlaceholder } from "@/components/ui/MapPlaceholder"
-import { LiveTripCard, LiveTripCardProps } from "@/components/ui/LiveTripCard"
-import { Button } from "@/components/ui/Button"
 
-// Mock real-time data
-const liveTrips: LiveTripCardProps[] = [
-  {
-    id: "lt1",
-    driverName: "Ahmed",
-    destination: "Mlimani City",
-    availableSeats: 2,
-    etaMins: 4,
-    distanceKm: 1.2
-  },
-  {
-    id: "lt2",
-    driverName: "Sarah",
-    destination: "Oysterbay",
-    availableSeats: 3,
-    etaMins: 7,
-    distanceKm: 2.5
-  }
+type AppState = "home" | "scan" | "confirm" | "success" | "history"
+
+interface Transaction {
+  id: string
+  merchant: string
+  amount: number
+  date: string
+  icon: React.ReactNode
+}
+
+const transactions: Transaction[] = [
+  { id: "tx1", merchant: "Whole Foods Market", amount: 45.20, date: "Today, 14:23", icon: <ShoppingBag size={20} className="text-white" /> },
+  { id: "tx2", merchant: "Starbucks", amount: 6.50, date: "Today, 09:12", icon: <Coffee size={20} className="text-white" /> },
+  { id: "tx3", merchant: "Apple Store", amount: 129.00, date: "Yesterday", icon: <Building2 size={20} className="text-white" /> },
 ]
 
-type AppState = "idle" | "search" | "ride_focus" | "requesting" | "confirmed"
+export default function PaymentNetworkApp() {
+  const [appState, setAppState] = useState<AppState>("home")
+  const amount = 45.20;
+  const merchant = "Whole Foods Market";
 
-export default function PassengerRealTimeHomePage() {
-  const [appState, setAppState] = useState<AppState>("idle")
-  const [selectedTrip, setSelectedTrip] = useState<LiveTripCardProps | null>(null)
-
-  const handleTripClick = (trip: LiveTripCardProps) => {
-    setSelectedTrip(trip)
-    setAppState("ride_focus")
-  }
-
-  const handleRequestSeat = () => {
-    setAppState("requesting")
-    // Simulate booking flow
+  const handleScan = () => {
+    setAppState("scan")
+    // Simulate finding a merchant after scanning
     setTimeout(() => {
-      setAppState("confirmed")
+      setAppState("confirm")
     }, 1500)
   }
 
-  const handleClose = () => {
-    setAppState("idle")
-    setSelectedTrip(null)
+  const handleConfirm = () => {
+    setAppState("success")
+    setTimeout(() => {
+      setAppState("home")
+    }, 2500)
   }
 
   return (
-    <div className="relative flex flex-col h-[100dvh] overflow-hidden bg-light-gray">
+    <div className="flex flex-col h-full bg-[#0a1118] text-white overflow-hidden relative">
+      <AnimatePresence mode="wait">
 
-      {/* Background Map Experience */}
-      <MapPlaceholder isFocused={appState === "ride_focus" || appState === "requesting"} />
-
-      {/* Floating Header (Only in idle) */}
-      <AnimatePresence>
-        {appState === "idle" && (
-          <motion.header
-            className="absolute top-0 left-0 right-0 z-50 p-4 pt-[env(safe-area-inset-top)]"
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            exit={{ y: -100 }}
-          >
-            <div className="flex items-center justify-between mb-4 px-2">
-               <Logo />
-               <Link href="/drive" className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-rich-black shadow-sm border border-border">
-                 Drive
-               </Link>
-            </div>
-
-            <div
-              onClick={() => setAppState("search")}
-              className="bg-white rounded-2xl shadow-lg border border-border flex items-center p-3 cursor-pointer"
-            >
-              <Search className="h-5 w-5 text-charcoal ml-2 shrink-0" />
-              <div className="w-full text-rich-black font-semibold px-3 text-left">
-                Where are you going?
-              </div>
-              <div className="h-8 w-8 rounded-xl bg-light-gray flex items-center justify-center shrink-0">
-                 <SlidersHorizontal className="h-4 w-4 text-rich-black" />
-              </div>
-            </div>
-          </motion.header>
-        )}
-      </AnimatePresence>
-
-      {/* Interactive Map Elements (Simulated markers) */}
-      <AnimatePresence>
-        {appState === "idle" && (
+        {/* HOME STATE */}
+        {appState === "home" && (
           <motion.div
+            key="home"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10 pointer-events-none"
+            className="flex flex-col h-full p-6 pt-12"
           >
-            <div className="absolute top-1/2 left-1/3 flex flex-col items-center">
-               <div className="bg-accent-blue text-white px-2 py-1 rounded text-[10px] font-bold mb-1 shadow">2 Seats</div>
-               <div className="h-4 w-4 rounded-full bg-accent-blue border-2 border-white shadow-lg relative">
-                 <div className="absolute inset-0 bg-accent-blue rounded-full animate-ping opacity-50" />
-               </div>
-            </div>
-
-            <div className="absolute top-1/3 right-1/4 flex flex-col items-center">
-               <div className="bg-accent-blue text-white px-2 py-1 rounded text-[10px] font-bold mb-1 shadow">3 Seats</div>
-               <div className="h-4 w-4 rounded-full bg-accent-blue border-2 border-white shadow-lg" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* STATE: IDLE - Bottom Sheet Live Opportunities */}
-      <AnimatePresence>
-        {appState === "idle" && (
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 z-40 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col max-h-[60vh]"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          >
-             <div className="w-full flex justify-center pt-3 pb-2 shrink-0">
-               <div className="w-12 h-1.5 bg-border rounded-full" />
-             </div>
-             <div className="px-6 pb-2 shrink-0">
-               <h2 className="font-bold text-rich-black text-lg">Active Near You</h2>
-               <p className="text-xs text-charcoal font-medium">Vehicles currently heading your way.</p>
-             </div>
-
-             <div className="flex-1 overflow-y-auto px-6 pb-8 space-y-4 pt-2">
-                {liveTrips.map((trip) => (
-                   <motion.div layoutId={`trip-${trip.id}`} key={trip.id}>
-                     <LiveTripCard
-                       {...trip}
-                       onClick={() => handleTripClick(trip)}
-                     />
-                   </motion.div>
-                ))}
-             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* STATE: SEARCH - Full Screen Overlay */}
-      <AnimatePresence>
-        {appState === "search" && (
-          <motion.div
-            className="absolute inset-0 z-50 bg-soft-white flex flex-col"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-          >
-            <div className="p-4 pt-[env(safe-area-inset-top)] flex items-center space-x-3 bg-white border-b border-border">
-              <button onClick={handleClose} className="p-2 -ml-2 rounded-full hover:bg-light-gray transition">
-                <ArrowLeft className="h-6 w-6 text-rich-black" />
-              </button>
-              <input
-                autoFocus
-                type="text"
-                placeholder="Where are you going?"
-                className="w-full bg-transparent border-none outline-none text-rich-black font-semibold text-lg placeholder:text-charcoal/40"
-              />
-            </div>
-            <div className="p-6">
-              <p className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4">Recent Destinations</p>
-              <div className="space-y-4">
-                 {["Oysterbay", "Masaki Terminal", "Mlimani City"].map((dest) => (
-                   <div key={dest} className="flex items-center space-x-4 border-b border-border pb-4 cursor-pointer" onClick={() => setAppState("idle")}>
-                     <div className="h-10 w-10 bg-light-gray rounded-full flex items-center justify-center shrink-0">
-                       <MapPin className="h-5 w-5 text-charcoal" />
-                     </div>
-                     <span className="font-semibold text-rich-black">{dest}</span>
-                   </div>
-                 ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* STATE: RIDE FOCUS & REQUESTING - Bottom Panel */}
-      <AnimatePresence>
-        {(appState === "ride_focus" || appState === "requesting") && selectedTrip && (
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 z-40 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] p-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)]"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          >
-             <button onClick={handleClose} className="absolute right-4 top-4 p-2 rounded-full bg-light-gray">
-               <X className="h-5 w-5 text-charcoal" />
-             </button>
-
-             <motion.div layoutId={`trip-${selectedTrip.id}`}>
-               <LiveTripCard {...selectedTrip} className="shadow-none border-border mb-4 p-0" />
-             </motion.div>
-
-             <Button
-               size="lg"
-               className="w-full h-16 text-lg shadow-lg flex items-center justify-center group"
-               onClick={handleRequestSeat}
-               disabled={appState === "requesting"}
-             >
-               {appState === "requesting" ? (
-                 <div className="w-6 h-6 rounded-full border-3 border-white/30 border-t-white animate-spin" />
-               ) : (
-                 "Request Seat"
-               )}
-             </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* STATE: CONFIRMED - Boarding Pass Modal */}
-      <AnimatePresence>
-        {appState === "confirmed" && selectedTrip && (
-          <motion.div
-            className="absolute inset-0 z-50 bg-rich-black/40 backdrop-blur-sm flex items-center justify-center p-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-             <motion.div
-               className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative"
-               initial={{ scale: 0.9, y: 20 }}
-               animate={{ scale: 1, y: 0 }}
-               transition={{ type: "spring", damping: 25 }}
-             >
-                <div className="bg-accent-green/10 p-6 flex flex-col items-center text-center">
-                  <div className="h-16 w-16 bg-accent-green rounded-full flex items-center justify-center mb-3 shadow-lg">
-                    <CheckCircle2 className="h-8 w-8 text-white" />
-                  </div>
-                  <h2 className="text-xl font-bold text-rich-black">Request Accepted</h2>
-                  <p className="text-sm font-medium text-charcoal">Driver is heading to your location.</p>
+            {/* Header */}
+            <div className="flex justify-between items-center mb-12">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="w-4 h-4 bg-white rounded-sm" />
                 </div>
+                <span className="font-semibold text-lg tracking-tight">Network</span>
+              </div>
+              <button
+                onClick={() => setAppState("history")}
+                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+              >
+                <History size={20} className="text-white/80" />
+              </button>
+            </div>
 
-                <div className="p-6 space-y-5">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <div className="h-10 w-10 bg-light-gray rounded-full flex items-center justify-center border border-border">
-                        <span className="font-bold text-rich-black">{selectedTrip.driverName[0]}</span>
+            {/* Balance */}
+            <div className="flex flex-col mb-16">
+              <span className="text-white/50 text-sm font-medium tracking-wide uppercase mb-2">Available Balance</span>
+              <div className="flex items-end gap-2">
+                <span className="text-5xl font-light tracking-tight">$4,250</span>
+                <span className="text-2xl text-white/50 font-light mb-1">.00</span>
+              </div>
+              <div className="mt-4 inline-flex items-center gap-2 bg-white/5 self-start px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 rounded-full bg-[#0A66C2]" />
+                <span className="text-xs font-medium text-white/70">Flex Balance Active</span>
+              </div>
+            </div>
+
+            {/* Primary Action */}
+            <div className="mt-auto pb-8 flex gap-4">
+              <button
+                onClick={handleScan}
+                className="flex-1 bg-white text-black py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 hover:bg-white/90 active:scale-[0.98] transition-all"
+              >
+                <Scan size={24} />
+                Tap to Pay
+              </button>
+              <button
+                className="w-16 h-[60px] bg-white/10 rounded-2xl flex items-center justify-center hover:bg-white/20 active:scale-[0.98] transition-all"
+              >
+                <QrCode size={24} className="text-white" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* SCAN STATE */}
+        {appState === "scan" && (
+          <motion.div
+            key="scan"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col h-full bg-[#050505] relative"
+          >
+            <div className="absolute top-12 left-6 z-10">
+              <button onClick={() => setAppState("home")} className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                <ArrowLeft size={20} className="text-white" />
+              </button>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center flex-col relative overflow-hidden">
+              {/* Fake camera viewfinder */}
+              <div className="w-64 h-64 border-2 border-white/20 rounded-3xl relative">
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white rounded-tl-3xl" />
+                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white rounded-tr-3xl" />
+                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white rounded-bl-3xl" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white rounded-br-3xl" />
+
+                {/* Scanning line animation */}
+                <motion.div
+                  initial={{ top: 0, opacity: 0 }}
+                  animate={{ top: "100%", opacity: [0, 1, 1, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  className="absolute left-0 right-0 h-0.5 bg-[#0A66C2] shadow-[0_0_8px_2px_rgba(10,102,194,0.5)]"
+                />
+              </div>
+              <p className="mt-8 text-white/50 text-sm tracking-wide">Hold near terminal or scan QR</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* CONFIRM STATE */}
+        {appState === "confirm" && (
+          <motion.div
+            key="confirm"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col h-full p-6 bg-[#0a1118]"
+          >
+            <div className="pt-8 pb-12 flex justify-between items-start">
+               <button onClick={() => setAppState("home")} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                 <X size={20} className="text-white/70" />
+               </button>
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center items-center text-center">
+              <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-6">
+                <ShoppingBag size={28} className="text-white" />
+              </div>
+              <h2 className="text-3xl font-light tracking-tight mb-2">{merchant}</h2>
+              <div className="flex items-start justify-center gap-1 mb-8">
+                <span className="text-2xl text-white/70 mt-1">$</span>
+                <span className="text-6xl font-light tracking-tight">{Math.floor(amount)}</span>
+                <span className="text-2xl text-white/70 mt-1">.{(amount % 1).toFixed(2).substring(2)}</span>
+              </div>
+
+              <div className="w-full bg-white/5 rounded-2xl p-4 flex justify-between items-center mb-auto">
+                 <span className="text-white/60 text-sm">Payment Source</span>
+                 <span className="text-white font-medium text-sm flex items-center gap-2">
+                   Network Balance <div className="w-1.5 h-1.5 rounded-full bg-[#0A66C2]" />
+                 </span>
+              </div>
+            </div>
+
+            <div className="pb-8">
+              <p className="text-center text-white/40 text-xs mb-4">Secured by global network infrastructure</p>
+              <button
+                onClick={handleConfirm}
+                className="w-full bg-[#0A66C2] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 hover:bg-[#095bb0] active:scale-[0.98] transition-all"
+              >
+                Confirm Payment
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* SUCCESS STATE */}
+        {appState === "success" && (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col h-full bg-[#0A66C2] items-center justify-center p-6"
+          >
+            <motion.div
+               initial={{ scale: 0.8, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
+               className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl"
+            >
+              <CheckCircle2 size={48} className="text-[#0A66C2]" />
+            </motion.div>
+            <motion.h2
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl font-light tracking-tight text-white mb-2"
+            >
+              Approved
+            </motion.h2>
+            <motion.p
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/80 font-medium"
+            >
+              ${amount.toFixed(2)} to {merchant}
+            </motion.p>
+          </motion.div>
+        )}
+
+        {/* HISTORY STATE */}
+        {appState === "history" && (
+          <motion.div
+            key="history"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col h-full p-6 pt-12 bg-[#0a1118]"
+          >
+            <div className="flex items-center gap-4 mb-8">
+              <button
+                onClick={() => setAppState("home")}
+                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+              >
+                <ArrowLeft size={20} className="text-white" />
+              </button>
+              <h2 className="text-xl font-medium tracking-tight">Activity</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto no-scrollbar pb-8">
+              <div className="space-y-6">
+                {transactions.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                        {tx.icon}
                       </div>
                       <div>
-                        <p className="font-bold text-rich-black text-sm">{selectedTrip.driverName}</p>
-                        <p className="text-[10px] text-charcoal uppercase tracking-wider font-semibold">Toyota Hiace • T123</p>
+                        <p className="font-medium text-white text-base">{tx.merchant}</p>
+                        <p className="text-white/40 text-sm">{tx.date}</p>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="bg-light-gray rounded-xl p-4 flex justify-between items-center border border-border">
-                    <div>
-                      <p className="text-[10px] text-charcoal uppercase tracking-wider font-semibold mb-1">Arriving In</p>
-                      <p className="font-bold text-2xl text-rich-black">{selectedTrip.etaMins} <span className="text-sm">min</span></p>
-                    </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-charcoal uppercase tracking-wider font-semibold mb-1">Distance</p>
-                      <p className="font-bold text-2xl text-rich-black">{selectedTrip.distanceKm} <span className="text-sm">km</span></p>
+                      <p className="font-medium text-white text-base">-${tx.amount.toFixed(2)}</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="p-4 border-t border-border bg-soft-white">
-                  <Button variant="outline" className="w-full" onClick={handleClose}>
-                    Close to View Map
-                  </Button>
-                </div>
-             </motion.div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
-      </AnimatePresence>
 
+      </AnimatePresence>
     </div>
   )
 }
