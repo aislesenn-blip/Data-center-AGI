@@ -4,21 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-semibold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-sm text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-blue focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-rich-black text-white hover:bg-rich-black/90 active:scale-[0.98]",
-        secondary: "bg-light-gray text-rich-black hover:bg-light-gray/80 active:scale-[0.98]",
-        outline: "border border-border bg-transparent hover:bg-light-gray text-rich-black",
-        ghost: "hover:bg-light-gray text-charcoal",
-        accent: "bg-accent-blue text-white hover:bg-accent-blue/90 active:scale-[0.98]",
+        default: "bg-navy-blue text-white hover:bg-navy-blue/90 shadow-sm",
+        secondary: "bg-stone-gray text-midnight-black hover:bg-border border border-border",
+        outline: "border border-border bg-transparent hover:bg-stone-gray text-midnight-black",
+        ghost: "hover:bg-stone-gray text-midnight-black",
+        gold: "bg-subtle-gold text-midnight-black hover:bg-subtle-gold/90 shadow-sm",
       },
       size: {
-        default: "h-12 px-5 py-3",
-        sm: "h-9 rounded-lg px-3 text-xs",
-        lg: "h-14 rounded-xl px-6 text-base",
-        icon: "h-12 w-12",
+        default: "h-14 px-6 py-4",
+        sm: "h-10 px-4 text-sm",
+        lg: "h-16 px-8 text-lg",
+        icon: "h-14 w-14",
       },
     },
     defaultVariants: {

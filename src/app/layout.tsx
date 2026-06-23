@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-// Using Inter for a modern, clean, confident, high-end feel
+// Using Inter for an invisible, corporate, high-contrast structural feel
 const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
@@ -10,12 +10,12 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#050505", // Rich Black
+  themeColor: "#0A1128", // Deep Navy Blue
 };
 
 export const metadata: Metadata = {
-  title: "Timebus",
-  description: "Real-time shared mobility network.",
+  title: "Global Payment Network",
+  description: "Universal payment acceptance and spending infrastructure.",
 };
 
 export default function RootLayout({
@@ -25,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-[#FAFAFA] text-[#050505]`}>
-        <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-white shadow-2xl h-[100dvh] flex flex-col relative">
+      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-stone-gray text-midnight-black selection:bg-navy-blue selection:text-white`}>
+        <main className="flex-1 overflow-y-auto w-full max-w-md mx-auto bg-electric-white shadow-2xl h-[100dvh] flex flex-col relative border-x border-border">
             {children}
         </main>
       </body>
