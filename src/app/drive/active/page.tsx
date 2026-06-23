@@ -13,14 +13,20 @@ function ActiveTripContent() {
 
   // Mock an incoming request state
   const [hasRequest, setHasRequest] = useState(true)
+  const [tripState, setTripState] = useState<"broadcasting" | "en_route">("broadcasting")
 
   const handleEndTrip = () => {
     router.push("/")
   }
 
+  const handleAcceptRequest = () => {
+    setHasRequest(false)
+    setTripState("en_route")
+  }
+
   return (
     <>
-      <MapPlaceholder destination={destination} />
+      <MapPlaceholder destination={destination} isFocused={tripState === "en_route"} />
 
       {/* Top Status Header */}
       <header className="absolute top-0 left-0 right-0 z-50 p-4 pt-[env(safe-area-inset-top)] flex flex-col items-center">
@@ -61,7 +67,7 @@ function ActiveTripContent() {
              <Button variant="outline" size="lg" onClick={() => setHasRequest(false)}>
                <X className="h-5 w-5 mr-1" /> Decline
              </Button>
-             <Button variant="accent" size="lg" onClick={() => setHasRequest(false)}>
+             <Button variant="accent" size="lg" onClick={handleAcceptRequest}>
                <Check className="h-5 w-5 mr-1" /> Accept
              </Button>
            </div>
@@ -70,21 +76,32 @@ function ActiveTripContent() {
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 z-40 p-4 pb-[env(safe-area-inset-bottom)]">
-         <div className="bg-white rounded-2xl shadow-xl border border-border p-4 flex justify-between items-center">
+         <div className="bg-white rounded-2xl shadow-xl border border-border p-4 flex justify-between items-center transition-all duration-300">
             <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-full bg-light-gray flex flex-col items-center justify-center border border-border">
+              <div className="h-12 w-12 rounded-full bg-light-gray flex flex-col items-center justify-center border border-border shrink-0">
                 <span className="text-xs font-bold text-rich-black">2</span>
                 <span className="text-[8px] text-charcoal font-bold uppercase">Seats</span>
               </div>
               <div>
-                <p className="font-bold text-rich-black text-sm">Trip Active</p>
-                <p className="text-xs text-charcoal font-medium">Broadcasting to network...</p>
+                {tripState === "broadcasting" ? (
+                  <>
+                    <p className="font-bold text-rich-black text-sm">Trip Active</p>
+                    <p className="text-xs text-charcoal font-medium">Broadcasting to network...</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-bold text-accent-green text-sm flex items-center">
+                       <Navigation className="h-3 w-3 mr-1 fill-current" /> En route to Elias
+                    </p>
+                    <p className="text-xs text-charcoal font-medium">Pickup in 4 mins</p>
+                  </>
+                )}
               </div>
             </div>
 
             <button
               onClick={handleEndTrip}
-              className="h-12 w-12 rounded-full bg-rich-black text-white flex items-center justify-center shadow-md active:scale-95 transition-transform"
+              className="h-12 w-12 rounded-full bg-rich-black text-white flex items-center justify-center shadow-md active:scale-95 transition-transform shrink-0"
             >
               <X className="h-5 w-5" />
             </button>
