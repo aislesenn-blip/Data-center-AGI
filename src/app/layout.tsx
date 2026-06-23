@@ -10,7 +10,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#050505", // Rich Black
+  themeColor: "#FFFFFF",
 };
 
 export const metadata: Metadata = {
@@ -25,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-[#050505] text-[#FAFAFA]`}>
-        <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-[#0a1118] h-[100dvh] flex flex-col relative shadow-2xl">
+      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-[#F9FAFB] text-[#111827]`}>
+        <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-[#FFFFFF] h-[100dvh] flex flex-col relative shadow-2xl">
             {children}
         </main>
       </body>

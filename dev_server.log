@@ -6,16 +6,13 @@
 ▲ Next.js 16.2.9 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.0.2:3001
-✓ Ready in 684ms
+✓ Ready in 570ms
 ⨯ Another next dev server is already running.
 
 - Local:        http://localhost:3000
-- PID:          146961
+- PID:          135185
 - Dir:          /app
 - Log:          .next/dev/logs/next-development.log
 
-Run kill 146961 to stop it.
-[? GET / 200 in 464ms (next.js: 63ms, application-code: 401ms)
- GET /pay/coffee-roasters 200 in 358ms (next.js: 185ms, application-code: 173ms)
- GET /partner 200 in 66ms (next.js: 12ms, application-code: 54ms)
- GET /deposit 200 in 69ms (next.js: 8ms, application-code: 61ms)
+Run kill 135185 to stop it.
+[?25h
