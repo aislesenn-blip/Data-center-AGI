@@ -1,188 +1,102 @@
 "use client"
 
 import Link from "next/link"
+import { Search, SlidersHorizontal } from "lucide-react"
 import { Logo } from "@/components/ui/Logo"
-import { RouteCard } from "@/components/ui/RouteCard"
-import { Search, Compass } from "lucide-react"
-import { PassengerNav } from "@/components/layout/PassengerNav"
+import { MapPlaceholder } from "@/components/ui/MapPlaceholder"
+import { LiveTripCard } from "@/components/ui/LiveTripCard"
 
-// Mock marketplace data reflecting dynamic, time-based departures
-const leavingSoonRoutes = [
+// Mock real-time data
+const liveTrips = [
   {
-    id: "r1",
-    from: "Kariakoo Market",
-    to: "Masaki Terminal",
-    departureTime: "07:30 AM",
-    availableSeats: 3,
-    price: "TZS 1,500",
-    driverName: "John M.",
-    vehicleType: "Toyota Hiace"
-  }
-]
-
-const morningCommuteRoutes = [
-  {
-    id: "r2",
-    from: "Ubungo Interchange",
-    to: "Posta City Center",
-    departureTime: "08:00 AM",
-    availableSeats: 1,
-    price: "TZS 2,000",
-    driverName: "Sarah K.",
-    vehicleType: "Nissan Caravan"
+    id: "lt1",
+    driverName: "Ahmed",
+    destination: "Mlimani City",
+    availableSeats: 2,
+    etaMins: 4,
+    distanceKm: 1.2
   },
   {
-    id: "r3",
-    from: "Mwenge Bus Stand",
-    to: "Oysterbay",
-    departureTime: "08:15 AM",
-    availableSeats: 5,
-    price: "TZS 1,500",
-    driverName: "David T.",
-    vehicleType: "Toyota Coaster"
+    id: "lt2",
+    driverName: "Sarah",
+    destination: "Oysterbay",
+    availableSeats: 3,
+    etaMins: 7,
+    distanceKm: 2.5
   }
 ]
 
-const eveningCommuteRoutes = [
-  {
-    id: "r4",
-    from: "Posta City Center",
-    to: "Mbagala",
-    departureTime: "05:30 PM",
-    availableSeats: 4,
-    price: "TZS 2,000",
-    driverName: "Ali J.",
-    vehicleType: "Toyota Hiace"
-  }
-]
-
-export default function HomePage() {
+export default function PassengerRealTimeHomePage() {
   return (
-    <div className="flex min-h-full flex-col pb-6">
-      {/* Header */}
-      <header className="px-6 py-5 bg-white border-b border-border sticky top-0 z-50 flex items-center justify-between">
-        <Logo />
-        <Link href="/driver" className="text-sm font-semibold text-rich-black hover:text-charcoal transition-colors">
-          Driver Area
-        </Link>
-      </header>
+    <div className="relative flex flex-col h-[100dvh] overflow-hidden bg-light-gray">
 
-      <div className="flex-1 flex flex-col pt-6">
+      {/* Background Map Experience */}
+      <MapPlaceholder />
 
-        {/* Search / Hero Section */}
-        <div className="px-6 space-y-4 mb-8">
-          <h1 className="text-2xl font-bold tracking-tight text-rich-black">
-            Where are you going?
-          </h1>
+      {/* Floating Header / Search */}
+      <header className="absolute top-0 left-0 right-0 z-50 p-4 pt-[env(safe-area-inset-top)]">
+        <div className="flex items-center justify-between mb-4 px-2">
+           <Logo />
+           <Link href="/drive" className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-rich-black shadow-sm border border-border">
+             Drive
+           </Link>
+        </div>
 
-          <div className="bg-light-gray p-2 rounded-2xl">
-            <div className="flex items-center space-x-3 bg-white p-3 rounded-xl border border-border shadow-sm focus-within:border-rich-black transition-colors">
-              <Search className="h-5 w-5 text-charcoal shrink-0" />
-              <input
-                type="text"
-                placeholder="Find your next ride..."
-                className="w-full bg-transparent border-none outline-none text-rich-black font-medium placeholder:text-charcoal/50"
-              />
-            </div>
-            {/* Quick Suggestions */}
-            <div className="flex space-x-2 mt-3 px-1 overflow-x-auto pb-1 no-scrollbar">
-              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Posta</span>
-              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Masaki</span>
-              <span className="shrink-0 bg-white border border-border text-xs font-semibold px-3 py-1.5 rounded-full text-charcoal">Mbezi</span>
-            </div>
+        <div className="bg-white rounded-2xl shadow-lg border border-border flex items-center p-3">
+          <Search className="h-5 w-5 text-charcoal ml-2 shrink-0" />
+          <input
+            type="text"
+            placeholder="Where are you going?"
+            className="w-full bg-transparent border-none outline-none text-rich-black font-semibold px-3 placeholder:text-charcoal/50"
+          />
+          <div className="h-8 w-8 rounded-xl bg-light-gray flex items-center justify-center shrink-0">
+             <SlidersHorizontal className="h-4 w-4 text-rich-black" />
           </div>
         </div>
+      </header>
 
-        {/* Dynamic Departure Feeds */}
-        <div className="px-6 space-y-8 pb-8">
-
-          {/* Leaving Soon */}
-          <section>
-            <h2 className="text-sm font-bold text-accent-orange uppercase tracking-wider mb-4 px-1 flex items-center">
-              <span className="w-2 h-2 rounded-full bg-accent-orange mr-2 animate-pulse" />
-              Leaving Soon
-            </h2>
-            <div className="space-y-4">
-              {leavingSoonRoutes.map((route) => (
-                <RouteCard
-                  key={route.id}
-                  id={route.id}
-                  from={route.from}
-                  to={route.to}
-                  departureTime={route.departureTime}
-                  availableSeats={route.availableSeats}
-                  price={route.price}
-                  driverName={route.driverName}
-                  vehicleType={route.vehicleType}
-                  isLeavingSoon={true}
-                  onClick={() => window.location.href = `/route/${route.id}`}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Next Available */}
-          <section>
-            <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
-              Next Available
-            </h2>
-            <div className="space-y-4">
-              {morningCommuteRoutes.map((route) => (
-                <RouteCard
-                  key={route.id}
-                  id={route.id}
-                  from={route.from}
-                  to={route.to}
-                  departureTime={route.departureTime}
-                  availableSeats={route.availableSeats}
-                  price={route.price}
-                  driverName={route.driverName}
-                  vehicleType={route.vehicleType}
-                  onClick={() => window.location.href = `/route/${route.id}`}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Popular Routes */}
-          <section>
-            <h2 className="text-sm font-bold text-charcoal uppercase tracking-wider mb-4 px-1">
-              Popular Routes
-            </h2>
-            <div className="space-y-4">
-              {eveningCommuteRoutes.map((route) => (
-                <RouteCard
-                  key={route.id}
-                  id={route.id}
-                  from={route.from}
-                  to={route.to}
-                  departureTime={route.departureTime}
-                  availableSeats={route.availableSeats}
-                  price={route.price}
-                  driverName={route.driverName}
-                  vehicleType={route.vehicleType}
-                  onClick={() => window.location.href = `/route/${route.id}`}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Discovery Section */}
-          <section className="mt-8 pt-8 pb-4 border-t border-border flex flex-col items-center text-center">
-             <div className="h-12 w-12 rounded-full bg-light-gray flex items-center justify-center mb-4">
-               <Compass className="h-6 w-6 text-charcoal" />
-             </div>
-             <h3 className="font-bold text-rich-black mb-1">Looking for a different time?</h3>
-             <p className="text-sm text-charcoal mb-4 max-w-[250px]">
-               Drivers publish new departures daily. Search above to find exactly what you need.
-             </p>
-          </section>
-
-        </div>
-
+      {/* Interactive Map Elements (Simulated) */}
+      <div className="absolute top-1/2 left-1/3 z-10 flex flex-col items-center">
+         <div className="bg-accent-blue text-white px-2 py-1 rounded text-[10px] font-bold mb-1 shadow">2 Seats</div>
+         <div className="h-4 w-4 rounded-full bg-accent-blue border-2 border-white shadow-lg relative">
+           <div className="absolute inset-0 bg-accent-blue rounded-full animate-ping opacity-50" />
+         </div>
       </div>
 
-      <PassengerNav />
+      <div className="absolute top-1/3 right-1/4 z-10 flex flex-col items-center">
+         <div className="bg-accent-blue text-white px-2 py-1 rounded text-[10px] font-bold mb-1 shadow">3 Seats</div>
+         <div className="h-4 w-4 rounded-full bg-accent-blue border-2 border-white shadow-lg" />
+      </div>
+
+      {/* Bottom Sheet: Live Opportunities */}
+      <div className="absolute bottom-0 left-0 right-0 z-40 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col max-h-[60vh]">
+         {/* Drag Handle */}
+         <div className="w-full flex justify-center pt-3 pb-2 shrink-0">
+           <div className="w-12 h-1.5 bg-border rounded-full" />
+         </div>
+
+         <div className="px-6 pb-2 shrink-0">
+           <h2 className="font-bold text-rich-black text-lg">Active Near You</h2>
+           <p className="text-xs text-charcoal font-medium">Vehicles currently heading your way.</p>
+         </div>
+
+         <div className="flex-1 overflow-y-auto px-6 pb-8 space-y-4 pt-2">
+            {liveTrips.map((trip) => (
+               <LiveTripCard
+                 key={trip.id}
+                 {...trip}
+                 // In a real app this would open a request bottom sheet or page
+                 onClick={() => {}}
+               />
+            ))}
+
+            <div className="text-center pt-4 pb-2">
+              <div className="inline-block h-8 w-8 rounded-full border-2 border-border border-t-rich-black animate-spin mb-2" />
+              <p className="text-xs font-semibold text-charcoal">Scanning network for more vehicles...</p>
+            </div>
+         </div>
+      </div>
+
     </div>
   )
 }
