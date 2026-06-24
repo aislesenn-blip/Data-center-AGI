@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X, Plus, Receipt, Search, ShieldCheck, Wifi, CheckCircle, AlertCircle } from "lucide-react"
+import { ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X, Plus, Receipt, Search, ShieldCheck, Wifi, CheckCircle, AlertCircle, CircleDot } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 type AppState = "home" | "pay_number" | "pay_amount" | "pay_review" | "pay_success" | "history" | "deposit" | "deposit_funding" | "deposit_confirm" | "deposit_success" | "receipts" | "receipt_detail"
@@ -626,31 +626,31 @@ export default function PaymentNetworkApp() {
               {hasActiveReceipt ? (
                 <button
                   onClick={() => setAppState("receipt_detail")}
-                  className="w-full relative overflow-hidden bg-[#111827] rounded-[1.5rem] p-6 text-left active:scale-[0.98] transition-transform shadow-lg"
+                  className="w-full relative overflow-hidden bg-white border border-[#E5E7EB] rounded-[1.5rem] p-5 text-left active:scale-[0.98] transition-transform shadow-sm"
                 >
-                   {/* Animated pulse background to indicate "Active/Ready" */}
+                   {/* Animated pulse background to indicate "Active" */}
                    <motion.div
                      animate={{ opacity: [0.1, 0.3, 0.1] }}
                      transition={{ duration: 3, repeat: Infinity }}
-                     className="absolute -top-10 -right-10 w-48 h-48 bg-[#0A66C2] rounded-full blur-3xl"
+                     className="absolute -top-10 -right-10 w-32 h-32 bg-[#0A66C2] rounded-full blur-3xl"
                    />
 
-                   <div className="flex justify-between items-start mb-8 relative z-10">
-                      <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
-                         <ShieldCheck size={24} className="text-white" />
+                   <div className="flex justify-between items-start mb-6 relative z-10">
+                      <div className="w-12 h-12 bg-[#F3F4F6] rounded-xl flex items-center justify-center">
+                         <Building2 size={24} className="text-[#111827]" />
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                        <Wifi size={14} className="text-white animate-pulse" />
-                        <span className="text-xs font-semibold text-white uppercase tracking-wide">Ready for tap</span>
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F0FDF4] rounded-full border border-[#BBF7D0]">
+                        <CircleDot size={12} className="text-[#16A34A] animate-pulse" />
+                        <span className="text-xs font-semibold text-[#16A34A] uppercase tracking-wide">Ready</span>
                       </div>
                    </div>
 
-                   <div className="relative z-10 text-white">
-                     <p className="text-white/60 text-sm mb-1">{receiptData.date}</p>
-                     <h3 className="text-2xl font-light tracking-tight mb-4">{receiptData.merchant}</h3>
-                     <div className="border-t border-dashed border-white/20 pt-4 flex justify-between items-end">
-                        <p className="text-3xl font-light tracking-tight">${receiptData.amount.toFixed(2)}</p>
-                        <ArrowLeft size={20} className="text-white/50 rotate-180" />
+                   <div className="relative z-10">
+                     <p className="text-[#6B7280] text-sm mb-1">{receiptData.date}</p>
+                     <h3 className="text-xl font-medium text-[#111827] mb-4">{receiptData.merchant}</h3>
+                     <div className="border-t border-dashed border-[#E5E7EB] pt-4 flex justify-between items-end">
+                        <p className="text-2xl font-light tracking-tight text-[#111827]">${receiptData.amount.toFixed(2)}</p>
+                        <ArrowLeft size={20} className="text-[#9CA3AF] rotate-180" />
                      </div>
                    </div>
                 </button>
