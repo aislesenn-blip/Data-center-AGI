@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X, Plus, Receipt, CircleDot, Search, ShieldCheck } from "lucide-react"
+import { ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X, Plus, Receipt, Search, ShieldCheck, Wifi, CheckCircle, AlertCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 type AppState = "home" | "pay_number" | "pay_amount" | "pay_review" | "pay_success" | "history" | "deposit" | "deposit_funding" | "deposit_confirm" | "deposit_success" | "receipts" | "receipt_detail"
@@ -46,19 +46,32 @@ export default function PaymentNetworkApp() {
   const [depositAmount, setDepositAmount] = useState("")
   const [selectedFunding, setSelectedFunding] = useState<FundingSource>(fundingSources[0])
 
-  // Active Receipts (Mock Data)
+  // Receipt Lifecycle State
   const [hasActiveReceipt, setHasActiveReceipt] = useState(true)
+  const [receiptStatus, setReceiptStatus] = useState<"pending" | "verifying" | "verified" | "redeemed">("pending")
   const receiptData = { merchant: "Apple Store", amount: 129.00, date: "Today, 09:41 AM" }
 
   // Timer for animated receipt pulse
-  const [time, setTime] = useState(new Date())
+  const [time, setTime] = useState<Date | null>(null)
   useEffect(() => {
+    // Avoid setting state immediately on mount within the effect body
+    const initialTimer = setTimeout(() => setTime(new Date()), 0)
     const timer = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(timer)
+    return () => {
+      clearTimeout(initialTimer)
+      clearInterval(timer)
+    }
   }, [])
 
   // Navigation Handlers
-  const goHome = () => setAppState("home")
+  const goHome = () => {
+    // Reset receipt status if returning from a completed flow
+    if (receiptStatus === "verified" || receiptStatus === "redeemed") {
+       setHasActiveReceipt(false)
+       setReceiptStatus("pending")
+    }
+    setAppState("home")
+  }
 
   // --- Payment Flow Handlers ---
   const handleTapToPayClick = () => {
@@ -69,7 +82,7 @@ export default function PaymentNetworkApp() {
 
   const handlePayNumberNext = () => {
     if (payNumber.length < 3) return;
-    setPayMerchantName("Verified Merchant") // Mock resolving the name
+    setPayMerchantName("Verified Merchant")
     setAppState("pay_amount")
   }
 
@@ -123,11 +136,20 @@ export default function PaymentNetworkApp() {
   }
   const handleDepositBackspace = () => setDepositAmount(prev => prev.slice(0, -1))
 
-  // --- Receipt Handlers ---
-  const handleUseReceipt = () => {
-    // Moves it out of active view instantly
-    setHasActiveReceipt(false)
-    goHome()
+  // --- Receipt NFC Validation Handler ---
+  const handleSimulateNFCTap = () => {
+     if (receiptStatus !== "pending") return;
+     setReceiptStatus("verifying")
+     // Sub-second validation simulation
+     setTimeout(() => {
+        setReceiptStatus("verified")
+        // The receipt stays visible to show the premium confirmation, user clicks 'Close' when ready
+     }, 800)
+  }
+
+  // Historical Receipt tap (fraud check)
+  const handleSimulateUsedReceiptTap = () => {
+      setReceiptStatus("redeemed")
   }
 
 
@@ -167,7 +189,6 @@ export default function PaymentNetworkApp() {
                 <span className="text-5xl font-light tracking-tight">${Math.floor(balance).toLocaleString()}</span>
                 <span className="text-2xl text-[#6B7280] font-light mb-1">.{(balance % 1).toFixed(2).substring(2)}</span>
               </div>
-              {/* Removed Flex Balance active and dot based on feedback */}
             </div>
 
             {/* Actions */}
@@ -605,30 +626,31 @@ export default function PaymentNetworkApp() {
               {hasActiveReceipt ? (
                 <button
                   onClick={() => setAppState("receipt_detail")}
-                  className="w-full relative overflow-hidden bg-white border border-[#E5E7EB] rounded-[1.5rem] p-5 text-left active:scale-[0.98] transition-transform shadow-sm"
+                  className="w-full relative overflow-hidden bg-[#111827] rounded-[1.5rem] p-6 text-left active:scale-[0.98] transition-transform shadow-lg"
                 >
-                   {/* Animated pulse background to indicate "Active" */}
+                   {/* Animated pulse background to indicate "Active/Ready" */}
                    <motion.div
                      animate={{ opacity: [0.1, 0.3, 0.1] }}
                      transition={{ duration: 3, repeat: Infinity }}
-                     className="absolute -top-10 -right-10 w-32 h-32 bg-[#0A66C2] rounded-full blur-3xl"
+                     className="absolute -top-10 -right-10 w-48 h-48 bg-[#0A66C2] rounded-full blur-3xl"
                    />
 
-                   <div className="flex justify-between items-start mb-6 relative z-10">
-                      <div className="w-12 h-12 bg-[#F3F4F6] rounded-xl flex items-center justify-center">
-                         <Building2 size={24} className="text-[#111827]" />
+                   <div className="flex justify-between items-start mb-8 relative z-10">
+                      <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
+                         <ShieldCheck size={24} className="text-white" />
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F0FDF4] rounded-full border border-[#BBF7D0]">
-                        <CircleDot size={12} className="text-[#16A34A] animate-pulse" />
-                        <span className="text-xs font-semibold text-[#16A34A] uppercase tracking-wide">Ready</span>
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                        <Wifi size={14} className="text-white animate-pulse" />
+                        <span className="text-xs font-semibold text-white uppercase tracking-wide">Ready for tap</span>
                       </div>
                    </div>
 
-                   <div className="relative z-10">
-                     <p className="text-[#6B7280] text-sm mb-1">{receiptData.date}</p>
-                     <h3 className="text-xl font-medium text-[#111827] mb-4">{receiptData.merchant}</h3>
-                     <div className="border-t border-dashed border-[#E5E7EB] pt-4">
-                        <p className="text-2xl font-light tracking-tight text-[#111827]">${receiptData.amount.toFixed(2)}</p>
+                   <div className="relative z-10 text-white">
+                     <p className="text-white/60 text-sm mb-1">{receiptData.date}</p>
+                     <h3 className="text-2xl font-light tracking-tight mb-4">{receiptData.merchant}</h3>
+                     <div className="border-t border-dashed border-white/20 pt-4 flex justify-between items-end">
+                        <p className="text-3xl font-light tracking-tight">${receiptData.amount.toFixed(2)}</p>
+                        <ArrowLeft size={20} className="text-white/50 rotate-180" />
                      </div>
                    </div>
                 </button>
@@ -645,66 +667,125 @@ export default function PaymentNetworkApp() {
           </motion.div>
         )}
 
-        {/* DYNAMIC RECEIPT DETAIL (DIGITAL PASS) */}
+        {/* FULL-SCREEN DYNAMIC RECEIPT (DIGITAL PASS FOR NFC TAP) */}
         {appState === "receipt_detail" && (
            <motion.div
            key="receipt_detail"
-           initial={{ opacity: 0, y: 20 }}
+           initial={{ opacity: 0, y: "100%" }}
            animate={{ opacity: 1, y: 0 }}
-           exit={{ opacity: 0, y: 20 }}
-           transition={{ duration: 0.3, ease: "easeOut" }}
-           className="flex flex-col h-full bg-[#111827] p-4 relative"
+           exit={{ opacity: 0, y: "100%" }}
+           transition={{ duration: 0.4, type: "spring", damping: 25, stiffness: 200 }}
+           className={`flex flex-col h-full p-4 relative transition-colors duration-500 ${receiptStatus === "verified" ? "bg-[#0A66C2]" : receiptStatus === "redeemed" ? "bg-[#EF4444]" : "bg-[#111827]"}`}
          >
-           <div className="pt-8 pb-4 flex justify-between items-center text-white px-2">
-              <button onClick={() => setAppState("receipts")} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
+           <div className="pt-8 pb-4 flex justify-between items-center text-white px-2 relative z-20">
+              <button onClick={goHome} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm">
                 <X size={20} />
               </button>
-              <span className="font-medium text-white/50 text-sm uppercase tracking-widest">Digital Pass</span>
+              <span className="font-medium text-white/50 text-sm uppercase tracking-widest">
+                 {receiptStatus === "verified" ? "Confirmed" : receiptStatus === "redeemed" ? "Invalid" : "Digital Pass"}
+              </span>
               <div className="w-10" />
            </div>
 
-           <div className="flex-1 flex flex-col items-center mt-4">
-              {/* Receipt Ticket UI */}
-              <div className="w-full bg-white rounded-[2rem] overflow-hidden shadow-2xl relative">
-                {/* Security Pattern Background */}
-                <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(#111827 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
+           <div className="flex-1 flex flex-col justify-center items-center relative z-10 w-full max-w-sm mx-auto">
 
-                <div className="p-8 relative z-10 flex flex-col items-center border-b-2 border-dashed border-[#E5E7EB]">
-                   <ShieldCheck size={40} className="text-[#0A66C2] mb-4" />
+              {/* Premium Ticket UI */}
+              <motion.div
+                 layout
+                 className="w-full bg-white rounded-[2rem] overflow-hidden shadow-2xl relative"
+                 animate={{
+                    scale: receiptStatus === "verifying" ? 0.98 : 1,
+                    y: receiptStatus === "verified" ? -10 : 0
+                 }}
+              >
+
+                {/* Upper Section */}
+                <div className="p-8 pb-10 flex flex-col items-center">
+                   <div className="w-16 h-16 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
+                      <ShieldCheck size={32} className="text-[#111827]" />
+                   </div>
                    <h2 className="text-3xl font-light text-[#111827] mb-1">{receiptData.merchant}</h2>
-                   <p className="text-[#6B7280] mb-6 text-sm">{receiptData.date}</p>
+                   <p className="text-[#6B7280] mb-8 text-sm">{receiptData.date}</p>
                    <div className="flex items-start justify-center gap-1">
                      <span className="text-3xl text-[#6B7280] mt-1">$</span>
-                     <span className="text-6xl font-light tracking-tight text-[#111827]">{receiptData.amount.toFixed(2)}</span>
+                     <span className="text-7xl font-light tracking-tight text-[#111827]">{receiptData.amount.toFixed(2)}</span>
                    </div>
                 </div>
 
-                {/* Fraud-resistant dynamic footer */}
-                <div className="p-8 relative z-10 bg-[#F9FAFB] flex flex-col items-center">
-                   <motion.div
-                     animate={{ rotate: 360 }}
-                     transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                     className="w-16 h-16 rounded-full border-4 border-[#E5E7EB] border-t-[#0A66C2] mb-4"
-                   />
-                   <p className="text-xs font-mono text-[#6B7280] tracking-widest uppercase mb-1">
-                     {time.toLocaleTimeString()}
-                   </p>
-                   <p className="text-sm font-semibold text-[#16A34A] flex items-center gap-1">
-                     <CircleDot size={14} className="animate-pulse" /> Valid & Verified
-                   </p>
+                {/* Status / Footer Section */}
+                <div className={`p-8 relative transition-colors duration-500 ${receiptStatus === "verified" ? "bg-[#F0FDF4]" : receiptStatus === "redeemed" ? "bg-[#FEF2F2]" : "bg-[#F9FAFB]"}`}>
+
+                   {/* PENDING STATE (Ready for Tap) */}
+                   {receiptStatus === "pending" && (
+                     <div className="flex flex-col items-center">
+                       <motion.div
+                         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+                         transition={{ duration: 2, repeat: Infinity }}
+                         className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-4 cursor-pointer"
+                         onClick={handleSimulateNFCTap}
+                       >
+                         <Wifi size={24} className="text-[#0A66C2]" />
+                       </motion.div>
+                       <h3 className="text-[#111827] font-medium text-lg mb-1">Hold near reader</h3>
+                       <p className="text-[#6B7280] text-sm text-center">Tap to validate payment</p>
+                     </div>
+                   )}
+
+                   {/* VERIFYING STATE */}
+                   {receiptStatus === "verifying" && (
+                     <div className="flex flex-col items-center py-4">
+                       <motion.div
+                         animate={{ rotate: 360 }}
+                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                         className="w-10 h-10 rounded-full border-4 border-[#E5E7EB] border-t-[#0A66C2] mb-4"
+                       />
+                       <h3 className="text-[#111827] font-medium">Verifying...</h3>
+                     </div>
+                   )}
+
+                   {/* VERIFIED SUCCESS STATE */}
+                   {receiptStatus === "verified" && (
+                     <motion.div
+                       initial={{ opacity: 0, scale: 0.8 }}
+                       animate={{ opacity: 1, scale: 1 }}
+                       className="flex flex-col items-center py-2 text-center"
+                     >
+                       <CheckCircle size={48} className="text-[#16A34A] mb-4" />
+                       <h3 className="text-[#16A34A] text-2xl font-semibold tracking-tight uppercase mb-1">Verified</h3>
+                       <p className="text-[#15803D] font-medium">Payment confirmed</p>
+                       {time && (
+                         <p className="text-xs font-mono text-[#16A34A]/70 mt-4 tracking-widest">
+                           {time.toLocaleTimeString()}
+                         </p>
+                       )}
+                     </motion.div>
+                   )}
+
+                   {/* FRAUD PREVENTED (ALREADY REDEEMED) STATE */}
+                   {receiptStatus === "redeemed" && (
+                     <motion.div
+                       initial={{ opacity: 0, scale: 0.8 }}
+                       animate={{ opacity: 1, scale: 1 }}
+                       className="flex flex-col items-center py-2 text-center"
+                     >
+                       <AlertCircle size={48} className="text-[#DC2626] mb-4" />
+                       <h3 className="text-[#DC2626] text-2xl font-semibold tracking-tight uppercase mb-1">Already Used</h3>
+                       <p className="text-[#B91C1C] font-medium">This receipt cannot be redeemed twice</p>
+                     </motion.div>
+                   )}
+
                 </div>
+              </motion.div>
 
-                {/* Cutout notches */}
-                <div className="absolute left-0 top-[60%] w-6 h-12 bg-[#111827] rounded-r-full -translate-y-1/2" />
-                <div className="absolute right-0 top-[60%] w-6 h-12 bg-[#111827] rounded-l-full -translate-y-1/2" />
-              </div>
-
-              <button
-                onClick={handleUseReceipt}
-                className="mt-auto mb-4 w-full bg-white text-[#111827] py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-              >
-                Mark as Used
-              </button>
+              {/* Hidden button to simulate tapping an old receipt for test purposes */}
+              {receiptStatus === "pending" && (
+                  <button
+                    onClick={handleSimulateUsedReceiptTap}
+                    className="mt-8 text-white/20 text-xs hover:text-white/50 transition-colors"
+                  >
+                    Simulate: Scan already used receipt
+                  </button>
+              )}
            </div>
          </motion.div>
         )}
