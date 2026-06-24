@@ -46,11 +46,13 @@ The visual identity relies on a premium, light institutional palette. It avoids 
 ### User Side
 - **Home (Balance + Quick Actions):** A highly structured, minimal dashboard prioritizing current spending power. It features two immediate calls-to-action: "Tap to Pay" and "Add Balance".
 - **Deposit Flow ("Add Balance"):** A 1-2 step seamless process to top up the network card. Visually consistent with the payment flow. Uses a clean amount input, abstracting the funding source, leading to an instant confirmation state using the Brand Blue.
-- **Payment Screen (Instant Scan/ID):** A full-screen, high-performance scanning or NFC interface with zero distractions.
+- **Payment Flow:** A strict manual entry flow (Enter Number -> Enter Amount -> Review -> Confirm -> Success) replacing any QR code scanning shortcuts.
+- **Dynamic Receipts (Digital Pass):** Replaces the passive QR scanning shortcut with a first-class, full-screen proof of payment. Designed like a premium Apple Wallet credential. The receipt dominates the screen and is ready for immediate validation. It features a strict lifecycle: once redeemed, it is automatically archived into the transaction history. If an already-redeemed receipt is scanned again, it boldly displays a red "ALREADY REDEEMED" state to prevent fraud.
 - **Transaction/Deposit Confirmation:** A subtle, smooth success state using the exclusive Brand Blue that instantly signals completion without aggressive celebration.
-- **Spending History:** A clean, timeline-based ledger focusing on merchant names and transaction amounts, avoiding complex accounting layouts.
+- **Spending History:** A clean, timeline-based ledger focusing on merchant names and transaction amounts. Archives used receipts automatically.
 
 ### Merchant Side
+- **NFC-Based Validation (Future Vision):** The merchant utilizes a low-cost, battery-less NFC sticker (NTAG213/215). The user taps their open dynamic receipt against the sticker to trigger a sub-second, backend-verified confirmation ("PENDING" to "VERIFIED").
 - **Merchant Dashboard (Sales + Settlement):** A high-contrast, data-dense but clean view of daily transaction flows and settlement statuses.
 - **Payment Acceptance Mode:** An always-on, high-readability state ready to receive network pings or display an ID/QR.
 - **Daily Summary:** An aggregated, clear breakdown of net settlements intended to reassure merchants of system reliability.

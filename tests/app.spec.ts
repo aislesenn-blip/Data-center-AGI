@@ -20,10 +20,18 @@ test('Payment Network E2E flows', async ({ page }) => {
   // Open Receipt Detail
   await page.click('text=Apple Store');
   await expect(page.getByText('Digital Pass')).toBeVisible();
-  await expect(page.getByText('Valid & Verified')).toBeVisible();
+  await expect(page.getByText('Tap to validate payment')).toBeVisible();
 
-  // Mark as Used
-  await page.click('text=Mark as Used');
+  // Simulate NFC Tap Validation (force click since it has continuous animation)
+  await page.locator('div').filter({ has: page.locator('svg.lucide-wifi') }).last().click({ force: true });
+
+  // Verify it transitions to Verified
+  await expect(page.getByText('Verifying...')).toBeVisible();
+  await expect(page.getByText('Verified')).toBeVisible({ timeout: 2000 });
+  await expect(page.getByText('Payment confirmed')).toBeVisible();
+
+  // Close back to home (this automatically archives the receipt)
+  await page.locator('button').first().click();
   await expect(page.getByText('Available Balance')).toBeVisible({ timeout: 2000 }); // Returned home
 
   // Open receipts again to verify empty state
