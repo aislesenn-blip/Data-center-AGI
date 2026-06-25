@@ -1,40 +1,44 @@
 import { test, expect } from '@playwright/test';
 
-test('Campus Delivery E2E flows', async ({ page }) => {
+test('Campus Delivery Map-First Flow', async ({ page }) => {
   // Simulate mobile view
   await page.setViewportSize({ width: 375, height: 812 });
 
   await page.goto('http://localhost:3000/');
 
-  // Verify Home State & Core Prompt
+  // Verify Idle State & Map-First Prompt
   await expect(page.getByText('Need something?')).toBeVisible();
-  await expect(page.getByText('What can we bring you?')).toBeVisible();
+  await expect(page.getByText('Where to?')).toBeVisible();
 
-  // Click to open Request flow
-  await page.click('text=What can we bring you?');
+  // Open expanded search sheet
+  await page.click('text=Where to?');
 
-  // Verify Request View
+  // Verify Search View
   await expect(page.getByText('Request Delivery')).toBeVisible();
-  await expect(page.getByPlaceholder('e.g., Charger, Water, Notes...')).toBeVisible();
+  await expect(page.getByPlaceholder('What do you need?')).toBeVisible();
 
-  // Fill out the request form
-  await page.getByPlaceholder('e.g., Charger, Water, Notes...').fill('Notebook');
-  await page.getByPlaceholder('Building, Library, Seat...').fill('Library Floor 2');
+  // Test suggestions flow
+  await expect(page.getByText('Phone Charger')).toBeVisible();
+  await page.click('text=Phone Charger');
 
-  // Verify the 'Confirm Request' button is enabled and click it
-  await expect(page.getByText('Confirm Request')).toBeEnabled();
-  await page.click('text=Confirm Request');
+  // Verify Review State
+  await expect(page.getByText('Phone Charger')).toBeVisible();
+  await expect(page.getByText('Library Floor 2')).toBeVisible();
+  await expect(page.getByText('Confirm Delivery')).toBeVisible();
 
-  // Verify 'Searching' state
-  await expect(page.getByText('Finding a courier')).toBeVisible();
+  // Confirm Request
+  await page.click('text=Confirm Delivery');
 
-  // Verify it transitions to 'En Route' state automatically after mock searching (timeout ~2500ms)
-  await expect(page.getByText('Delivery in Progress')).toBeVisible({ timeout: 3500 });
+  // Verify Searching State
+  await expect(page.getByText('Connecting...')).toBeVisible();
+  await expect(page.getByText('Finding the nearest courier.')).toBeVisible();
+
+  // Verify tracking transition
+  await expect(page.getByText('James is arriving')).toBeVisible({ timeout: 4000 });
   await expect(page.getByText('Arriving in 3 min')).toBeVisible();
-  await expect(page.getByText('Notebook • Library Floor 2')).toBeVisible();
 
   // Cancel Request to return to Home
-  await page.click('text=Cancel Request');
+  await page.click('text=Cancel');
   await expect(page.getByText('Need something?')).toBeVisible();
 
 });

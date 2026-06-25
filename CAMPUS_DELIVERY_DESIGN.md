@@ -10,25 +10,26 @@ We deliver convenience, not products. Students should never have to leave their 
 - **NOT a playful startup:** The aesthetic is mature, global, and highly scalable.
 
 ## 3. The Hero: Map-First Experience
-The map is the product. Like Uber or Bolt, the map is not a background or a decoration—it is an immersive, living layer that grounds the delivery experience in the real world. It communicates real movement, creates immediate trust, and occupies significant screen space.
+The map dominates the interface. Like Bolt, the map is not a background or a decoration—it is the entire product. It communicates real movement, creates immediate trust, and occupies 100% of the screen space behind dynamic UI sheets. There are no dashboards, no cards, and no static menus.
 
 ## 4. Visual Direction & Branding
-The visual language aims for "World-Class Simplicity" (Apple, Uber, Linear, Airbnb standards).
-- **Colors:** Minimal, premium, and confident. A strong, recognizable brand identity anchored by high-contrast Pitch Black and Pure White, avoiding generic startup gradients or cheap colors.
-- **Typography:** Highly legible, clean sans-serif. No unnecessary text.
-- **UI Feel:** Obvious within seconds. Complex processes are abstracted away.
+The visual language aims for "World-Class Simplicity" (Bolt, Uber, Linear, Airbnb standards).
+- **Colors:** Minimal, premium, and confident. A strong, recognizable brand identity anchored by Pitch Black and Pure White, exercising extreme restraint.
+- **Typography:** Highly legible, clean sans-serif with strong hierarchy. No unnecessary text.
+- **UI Feel:** Obvious within seconds. Zero visual noise. The experience creates absolute clarity.
 
-## 5. Interaction & Motion Design
-- **The "Need something?" Prompt:** The central interactive element. It should feel iconic and memorable.
-- **Fluid Mechanics:** Interactions use Framer Motion to feel expensive and intentional. Bottom sheets expand smoothly over the map, avoiding static page reloads.
-- **Delivery Tracking:** The strongest experience in the product. It builds anticipation. As the delivery progresses, the map becomes more immersive, giving the user the exact same tracking confidence as requesting an Uber ride.
+## 5. Interaction & Motion Design: Single-Screen Evolution
+Modern software transforms the same screen. We do not navigate between pages.
+- **Bottom Sheets are the Product:** The UI lives entirely within sophisticated bottom sheets (Collapsed, Expanded, Half state). The map and sheet work together in unison.
+- **Fluid Mechanics:** Panels slide, sheets expand, and maps resize smoothly. Transitions feel expensive and intentional using Framer Motion.
+- **Delivery Tracking:** The map expands as tracking begins. Delivery movement, ETAs, and status changes feel real, creating the same anticipation and confidence as watching a Bolt arrive.
 
-## 6. Request Flow (The "Ride-Hailing" Model for Goods)
-The flow mirrors requesting a ride:
-1. **Intent:** "Need something?" -> Open prompt.
-2. **Request:** User types what they need and where they are on campus.
-3. **Dispatch:** The system confirms and connects to a courier.
-4. **Tracking:** The map takes over, showing live progress until completion.
+## 6. Request Flow (The "Bolt" Model for Goods)
+The flow is a continuous, frictionless evolution on a single map screen:
+1. **Idle:** The map is dominant. A collapsed bottom sheet simply asks "Need something?".
+2. **Search / Location:** The sheet expands. A beautiful search experience for what they need and live location selection for drop-off.
+3. **Review:** The sheet drops to a half-state, showing the route on the map, ETA, and pricing.
+4. **Tracking:** The sheet collapses to a status pill, maximizing map visibility. Live progress tracking takes over.
 
 ## 7. The Standard
-Every screen must answer: *"Would this feel world-class if someone saw it next to Uber, Apple, or Airbnb?"* The goal is to build a delivery platform that feels like real, mature technology.
+Every design decision must be evaluated against one question: *"Does this feel like a modern on-demand product (like Bolt or Uber)?"* If it feels like an old-school dashboard or multi-page app, it must be redesigned. We optimize entirely for the experience, because the experience is the product.
