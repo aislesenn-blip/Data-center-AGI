@@ -2,680 +2,495 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Package, ArrowLeft, Clock, Menu, Search, ShieldCheck, Phone, Banknote, CreditCard, Smartphone, Loader2 } from "lucide-react"
+import { Tag, X, Car, Bike, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, Plus, ArrowDownUp, Menu } from "lucide-react"
 
-// Core states mapping to Uber/Bolt's exact flow
-type AppState = "idle" | "search" | "loading_options" | "selection" | "finding" | "en_route"
-type SheetState = "collapsed" | "half" | "full"
-type PaymentMethod = "cash" | "mobile" | "card"
-type RideOption = "standard" | "priority"
+type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION"
+type VehicleOption = "standard" | "motorbike"
 
-// Spring Physics configs
-const springSnappy = { type: "spring" as const, damping: 25, stiffness: 350, mass: 0.8, bounce: 0.2 }
-const springSmooth = { type: "spring" as const, damping: 30, stiffness: 200, mass: 1 }
+const LOCATIONS = [
+  { id: 1, name: "Moshi Urban", sub: "Tanzania", dist: "3.6 km", icon: Clock, type: "history" },
+  { id: 2, name: "MOSHI URBAN", sub: "Area", dist: "", icon: MapPin, type: "area" },
+  { id: 3, name: "KCMC", sub: "Hospital", dist: "5.2 km", icon: MapPin, type: "location" },
+  { id: 4, name: "Hugo's Garden", sub: "Restaurant", dist: "2.1 km", icon: MapPin, type: "location" },
+]
 
 export default function CampusDeliveryApp() {
-  const [appState, setAppState] = useState<AppState>("idle")
-  const [sheetState, setSheetState] = useState<SheetState>("collapsed")
+  const [appState, setAppState] = useState<AppState>("HOME")
+  const [isPromoVisible, setIsPromoVisible] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleOption>("standard")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [sheetY, setSheetY] = useState(0)
 
-  const [requestText, setRequestText] = useState("")
-  const [pickupLocation, setPickupLocation] = useState("Current Location")
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash")
-  const [selectedOption, setSelectedOption] = useState<RideOption>("standard")
+  const filteredLocations = LOCATIONS.filter(loc => {
+    if (!searchQuery) return loc.type !== "area"
+    return loc.name.toLowerCase().includes(searchQuery.toLowerCase())
+  })
 
-  const [isProcessing, setIsProcessing] = useState(false)
-
-  // Handlers for state transitions mimicking spatial continuity
-  const openSearch = () => {
-    setAppState("search")
-    setSheetState("full")
-  }
-
-  const closeSearch = () => {
-    setAppState("idle")
-    setSheetState("collapsed")
-    setRequestText("")
-    setPickupLocation("Current Location")
-    setPaymentMethod("cash")
-  }
-
-  const proceedToSelection = () => {
-    if (!requestText || !pickupLocation) return
-    if (pickupLocation !== "Current Location" && paymentMethod === "cash") {
-      setPaymentMethod("mobile") // Smart Payment Rule
-    }
-
-    setAppState("loading_options")
-    setSheetState("half")
-
-    // Simulate network latency (Skeleton loaders will show)
-    setTimeout(() => {
-      setAppState("selection")
-    }, 1200)
-  }
-
-  const confirmRequest = () => {
-    setIsProcessing(true)
-    setTimeout(() => {
-      setIsProcessing(false)
-      setAppState("finding")
-      setSheetState("collapsed") // Sheet drops to show radar map
-
-      // Simulate finding courier
-      setTimeout(() => {
-        setAppState("en_route")
-      }, 3000)
-    }, 800)
-  }
-
-  const cancelRequest = () => {
-    setAppState("idle")
-    setSheetState("collapsed")
-  }
-
-  // Drag logic matching velocity and offset for physical feel
-  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: { offset: { y: number }, velocity: { y: number } }) => {
-    const offset = info.offset.y
-    const velocity = info.velocity.y
-
-    if (appState === "search" || appState === "selection") {
-      // Determine swipe direction and speed
-      if (offset > 50 || velocity > 300) {
-        if (sheetState === "full") {
-          if (appState === "search" && requestText) {
-             setSheetState("half")
-          } else {
-             closeSearch()
-          }
-        } else if (sheetState === "half") {
-          closeSearch()
-        }
-      } else if (offset < -50 || velocity < -300) {
-        if (sheetState === "collapsed" || sheetState === "half") {
-          setSheetState("full")
-
-        }
-      }
-    } else if (appState === "idle") {
-      if (offset < -30 || velocity < -300) {
-        openSearch()
-      }
+  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number; y: number } }) => {
+    const threshold = 100
+    if (info.offset.y > threshold) {
+      setSheetY(300) // Half-expanded
+    } else if (info.offset.y < -threshold) {
+      setSheetY(-200) // Fully-expanded
+    } else {
+      setSheetY(0) // Default snap
     }
   }
 
-  // Map dynamic positioning based on sheet state to ensure nothing is covered
-  const mapYOffset = sheetState === "full" ? -150 : (sheetState === "half" ? -80 : 0)
-  const mapScale = (appState === "finding" || appState === "en_route") ? 1.15 : 1
+  const renderHighlightedText = (text: string, highlight: string) => {
+    if (!highlight.trim()) return <span>{text}</span>
+    const regex = new RegExp(`(${highlight})`, "gi")
+    const parts = text.split(regex)
+    return (
+      <span>
+        {parts.map((part, i) =>
+          regex.test(part) ? <span key={i} className="text-[#1D965C]">{part}</span> : <span key={i}>{part}</span>
+        )}
+      </span>
+    )
+  }
+
+  const handleSuggestionClick = () => {
+    setAppState("FARE_SELECTION")
+  }
 
   return (
-    <div className="flex flex-col h-[100dvh] w-full bg-black text-black overflow-hidden relative font-sans select-none">
+    <div className="relative w-full h-full flex flex-col bg-white overflow-hidden text-[#111827]">
+      <AnimatePresence initial={false}>
+        {appState === "HOME" && (
+          <motion.div
+            key="home"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="flex flex-col h-full"
+          >
+            <div className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] px-4">
+              {/* Hamburger and Promo */}
+              <div className="mt-4 flex items-center justify-between mb-6">
+                <button
+                  onClick={() => setIsMenuOpen(true)}
+                  className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer shadow-sm z-20 absolute top-4 left-4"
+                >
+                  <Menu className="w-5 h-5 text-[#111827]" />
+                </button>
+              </div>
 
-      {/* 1. MAP ENVIRONMENT - The spatial canvas */}
-      <div className="absolute inset-0 z-0 bg-[#E5E7EB] overflow-hidden">
-        <motion.div
-          animate={{ y: mapYOffset, scale: mapScale }}
-          transition={springSmooth}
-          className="w-full h-full relative flex items-center justify-center origin-bottom"
-        >
-          {/* Map Grid/Texture */}
-          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+              {/* Promo Banner */}
+              {isPromoVisible && (
+                <div className="mt-12 w-full h-[64px] bg-[#EEF2FF] rounded-[16px] flex items-center px-4 relative mb-6">
+                  <div className="w-10 h-10 rounded-full bg-[#3730A3] flex items-center justify-center mr-3">
+                    <Tag className="text-white w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[16px] font-semibold text-[#111827] leading-tight">10% off 5 deliveries</span>
+                    <span className="text-[14px] text-[#6B7280]">View details</span>
+                  </div>
+                  <button
+                    onClick={() => setIsPromoVisible(false)}
+                    className="absolute right-4 p-1"
+                  >
+                    <X className="w-4 h-4 text-[#111827]" />
+                  </button>
+                </div>
+              )}
 
-          {/* Roads Simulation */}
-          <svg className="absolute w-[200%] h-[200%] text-black/10 -rotate-12 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-             <path d="M 0,50 Q 25,60 50,50 T 100,50" fill="none" stroke="currentColor" strokeWidth="2" />
-             <path d="M 20,0 L 20,100" fill="none" stroke="currentColor" strokeWidth="1.5" />
-             <path d="M 60,0 L 60,100" fill="none" stroke="currentColor" strokeWidth="3" />
-          </svg>
+              {/* H1 Greeting */}
+              <h1 className="text-[24px] font-bold text-[#111827] mb-4 tracking-[-0.5px]">
+                Smooth deliveries ahead.
+              </h1>
 
-          {/* User Location Marker (Idle / Search) */}
-          <AnimatePresence>
-            {(appState === "idle" || appState === "search") && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={springSnappy}
-                className="absolute z-10 flex flex-col items-center justify-center"
+              {/* Bento Grid */}
+              <div className="flex flex-row justify-between gap-4 mb-6">
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setAppState("ROUTE_SELECTION")}
+                  className="flex-1 h-[110px] bg-[#F3F4F6] rounded-[16px] p-3 flex flex-col justify-between cursor-pointer"
+                >
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center self-end mb-2">
+                     <Car className="w-6 h-6 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-[16px] font-medium text-[#111827]">Delivery</div>
+                    <div className="text-[12px] text-[#6B7280]">Let&apos;s get moving</div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setAppState("ROUTE_SELECTION")}
+                  className="flex-1 h-[110px] bg-[#F3F4F6] rounded-[16px] p-3 flex flex-col justify-between cursor-pointer"
+                >
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center self-end mb-2">
+                     <Bike className="w-6 h-6 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-[16px] font-medium text-[#111827]">Package</div>
+                    <div className="text-[12px] text-[#6B7280]">2-wheel deliveries</div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Search Input CTA */}
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setAppState("ROUTE_SELECTION")}
+                className="w-full h-[56px] bg-[#F3F4F6] rounded-[16px] flex items-center px-4 mb-6 cursor-text"
               >
-                {/* Radar Cone matching internal compass */}
-                <div className="absolute w-32 h-32 bg-gradient-to-t from-blue-500/0 via-blue-500/10 to-blue-500/30 rounded-full blur-md -top-16 rotate-[-20deg]" style={{ clipPath: 'polygon(50% 100%, 0 0, 100% 0)' }} />
+                <Search className="w-5 h-5 text-[#111827] mr-3" />
+                <span className="text-[18px] font-semibold text-[#111827]">Need something?</span>
+              </motion.button>
 
-                {/* Sharp Blue Dot */}
-                <div className="w-6 h-6 bg-blue-600 rounded-full shadow-[0_0_0_4px_white,0_4px_16px_rgba(0,0,0,0.2)] flex items-center justify-center relative z-10">
-                  <div className="absolute inset-0 bg-blue-600 rounded-full animate-ping opacity-30 scale-150" />
+              {/* Recent Locations */}
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
+                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
+                    <Clock className="w-5 h-5 text-[#111827]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[16px] font-medium text-[#111827]">Moshi Urban</span>
+                    <span className="text-[14px] text-[#6B7280]">Tanzania</span>
+                  </div>
+                </div>
+                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
+                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
+                    <PlusSquare className="w-5 h-5 text-[#111827]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[16px] font-medium text-[#111827]">KCMC</span>
+                    <span className="text-[14px] text-[#6B7280]">Hospital</span>
+                  </div>
+                </div>
+                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
+                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
+                    <Utensils className="w-5 h-5 text-[#111827]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[16px] font-medium text-[#111827]">Hugo&apos;s Garden</span>
+                    <span className="text-[14px] text-[#6B7280]">Restaurant</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Nav Bar */}
+            <div className="h-[80px] w-full border-t border-[#E5E7EB] flex flex-row justify-around items-center pb-[env(safe-area-inset-bottom)] bg-white shrink-0">
+              <div className="flex flex-col items-center cursor-pointer">
+                <Home className="w-6 h-6 text-[#111827] mb-1" strokeWidth={2.5} />
+                <span className="text-[12px] font-semibold text-[#111827]">Home</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer">
+                <Calendar className="w-6 h-6 text-[#6B7280] mb-1" />
+                <span className="text-[12px] text-[#6B7280]">Deliveries</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer">
+                <User className="w-6 h-6 text-[#6B7280] mb-1" />
+                <span className="text-[12px] text-[#6B7280]">Account</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "ROUTE_SELECTION" && (
+          <motion.div
+            key="route_selection"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            {/* Top Nav */}
+            <div className="h-[56px] w-full flex items-center px-4 relative">
+              <button
+                onClick={() => setAppState("HOME")}
+                className="absolute left-4 p-2 -ml-2"
+              >
+                <X className="w-6 h-6 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Route</h2>
+            </div>
+
+            {/* Route Input Group */}
+            <div className="px-4 py-2 flex flex-row relative">
+               <div className="flex flex-col items-center mr-3 mt-3 w-6 relative">
+                 <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center z-10">
+                   <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
+                 </div>
+                 <div className="w-0.5 h-[40px] bg-gray-300 my-1"></div>
+                 <div className="w-2 h-2 bg-black z-10"></div>
+               </div>
+
+               <div className="flex-1 flex flex-col gap-3 justify-center">
+                 <div className="w-full h-[48px] bg-[#F3F4F6] rounded-xl flex items-center px-3">
+                   <span className="text-[16px] text-[#111827] flex-1">Shirimatunda</span>
+                   <Plus className="w-5 h-5 text-[#6B7280]" />
+                 </div>
+                 <div className="w-full h-[48px] bg-white border-[2px] border-[#1D965C] rounded-[12px] flex items-center px-3 overflow-hidden shadow-sm relative">
+                   <Search className="w-5 h-5 text-[#9CA3AF] mr-2 shrink-0" />
+                   <input
+                     type="text"
+                     placeholder="Dropoff location"
+                     value={searchQuery}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                     className="flex-1 text-[16px] text-[#111827] bg-transparent outline-none placeholder:text-[#9CA3AF] h-full"
+                     autoFocus
+                   />
+                   {searchQuery && (
+                     <button
+                       onClick={() => setSearchQuery("")}
+                       className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center mr-2 shrink-0"
+                     >
+                       <X className="w-3 h-3 text-gray-600" />
+                     </button>
+                   )}
+                   <div className="w-8 h-8 bg-gray-200 rounded shrink-0 relative flex items-center justify-center overflow-hidden">
+                     <MapPin className="w-4 h-4 text-[#111827] absolute z-10" />
+                     <div className="absolute inset-0 opacity-20 bg-blue-300" />
+                   </div>
+                 </div>
+               </div>
+
+               {/* Swap Control */}
+               <div className="w-8 h-8 flex items-center justify-center absolute right-3 top-[44px] transform -translate-y-1/2 bg-white rounded-full shadow-md z-20 border border-gray-100">
+                 <ArrowDownUp className="w-4 h-4 text-[#6B7280]" />
+               </div>
+            </div>
+
+            {/* Suggestion List */}
+            <div className="flex-1 overflow-y-auto px-4 mt-4 flex flex-col gap-6">
+                {filteredLocations.map((loc) => {
+                  const Icon = loc.icon
+                  return (
+                    <div key={loc.id} className="flex items-center cursor-pointer" onClick={handleSuggestionClick}>
+                      <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4 shrink-0">
+                        <Icon className="w-5 h-5 text-[#111827]" />
+                      </div>
+                      <div className="flex flex-col flex-1 truncate pr-2">
+                        <span className={`text-[16px] font-medium text-[#111827] truncate ${loc.type === "area" ? "uppercase" : ""}`}>
+                          {renderHighlightedText(loc.name, searchQuery)}
+                        </span>
+                        <span className="text-[14px] text-[#6B7280] truncate">{loc.sub}</span>
+                      </div>
+                      {loc.dist && <div className="text-[14px] text-[#6B7280] ml-2 shrink-0">{loc.dist}</div>}
+                    </div>
+                  )
+                })}
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "FARE_SELECTION" && (
+          <motion.div
+            key="fare_selection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-[#E5E7EB] z-10 flex flex-col overflow-hidden"
+          >
+            {/* Map Simulation Background Layer */}
+            <div className="absolute inset-0 z-0 flex items-center justify-center">
+              {/* Fake Map Polyline */}
+              <svg className="absolute w-full h-[60%] top-[10%]" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <path d="M 20 80 Q 50 50 80 20" fill="none" stroke="#1D965C" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              {/* Pickup Marker */}
+              <div className="absolute top-[65%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                <div className="bg-white rounded-full px-3 py-1 shadow-md border border-gray-100 mb-1 flex items-center gap-1">
+                  <span className="text-[12px] font-semibold text-[#111827]">Pickup</span>
+                  <span className="text-[12px] text-[#6B7280]">11 min</span>
+                </div>
+                <div className="w-6 h-6 bg-[#1D965C] rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                   <div className="w-2 h-2 bg-white rounded-full" />
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Route Path (Loading / Selection / Finding / En Route) */}
-          <AnimatePresence>
-            {(appState !== "idle" && appState !== "search") && (
-              <motion.svg
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute inset-0 w-full h-full z-10 pointer-events-none"
-              >
-                <path d="M 50%,30% C 60%,40% 40%,60% 50%,80%" fill="none" stroke="black" strokeWidth="4" strokeDasharray="8 8" className="opacity-50" />
-                <circle cx="50%" cy="30%" r="6" fill="black" stroke="white" strokeWidth="3" />
-                <circle cx="50%" cy="80%" r="6" fill="#22C55E" stroke="white" strokeWidth="3" />
-              </motion.svg>
-            )}
-          </AnimatePresence>
-
-          {/* Finding Radar Sweep */}
-          <AnimatePresence>
-            {appState === "finding" && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute w-64 h-64 border border-blue-500/30 rounded-full z-0 flex items-center justify-center"
-                style={{ top: '80%', left: '50%', x: '-50%', y: '-50%' }}
-              >
-                 <motion.div
-                   animate={{ rotate: 360 }}
-                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                   className="w-full h-full rounded-full"
-                   style={{ background: 'conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(59, 130, 246, 0.4) 360deg)' }}
-                 />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* En Route Courier Tracking (Lerping and Rotational Tracking) */}
-          <AnimatePresence>
-            {appState === "en_route" && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5, top: '80%', left: '50%' }}
-                animate={{ opacity: 1, scale: 1, top: ['80%', '60%', '40%', '30%'], left: ['50%', '40%', '60%', '50%'] }}
-                exit={{ opacity: 0 }}
-                transition={{ top: { duration: 15, ease: "linear" }, left: { duration: 15, ease: "linear" } }}
-                className="absolute z-20 flex flex-col items-center"
-                style={{ x: '-50%', y: '-50%' }}
-              >
-                <motion.div
-                  animate={{ y: [0, -4, 0], rotate: [0, -20, 20, 0] }}
-                  transition={{ y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 15, ease: "linear" } }}
-                  className="w-12 h-12 bg-black rounded-full shadow-2xl flex items-center justify-center border-[3px] border-white"
-                >
-                  <Package size={20} className="text-white" />
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-        </motion.div>
-      </div>
-
-      {/* 2. TOP NAVIGATION / FLOATING CONTROLS */}
-      <div className="absolute top-0 inset-x-0 z-20 p-5 pt-safe flex justify-between items-center pointer-events-none">
-         <AnimatePresence mode="wait">
-           {appState === "idle" ? (
-             <motion.button
-               key="menu"
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               exit={{ opacity: 0, x: -20 }}
-               transition={springSnappy}
-               whileTap={{ scale: 0.9 }}
-               onClick={() => setIsMenuOpen(true)}
-               className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] pointer-events-auto"
-             >
-               <Menu size={22} className="text-black" />
-             </motion.button>
-           ) : (
-             <motion.button
-               key="back"
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               exit={{ opacity: 0, x: -20 }}
-               transition={springSnappy}
-               whileTap={{ scale: 0.9 }}
-               onClick={() => {
-                 if (appState === "search") closeSearch()
-                 else if (appState === "loading_options" || appState === "selection") setAppState("search")
-                 else if (appState === "finding") setAppState("selection")
-               }}
-               className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] pointer-events-auto"
-             >
-               <ArrowLeft size={22} className="text-black" />
-             </motion.button>
-           )}
-         </AnimatePresence>
-      </div>
-
-      {/* Map Re-center FAB */}
-      <AnimatePresence>
-        {(appState === "idle" || appState === "search") && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1, y: sheetState === 'full' ? -350 : 0 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={springSmooth}
-            whileTap={{ scale: 0.9 }}
-            className="absolute right-5 bottom-[35%] z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] flex items-center justify-center"
-          >
-            <div className="w-4 h-4 border-2 border-black rounded-full relative">
-               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full" />
+              </div>
+              {/* Dropoff Marker */}
+              <div className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                <div className="bg-white rounded-full px-3 py-1 shadow-md border border-gray-100 mb-1 flex items-center gap-1">
+                  <span className="text-[12px] font-semibold text-[#111827]">Dropoff</span>
+                  <span className="text-[12px] text-[#6B7280]">22:08</span>
+                </div>
+                <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                  <div className="w-2 h-2 bg-white rounded-full" />
+                </div>
+              </div>
             </div>
-          </motion.button>
+
+            {/* Top Floating Nav */}
+            <div className="absolute top-[env(safe-area-inset-top)] left-4 right-4 z-20 mt-4 flex justify-center">
+              <div className="bg-white h-[48px] rounded-[24px] shadow-lg flex items-center px-2 py-1 max-w-full">
+                <button onClick={() => setAppState("ROUTE_SELECTION")} className="p-2 shrink-0">
+                  <X className="w-5 h-5 text-[#111827]" />
+                </button>
+                <div className="flex-1 flex items-center justify-center overflow-hidden px-2 gap-2 text-[14px]">
+                  <span className="font-medium text-[#111827] truncate">Shirimatunda</span>
+                  <span className="text-[#6B7280] shrink-0">→</span>
+                  <span className="font-medium text-[#111827] truncate">Moshi Urban</span>
+                </div>
+                <button className="p-2 shrink-0 bg-gray-100 rounded-full ml-1">
+                  <Plus className="w-4 h-4 text-[#111827]" />
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Sheet Foreground */}
+            <motion.div
+              drag="y"
+              dragConstraints={{ top: -200, bottom: 300 }}
+              dragElastic={0.1}
+              onDragEnd={handleDragEnd}
+              initial={{ y: "100%" }}
+              animate={{ y: sheetY }}
+              transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }}
+              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-30 flex flex-col h-[75%] pb-[env(safe-area-inset-bottom)]"
+            >
+              {/* Drag Handle */}
+              <div className="w-full flex justify-center pt-3 pb-2 shrink-0">
+                <div className="w-10 h-1 bg-gray-300 rounded-full" />
+              </div>
+
+              {/* Sticky Promo Banner */}
+              <div className="w-full bg-[#4F46E5] text-white px-4 py-2 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                    <Tag className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="text-[14px] font-medium">10% promo applied</span>
+                </div>
+                <ArrowDownUp className="w-4 h-4 text-white/80" />
+              </div>
+
+              {/* Vehicle List */}
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+                {/* Standard Tier */}
+                <motion.div
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedVehicle("standard")}
+                  className={`w-full p-3 rounded-[12px] border-[2px] ${selectedVehicle === "standard" ? "border-[#1D965C]" : "border-transparent"} bg-white flex items-center justify-between shadow-sm cursor-pointer relative overflow-hidden`}
+                >
+                   <div className="flex items-center gap-3 relative z-10">
+                     <div className={`w-16 h-12 flex items-center justify-center shrink-0 ${selectedVehicle === "standard" ? "" : "opacity-60"}`}>
+                        <Car className="w-10 h-10 text-gray-800" strokeWidth={1.5} />
+                     </div>
+                     <div className="flex flex-col">
+                       <div className="flex items-center gap-2">
+                         <span className={`text-[18px] ${selectedVehicle === "standard" ? "font-bold" : "font-semibold"} text-[#111827]`}>Standard</span>
+                         {selectedVehicle === "standard" && <span className="bg-[#1D965C] text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">FASTER</span>}
+                       </div>
+                       <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
+                         <span className="font-medium text-[#111827]">11 min</span>
+                         <div className="flex items-center gap-0.5">
+                           <User className="w-3 h-3" />
+                           <span>4</span>
+                         </div>
+                       </div>
+                       <span className="text-[12px] text-[#6B7280]">Mid-size deliveries</span>
+                     </div>
+                   </div>
+                   <div className="flex flex-col items-end relative z-10">
+                     <span className={`text-[16px] ${selectedVehicle === "standard" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 11,000</span>
+                     {selectedVehicle === "standard" && <span className="text-[12px] text-[#6B7280] line-through">TZS 11,500</span>}
+                   </div>
+                   {selectedVehicle === "standard" && <div className="absolute inset-0 bg-[#1D965C] opacity-5 z-0" />}
+                </motion.div>
+
+                {/* Motorbike Tier */}
+                <motion.div
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedVehicle("motorbike")}
+                  className={`w-full p-3 rounded-[12px] border-[2px] ${selectedVehicle === "motorbike" ? "border-[#1D965C]" : "border-transparent"} bg-white flex items-center justify-between cursor-pointer relative overflow-hidden`}
+                >
+                   <div className="flex items-center gap-3 relative z-10">
+                     <div className={`w-16 h-12 flex items-center justify-center shrink-0 ${selectedVehicle === "motorbike" ? "" : "opacity-60"}`}>
+                        <Bike className="w-10 h-10 text-gray-600" strokeWidth={1.5} />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className={`text-[18px] ${selectedVehicle === "motorbike" ? "font-bold" : "font-semibold"} text-[#111827]`}>Motorbike</span>
+                       <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
+                         <span className="font-medium text-[#111827]">7 min</span>
+                       </div>
+                       <span className="text-[12px] text-[#6B7280]">Small packages</span>
+                     </div>
+                   </div>
+                   <div className="flex flex-col items-end relative z-10">
+                     <span className={`text-[16px] ${selectedVehicle === "motorbike" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 4,500</span>
+                   </div>
+                   {selectedVehicle === "motorbike" && <div className="absolute inset-0 bg-[#1D965C] opacity-5 z-0" />}
+                </motion.div>
+              </div>
+
+              {/* Bottom Action Bar */}
+              <div className="p-4 border-t border-gray-100 bg-white shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] pb-6">
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <div className="w-6 h-6 rounded bg-[#1D965C]/10 flex items-center justify-center">
+                      <span className="text-[#1D965C] font-bold text-xs">💵</span>
+                    </div>
+                    <span className="text-[16px] font-medium text-[#111827]">Cash</span>
+                    <ArrowDownUp className="w-4 h-4 text-[#6B7280] ml-1" />
+                  </div>
+                </div>
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full h-[56px] bg-[#1D965C] text-white rounded-[28px] text-[18px] font-bold shadow-md flex items-center justify-center"
+                >
+                  Select {selectedVehicle === "standard" ? "Standard" : "Motorbike"}
+                </motion.button>
+              </div>
+
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. SIDE MENU SYSTEM */}
+      {/* Hamburger Overlay Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <div className="absolute inset-0 z-50 flex">
-            {/* Scrim Overlay */}
+          <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
               onClick={() => setIsMenuOpen(false)}
-              className="absolute inset-0 bg-black cursor-pointer"
+              className="absolute inset-0 bg-black z-40"
             />
-            {/* Drawer */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={springSmooth}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.1}
-              onDragEnd={(e, info) => { if (info.offset.x < -50 || info.velocity.x < -300) setIsMenuOpen(false) }}
-              className="relative w-[75%] max-w-[320px] h-full bg-white shadow-2xl flex flex-col pt-safe"
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="absolute inset-y-0 left-0 w-[80%] max-w-[320px] bg-white z-50 flex flex-col p-6 shadow-2xl"
             >
-               <div className="p-6 bg-black text-white flex flex-col gap-4">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-xl font-bold">JD</div>
-                  <div>
-                     <div className="text-2xl font-bold">John Doe</div>
-                     <div className="text-white/60 text-sm font-medium flex items-center gap-1 mt-1">
-                       <span className="bg-white/20 px-2 py-0.5 rounded text-xs">5.0 ★</span>
-                       Campus Member
-                     </div>
-                  </div>
-               </div>
-               <div className="flex-1 p-4 flex flex-col gap-1 overflow-y-auto">
-                  {['Your Deliveries', 'Payment', 'Promotions', 'Settings', 'Support'].map((item, i) => (
-                    <motion.button
-                      key={i}
-                      whileTap={{ scale: 0.98, backgroundColor: '#f3f4f6' }}
-                      className="text-left px-4 py-4 rounded-2xl font-semibold text-lg text-gray-800 transition-colors"
-                    >
-                      {item}
-                    </motion.button>
-                  ))}
-               </div>
+              <div className="flex items-center justify-between mb-8">
+                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                  <User className="w-6 h-6 text-gray-500" />
+                </div>
+                <button onClick={() => setIsMenuOpen(false)} className="p-2">
+                  <X className="w-6 h-6 text-[#111827]" />
+                </button>
+              </div>
+              <h2 className="text-[20px] font-bold text-[#111827] mb-6">Jane Doe</h2>
+
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center gap-4 cursor-pointer">
+                  <Clock className="w-6 h-6 text-[#111827]" />
+                  <span className="text-[16px] font-medium text-[#111827]">Delivery History</span>
+                </div>
+                <div className="flex items-center gap-4 cursor-pointer">
+                  <Tag className="w-6 h-6 text-[#111827]" />
+                  <span className="text-[16px] font-medium text-[#111827]">Promotions</span>
+                </div>
+                <div className="flex items-center gap-4 cursor-pointer">
+                  <User className="w-6 h-6 text-[#111827]" />
+                  <span className="text-[16px] font-medium text-[#111827]">Settings</span>
+                </div>
+              </div>
             </motion.div>
-          </div>
+          </>
         )}
       </AnimatePresence>
-
-      {/* 4. BOTTOM SHEET SYSTEM */}
-      <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end pointer-events-none">
-
-        {/* We use a single motion.div for the sheet if possible, but switching UI inside is better done with AnimatePresence */}
-        <AnimatePresence mode="popLayout">
-
-          {/* IDLE SHEET */}
-          {appState === "idle" && (
-            <motion.div
-              key="idle"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={springSmooth}
-              drag="y"
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={0.2}
-              onDragEnd={handleDragEnd}
-              className="bg-white rounded-t-3xl p-5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] pointer-events-auto"
-            >
-               {/* Drag Handle */}
-               <div className="w-full pt-2 pb-6 flex justify-center cursor-grab active:cursor-grabbing">
-                 <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
-               </div>
-
-               <motion.button
-                 whileTap={{ scale: 0.98, backgroundColor: '#E5E7EB' }}
-                 onClick={openSearch}
-                 className="w-full bg-[#F3F4F6] text-left p-4 rounded-2xl flex items-center gap-4 mb-4"
-               >
-                 <Search size={24} className="text-black" />
-                 <span className="text-xl text-gray-500 font-medium">Where to?</span>
-               </motion.button>
-
-               <div className="flex gap-3">
-                 <motion.button
-                   whileTap={{ scale: 0.95 }}
-                   onClick={openSearch}
-                   className="flex-1 bg-white border border-gray-100 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-                 >
-                   <Package size={24} className="text-black" />
-                   <span className="text-sm font-semibold">Delivery</span>
-                 </motion.button>
-                 <motion.button
-                   whileTap={{ scale: 0.95 }}
-                   onClick={openSearch}
-                   className="flex-1 bg-white border border-gray-100 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-                 >
-                   <Clock size={24} className="text-black" />
-                   <span className="text-sm font-semibold">Schedule</span>
-                 </motion.button>
-               </div>
-            </motion.div>
-          )}
-
-          {/* SEARCH SHEET */}
-          {appState === "search" && (
-            <motion.div
-              key="search"
-              initial={{ y: "100%" }}
-              animate={{ y: sheetState === "full" ? 0 : "40vh" }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={springSmooth}
-              drag="y"
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={0.2}
-              onDragEnd={handleDragEnd}
-              className="bg-white h-[95dvh] rounded-t-3xl flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.08)] pointer-events-auto"
-            >
-               <div className="w-full pt-4 pb-2 flex justify-center cursor-grab active:cursor-grabbing">
-                 <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
-               </div>
-
-               <div className="px-5 pt-2 pb-4 flex flex-col gap-4 relative shrink-0">
-                  <div className="absolute left-8 top-10 bottom-10 w-0.5 bg-gray-200 z-0" />
-
-                  {/* Destination */}
-                  <div className="flex items-center gap-4 relative z-10">
-                     <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
-                       <div className="w-2 h-2 bg-white rounded-full" />
-                     </div>
-                     <input
-                       type="text"
-                       value={requestText}
-                       onChange={(e) => setRequestText(e.target.value)}
-                       placeholder="What do you need? (e.g. Charger)"
-                       className="flex-1 bg-[#F3F4F6] text-black font-medium text-lg rounded-xl px-4 py-3 outline-none focus:bg-gray-200 transition-colors"
-                       autoFocus
-                     />
-                  </div>
-
-                  {/* Pickup */}
-                  <div className="flex items-center gap-4 relative z-10">
-                     <div className="w-6 h-6 rounded-none bg-transparent border-[3px] border-black flex items-center justify-center shrink-0" />
-                     <input
-                       type="text"
-                       value={pickupLocation}
-                       onChange={(e) => setPickupLocation(e.target.value)}
-                       placeholder="Deliver to"
-                       className="flex-1 bg-[#F3F4F6] text-black font-medium text-lg rounded-xl px-4 py-3 outline-none focus:bg-gray-200 transition-colors"
-                     />
-                  </div>
-               </div>
-
-               <div className="flex-1 overflow-y-auto px-5 py-2">
-                  {["Main Library", "Engineering Block B", "Cafeteria South", "Student Union", "Dormitory A"].map((loc) => (
-                    <motion.div
-                      key={loc}
-                      whileTap={{ backgroundColor: '#F9FAFB' }}
-                      onClick={() => setPickupLocation(loc)}
-                      className="flex items-center gap-4 py-4 border-b border-gray-100 last:border-0 cursor-pointer"
-                    >
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
-                        <MapPin size={18} className="text-gray-500" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-lg font-semibold">{loc}</div>
-                        <div className="text-sm text-gray-500">Campus Area</div>
-                      </div>
-                    </motion.div>
-                  ))}
-               </div>
-
-               <div className="p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] bg-white border-t border-gray-50">
-                  <motion.button
-                    whileTap={{ scale: (!requestText || !pickupLocation) ? 1 : 0.98 }}
-                    onClick={proceedToSelection}
-                    disabled={!requestText || !pickupLocation}
-                    className="w-full bg-black text-white py-4 rounded-xl font-bold text-xl disabled:bg-gray-200 disabled:text-gray-400 transition-colors"
-                  >
-                    Done
-                  </motion.button>
-               </div>
-            </motion.div>
-          )}
-
-          {/* LOADING OPTIONS SKELETON */}
-          {appState === "loading_options" && (
-            <motion.div
-              key="loading_options"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={springSmooth}
-              className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
-            >
-               <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-6" />
-
-               <div className="px-5 pb-6">
-                 <div className="w-48 h-8 bg-gray-100 rounded-lg animate-pulse mx-auto mb-6" />
-
-                 <div className="flex flex-col gap-4">
-                   {[1, 2].map((i) => (
-                     <div key={i} className="flex items-center justify-between p-5 rounded-2xl border-2 border-gray-50 bg-white">
-                       <div className="flex items-center gap-4">
-                         <div className="w-16 h-16 bg-gray-100 rounded-full animate-pulse" />
-                         <div className="flex flex-col gap-2">
-                           <div className="w-24 h-6 bg-gray-100 rounded-md animate-pulse" />
-                           <div className="w-16 h-4 bg-gray-100 rounded-md animate-pulse" />
-                         </div>
-                       </div>
-                       <div className="w-20 h-6 bg-gray-100 rounded-md animate-pulse" />
-                     </div>
-                   ))}
-                 </div>
-               </div>
-
-               <div className="px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-                  <div className="w-full h-14 bg-gray-100 rounded-xl animate-pulse" />
-               </div>
-            </motion.div>
-          )}
-
-          {/* SELECTION / CONFIRM STATE */}
-          {appState === "selection" && (
-            <motion.div
-              key="selection"
-              initial={{ opacity: 0 }} // crossfade from skeleton
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
-            >
-               <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
-               <div className="px-5 pb-4 text-center border-b border-gray-100">
-                 <h2 className="text-2xl font-bold">Choose Delivery</h2>
-               </div>
-
-               <div className="p-5 flex flex-col gap-3">
-                 <motion.div
-                   whileTap={{ scale: 0.98 }}
-                   onClick={() => setSelectedOption("standard")}
-                   className={"flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all " + (selectedOption === "standard" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200")}
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
-                       <Package size={30} className="text-black" />
-                     </div>
-                     <div>
-                       <div className="font-bold text-xl">Standard</div>
-                       <div className="text-base text-gray-500 font-medium">10-15 min</div>
-                     </div>
-                   </div>
-                   <div className="font-bold text-xl">TZS 2,500</div>
-                 </motion.div>
-
-                 <motion.div
-                   whileTap={{ scale: 0.98 }}
-                   onClick={() => setSelectedOption("priority")}
-                   className={"flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all " + (selectedOption === "priority" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200")}
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
-                       <ShieldCheck size={30} className="text-black" />
-                     </div>
-                     <div>
-                       <div className="font-bold text-xl">Priority</div>
-                       <div className="text-base text-gray-500 font-medium">5-8 min • Direct</div>
-                     </div>
-                   </div>
-                   <div className="font-bold text-xl">TZS 4,000</div>
-                 </motion.div>
-               </div>
-
-               {/* Payment Method - Enforces Smart Payment Rule */}
-               <div className="px-5 pb-3">
-                 <div className="flex gap-2">
-                   <motion.button
-                     whileTap={{ scale: pickupLocation !== "Current Location" ? 1 : 0.95 }}
-                     disabled={pickupLocation !== "Current Location"}
-                     onClick={() => setPaymentMethod("cash")}
-                     className={"flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all " + (paymentMethod === "cash" ? "border-black bg-black/5 " : "border-gray-100 ") + (pickupLocation !== "Current Location" ? "opacity-30 cursor-not-allowed" : "cursor-pointer")}
-                   >
-                     <Banknote size={24} className="text-black" />
-                     <span className="text-sm font-semibold">Cash</span>
-                   </motion.button>
-                   <motion.button
-                     whileTap={{ scale: 0.95 }}
-                     onClick={() => setPaymentMethod("mobile")}
-                     className={"flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all " + (paymentMethod === "mobile" ? "border-black bg-black/5" : "border-gray-100")}
-                   >
-                     <Smartphone size={24} className="text-black" />
-                     <span className="text-sm font-semibold">Mobile</span>
-                   </motion.button>
-                   <motion.button
-                     whileTap={{ scale: 0.95 }}
-                     onClick={() => setPaymentMethod("card")}
-                     className={"flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all " + (paymentMethod === "card" ? "border-black bg-black/5" : "border-gray-100")}
-                   >
-                     <CreditCard size={24} className="text-black" />
-                     <span className="text-sm font-semibold">Card</span>
-                   </motion.button>
-                 </div>
-               </div>
-
-               <div className="px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] bg-white pt-2">
-                  <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    onClick={confirmRequest}
-                    disabled={isProcessing}
-                    className="w-full bg-black text-white py-4 rounded-xl font-bold text-xl hover:bg-gray-900 transition-all shadow-lg flex items-center justify-center h-[60px]"
-                  >
-                    {isProcessing ? <Loader2 size={24} className="animate-spin" /> : (paymentMethod === "cash" ? "Confirm Request" : "Confirm & Pay")}
-                  </motion.button>
-               </div>
-            </motion.div>
-          )}
-
-          {/* FINDING COURIER (collapsed state essentially) */}
-          {appState === "finding" && (
-            <motion.div
-              key="finding"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={springSnappy}
-              className="bg-white rounded-t-3xl p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
-            >
-               <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
-               <div className="flex items-center gap-4">
-                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
-                   <Loader2 size={24} className="animate-spin text-black" />
-                 </div>
-                 <div>
-                   <h2 className="text-xl font-bold">Connecting to courier...</h2>
-                   <p className="text-gray-500 font-medium">Finding the best match</p>
-                 </div>
-               </div>
-               {/* Progress bar instead of old sweeping animation here, to match standard UX */}
-               <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mt-6 relative">
-                 <motion.div
-                   className="absolute top-0 left-0 bottom-0 bg-black w-1/3"
-                   animate={{ x: ["-100%", "300%"] }}
-                   transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                 />
-               </div>
-            </motion.div>
-          )}
-
-          {/* EN ROUTE TRACKING */}
-          {appState === "en_route" && (
-            <motion.div
-              key="en_route"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={springSmooth}
-              className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
-            >
-               <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
-
-               <div className="px-6 pb-5 flex items-center justify-between border-b border-gray-100">
-                  <div>
-                     <h2 className="text-3xl font-bold">3 min away</h2>
-                     <p className="text-gray-500 font-medium text-lg mt-1">{requestText} to {pickupLocation}</p>
-                  </div>
-                  <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
-                     <Clock size={28} className="text-black" />
-                  </div>
-               </div>
-
-               <div className="p-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center font-bold text-2xl border-2 border-gray-200">
-                        J
-                     </div>
-                     <div>
-                        <p className="font-bold text-xl">James</p>
-                        <div className="flex items-center gap-2 text-base text-gray-500 font-semibold mt-1">
-                           <span className="bg-gray-100 px-2 py-0.5 rounded text-black">4.9 ★</span>
-                           <span>Courier</span>
-                        </div>
-                     </div>
-                  </div>
-
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center shadow-sm"
-                  >
-                     <Phone size={24} className="text-black" />
-                  </motion.button>
-               </div>
-
-               <div className="px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
-                 <motion.button
-                   whileTap={{ scale: 0.98 }}
-                   onClick={cancelRequest}
-                   className="w-full bg-gray-100 text-black py-4 rounded-xl font-bold text-lg"
-                 >
-                   Cancel Request
-                 </motion.button>
-               </div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
-      </div>
-
     </div>
   )
 }
