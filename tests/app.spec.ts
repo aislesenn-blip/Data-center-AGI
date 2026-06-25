@@ -7,34 +7,36 @@ test('Campus Delivery E2E flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
 
   // Verify Home State & Core Prompt
-  await expect(page.getByText('Need something?')).toBeVisible();
-  await expect(page.getByText('What can we bring you?')).toBeVisible();
+  await expect(page.getByText('What do you need?').first()).toBeVisible();
 
   // Click to open Request flow
-  await page.click('text=What can we bring you?');
+  await page.click('text=What do you need?');
 
   // Verify Request View
-  await expect(page.getByText('Request Delivery')).toBeVisible();
-  await expect(page.getByPlaceholder('e.g., Charger, Water, Notes...')).toBeVisible();
+  await expect(page.getByPlaceholder('What do you need? (e.g. Charger)')).toBeVisible();
 
   // Fill out the request form
-  await page.getByPlaceholder('e.g., Charger, Water, Notes...').fill('Notebook');
-  await page.getByPlaceholder('Building, Library, Seat...').fill('Library Floor 2');
+  await page.getByPlaceholder('What do you need? (e.g. Charger)').fill('Notebook');
+  await page.getByPlaceholder('Deliver to (e.g. Library Room 2)').fill('Library Floor 2');
 
-  // Verify the 'Confirm Request' button is enabled and click it
-  await expect(page.getByText('Confirm Request')).toBeEnabled();
-  await page.click('text=Confirm Request');
+  // Verify the 'Done' button is enabled and click it
+  await expect(page.getByRole('button', { name: 'Done' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Done' }).click();
 
-  // Verify 'Searching' state
-  await expect(page.getByText('Finding a courier')).toBeVisible();
+  // Verify Confirm Delivery view
+  await expect(page.getByText('Choose Delivery')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Confirm Delivery' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Confirm Delivery' }).click();
+
+  // Verify 'Finding' state
+  await expect(page.getByText('Connecting to courier...')).toBeVisible();
 
   // Verify it transitions to 'En Route' state automatically after mock searching (timeout ~2500ms)
-  await expect(page.getByText('Delivery in Progress')).toBeVisible({ timeout: 3500 });
-  await expect(page.getByText('Arriving in 3 min')).toBeVisible();
-  await expect(page.getByText('Notebook • Library Floor 2')).toBeVisible();
+  await expect(page.getByText('3 min away')).toBeVisible({ timeout: 3500 });
+  await expect(page.getByText('Notebook to Library Floor 2')).toBeVisible();
 
   // Cancel Request to return to Home
   await page.click('text=Cancel Request');
-  await expect(page.getByText('Need something?')).toBeVisible();
+  await expect(page.getByText('What do you need?').first()).toBeVisible();
 
 });
