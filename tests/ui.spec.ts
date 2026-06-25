@@ -4,7 +4,7 @@ test('campus delivery full flow', async ({ page }) => {
   await page.goto('/');
 
   // 1. Home
-  await expect(page.getByText('Smooth deliveries ahead.')).toBeVisible();
+  await expect(page.getByText('Anything on campus')).toBeVisible();
 
   // 2. Click "I Need Something" (Fetch Mode)
   await page.getByText('I Need Something').click();
@@ -38,20 +38,23 @@ test('campus delivery full flow', async ({ page }) => {
 
   // 11. Verify En Route
   await expect(page.getByText('John Makata')).toBeVisible();
+
 });
 
-test('campus delivery partners hub', async ({ page }) => {
+test('campus delivery suggestion box', async ({ page }) => {
   await page.goto('/');
 
   // Open Menu
   await page.locator('button').first().click();
 
-  // Verify Partners Hub
-  await expect(page.getByText('Partners')).toBeVisible();
-  await expect(page.getByText('UDSM Campus')).toBeVisible();
-  await expect(page.getByText('Main Cafeteria')).toBeVisible();
+  // Verify Suggestion Box
+  await expect(page.getByText('Suggestion Box')).toBeVisible();
+  await page.getByText('Suggestion Box').click();
 
-  // Click a partner, expect it to go to Route Selection
-  await page.getByText('Main Cafeteria').click();
-  await expect(page.getByPlaceholder('e.g. Burger, Medicine, Charger...')).toBeVisible();
+  // Check screen
+  await expect(page.getByPlaceholder('I would love it if you could add...')).toBeVisible();
+  await page.getByRole('button', { name: 'Submit Suggestion' }).click();
+
+  // Verify back to home
+  await expect(page.getByText('Anything on campus')).toBeVisible();
 });

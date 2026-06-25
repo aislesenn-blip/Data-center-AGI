@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Tag, X, Car, Bike, Package, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, WifiOff, Map, Phone, MessageSquare, Loader, Plus, ArrowDownUp, Menu, Banknote, CreditCard, Smartphone, ChevronRight, Settings, Send, Timer, Navigation } from "lucide-react"
+import {  Tag, X, Car, Bike, Package, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, WifiOff, Map, Phone, MessageSquare, CheckCircle, Star, Loader, Plus, ArrowDownUp, Menu, Banknote, CreditCard, Smartphone, ChevronRight, Settings, Send, Timer, Navigation, History as HistoryIcon  } from "lucide-react"
 
-type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE"
+type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE" | "SUGGESTION_BOX" | "RUNNER_ARRIVING" | "DELIVERY_COMPLETE"
 type VehicleOption = "standard" | "express"
 type PaymentMethod = "cash" | "mobile" | "card"
 
@@ -73,6 +73,9 @@ export default function CampusDeliveryApp() {
   }
 
   // Edge cases state
+  const [isCalling, setIsCalling] = useState(false)
+  const [isChatting, setIsChatting] = useState(false)
+  const [chatMessage, setChatMessage] = useState("")
   const [isOnline, setIsOnline] = useState(true)
   const [isGpsDenied, setIsGpsDenied] = useState(false)
 
@@ -93,15 +96,23 @@ export default function CampusDeliveryApp() {
     return loc.name.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
-  const [sheetHeight, setSheetHeight] = useState("55vh")
-  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number; y: number } }) => {
-    const threshold = 50
-    if (info.offset.y > threshold) {
-      setSheetHeight("40vh") // peek
-    } else if (info.offset.y < -threshold) {
-      setSheetHeight("85vh") // full expand
+  const [sheetY, setSheetY] = useState(0)
+  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number; y: number }, velocity: { x: number; y: number } }) => {
+    // Uber/Bolt physics: Consider both offset and velocity for momentum
+    const velocityThreshold = 500;
+    const distanceThreshold = 100;
+
+    const isFlickingDown = info.velocity.y > velocityThreshold;
+    const isFlickingUp = info.velocity.y < -velocityThreshold;
+    const isDraggingDown = info.offset.y > distanceThreshold;
+    const isDraggingUp = info.offset.y < -distanceThreshold;
+
+    if (isFlickingDown || isDraggingDown) {
+      setSheetY(300) // peek down
+    } else if (isFlickingUp || isDraggingUp) {
+      setSheetY(-250) // expand up
     } else {
-      setSheetHeight("55vh") // default snap
+      setSheetY(0) // snap to default middle
     }
   }
 
@@ -180,19 +191,16 @@ export default function CampusDeliveryApp() {
 
               {/* Promo Banner */}
               {isPromoVisible && (
-                <div className="mt-12 w-full h-[64px] bg-[#EEF2FF] rounded-[16px] flex items-center px-4 relative mb-6">
-                  <div className="w-10 h-10 rounded-full bg-[#3730A3] flex items-center justify-center mr-3">
-                    <Tag className="text-white w-5 h-5" />
-                  </div>
+                <div className="mt-12 w-full bg-[#F9FAFB] border border-gray-100 shadow-sm rounded-[16px] p-4 relative mb-6">
                   <div className="flex flex-col">
-                    <span className="text-[16px] font-semibold text-[#111827] leading-tight">10% off 5 deliveries</span>
-                    <span className="text-[14px] text-[#6B7280]">View details</span>
+                    <span className="text-[14px] font-bold text-[#111827] leading-tight">Anything on campus, delivered faster.</span>
+                    <span className="text-[13px] font-medium text-[#6B7280] mt-1 pr-4">Order anything from our trusted campus partners directly to your seat.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
-                    className="absolute right-4 p-1"
+                    className="absolute top-3 right-3 p-1 bg-gray-100 rounded-full"
                   >
-                    <X className="w-4 h-4 text-[#111827]" />
+                    <X className="w-3 h-3 text-[#111827]" />
                   </button>
                 </div>
               )}
@@ -282,13 +290,13 @@ export default function CampusDeliveryApp() {
                 <Home className="w-6 h-6 text-[#111827] mb-1" strokeWidth={2.5} />
                 <span className="text-[12px] font-semibold text-[#111827]">Home</span>
               </div>
-              <div className="flex flex-col items-center cursor-pointer">
-                <Calendar className="w-6 h-6 text-[#6B7280] mb-1" />
-                <span className="text-[12px] text-[#6B7280]">Deliveries</span>
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("DELIVERIES")}>
+                <HistoryIcon className="w-6 h-6 text-[#6B7280] mb-1" />
+                <span className="text-[12px] font-medium text-[#6B7280]">Deliveries</span>
               </div>
-              <div className="flex flex-col items-center cursor-pointer">
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("ACCOUNT")}>
                 <User className="w-6 h-6 text-[#6B7280] mb-1" />
-                <span className="text-[12px] text-[#6B7280]">Account</span>
+                <span className="text-[12px] font-medium text-[#6B7280]">Account</span>
               </div>
             </div>
           </motion.div>
@@ -334,7 +342,11 @@ export default function CampusDeliveryApp() {
                      className="flex-1 text-[16px] text-[#111827] bg-transparent outline-none placeholder:text-gray-400 font-medium h-full"
                      autoFocus
                    />
-                 </div>
+
+                 <span className="text-[12px] font-medium text-gray-500 mt-2 block ml-1">
+                   {deliveryMode === "fetch" ? "Describe the item and its approximate price." : "Describe the item."}
+                 </span>
+</div>
                </div>
 
                {/* Route Timeline */}
@@ -371,6 +383,12 @@ export default function CampusDeliveryApp() {
                        />
                      </div>
                    )}
+                 </div>
+
+
+                 {/* Rule Banner */}
+                 <div className="mb-6 ml-[-24px] bg-[#EEF2FF] rounded-r-[16px] p-3 flex items-center gap-3 border-l-4 border-[#4F46E5]">
+                   <span className="text-[12px] font-bold text-[#3730A3]">One item equals one delivery. Please do not bundle independent shopping requests.</span>
                  </div>
 
                  {/* 3. Deliver to */}
@@ -416,24 +434,68 @@ export default function CampusDeliveryApp() {
         {appState === "DELIVERIES" && (
           <motion.div
             key="deliveries"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "tween", duration: 0 }}
+            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 border-b border-gray-100">
-              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
-                <X className="w-6 h-6 text-[#111827]" />
-              </button>
-              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Delivery History</h2>
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <h2 className="text-[24px] font-extrabold text-[#111827]">Deliveries</h2>
             </div>
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                <Package className="w-10 h-10 text-gray-400" />
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
+              <h3 className="text-[18px] font-bold text-[#111827] mb-2">Past Orders</h3>
+
+              <div className="bg-white p-4 rounded-[24px] border border-gray-100 shadow-sm flex flex-col gap-3">
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center">
+                       <Package className="w-5 h-5 text-[#111827]" />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[16px] font-bold text-[#111827]">1x Chicken Burger</span>
+                       <span className="text-[13px] font-medium text-[#6B7280]">Main Cafeteria • 2 days ago</span>
+                     </div>
+                   </div>
+                   <span className="text-[14px] font-bold text-[#111827]">TZS 300</span>
+                 </div>
+                 <div className="flex gap-2 mt-1">
+                   <button className="flex-1 h-[40px] bg-gray-50 rounded-[12px] font-bold text-[14px] text-[#111827]">Receipt</button>
+                   <button className="flex-1 h-[40px] bg-gray-50 rounded-[12px] font-bold text-[14px] text-[#111827]">Reorder</button>
+                 </div>
               </div>
-              <h3 className="text-[20px] font-bold text-[#111827] mb-2">No deliveries yet</h3>
-              <p className="text-[16px] text-[#6B7280]">When you request a delivery, it will appear here.</p>
+
+              <div className="bg-white p-4 rounded-[24px] border border-gray-100 shadow-sm flex flex-col gap-3 opacity-70">
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center">
+                       <Package className="w-5 h-5 text-[#111827]" />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[16px] font-bold text-[#111827]">A4 Printing Pages</span>
+                       <span className="text-[13px] font-medium text-[#6B7280]">Printing Centre • Last week</span>
+                     </div>
+                   </div>
+                   <span className="text-[14px] font-bold text-[#111827]">TZS 300</span>
+                 </div>
+              </div>
+
+            </div>
+
+            {/* Bottom Nav Bar */}
+            <div className="h-[80px] w-full border-t border-[#E5E7EB] flex flex-row justify-around items-center pb-[max(env(safe-area-inset-bottom),0px)] bg-white shrink-0">
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("HOME")}>
+                <Home className="w-6 h-6 text-[#6B7280] mb-1" strokeWidth={2} />
+                <span className="text-[12px] font-medium text-[#6B7280]">Home</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer">
+                <HistoryIcon className="w-6 h-6 text-[#111827] mb-1" strokeWidth={2.5} />
+                <span className="text-[12px] font-bold text-[#111827]">Deliveries</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("ACCOUNT")}>
+                <User className="w-6 h-6 text-[#6B7280] mb-1" strokeWidth={2} />
+                <span className="text-[12px] font-medium text-[#6B7280]">Account</span>
+              </div>
             </div>
           </motion.div>
         )}
@@ -441,44 +503,84 @@ export default function CampusDeliveryApp() {
         {appState === "ACCOUNT" && (
           <motion.div
             key="account"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "tween", duration: 0 }}
             className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-10">
-              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
-                <X className="w-6 h-6 text-[#111827]" />
-              </button>
-              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Account</h2>
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <h2 className="text-[24px] font-extrabold text-[#111827]">Account</h2>
             </div>
-            <div className="flex-1 overflow-y-auto">
-               <div className="p-6 bg-white mb-4 shadow-sm flex items-center gap-4">
-                 <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                   <User className="w-8 h-8 text-gray-500" />
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6">
+               <div className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                   <User className="w-8 h-8 text-gray-400" />
                  </div>
-                 <div>
-                   <h2 className="text-[20px] font-bold text-[#111827]">Jane Doe</h2>
-                   <p className="text-[14px] text-[#6B7280]">jane.doe@example.com</p>
-                 </div>
-               </div>
-               <div className="bg-white shadow-sm flex flex-col">
-                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer" onClick={() => navigateTo("SETTINGS")}>
-                   <div className="flex items-center gap-3">
-                     <Settings className="w-5 h-5 text-[#111827]" />
-                     <span className="text-[16px] font-medium text-[#111827]">Settings</span>
-                   </div>
-                   <ChevronRight className="w-5 h-5 text-gray-400" />
-                 </div>
-                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer" onClick={() => navigateTo("PROMOTIONS")}>
-                   <div className="flex items-center gap-3">
-                     <Tag className="w-5 h-5 text-[#111827]" />
-                     <span className="text-[16px] font-medium text-[#111827]">Promotions</span>
-                   </div>
-                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 <div className="flex flex-col">
+                   <h2 className="text-[20px] font-extrabold text-[#111827]">Jane Doe</h2>
+                   <p className="text-[14px] font-medium text-[#6B7280]">+255 700 000 000</p>
                  </div>
                </div>
+
+               <div className="flex flex-col gap-2">
+                 <h3 className="text-[16px] font-bold text-[#111827] px-2">Preferences</h3>
+                 <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                   <div className="p-4 flex items-center justify-between border-b border-gray-100 cursor-pointer hover:bg-gray-50">
+                     <div className="flex items-center gap-4">
+                       <MapPin className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[16px] font-bold text-[#111827]">Saved Places</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                     <div className="flex items-center gap-4">
+                       <Banknote className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[16px] font-bold text-[#111827]">Payment Methods</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                 </div>
+               </div>
+
+               <div className="flex flex-col gap-2">
+                 <h3 className="text-[16px] font-bold text-[#111827] px-2">Support</h3>
+                 <div className="bg-white rounded-[24px] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                   <div className="p-4 flex items-center justify-between border-b border-gray-100 cursor-pointer hover:bg-gray-50">
+                     <div className="flex items-center gap-4">
+                       <Tag className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[16px] font-bold text-[#111827]">Promotions</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                     <div className="flex items-center gap-4">
+                       <Settings className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[16px] font-bold text-[#111827]">Settings</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                 </div>
+               </div>
+
+               <button className="w-full py-4 text-center text-[16px] font-bold text-red-500 mt-2">Log out</button>
+            </div>
+
+            {/* Bottom Nav Bar */}
+            <div className="h-[80px] w-full border-t border-[#E5E7EB] flex flex-row justify-around items-center pb-[max(env(safe-area-inset-bottom),0px)] bg-white shrink-0">
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("HOME")}>
+                <Home className="w-6 h-6 text-[#6B7280] mb-1" strokeWidth={2} />
+                <span className="text-[12px] font-medium text-[#6B7280]">Home</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer" onClick={() => navigateTo("DELIVERIES")}>
+                <HistoryIcon className="w-6 h-6 text-[#6B7280] mb-1" strokeWidth={2} />
+                <span className="text-[12px] font-medium text-[#6B7280]">Deliveries</span>
+              </div>
+              <div className="flex flex-col items-center cursor-pointer">
+                <User className="w-6 h-6 text-[#111827] mb-1" strokeWidth={2.5} />
+                <span className="text-[12px] font-bold text-[#111827]">Account</span>
+              </div>
             </div>
           </motion.div>
         )}
@@ -600,13 +702,13 @@ export default function CampusDeliveryApp() {
             {/* Bottom Sheet Foreground */}
             <motion.div
               drag="y"
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={0.2}
+              dragConstraints={{ top: -250, bottom: 300 }}
+              dragElastic={0.1}
               onDragEnd={handleDragEnd}
-              initial={{ height: "0vh" }}
-              animate={{ height: sheetHeight }}
-              transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
-              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-30 flex flex-col pb-[env(safe-area-inset-bottom)] touch-none"
+              initial={{ y: "100%" }}
+              animate={{ y: sheetY }}
+              transition={{ type: "spring", damping: 24, stiffness: 300, mass: 0.8 }}
+              className="absolute bottom-[-50%] left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col touch-none h-[115%]"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               {/* Drag Handle */}
@@ -808,23 +910,111 @@ export default function CampusDeliveryApp() {
                 </div>
 
                 <div className="flex items-center gap-3 w-full">
-                  <button className="flex-1 h-[56px] bg-[#EEF2FF] text-[#4F46E5] rounded-[16px] flex items-center justify-center gap-2 font-bold text-[16px]">
+                  <button onClick={() => setIsCalling(true)} className="flex-1 h-[56px] bg-[#EEF2FF] text-[#4F46E5] rounded-[16px] flex items-center justify-center gap-2 font-bold text-[16px]">
                     <Phone className="w-5 h-5" />
                     Call
                   </button>
-                  <button className="flex-1 h-[56px] bg-[#EEF2FF] text-[#4F46E5] rounded-[16px] flex items-center justify-center gap-2 font-bold text-[16px]">
+                  <button onClick={() => setIsChatting(true)} className="flex-1 h-[56px] bg-[#EEF2FF] text-[#4F46E5] rounded-[16px] flex items-center justify-center gap-2 font-bold text-[16px]">
                     <MessageSquare className="w-5 h-5" />
                     Message
                   </button>
-                  <button onClick={() => navigateTo("HOME")} className="w-[56px] h-[56px] bg-red-50 rounded-[16px] flex items-center justify-center">
-                    <X className="w-6 h-6 text-red-500" />
+                  <button onClick={() => navigateTo("RUNNER_ARRIVING")} className="w-[56px] h-[56px] bg-[#F9FAFB] border border-gray-200 rounded-[16px] flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-gray-500" />
                   </button>
                 </div>
              </motion.div>
           </motion.div>
         )}
 
-      {/* Hamburger Overlay Menu - Partners Hub */}
+        {appState === "RUNNER_ARRIVING" && (
+          <motion.div
+            key="runner_arriving"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-10 flex flex-col pointer-events-none"
+          >
+             {/* Map Backdrop */}
+             <div className="absolute inset-0 bg-[#E5E7EB] z-0 flex items-center justify-center">
+                <motion.div
+                  initial={{ top: "45%", left: "50%" }}
+                  animate={{ top: "50%", left: "50%" }}
+                  transition={{ duration: 2, ease: "linear" }}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+                >
+                  <div className="bg-[#1D965C] text-white rounded-full px-3 py-1 shadow-lg mb-1 flex items-center gap-1 font-bold text-[12px] animate-pulse">
+                    ARRIVING
+                  </div>
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border-2 border-[#1D965C] shadow-md">
+                    <User className="w-4 h-4 text-[#1D965C]" />
+                  </div>
+                </motion.div>
+             </div>
+
+             {/* Bottom Sheet - Arriving */}
+             <motion.div
+               initial={{ y: "100%" }}
+               animate={{ y: 0 }}
+               className="absolute bottom-0 left-0 right-0 bg-[#1D965C] rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-30 flex flex-col p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto text-white"
+             >
+                <div className="flex flex-col items-center text-center mb-6">
+                  <h2 className="text-[28px] font-extrabold mb-1">Your runner is here</h2>
+                  <p className="text-[16px] font-medium opacity-90">Please meet John Makata at {dropoffLocation || "the destination"}.</p>
+                </div>
+
+                <div className="flex gap-3 w-full mt-4">
+                   <button
+                     onClick={() => navigateTo("DELIVERY_COMPLETE")}
+                     className="w-full h-[56px] bg-white text-[#1D965C] rounded-[28px] text-[18px] font-bold shadow-md"
+                   >
+                     Complete Delivery
+                   </button>
+                </div>
+             </motion.div>
+          </motion.div>
+        )}
+
+        {appState === "DELIVERY_COMPLETE" && (
+          <motion.div
+            key="delivery_complete"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="absolute inset-0 bg-white z-50 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] px-6 overflow-y-auto"
+          >
+             <div className="flex-1 flex flex-col items-center justify-center text-center mt-12">
+               <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-6 text-[#1D965C]">
+                 <CheckCircle className="w-12 h-12" />
+               </div>
+               <h1 className="text-[32px] font-extrabold text-[#111827] mb-2 leading-tight">Delivery<br/>Complete</h1>
+               <p className="text-[16px] text-[#6B7280] font-medium mb-12">Thank you for using Campus Delivery.</p>
+
+               <div className="w-full bg-[#F9FAFB] rounded-[24px] p-6 border border-gray-100 mb-8">
+                 <h3 className="text-[18px] font-bold text-[#111827] mb-4">Rate your runner</h3>
+                 <div className="flex items-center justify-center gap-2 mb-6">
+                   {[1,2,3,4,5].map(star => (
+                     <Star key={star} className="w-10 h-10 text-gray-300 hover:text-yellow-400 cursor-pointer transition-colors" />
+                   ))}
+                 </div>
+                 <textarea
+                   className="w-full h-[100px] bg-white border border-gray-200 rounded-[16px] p-4 text-[14px] outline-none focus:border-[#1D965C] resize-none"
+                   placeholder="Add a tip or feedback (optional)"
+                 ></textarea>
+               </div>
+             </div>
+
+             <div className="shrink-0 pb-6">
+                <button
+                  onClick={() => navigateTo("HOME")}
+                  className="w-full h-[60px] bg-[#111827] text-white rounded-[30px] text-[18px] font-bold shadow-md"
+                >
+                  Done
+                </button>
+             </div>
+          </motion.div>
+        )}
+
+      {/* Hamburger Overlay Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
@@ -840,67 +1030,24 @@ export default function CampusDeliveryApp() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[#F9FAFB] z-50 flex flex-col shadow-2xl overflow-hidden"
+              className="absolute inset-y-0 left-0 w-[80%] max-w-[320px] bg-white z-50 flex flex-col shadow-2xl overflow-hidden"
             >
-              <div className="p-6 bg-white shrink-0 border-b border-gray-100 flex items-center justify-between pt-[max(env(safe-area-inset-top),24px)]">
-                <div className="flex flex-col">
-                  <span className="text-[14px] font-semibold text-[#1D965C] uppercase tracking-wider mb-1">Trusted</span>
-                  <h2 className="text-[24px] font-extrabold text-[#111827] leading-none">Partners</h2>
+              <div className="p-6 border-b border-gray-100 flex items-center justify-between pt-[max(env(safe-area-inset-top),24px)]">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                  <User className="w-6 h-6 text-gray-500" />
                 </div>
                 <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 bg-gray-50 rounded-full">
                   <X className="w-5 h-5 text-[#111827]" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
-                 {/* UDSM Section */}
-                 <div className="flex flex-col gap-3">
-                   <h3 className="text-[16px] font-bold text-[#111827] px-1">UDSM Campus</h3>
-
-                   <div className="bg-white rounded-[20px] p-4 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer" onClick={() => { setPickupLocation("Main Cafeteria"); setIsMenuOpen(false); setDeliveryMode("fetch"); navigateTo("ROUTE_SELECTION"); }}>
-                     <div className="w-12 h-12 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center shrink-0">
-                       <Utensils className="w-5 h-5 text-[#111827]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#111827]">Main Cafeteria</span>
-                       <span className="text-[13px] font-medium text-[#6B7280]">Food & Drinks</span>
-                     </div>
-                   </div>
-
-                   <div className="bg-white rounded-[20px] p-4 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer" onClick={() => { setPickupLocation("Mini Market"); setIsMenuOpen(false); setDeliveryMode("fetch"); navigateTo("ROUTE_SELECTION"); }}>
-                     <div className="w-12 h-12 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center shrink-0">
-                       <Tag className="w-5 h-5 text-[#111827]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#111827]">Mini Market</span>
-                       <span className="text-[13px] font-medium text-[#6B7280]">Snacks & Essentials</span>
-                     </div>
-                   </div>
-
-                   <div className="bg-white rounded-[20px] p-4 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer" onClick={() => { setPickupLocation("Campus Pharmacy"); setIsMenuOpen(false); setDeliveryMode("fetch"); navigateTo("ROUTE_SELECTION"); }}>
-                     <div className="w-12 h-12 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center shrink-0">
-                       <PlusSquare className="w-5 h-5 text-[#111827]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#111827]">Campus Pharmacy</span>
-                       <span className="text-[13px] font-medium text-[#6B7280]">Medicine & Health</span>
-                     </div>
-                   </div>
-                 </div>
-
-                 {/* UDOM Section */}
-                 <div className="flex flex-col gap-3">
-                   <h3 className="text-[16px] font-bold text-[#111827] px-1 mt-2">UDOM Campus</h3>
-
-                   <div className="bg-white rounded-[20px] p-4 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer opacity-70">
-                     <div className="w-12 h-12 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center shrink-0">
-                       <Utensils className="w-5 h-5 text-[#111827]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#111827]">UDOM Cafeteria</span>
-                       <span className="text-[13px] font-medium text-[#6B7280]">Food & Drinks</span>
-                     </div>
-                   </div>
+              <div className="flex-1 overflow-y-auto p-4 pt-6">
+                 <div
+                   onClick={() => { setIsMenuOpen(false); navigateTo("SUGGESTION_BOX"); }}
+                   className="flex items-center gap-4 cursor-pointer p-3 hover:bg-gray-50 rounded-[16px] transition-colors"
+                 >
+                   <MessageSquare className="w-6 h-6 text-[#111827]" />
+                   <span className="text-[18px] font-bold text-[#111827]">Suggestion Box</span>
                  </div>
               </div>
             </motion.div>
@@ -908,85 +1055,50 @@ export default function CampusDeliveryApp() {
         )}
       </AnimatePresence>
 
-
-      {/* Partner Dropdown Selection Sheet */}
+      {/* Suggestion Box Screen */}
       <AnimatePresence>
-        {isPartnerDropdownOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsPartnerDropdownOpen(false)}
-              className="absolute inset-0 bg-black z-40"
-            />
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 bg-white z-50 rounded-t-[24px] pb-[env(safe-area-inset-bottom)] p-6 shadow-2xl flex flex-col max-h-[80%]"
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-[20px] font-bold text-[#111827]">Select Partner</h2>
-                <button onClick={() => setIsPartnerDropdownOpen(false)} className="p-2 -mr-2 bg-gray-100 rounded-full">
-                  <X className="w-5 h-5 text-[#111827]" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto flex flex-col gap-2">
-                 <div onClick={() => { setPickupLocation("Main Cafeteria"); setIsPartnerDropdownOpen(false); }} className="p-4 bg-white border border-gray-100 rounded-[16px] shadow-sm flex items-center gap-4 cursor-pointer hover:border-[#1D965C]">
-                   <Utensils className="w-5 h-5 text-[#111827]" />
-                   <span className="text-[16px] font-bold text-[#111827]">Main Cafeteria</span>
-                 </div>
-                 <div onClick={() => { setPickupLocation("Mini Market"); setIsPartnerDropdownOpen(false); }} className="p-4 bg-white border border-gray-100 rounded-[16px] shadow-sm flex items-center gap-4 cursor-pointer hover:border-[#1D965C]">
-                   <Tag className="w-5 h-5 text-[#111827]" />
-                   <span className="text-[16px] font-bold text-[#111827]">Mini Market</span>
-                 </div>
-                 <div onClick={() => { setPickupLocation("Campus Pharmacy"); setIsPartnerDropdownOpen(false); }} className="p-4 bg-white border border-gray-100 rounded-[16px] shadow-sm flex items-center gap-4 cursor-pointer hover:border-[#1D965C]">
-                   <PlusSquare className="w-5 h-5 text-[#111827]" />
-                   <span className="text-[16px] font-bold text-[#111827]">Campus Pharmacy</span>
-                 </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Map Picker Simulation */}
-      <AnimatePresence>
-        {isMapPicking && (
+        {appState === "SUGGESTION_BOX" && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute inset-0 bg-[#E5E7EB] z-[60] flex flex-col"
+            key="suggestion_box"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
-             <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] box-content">
-              <button onClick={() => setIsMapPicking(false)} className="absolute left-4 p-2 -ml-2 bg-gray-50 rounded-full mt-[env(safe-area-inset-top)]">
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-gray-50 rounded-full">
                 <X className="w-5 h-5 text-[#111827]" />
               </button>
-              <h2 className="w-full text-center text-[18px] font-bold text-[#111827] mt-[env(safe-area-inset-top)]">Tap to Pin Location</h2>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#111827]">Suggestion Box</h2>
             </div>
 
-            <div className="flex-1 relative cursor-crosshair" onClick={() => { setDropoffLocation("Pinned Location on Map"); setIsMapPicking(false); }}>
-              {/* Fake Map background */}
-              <div className="absolute inset-0 bg-gray-200">
-                <svg className="absolute w-full h-[60%] top-[10%]" preserveAspectRatio="none" viewBox="0 0 100 100">
-                  <path d="M 20 80 Q 50 50 80 20" fill="none" stroke="#1D965C" strokeWidth="1.5" strokeLinecap="round" opacity="0.2" />
-                </svg>
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="w-16 h-16 bg-[#F9FAFB] rounded-[20px] flex items-center justify-center mb-6">
+                <MessageSquare className="w-8 h-8 text-[#1D965C]" />
               </div>
+              <h1 className="text-[28px] font-extrabold text-[#111827] mb-2 leading-tight">Help us build<br/>a better campus.</h1>
+              <p className="text-[16px] text-[#6B7280] mb-8 font-medium">Tell us what you need. A new merchant? A missing feature? General feedback? We are listening.</p>
 
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 flex flex-col items-center pointer-events-none">
-                 <div className="w-4 h-4 bg-[#1D965C] rounded-full border-2 border-white shadow-md z-10" />
-                 <div className="w-0.5 h-6 bg-[#111827] -mt-1" />
-              </div>
+              <textarea
+                className="w-full h-[150px] bg-[#F9FAFB] border border-gray-200 rounded-[24px] p-5 text-[16px] text-[#111827] outline-none focus:border-[#1D965C] focus:ring-1 focus:ring-[#1D965C] transition-all resize-none placeholder:text-gray-400 font-medium"
+                placeholder="I would love it if you could add..."
+              ></textarea>
+            </div>
+
+            <div className="p-4 border-t border-gray-100 bg-white shrink-0 pb-[max(env(safe-area-inset-bottom),24px)]">
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={goBack}
+                className="w-full h-[60px] bg-[#111827] text-white rounded-[30px] text-[18px] font-bold shadow-md flex items-center justify-center"
+              >
+                Submit Suggestion
+              </motion.button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Payment Selection Bottom Sheet Overlay */}
+{/* Payment Selection Bottom Sheet Overlay */}
       <AnimatePresence>
         {isPaymentSheetOpen && (
           <>
@@ -1065,6 +1177,87 @@ export default function CampusDeliveryApp() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Call Runner Modal */}
+      <AnimatePresence>
+        {isCalling && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            className="absolute inset-0 bg-[#111827] z-[60] flex flex-col items-center justify-between pt-[env(safe-area-inset-top)] pb-[max(env(safe-area-inset-bottom),24px)] px-6"
+          >
+            <div className="w-full flex justify-end pt-4">
+              <button onClick={() => setIsCalling(false)} className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center text-center mt-12 flex-1">
+               <div className="w-32 h-32 bg-gray-800 rounded-full flex items-center justify-center mb-6 overflow-hidden border-4 border-gray-700">
+                 <User className="w-16 h-16 text-gray-500 mt-4" />
+               </div>
+               <h1 className="text-[32px] font-extrabold text-white mb-2">John Makata</h1>
+               <p className="text-[18px] text-gray-400 font-medium mb-1">+255 700 000 000</p>
+               <p className="text-[14px] text-[#1D965C] font-bold">Calling...</p>
+            </div>
+
+            <div className="w-full flex justify-center pb-12 shrink-0">
+               <button onClick={() => setIsCalling(false)} className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                 <Phone className="w-8 h-8 text-white rotate-[135deg]" />
+               </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat Runner Modal */}
+      <AnimatePresence>
+        {isChatting && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            className="absolute inset-0 bg-[#F9FAFB] z-[60] flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[60px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20 border-b border-gray-100">
+              <button onClick={() => setIsChatting(false)} className="p-2 -ml-2 bg-gray-50 rounded-full mt-[max(env(safe-area-inset-top),16px)]">
+                <X className="w-5 h-5 text-[#111827]" />
+              </button>
+              <div className="flex-1 flex flex-col items-center mt-[max(env(safe-area-inset-top),16px)]">
+                <span className="text-[16px] font-bold text-[#111827]">John Makata</span>
+                <span className="text-[12px] font-medium text-[#1D965C]">Runner is online</span>
+              </div>
+              <div className="w-10"></div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+               <div className="self-center bg-gray-200 text-gray-600 text-[12px] font-bold px-3 py-1 rounded-full mb-4">Today 14:20</div>
+
+               <div className="self-start bg-white border border-gray-200 text-[#111827] p-3 rounded-[16px] rounded-tl-none max-w-[80%] shadow-sm">
+                 <p className="text-[15px] font-medium">Hello, I am on my way to pick up your order.</p>
+               </div>
+            </div>
+
+            <div className="p-4 bg-white border-t border-gray-100 shrink-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex items-center gap-2 pb-[max(env(safe-area-inset-bottom),16px)]">
+               <input
+                 type="text"
+                 value={chatMessage}
+                 onChange={(e) => setChatMessage(e.target.value)}
+                 placeholder="Type a message..."
+                 className="flex-1 h-[48px] bg-[#F9FAFB] border border-gray-200 rounded-[24px] px-4 text-[15px] font-medium outline-none focus:border-[#1D965C]"
+               />
+               <button
+                 onClick={() => { if(chatMessage) setChatMessage(""); }}
+                 className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors ${chatMessage ? "bg-[#1D965C]" : "bg-gray-200"}`}
+               >
+                 <Send className={`w-5 h-5 ${chatMessage ? "text-white" : "text-gray-400 ml-[-2px]"}`} />
+               </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   )
 }
