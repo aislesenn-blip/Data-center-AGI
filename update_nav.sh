@@ -1,1 +1,0 @@
-sed -i 's/const \[appState, setAppState\] = useState<AppState>("HOME")/const [navStack, setNavStack] = useState<AppState[]>(["HOME"])\n  const appState = navStack[navStack.length - 1]/g' src/app/page.tsx

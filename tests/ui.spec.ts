@@ -3,46 +3,55 @@ import { test, expect } from '@playwright/test';
 test('campus delivery full flow', async ({ page }) => {
   await page.goto('/');
 
-  // Verify Home Screen
+  // 1. Home
   await expect(page.getByText('Smooth deliveries ahead.')).toBeVisible();
 
-  // Tap search CTA
-  await page.getByText('Need something?').click();
+  // 2. Click "I Need Something" (Fetch Mode)
+  await page.getByText('I Need Something').click();
 
-  // Verify Route Selection Screen
-  await expect(page.getByPlaceholder('Dropoff location')).toBeVisible();
+  // 3. Verify Route Selection Screen (Fetch Mode)
+  await expect(page.getByPlaceholder('e.g. Burger, Medicine, Charger...')).toBeVisible();
+  await page.getByPlaceholder('e.g. Burger, Medicine, Charger...').fill('1x Burger');
 
-  // Type Moshi
-  await page.getByPlaceholder('Dropoff location').fill('Moshi');
+  // 4. Fill Destination
+  await page.getByPlaceholder('Destination').fill('Room 101');
 
-  // Suggestion matching Should highlight
-  await expect(page.locator('span.text-\\[\\#1D965C\\]').first()).toBeVisible();
+  // 5. Continue
+  await page.getByRole('button', { name: 'Continue' }).click();
 
-  // Select a suggestion
-  await page.getByText('Moshi Urban').first().click();
+  // 6. Verify Fare Selection
+  await expect(page.getByText('Express')).toBeVisible();
 
-  // Verify Fare Selection Screen
-  await expect(page.getByRole('button', { name: 'Select Standard' })).toBeVisible();
-  await expect(page.getByText('TZS 4,500')).toBeVisible();
+  // 7. Test Smart Payment Lock
+  await page.getByText('Cash').first().click();
+  await expect(page.getByText('Unavailable for custom locations')).toBeVisible();
+  await page.getByText('Mobile Money').first().click();
 
-  // Test Vehicle Selection Interactivity
-  await page.getByText('Express').first().click();
-  await expect(page.getByRole('button', { name: 'Select Express' })).toBeVisible();
+  // 8. Confirm Delivery
+  await page.getByRole('button', { name: 'Confirm Delivery' }).click();
+
+  // 9. Verify Finding State
+  await expect(page.getByText('Connecting to a Runner')).toBeVisible();
+
+  // 10. Simulate Match
+  await page.getByRole('button', { name: 'Cancel Request (Simulate Match)' }).click();
+
+  // 11. Verify En Route
+  await expect(page.getByText('John Makata')).toBeVisible();
 });
 
-test('campus delivery menu interaction', async ({ page }) => {
+test('campus delivery partners hub', async ({ page }) => {
   await page.goto('/');
 
-  // Open the hamburger menu
-  await page.locator('button').filter({ has: page.locator('svg.lucide-menu') }).click();
+  // Open Menu
+  await page.locator('button').first().click();
 
-  // Verify menu content
-  await expect(page.getByText('Jane Doe')).toBeVisible();
-  await expect(page.getByText('Delivery History')).toBeVisible();
+  // Verify Partners Hub
+  await expect(page.getByText('Partners')).toBeVisible();
+  await expect(page.getByText('UDSM Campus')).toBeVisible();
+  await expect(page.getByText('Main Cafeteria')).toBeVisible();
 
-  // Close the menu
-  await page.locator('button').filter({ has: page.locator('svg.lucide-x') }).last().click();
-
-  // Verify menu closed (Jane Doe text should be hidden)
-  await expect(page.getByText('Jane Doe')).toBeHidden();
+  // Click a partner, expect it to go to Route Selection
+  await page.getByText('Main Cafeteria').click();
+  await expect(page.getByPlaceholder('e.g. Burger, Medicine, Charger...')).toBeVisible();
 });
