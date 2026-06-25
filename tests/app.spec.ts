@@ -7,52 +7,34 @@ test('Campus Delivery E2E flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
 
   // Verify Home State & Core Prompt
-  await expect(page.getByText('What do you need?').first()).toBeVisible();
+  await expect(page.getByText('Need something?')).toBeVisible();
+  await expect(page.getByText('What can we bring you?')).toBeVisible();
 
   // Click to open Request flow
-  await page.click('text=What do you need?');
+  await page.click('text=What can we bring you?');
 
   // Verify Request View
-  await expect(page.getByPlaceholder('What do you need? (e.g. Charger)')).toBeVisible();
+  await expect(page.getByText('Request Delivery')).toBeVisible();
+  await expect(page.getByPlaceholder('e.g., Charger, Water, Notes...')).toBeVisible();
 
   // Fill out the request form
-  await page.getByPlaceholder('What do you need? (e.g. Charger)').fill('Notebook');
+  await page.getByPlaceholder('e.g., Charger, Water, Notes...').fill('Notebook');
+  await page.getByPlaceholder('Building, Library, Seat...').fill('Library Floor 2');
 
-  // Note: We leave the default "Current Location" for the first test run to verify Cash payment.
+  // Verify the 'Confirm Request' button is enabled and click it
+  await expect(page.getByText('Confirm Request')).toBeEnabled();
+  await page.click('text=Confirm Request');
 
-  // Verify the 'Done' button is enabled and click it
-  await expect(page.getByRole('button', { name: 'Done' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Done' }).click();
-
-  // Verify Confirm Delivery view with Cash allowed
-  await expect(page.getByText('Choose Delivery')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Cash' })).not.toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Confirm Request' })).toBeVisible();
-
-  // Navigate back to change location
-  await page.locator('button').filter({ hasText: /^$/ }).first().click(); // Click back arrow
-
-  // Change location to a custom one
-  await page.getByPlaceholder('Deliver to (e.g. Library Room 2)').fill('Library Floor 2');
-  await page.getByRole('button', { name: 'Done' }).click();
-
-  // Verify Smart Payment Rule: Cash should be disabled, button should say Confirm & Pay
-  await expect(page.getByRole('button', { name: 'Cash' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Confirm & Pay' })).toBeVisible();
-
-  // Select Card to proceed
-  await page.getByRole('button', { name: 'Card' }).click();
-  await page.getByRole('button', { name: 'Confirm & Pay' }).click();
-
-  // Verify 'Finding' state
-  await expect(page.getByText('Connecting to courier...')).toBeVisible();
+  // Verify 'Searching' state
+  await expect(page.getByText('Finding a courier')).toBeVisible();
 
   // Verify it transitions to 'En Route' state automatically after mock searching (timeout ~2500ms)
-  await expect(page.getByText('3 min away')).toBeVisible({ timeout: 3500 });
-  await expect(page.getByText('Notebook to Library Floor 2')).toBeVisible();
+  await expect(page.getByText('Delivery in Progress')).toBeVisible({ timeout: 3500 });
+  await expect(page.getByText('Arriving in 3 min')).toBeVisible();
+  await expect(page.getByText('Notebook • Library Floor 2')).toBeVisible();
 
   // Cancel Request to return to Home
   await page.click('text=Cancel Request');
-  await expect(page.getByText('What do you need?').first()).toBeVisible();
+  await expect(page.getByText('Need something?')).toBeVisible();
 
 });
