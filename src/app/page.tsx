@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, Package, ArrowLeft, Clock, Menu, Search, ShieldCheck, Phone, Banknote, CreditCard, Smartphone } from "lucide-react"
 
-type AppState = "idle" | "search" | "confirm" | "finding" | "en_route"
+type AppState = "idle" | "search" | "loading_options" | "confirm" | "finding" | "en_route"
 
 export default function CampusDeliveryApp() {
   const [appState, setAppState] = useState<AppState>("idle")
@@ -16,6 +16,7 @@ export default function CampusDeliveryApp() {
 
   // Sheet states: collapsed (idle), half (search partial), full (search full)
   const [sheetPosition, setSheetPosition] = useState<"collapsed" | "half" | "full">("collapsed")
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleOpenSearch = () => {
     setAppState("search")
@@ -31,33 +32,36 @@ export default function CampusDeliveryApp() {
   }
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: { offset: { y: number }, velocity: { y: number } }) => {
-    const offset = info.offset.y
-    const velocity = info.velocity.y
+    const offset = info.offset.y;
+    const velocity = info.velocity.y;
+
 
     if (appState === "search") {
-      if (offset > 100 || velocity > 500) {
+      if (offset > 50 || velocity > 300) {
         if (sheetPosition === "full") {
-          setSheetPosition("half")
+          setSheetPosition("half");
         } else {
-          closeSearch()
+          closeSearch();
         }
-      } else if (offset < -100 || velocity < -500) {
-        setSheetPosition("full")
+      } else if (offset < -50 || velocity < -300) {
+        setSheetPosition("full");
       }
     } else if (appState === "idle") {
-       if (offset < -50 || velocity < -500) {
-         handleOpenSearch()
+       if (offset < -30 || velocity < -300) {
+         handleOpenSearch();
        }
     }
   }
 
   const handleProceedToConfirm = () => {
-    if (!requestText || !pickupLocation) return
-    // Smart Payment Rule: If custom location, default payment to mobile if currently cash
+    if (!requestText || !pickupLocation) return;
     if (pickupLocation !== "Current Location" && paymentMethod === "cash") {
-      setPaymentMethod("mobile")
+      setPaymentMethod("mobile");
     }
-    setAppState("confirm")
+    setAppState("loading_options");
+    setTimeout(() => {
+      setAppState("confirm");
+    }, 1200); // Simulate network fetch
   }
 
   const handleConfirmRequest = () => {
@@ -77,8 +81,8 @@ export default function CampusDeliveryApp() {
       <div className="absolute inset-0 z-0">
         <motion.div
           animate={{
-            scale: appState === 'search' ? 1.05 : 1,
-            y: appState === 'search' ? -50 : 0
+            scale: appState === 'search' || appState === 'confirm' ? 1.1 : 1,
+            y: appState === 'search' ? -100 : (appState === 'confirm' ? -150 : 0)
           }}
           transition={fastTransition}
           className="w-full h-full bg-[#E5E7EB] relative overflow-hidden flex items-center justify-center"
@@ -105,9 +109,14 @@ export default function CampusDeliveryApp() {
                    className="absolute z-10 flex flex-col items-center"
                    style={{ top: '50%', left: '50%', x: '-50%', y: '-50%' }}
                  >
-                   <div className="w-6 h-6 bg-[#22C55E] rounded-full shadow-[0_0_0_4px_white] flex items-center justify-center relative">
-                     <div className="absolute inset-0 bg-[#22C55E] rounded-full animate-ping opacity-40"></div>
-                     <div className="w-2 h-2 bg-white rounded-full"></div>
+                   <div className="relative flex items-center justify-center">
+                     {/* Radar Cone */}
+                     <div className="absolute w-24 h-24 bg-gradient-to-t from-blue-500/0 via-blue-500/10 to-blue-500/40 rounded-full blur-md -top-12 rotate-[-30deg]" style={{ clipPath: 'polygon(50% 100%, 0 0, 100% 0)' }}></div>
+                     {/* Blue Dot */}
+                     <div className="w-6 h-6 bg-blue-600 rounded-full shadow-[0_0_0_4px_white,0_4px_12px_rgba(0,0,0,0.2)] flex items-center justify-center relative z-10">
+                       <div className="absolute inset-0 bg-blue-600 rounded-full animate-ping opacity-30 scale-150"></div>
+                       <div className="w-2 h-2 bg-white rounded-full"></div>
+                     </div>
                    </div>
                  </motion.div>
                )}
@@ -115,7 +124,7 @@ export default function CampusDeliveryApp() {
 
             {/* Route Path (Confirm / Finding) */}
             <AnimatePresence>
-               {(appState === "confirm" || appState === "finding") && (
+               {(appState === "confirm" || appState === "finding" || appState === "loading_options" || appState === "en_route") && (
                  <motion.svg
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
@@ -141,16 +150,16 @@ export default function CampusDeliveryApp() {
             <AnimatePresence>
                {appState === "en_route" && (
                   <motion.div
-                     initial={{ opacity: 0, scale: 0.5 }}
-                     animate={{ opacity: 1, scale: 1 }}
+                     initial={{ opacity: 0, scale: 0.5, top: '80%', left: '50%' }}
+                     animate={{ opacity: 1, scale: 1, top: ['80%', '60%', '40%', '30%'], left: ['50%', '40%', '60%', '50%'] }}
                      exit={{ opacity: 0 }}
-                     transition={fastTransition}
+                     transition={{ duration: 15, ease: "linear" }}
                      className="absolute z-10 flex flex-col items-center"
-                     style={{ top: '40%', left: '50%', x: '-50%', y: '-50%' }}
+                     style={{ x: '-50%', y: '-50%' }}
                   >
                      <motion.div
-                       animate={{ y: [0, -4, 0] }}
-                       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                       animate={{ y: [0, -4, 0], rotate: [0, -20, 20, 0] }}
+                       transition={{ y: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 15, ease: "linear" } }}
                        className="w-12 h-12 bg-black rounded-full shadow-xl flex items-center justify-center border-[3px] border-white"
                      >
                        <Package size={20} className="text-white" />
@@ -164,6 +173,25 @@ export default function CampusDeliveryApp() {
         </motion.div>
       </div>
 
+
+      {/* MAP RE-CENTER FAB */}
+      <AnimatePresence>
+        {(appState === "idle" || appState === "search") && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute right-5 bottom-[35%] z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.12)] flex items-center justify-center active:scale-95 transition-transform"
+            style={{ y: sheetPosition === 'full' ? -300 : 0 }}
+          >
+            <div className="w-4 h-4 border-2 border-black rounded-full relative">
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+            </div>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+
       {/* TOP NAVIGATION */}
       <div className="absolute top-0 inset-x-0 z-20 p-5 pt-safe flex justify-between items-center pointer-events-none">
          <AnimatePresence mode="wait">
@@ -174,6 +202,7 @@ export default function CampusDeliveryApp() {
                animate={{ opacity: 1, x: 0 }}
                exit={{ opacity: 0, x: -20 }}
                transition={fastTransition}
+               onClick={() => setIsMenuOpen(true)}
                className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md pointer-events-auto active:scale-95 transition-transform"
              >
                <Menu size={20} className="text-black" />
@@ -187,7 +216,7 @@ export default function CampusDeliveryApp() {
                transition={fastTransition}
                onClick={() => {
                  if (appState === "search") closeSearch();
-                 else if (appState === "confirm") setAppState("search");
+                 else if (appState === "confirm" || appState === "loading_options") setAppState("search");
                  else if (appState === "finding") setAppState("confirm");
                }}
                className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md pointer-events-auto active:scale-95 transition-transform"
@@ -209,7 +238,7 @@ export default function CampusDeliveryApp() {
                  initial={{ y: "100%" }}
                  animate={{ y: 0 }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                 transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8, bounce: 0.2 }}
                  drag="y"
                  dragConstraints={{ top: 0, bottom: 0 }}
                  dragElastic={0.2}
@@ -220,29 +249,32 @@ export default function CampusDeliveryApp() {
                    <div className="w-10 h-1.5 bg-gray-300 rounded-full" />
                  </div>
 
-                 <button
+                 <motion.button
+                   whileTap={{ scale: 0.98, backgroundColor: '#E5E7EB' }}
                    onClick={handleOpenSearch}
-                   className="w-full bg-[#F3F4F6] hover:bg-[#E5E7EB] text-left p-4 rounded-2xl flex items-center gap-3 transition-colors active:scale-[0.98] mb-5"
+                   className="w-full bg-[#F3F4F6] text-left p-4 rounded-2xl flex items-center gap-3 transition-colors mb-5"
                  >
                     <Search size={22} className="text-black" />
                     <span className="text-lg text-gray-500 font-medium">What do you need?</span>
-                 </button>
+                 </motion.button>
 
                  <div className="flex gap-3">
-                    <button
+                    <motion.button
+                      whileTap={{ scale: 0.95, backgroundColor: '#f3f4f6' }}
                       onClick={handleOpenSearch}
-                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all shadow-sm"
+                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 shadow-sm transition-shadow"
                     >
                        <Package size={18} className="text-black" />
                        <span className="text-sm font-semibold">Delivery</span>
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.95, backgroundColor: '#f3f4f6' }}
                       onClick={handleOpenSearch}
-                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all shadow-sm"
+                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 shadow-sm transition-shadow"
                     >
                        <Clock size={18} className="text-black" />
                        <span className="text-sm font-semibold">Schedule</span>
-                    </button>
+                    </motion.button>
                  </div>
                </motion.div>
             )}
@@ -252,9 +284,9 @@ export default function CampusDeliveryApp() {
                <motion.div
                  key="search"
                  initial={{ y: "100%" }}
-                 animate={{ y: sheetPosition === "full" ? 0 : "30vh" }}
+                 animate={{ y: sheetPosition === "full" ? 0 : "40vh" }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                 transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8, bounce: 0.2 }}
                  drag="y"
                  dragConstraints={{ top: 0, bottom: 0 }}
                  dragElastic={0.2}
@@ -313,13 +345,51 @@ export default function CampusDeliveryApp() {
                  </div>
 
                  <div className="p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] border-t border-gray-100 bg-white">
-                    <button
+                    <motion.button
+                      whileTap={{ scale: (!requestText || !pickupLocation) ? 1 : 0.98 }}
                       onClick={handleProceedToConfirm}
                       disabled={!requestText || !pickupLocation}
-                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg disabled:bg-gray-200 disabled:text-gray-400 transition-colors active:scale-[0.98]"
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg disabled:bg-gray-200 disabled:text-gray-400 transition-colors"
                     >
                       Done
-                    </button>
+                    </motion.button>
+                 </div>
+               </motion.div>
+            )}
+
+
+            {/* LOADING OPTIONS SKELETON */}
+            {appState === "loading_options" && (
+               <motion.div
+                 key="loading_options"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={fastTransition}
+                 className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col"
+               >
+                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
+                 <div className="px-5 pb-4 text-center border-b border-gray-100 flex justify-center">
+                   <div className="w-40 h-6 bg-gray-200 rounded-md animate-pulse"></div>
+                 </div>
+
+                 <div className="p-5 flex flex-col gap-3">
+                   {[1, 2].map((i) => (
+                     <div key={i} className="flex items-center justify-between p-4 rounded-2xl border-2 border-gray-100 bg-white">
+                       <div className="flex items-center gap-4">
+                         <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse"></div>
+                         <div className="flex flex-col gap-2">
+                           <div className="w-24 h-5 bg-gray-200 rounded animate-pulse"></div>
+                           <div className="w-16 h-3 bg-gray-200 rounded animate-pulse"></div>
+                         </div>
+                       </div>
+                       <div className="w-16 h-5 bg-gray-200 rounded animate-pulse"></div>
+                     </div>
+                   ))}
+                 </div>
+
+                 <div className="px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-2 opacity-50 pointer-events-none">
+                    <div className="w-full bg-gray-200 h-[60px] rounded-xl animate-pulse"></div>
                  </div>
                </motion.div>
             )}
@@ -382,28 +452,31 @@ export default function CampusDeliveryApp() {
                  <div className="px-5 pb-3">
                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Payment Method</h3>
                    <div className="flex gap-2">
-                     <button
+                     <motion.button
+                       whileTap={{ scale: pickupLocation !== "Current Location" ? 1 : 0.95 }}
                        disabled={pickupLocation !== "Current Location"}
                        onClick={() => setPaymentMethod("cash")}
                        className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all ${paymentMethod === "cash" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"} ${pickupLocation !== "Current Location" ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
                      >
                        <Banknote size={20} className="text-black" />
                        <span className="text-xs font-semibold">Cash</span>
-                     </button>
-                     <button
+                     </motion.button>
+                     <motion.button
+                       whileTap={{ scale: 0.95 }}
                        onClick={() => setPaymentMethod("mobile")}
                        className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all cursor-pointer ${paymentMethod === "mobile" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
                      >
                        <Smartphone size={20} className="text-black" />
                        <span className="text-xs font-semibold">Mobile</span>
-                     </button>
-                     <button
+                     </motion.button>
+                     <motion.button
+                       whileTap={{ scale: 0.95 }}
                        onClick={() => setPaymentMethod("card")}
                        className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all cursor-pointer ${paymentMethod === "card" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
                      >
                        <CreditCard size={20} className="text-black" />
                        <span className="text-xs font-semibold">Card</span>
-                     </button>
+                     </motion.button>
                    </div>
                    {pickupLocation !== "Current Location" && (
                      <p className="text-xs text-orange-600 mt-2 font-medium bg-orange-50 p-2 rounded-lg">Upfront payment required for custom destinations.</p>
@@ -411,12 +484,13 @@ export default function CampusDeliveryApp() {
                  </div>
 
                  <div className="px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] bg-white pt-2">
-                    <button
+                    <motion.button
+                      whileTap={{ scale: 0.98 }}
                       onClick={handleConfirmRequest}
-                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 active:scale-95 transition-all shadow-md"
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 shadow-md"
                     >
                       {paymentMethod === "cash" ? "Confirm Request" : "Confirm & Pay"}
-                    </button>
+                    </motion.button>
                  </div>
                </motion.div>
             )}
@@ -480,18 +554,19 @@ export default function CampusDeliveryApp() {
                        </div>
                     </div>
 
-                    <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 active:scale-95 transition-all">
+                    <motion.button whileTap={{ scale: 0.9 }} className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
                        <Phone size={20} className="text-black" />
-                    </button>
+                    </motion.button>
                  </div>
 
                  <div className="px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
-                   <button
+                   <motion.button
+                     whileTap={{ scale: 0.98 }}
                      onClick={() => setAppState("idle")}
-                     className="w-full bg-red-50 text-red-600 py-4 rounded-xl font-bold text-base hover:bg-red-100 active:scale-[0.98] transition-colors"
+                     className="w-full bg-red-50 text-red-600 py-4 rounded-xl font-bold text-base hover:bg-red-100 transition-colors"
                    >
                      Cancel Request
-                   </button>
+                   </motion.button>
                  </div>
                </motion.div>
             )}
@@ -499,6 +574,51 @@ export default function CampusDeliveryApp() {
          </AnimatePresence>
       </div>
 
+
+      {/* SIDE MENU DRAWER */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={fastTransition}
+            className="absolute inset-0 z-50 flex"
+          >
+            {/* Scrim */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute inset-0 bg-black cursor-pointer"
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-[75%] max-w-[300px] h-full bg-white shadow-2xl flex flex-col pt-safe"
+            >
+               <div className="p-6 bg-black text-white flex flex-col gap-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-xl font-bold">JD</div>
+                  <div>
+                     <div className="text-xl font-bold">John Doe</div>
+                     <div className="text-white/60 text-sm">5.0 ★ Rating</div>
+                  </div>
+               </div>
+               <div className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
+                  {['Your Deliveries', 'Payment', 'Promotions', 'Settings', 'Support'].map((item, i) => (
+                    <button key={i} className="text-left px-4 py-3 rounded-xl hover:bg-gray-100 active:bg-gray-200 active:scale-95 transition-all font-semibold text-lg">
+                      {item}
+                    </button>
+                  ))}
+               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
