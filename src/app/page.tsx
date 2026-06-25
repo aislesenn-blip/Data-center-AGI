@@ -2,89 +2,163 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Navigation, Package, ArrowLeft, Clock, CircleDot, ChevronRight, Menu, Search } from "lucide-react"
+import { MapPin, Package, ArrowLeft, Clock, Menu, Search, ShieldCheck, Phone } from "lucide-react"
 
-type AppState = "idle" | "request" | "searching" | "en_route"
+type AppState = "idle" | "search" | "confirm" | "finding" | "en_route"
 
 export default function CampusDeliveryApp() {
   const [appState, setAppState] = useState<AppState>("idle")
   const [requestText, setRequestText] = useState("")
   const [pickupLocation, setPickupLocation] = useState("")
 
-  const handleOpenRequest = () => setAppState("request")
-  const closeRequest = () => {
+  const [selectedOption, setSelectedOption] = useState<"standard" | "priority">("standard")
+
+  const handleOpenSearch = () => setAppState("search")
+  const closeSearch = () => {
     setAppState("idle")
     setRequestText("")
     setPickupLocation("")
   }
 
-  const handleConfirmRequest = () => {
+  const handleProceedToConfirm = () => {
     if (!requestText || !pickupLocation) return
-    setAppState("searching")
+    setAppState("confirm")
+  }
 
+  const handleConfirmRequest = () => {
+    setAppState("finding")
     // Simulate finding a courier
     setTimeout(() => {
       setAppState("en_route")
     }, 2500)
   }
 
+  const fastTransition = { duration: 0.15, ease: "easeOut" as const }
+
   return (
-    <div className="flex flex-col h-full bg-[#E5E7EB] text-black overflow-hidden relative font-sans">
+    <div className="flex flex-col h-[100dvh] w-full bg-black text-black overflow-hidden relative font-sans">
 
       {/* IMMERSIVE MAP BACKGROUND */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-[#D1D5DB] relative overflow-hidden flex items-center justify-center">
+        <motion.div
+          animate={{
+            scale: appState === 'search' ? 1.05 : 1,
+            y: appState === 'search' ? -50 : 0
+          }}
+          transition={fastTransition}
+          className="w-full h-full bg-[#E5E7EB] relative overflow-hidden flex items-center justify-center"
+        >
             {/* Fake Map Grid Pattern */}
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
             {/* Map Roads / Elements */}
-            <svg className="absolute w-[200%] h-[200%] text-white/50 -rotate-12" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <svg className="absolute w-[200%] h-[200%] text-black/10 -rotate-12" viewBox="0 0 100 100" preserveAspectRatio="none">
                <path d="M 0,50 Q 25,60 50,50 T 100,50" fill="none" stroke="currentColor" strokeWidth="2" />
                <path d="M 20,0 L 20,100" fill="none" stroke="currentColor" strokeWidth="1" />
                <path d="M 60,0 L 60,100" fill="none" stroke="currentColor" strokeWidth="3" />
+               <path d="M 0,30 L 100,30" fill="none" stroke="currentColor" strokeWidth="1" />
             </svg>
 
-            {/* Simulated Live Tracking Elements */}
+            {/* User Location Dot (Idle / Search) */}
+            <AnimatePresence>
+               {(appState === "idle" || appState === "search") && (
+                 <motion.div
+                   initial={{ opacity: 0, scale: 0 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   exit={{ opacity: 0, scale: 0 }}
+                   transition={fastTransition}
+                   className="absolute z-10 flex flex-col items-center"
+                   style={{ top: '50%', left: '50%', x: '-50%', y: '-50%' }}
+                 >
+                   <div className="w-6 h-6 bg-[#22C55E] rounded-full shadow-[0_0_0_4px_white] flex items-center justify-center relative">
+                     <div className="absolute inset-0 bg-[#22C55E] rounded-full animate-ping opacity-40"></div>
+                     <div className="w-2 h-2 bg-white rounded-full"></div>
+                   </div>
+                 </motion.div>
+               )}
+            </AnimatePresence>
+
+            {/* Route Path (Confirm / Finding) */}
+            <AnimatePresence>
+               {(appState === "confirm" || appState === "finding") && (
+                 <motion.svg
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   exit={{ opacity: 0 }}
+                   transition={fastTransition}
+                   className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+                 >
+                   <path
+                     d="M 50%,30% C 60%,40% 40%,60% 50%,80%"
+                     fill="none"
+                     stroke="black"
+                     strokeWidth="4"
+                     strokeDasharray="8 8"
+                     className="opacity-50"
+                   />
+                   <circle cx="50%" cy="30%" r="6" fill="black" stroke="white" strokeWidth="3" />
+                   <circle cx="50%" cy="80%" r="6" fill="#22C55E" stroke="white" strokeWidth="3" />
+                 </motion.svg>
+               )}
+            </AnimatePresence>
+
+            {/* Moving Courier (En Route) */}
             <AnimatePresence>
                {appState === "en_route" && (
                   <motion.div
                      initial={{ opacity: 0, scale: 0.5 }}
                      animate={{ opacity: 1, scale: 1 }}
                      exit={{ opacity: 0 }}
+                     transition={fastTransition}
                      className="absolute z-10 flex flex-col items-center"
                      style={{ top: '40%', left: '50%', x: '-50%', y: '-50%' }}
                   >
                      <motion.div
-                       animate={{ y: [0, -10, 0] }}
-                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                       className="w-12 h-12 bg-black rounded-full shadow-2xl flex items-center justify-center border-4 border-white"
+                       animate={{ y: [0, -4, 0] }}
+                       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                       className="w-12 h-12 bg-black rounded-full shadow-xl flex items-center justify-center border-[3px] border-white"
                      >
-                       <Navigation size={20} className="text-white fill-white" />
+                       <Package size={20} className="text-white" />
                      </motion.div>
-                     <div className="mt-2 bg-white px-3 py-1 rounded-full shadow-lg text-xs font-semibold tracking-wide">
-                        3 MIN
+                     <div className="mt-2 bg-black text-white px-3 py-1 rounded-full shadow-lg text-[11px] font-bold tracking-wider uppercase">
+                        3 min away
                      </div>
                   </motion.div>
                )}
             </AnimatePresence>
-        </div>
+        </motion.div>
       </div>
 
       {/* TOP NAVIGATION */}
-      <div className="absolute top-0 inset-x-0 z-20 p-6 pt-12 flex justify-between items-center pointer-events-none">
-         <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg pointer-events-auto active:scale-95 transition-transform">
-           <Menu size={24} className="text-black" />
-         </button>
-
-         <AnimatePresence>
-           {appState === "en_route" && (
-             <motion.div
-               initial={{ opacity: 0, y: -20 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="bg-white px-5 py-3 rounded-full shadow-lg font-semibold text-sm tracking-wide"
+      <div className="absolute top-0 inset-x-0 z-20 p-5 pt-safe flex justify-between items-center pointer-events-none">
+         <AnimatePresence mode="wait">
+           {appState === "idle" ? (
+             <motion.button
+               key="menu"
+               initial={{ opacity: 0, x: -20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               transition={fastTransition}
+               className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md pointer-events-auto active:scale-95 transition-transform"
              >
-               Delivery in Progress
-             </motion.div>
+               <Menu size={20} className="text-black" />
+             </motion.button>
+           ) : (
+             <motion.button
+               key="back"
+               initial={{ opacity: 0, x: -20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               transition={fastTransition}
+               onClick={() => {
+                 if (appState === "search") closeSearch();
+                 else if (appState === "confirm") setAppState("search");
+                 else if (appState === "finding") setAppState("confirm");
+               }}
+               className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md pointer-events-auto active:scale-95 transition-transform"
+             >
+               <ArrowLeft size={20} className="text-black" />
+             </motion.button>
            )}
          </AnimatePresence>
       </div>
@@ -100,165 +174,236 @@ export default function CampusDeliveryApp() {
                  initial={{ y: "100%" }}
                  animate={{ y: 0 }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                 className="bg-white rounded-t-3xl p-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+                 transition={fastTransition}
+                 className="bg-white rounded-t-3xl p-5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)]"
                >
-                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8" />
-
-                 <h1 className="text-4xl font-semibold tracking-tight mb-8">Need something?</h1>
+                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-6" />
 
                  <button
-                   onClick={handleOpenRequest}
-                   className="w-full bg-[#F3F4F6] border border-[#E5E7EB] hover:bg-[#E5E7EB] text-left p-5 rounded-2xl flex items-center gap-4 transition-colors active:scale-[0.98]"
+                   onClick={handleOpenSearch}
+                   className="w-full bg-[#F3F4F6] hover:bg-[#E5E7EB] text-left p-4 rounded-2xl flex items-center gap-3 transition-colors active:scale-[0.98] mb-5"
                  >
-                    <Search size={24} className="text-black" />
-                    <span className="text-xl text-gray-500 font-light">What can we bring you?</span>
+                    <Search size={22} className="text-black" />
+                    <span className="text-lg text-gray-500 font-medium">What do you need?</span>
                  </button>
 
-                 <div className="flex gap-4 mt-6">
-                    <div className="flex-1 bg-[#F9FAFB] p-4 rounded-2xl flex flex-col items-center justify-center border border-[#E5E7EB]">
-                       <Package size={24} className="mb-2 text-black" />
-                       <span className="text-sm font-medium">Deliver</span>
-                    </div>
-                    <div className="flex-1 bg-[#F9FAFB] p-4 rounded-2xl flex flex-col items-center justify-center border border-[#E5E7EB] opacity-50">
-                       <MapPin size={24} className="mb-2 text-black" />
-                       <span className="text-sm font-medium">Pickup</span>
-                    </div>
-                 </div>
-               </motion.div>
-            )}
-
-            {/* REQUEST STATE */}
-            {appState === "request" && (
-               <motion.div
-                 key="request"
-                 initial={{ y: "100%" }}
-                 animate={{ y: 0 }}
-                 exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                 className="bg-white h-[85dvh] rounded-t-3xl flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
-               >
-                 <div className="flex items-center justify-between p-6 pb-2">
-                   <button onClick={closeRequest} className="p-2 -ml-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors">
-                     <ArrowLeft size={24} className="text-black" />
-                   </button>
-                   <span className="font-semibold text-lg">Request Delivery</span>
-                   <div className="w-10" />
-                 </div>
-
-                 <div className="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
-                    {/* What input */}
-                    <div className="flex flex-col gap-2">
-                       <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">What do you need?</label>
-                       <input
-                         type="text"
-                         value={requestText}
-                         onChange={(e) => setRequestText(e.target.value)}
-                         placeholder="e.g., Charger, Water, Notes..."
-                         className="w-full text-2xl font-light border-b-2 border-gray-200 py-3 focus:border-black outline-none transition-colors placeholder:text-gray-300"
-                         autoFocus
-                       />
-                    </div>
-
-                    {/* Where input */}
-                    <div className="flex flex-col gap-2 mt-4">
-                       <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Deliver To</label>
-                       <div className="relative">
-                          <CircleDot size={20} className="absolute left-0 top-1/2 -translate-y-1/2 text-black" />
-                          <input
-                            type="text"
-                            value={pickupLocation}
-                            onChange={(e) => setPickupLocation(e.target.value)}
-                            placeholder="Building, Library, Seat..."
-                            className="w-full text-xl font-light border-b-2 border-gray-200 py-3 pl-8 focus:border-black outline-none transition-colors placeholder:text-gray-300"
-                          />
-                       </div>
-                    </div>
-                 </div>
-
-                 <div className="p-6 pb-8 border-t border-gray-100">
-                    <div className="flex justify-between items-center mb-6">
-                       <div className="flex items-center gap-2">
-                          <Clock size={20} className="text-black" />
-                          <span className="font-medium">Est. 10-15 min</span>
-                       </div>
-                       <span className="text-xl font-semibold">$3.00</span>
-                    </div>
-
-                    <button
-                      onClick={handleConfirmRequest}
-                      disabled={!requestText || !pickupLocation}
-                      className="w-full bg-black text-white py-5 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 disabled:bg-gray-300 transition-colors active:scale-[0.98]"
-                    >
-                      Confirm Request
+                 <div className="flex gap-3">
+                    <button onClick={handleOpenSearch} className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 active:bg-gray-50 transition-colors">
+                       <Package size={18} className="text-black" />
+                       <span className="text-sm font-semibold">Delivery</span>
+                    </button>
+                    <button className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                       <Clock size={18} className="text-black" />
+                       <span className="text-sm font-semibold">Schedule</span>
                     </button>
                  </div>
                </motion.div>
             )}
 
-            {/* SEARCHING STATE */}
-            {appState === "searching" && (
+            {/* SEARCH STATE */}
+            {appState === "search" && (
                <motion.div
-                 key="searching"
+                 key="search"
                  initial={{ y: "100%" }}
                  animate={{ y: 0 }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                 className="bg-white rounded-t-3xl p-8 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col items-center text-center"
+                 transition={fastTransition}
+                 className="bg-white h-[90dvh] rounded-t-3xl flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.08)]"
                >
-                 <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="w-16 h-16 rounded-full border-4 border-gray-200 border-t-black mb-6"
-                 />
-                 <h2 className="text-2xl font-semibold tracking-tight mb-2">Finding a courier</h2>
-                 <p className="text-gray-500 font-light text-lg">Connecting your request to the nearest available person.</p>
+                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-4 mb-2" />
+
+                 <div className="px-5 pt-2 pb-4 flex flex-col gap-4 relative">
+                    <div className="absolute left-8 top-10 bottom-10 w-0.5 bg-gray-200 z-0" />
+
+                    {/* What input */}
+                    <div className="flex items-center gap-3 relative z-10">
+                       <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
+                         <div className="w-2 h-2 bg-white rounded-full" />
+                       </div>
+                       <input
+                         type="text"
+                         value={requestText}
+                         onChange={(e) => setRequestText(e.target.value)}
+                         placeholder="What do you need? (e.g. Charger)"
+                         className="flex-1 bg-[#F3F4F6] text-black font-medium text-base rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black/5"
+                         autoFocus
+                       />
+                    </div>
+
+                    {/* Where input */}
+                    <div className="flex items-center gap-3 relative z-10">
+                       <div className="w-6 h-6 rounded-none bg-transparent border-[3px] border-black flex items-center justify-center shrink-0" />
+                       <input
+                         type="text"
+                         value={pickupLocation}
+                         onChange={(e) => setPickupLocation(e.target.value)}
+                         placeholder="Deliver to (e.g. Library Room 2)"
+                         className="flex-1 bg-[#F3F4F6] text-black font-medium text-base rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black/5"
+                       />
+                    </div>
+                 </div>
+
+                 <div className="flex-1 overflow-y-auto px-5 py-2">
+                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Recent Locations</div>
+                    {[ "Main Library", "Engineering Block B", "Cafeteria South" ].map((loc) => (
+                      <div key={loc} onClick={() => setPickupLocation(loc)} className="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0 active:bg-gray-50 cursor-pointer">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
+                          <MapPin size={18} className="text-gray-500" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-base font-semibold">{loc}</div>
+                          <div className="text-sm text-gray-500">Campus Area</div>
+                        </div>
+                      </div>
+                    ))}
+                 </div>
+
+                 <div className="p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] border-t border-gray-100 bg-white">
+                    <button
+                      onClick={handleProceedToConfirm}
+                      disabled={!requestText || !pickupLocation}
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg disabled:bg-gray-200 disabled:text-gray-400 transition-colors active:scale-[0.98]"
+                    >
+                      Done
+                    </button>
+                 </div>
                </motion.div>
             )}
 
-            {/* EN ROUTE (TRACKING) STATE */}
+            {/* CONFIRM STATE */}
+            {appState === "confirm" && (
+               <motion.div
+                 key="confirm"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={fastTransition}
+                 className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col"
+               >
+                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
+                 <div className="px-5 pb-4 text-center border-b border-gray-100">
+                   <h2 className="text-xl font-bold">Choose Delivery</h2>
+                 </div>
+
+                 <div className="p-5 flex flex-col gap-3">
+                   {/* Standard Option */}
+                   <div
+                     onClick={() => setSelectedOption("standard")}
+                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "standard" ? "border-black bg-black/5" : "border-gray-100 bg-white"}`}
+                   >
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                         <Package size={24} className="text-black" />
+                       </div>
+                       <div>
+                         <div className="font-bold text-lg">Standard</div>
+                         <div className="text-sm text-gray-500">10-15 min</div>
+                       </div>
+                     </div>
+                     <div className="text-right">
+                       <div className="font-bold text-lg">TZS 2,500</div>
+                     </div>
+                   </div>
+
+                   {/* Priority Option */}
+                   <div
+                     onClick={() => setSelectedOption("priority")}
+                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "priority" ? "border-black bg-black/5" : "border-gray-100 bg-white"}`}
+                   >
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                         <ShieldCheck size={24} className="text-black" />
+                       </div>
+                       <div>
+                         <div className="font-bold text-lg">Priority</div>
+                         <div className="text-sm text-gray-500">5-8 min • Direct</div>
+                       </div>
+                     </div>
+                     <div className="text-right">
+                       <div className="font-bold text-lg">TZS 4,000</div>
+                     </div>
+                   </div>
+                 </div>
+
+                 <div className="px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] bg-white">
+                    <button
+                      onClick={handleConfirmRequest}
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg transition-colors active:scale-[0.98]"
+                    >
+                      Confirm Delivery
+                    </button>
+                 </div>
+               </motion.div>
+            )}
+
+            {/* FINDING STATE */}
+            {appState === "finding" && (
+               <motion.div
+                 key="finding"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={fastTransition}
+                 className="bg-white rounded-t-3xl p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col items-center"
+               >
+                 <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mb-6 relative">
+                   <motion.div
+                     className="absolute top-0 left-0 bottom-0 bg-black w-1/3"
+                     animate={{ x: ["-100%", "300%"] }}
+                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                   />
+                 </div>
+                 <h2 className="text-xl font-bold mb-1">Connecting to courier...</h2>
+                 <p className="text-gray-500 text-sm font-medium">Finding the closest available person</p>
+               </motion.div>
+            )}
+
+            {/* EN ROUTE STATE */}
             {appState === "en_route" && (
                <motion.div
                  key="en_route"
                  initial={{ y: "100%" }}
                  animate={{ y: 0 }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                 className="bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+                 transition={fastTransition}
+                 className="bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col"
                >
-                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
+                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
 
-                 <div className="p-6 pt-0 border-b border-gray-100 flex items-center justify-between">
+                 <div className="px-6 pb-5 flex items-center justify-between border-b border-gray-100">
                     <div>
-                       <h2 className="text-2xl font-semibold mb-1">Arriving in 3 min</h2>
-                       <p className="text-gray-500">{requestText} • {pickupLocation}</p>
+                       <h2 className="text-2xl font-bold">3 min away</h2>
+                       <p className="text-gray-500 font-medium">{requestText} to {pickupLocation}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                       <Clock size={24} className="text-black" />
                     </div>
                  </div>
 
                  <div className="p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                       <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl overflow-hidden border border-gray-200">
+                       <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl border border-gray-200">
                           J
                        </div>
                        <div>
-                          <p className="font-semibold text-lg">James</p>
-                          <div className="flex items-center gap-1 text-sm text-gray-500 font-medium">
-                             <span>★ 4.9</span>
+                          <p className="font-bold text-lg">James</p>
+                          <div className="flex items-center gap-1 text-sm text-gray-500 font-semibold">
+                             <span>4.9 ★</span>
                              <span>•</span>
                              <span>Courier</span>
                           </div>
                        </div>
                     </div>
 
-                    <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                       <ChevronRight size={24} className="text-black" />
+                    <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 active:scale-95 transition-all">
+                       <Phone size={20} className="text-black" />
                     </button>
                  </div>
 
-                 <div className="p-6 pb-8 pt-0">
+                 <div className="px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
                    <button
                      onClick={() => setAppState("idle")}
-                     className="w-full bg-gray-100 text-black py-4 rounded-xl font-medium text-base hover:bg-gray-200 transition-colors active:scale-[0.98]"
+                     className="w-full bg-red-50 text-red-600 py-4 rounded-xl font-bold text-base hover:bg-red-100 active:scale-[0.98] transition-colors"
                    >
                      Cancel Request
                    </button>
