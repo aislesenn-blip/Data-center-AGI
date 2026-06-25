@@ -2,26 +2,61 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Package, ArrowLeft, Clock, Menu, Search, ShieldCheck, Phone } from "lucide-react"
+import { MapPin, Package, ArrowLeft, Clock, Menu, Search, ShieldCheck, Phone, Banknote, CreditCard, Smartphone } from "lucide-react"
 
 type AppState = "idle" | "search" | "confirm" | "finding" | "en_route"
 
 export default function CampusDeliveryApp() {
   const [appState, setAppState] = useState<AppState>("idle")
   const [requestText, setRequestText] = useState("")
-  const [pickupLocation, setPickupLocation] = useState("")
+  const [pickupLocation, setPickupLocation] = useState("Current Location")
 
   const [selectedOption, setSelectedOption] = useState<"standard" | "priority">("standard")
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "mobile" | "card">("cash")
 
-  const handleOpenSearch = () => setAppState("search")
+  // Sheet states: collapsed (idle), half (search partial), full (search full)
+  const [sheetPosition, setSheetPosition] = useState<"collapsed" | "half" | "full">("collapsed")
+
+  const handleOpenSearch = () => {
+    setAppState("search")
+    setSheetPosition("full")
+  }
+
   const closeSearch = () => {
     setAppState("idle")
+    setSheetPosition("collapsed")
     setRequestText("")
-    setPickupLocation("")
+    setPickupLocation("Current Location")
+    setPaymentMethod("cash")
+  }
+
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: { offset: { y: number }, velocity: { y: number } }) => {
+    const offset = info.offset.y
+    const velocity = info.velocity.y
+
+    if (appState === "search") {
+      if (offset > 100 || velocity > 500) {
+        if (sheetPosition === "full") {
+          setSheetPosition("half")
+        } else {
+          closeSearch()
+        }
+      } else if (offset < -100 || velocity < -500) {
+        setSheetPosition("full")
+      }
+    } else if (appState === "idle") {
+       if (offset < -50 || velocity < -500) {
+         handleOpenSearch()
+       }
+    }
   }
 
   const handleProceedToConfirm = () => {
     if (!requestText || !pickupLocation) return
+    // Smart Payment Rule: If custom location, default payment to mobile if currently cash
+    if (pickupLocation !== "Current Location" && paymentMethod === "cash") {
+      setPaymentMethod("mobile")
+    }
     setAppState("confirm")
   }
 
@@ -174,10 +209,16 @@ export default function CampusDeliveryApp() {
                  initial={{ y: "100%" }}
                  animate={{ y: 0 }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={fastTransition}
-                 className="bg-white rounded-t-3xl p-5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)]"
+                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                 drag="y"
+                 dragConstraints={{ top: 0, bottom: 0 }}
+                 dragElastic={0.2}
+                 onDragEnd={handleDragEnd}
+                 className="bg-white rounded-t-3xl p-5 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] absolute inset-x-0 bottom-0 z-30"
                >
-                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-6" />
+                 <div className="w-full pt-2 pb-6 cursor-grab active:cursor-grabbing flex justify-center">
+                   <div className="w-10 h-1.5 bg-gray-300 rounded-full" />
+                 </div>
 
                  <button
                    onClick={handleOpenSearch}
@@ -188,11 +229,17 @@ export default function CampusDeliveryApp() {
                  </button>
 
                  <div className="flex gap-3">
-                    <button onClick={handleOpenSearch} className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 active:bg-gray-50 transition-colors">
+                    <button
+                      onClick={handleOpenSearch}
+                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all shadow-sm"
+                    >
                        <Package size={18} className="text-black" />
                        <span className="text-sm font-semibold">Delivery</span>
                     </button>
-                    <button className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                    <button
+                      onClick={handleOpenSearch}
+                      className="flex-1 bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all shadow-sm"
+                    >
                        <Clock size={18} className="text-black" />
                        <span className="text-sm font-semibold">Schedule</span>
                     </button>
@@ -205,12 +252,19 @@ export default function CampusDeliveryApp() {
                <motion.div
                  key="search"
                  initial={{ y: "100%" }}
-                 animate={{ y: 0 }}
+                 animate={{ y: sheetPosition === "full" ? 0 : "30vh" }}
                  exit={{ y: "100%", opacity: 0 }}
-                 transition={fastTransition}
-                 className="bg-white h-[90dvh] rounded-t-3xl flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.08)]"
+                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                 drag="y"
+                 dragConstraints={{ top: 0, bottom: 0 }}
+                 dragElastic={0.2}
+                 onDragEnd={handleDragEnd}
+                 className="bg-white h-[90dvh] rounded-t-3xl flex flex-col shadow-[0_-8px_30px_rgba(0,0,0,0.08)] absolute inset-x-0 bottom-0 z-30"
                >
-                 <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-4 mb-2" />
+                 {/* Drag Handle Area */}
+                 <div className="w-full pt-4 pb-2 cursor-grab active:cursor-grabbing flex justify-center">
+                   <div className="w-10 h-1.5 bg-gray-300 rounded-full" />
+                 </div>
 
                  <div className="px-5 pt-2 pb-4 flex flex-col gap-4 relative">
                     <div className="absolute left-8 top-10 bottom-10 w-0.5 bg-gray-200 z-0" />
@@ -289,7 +343,7 @@ export default function CampusDeliveryApp() {
                    {/* Standard Option */}
                    <div
                      onClick={() => setSelectedOption("standard")}
-                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "standard" ? "border-black bg-black/5" : "border-gray-100 bg-white"}`}
+                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "standard" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
                    >
                      <div className="flex items-center gap-4">
                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
@@ -308,7 +362,7 @@ export default function CampusDeliveryApp() {
                    {/* Priority Option */}
                    <div
                      onClick={() => setSelectedOption("priority")}
-                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "priority" ? "border-black bg-black/5" : "border-gray-100 bg-white"}`}
+                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOption === "priority" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
                    >
                      <div className="flex items-center gap-4">
                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
@@ -325,12 +379,43 @@ export default function CampusDeliveryApp() {
                    </div>
                  </div>
 
-                 <div className="px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] bg-white">
+                 <div className="px-5 pb-3">
+                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Payment Method</h3>
+                   <div className="flex gap-2">
+                     <button
+                       disabled={pickupLocation !== "Current Location"}
+                       onClick={() => setPaymentMethod("cash")}
+                       className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all ${paymentMethod === "cash" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"} ${pickupLocation !== "Current Location" ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+                     >
+                       <Banknote size={20} className="text-black" />
+                       <span className="text-xs font-semibold">Cash</span>
+                     </button>
+                     <button
+                       onClick={() => setPaymentMethod("mobile")}
+                       className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all cursor-pointer ${paymentMethod === "mobile" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
+                     >
+                       <Smartphone size={20} className="text-black" />
+                       <span className="text-xs font-semibold">Mobile</span>
+                     </button>
+                     <button
+                       onClick={() => setPaymentMethod("card")}
+                       className={`flex-1 p-3 rounded-xl border-2 flex flex-col items-center gap-1 transition-all cursor-pointer ${paymentMethod === "card" ? "border-black bg-black/5" : "border-gray-100 hover:border-gray-200 bg-white"}`}
+                     >
+                       <CreditCard size={20} className="text-black" />
+                       <span className="text-xs font-semibold">Card</span>
+                     </button>
+                   </div>
+                   {pickupLocation !== "Current Location" && (
+                     <p className="text-xs text-orange-600 mt-2 font-medium bg-orange-50 p-2 rounded-lg">Upfront payment required for custom destinations.</p>
+                   )}
+                 </div>
+
+                 <div className="px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] bg-white pt-2">
                     <button
                       onClick={handleConfirmRequest}
-                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg transition-colors active:scale-[0.98]"
+                      className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 active:scale-95 transition-all shadow-md"
                     >
-                      Confirm Delivery
+                      {paymentMethod === "cash" ? "Confirm Request" : "Confirm & Pay"}
                     </button>
                  </div>
                </motion.div>
