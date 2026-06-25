@@ -14,8 +14,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Payment Network",
-  description: "Global payment infrastructure layer.",
+  title: "Campus Delivery",
+  description: "World-class campus delivery platform.",
 };
 
 export default function RootLayout({
@@ -25,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-[#F9FAFB] text-[#111827]`}>
-        <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-[#FFFFFF] h-[100dvh] flex flex-col relative shadow-2xl">
+      <body className={`${inter.className} antialiased h-[100dvh] flex flex-col bg-[#000000] text-[#000000]`}>
+        <main className="flex-1 overflow-hidden w-full max-w-md mx-auto bg-[#F9FAFB] h-[100dvh] flex flex-col relative shadow-2xl">
             {children}
         </main>
       </body>

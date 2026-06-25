@@ -1,839 +1,274 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { ArrowLeft, History, CheckCircle2, Building2, Coffee, ShoppingBag, X, Plus, Receipt, Search, ShieldCheck, Wifi, CheckCircle, AlertCircle, CircleDot } from "lucide-react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { MapPin, Navigation, Package, ArrowLeft, Clock, CircleDot, ChevronRight, Menu, Search } from "lucide-react"
 
-type AppState = "home" | "pay_number" | "pay_amount" | "pay_review" | "pay_success" | "history" | "deposit" | "deposit_funding" | "deposit_confirm" | "deposit_success" | "receipts" | "receipt_detail"
+type AppState = "idle" | "request" | "searching" | "en_route"
 
-interface Transaction {
-  id: string
-  merchant: string
-  amount: number
-  date: string
-  icon: React.ReactNode
-}
+export default function CampusDeliveryApp() {
+  const [appState, setAppState] = useState<AppState>("idle")
+  const [requestText, setRequestText] = useState("")
+  const [pickupLocation, setPickupLocation] = useState("")
 
-interface FundingSource {
-  id: string;
-  name: string;
-  type: string;
-  color: string;
-}
-
-const transactions: Transaction[] = [
-  { id: "tx1", merchant: "Whole Foods Market", amount: 45.20, date: "Today, 14:23", icon: <ShoppingBag size={20} className="text-[#111827]" /> },
-  { id: "tx2", merchant: "Starbucks", amount: 6.50, date: "Today, 09:12", icon: <Coffee size={20} className="text-[#111827]" /> },
-  { id: "tx3", merchant: "Apple Store", amount: 129.00, date: "Yesterday", icon: <Building2 size={20} className="text-[#111827]" /> },
-]
-
-const fundingSources: FundingSource[] = [
-  { id: "fs1", name: "M-Pesa", type: "Mobile Money", color: "bg-[#0A8742]" },
-  { id: "fs2", name: "CRDB Bank", type: "Bank Account", color: "bg-[#006648]" },
-  { id: "fs3", name: "Airtel Money", type: "Mobile Money", color: "bg-[#E3000F]" },
-]
-
-export default function PaymentNetworkApp() {
-  const [appState, setAppState] = useState<AppState>("home")
-  const [balance, setBalance] = useState(4250.00)
-
-  // Payment Flow State
-  const [payNumber, setPayNumber] = useState("")
-  const [payAmount, setPayAmount] = useState("")
-  const [payMerchantName, setPayMerchantName] = useState("")
-
-  // Deposit Flow State
-  const [depositAmount, setDepositAmount] = useState("")
-  const [selectedFunding, setSelectedFunding] = useState<FundingSource>(fundingSources[0])
-
-  // Receipt Lifecycle State
-  const [hasActiveReceipt, setHasActiveReceipt] = useState(true)
-  const [receiptStatus, setReceiptStatus] = useState<"pending" | "verifying" | "verified" | "redeemed">("pending")
-  const receiptData = { merchant: "Apple Store", amount: 129.00, date: "Today, 09:41 AM" }
-
-  // Timer for animated receipt pulse
-  const [time, setTime] = useState<Date | null>(null)
-  useEffect(() => {
-    // Avoid setting state immediately on mount within the effect body
-    const initialTimer = setTimeout(() => setTime(new Date()), 0)
-    const timer = setInterval(() => setTime(new Date()), 1000)
-    return () => {
-      clearTimeout(initialTimer)
-      clearInterval(timer)
-    }
-  }, [])
-
-  // Navigation Handlers
-  const goHome = () => {
-    // Reset receipt status if returning from a completed flow
-    if (receiptStatus === "verified" || receiptStatus === "redeemed") {
-       setHasActiveReceipt(false)
-       setReceiptStatus("pending")
-    }
-    setAppState("home")
+  const handleOpenRequest = () => setAppState("request")
+  const closeRequest = () => {
+    setAppState("idle")
+    setRequestText("")
+    setPickupLocation("")
   }
 
-  // --- Payment Flow Handlers ---
-  const handleTapToPayClick = () => {
-    setPayNumber("")
-    setPayAmount("")
-    setAppState("pay_number")
-  }
+  const handleConfirmRequest = () => {
+    if (!requestText || !pickupLocation) return
+    setAppState("searching")
 
-  const handlePayNumberNext = () => {
-    if (payNumber.length < 3) return;
-    setPayMerchantName("Verified Merchant")
-    setAppState("pay_amount")
-  }
-
-  const handlePayAmountNext = () => {
-    if (!payAmount || Number(payAmount) <= 0) return
-    setAppState("pay_review")
-  }
-
-  const handleConfirmPayment = () => {
-    setAppState("pay_success")
+    // Simulate finding a courier
     setTimeout(() => {
-      setBalance(prev => prev - Number(payAmount))
-      setAppState("home")
+      setAppState("en_route")
     }, 2500)
   }
-
-  // --- Deposit Flow Handlers ---
-  const handleAddBalanceClick = () => {
-    setDepositAmount("")
-    setAppState("deposit")
-  }
-
-  const handleDepositAmountNext = () => {
-    if (!depositAmount || Number(depositAmount) <= 0) return
-    setAppState("deposit_funding")
-  }
-
-  const handleSelectFunding = (source: FundingSource) => {
-    setSelectedFunding(source)
-    setAppState("deposit_confirm")
-  }
-
-  const handleConfirmDeposit = () => {
-    setAppState("deposit_success")
-    setTimeout(() => {
-      setBalance(prev => prev + Number(depositAmount))
-      setAppState("home")
-    }, 2500)
-  }
-
-  // --- Keypad Helpers ---
-  const handlePayAmountKeypad = (val: string) => {
-    if (payAmount.length > 5) return;
-    setPayAmount(prev => prev + val)
-  }
-  const handlePayAmountBackspace = () => setPayAmount(prev => prev.slice(0, -1))
-
-  const handleDepositKeypad = (val: string) => {
-    if (depositAmount.length > 5) return;
-    setDepositAmount(prev => prev + val)
-  }
-  const handleDepositBackspace = () => setDepositAmount(prev => prev.slice(0, -1))
-
-  // --- Receipt NFC Validation Handler ---
-  const handleSimulateNFCTap = () => {
-     if (receiptStatus !== "pending") return;
-     setReceiptStatus("verifying")
-     // Sub-second validation simulation
-     setTimeout(() => {
-        setReceiptStatus("verified")
-        // The receipt stays visible to show the premium confirmation, user clicks 'Close' when ready
-     }, 800)
-  }
-
-  // Historical Receipt tap (fraud check)
-  const handleSimulateUsedReceiptTap = () => {
-      setReceiptStatus("redeemed")
-  }
-
 
   return (
-    <div className="flex flex-col h-full bg-[#F9FAFB] text-[#111827] overflow-hidden relative font-sans">
-      <AnimatePresence mode="wait">
+    <div className="flex flex-col h-full bg-[#E5E7EB] text-black overflow-hidden relative font-sans">
 
-        {/* HOME STATE */}
-        {appState === "home" && (
-          <motion.div
-            key="home"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col h-full bg-white p-6 pt-12"
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center mb-12">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center border border-[#E5E7EB]">
-                  <div className="w-4 h-4 bg-[#111827] rounded-sm" />
-                </div>
-                <span className="font-semibold text-lg tracking-tight">Network</span>
-              </div>
-              <button
-                onClick={() => setAppState("history")}
-                className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors border border-[#E5E7EB]"
-              >
-                <History size={20} className="text-[#374151]" />
-              </button>
-            </div>
+      {/* IMMERSIVE MAP BACKGROUND */}
+      <div className="absolute inset-0 z-0">
+        <div className="w-full h-full bg-[#D1D5DB] relative overflow-hidden flex items-center justify-center">
+            {/* Fake Map Grid Pattern */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
-            {/* Balance */}
-            <div className="flex flex-col mb-16">
-              <span className="text-[#6B7280] text-sm font-medium tracking-wide uppercase mb-2">Available Balance</span>
-              <div className="flex items-end gap-2">
-                <span className="text-5xl font-light tracking-tight">${Math.floor(balance).toLocaleString()}</span>
-                <span className="text-2xl text-[#6B7280] font-light mb-1">.{(balance % 1).toFixed(2).substring(2)}</span>
-              </div>
-            </div>
+            {/* Map Roads / Elements */}
+            <svg className="absolute w-[200%] h-[200%] text-white/50 -rotate-12" viewBox="0 0 100 100" preserveAspectRatio="none">
+               <path d="M 0,50 Q 25,60 50,50 T 100,50" fill="none" stroke="currentColor" strokeWidth="2" />
+               <path d="M 20,0 L 20,100" fill="none" stroke="currentColor" strokeWidth="1" />
+               <path d="M 60,0 L 60,100" fill="none" stroke="currentColor" strokeWidth="3" />
+            </svg>
 
-            {/* Actions */}
-            <div className="mt-auto pb-8 flex flex-col gap-4">
-               <button
-                  onClick={handleAddBalanceClick}
-                  className="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-[#111827] py-4 rounded-2xl font-medium text-lg flex items-center justify-center gap-2 hover:bg-[#F3F4F6] active:scale-[0.98] transition-all"
-                >
-                  <Plus size={24} />
-                  Add Balance
-                </button>
-              <div className="flex gap-4">
-                <button
-                  onClick={handleTapToPayClick}
-                  className="flex-1 bg-[#111827] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-                >
-                  Pay
-                </button>
-                <button
-                  onClick={() => setAppState("receipts")}
-                  className="w-16 h-[60px] bg-[#F3F4F6] border border-[#E5E7EB] rounded-2xl flex items-center justify-center hover:bg-[#E5E7EB] transition-all active:scale-[0.98] relative"
-                >
-                  <Receipt size={24} className="text-[#111827]" />
-                  {hasActiveReceipt && (
-                    <div className="absolute top-3 right-3 w-2.5 h-2.5 bg-[#0A66C2] rounded-full border-2 border-[#F3F4F6]" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* --- PAYMENT FLOW --- */}
-
-        {/* 1. PAY NUMBER */}
-        {appState === "pay_number" && (
-          <motion.div
-            key="pay_number"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full bg-white p-6"
-          >
-            <div className="pt-8 pb-8 flex justify-between items-center">
-              <button onClick={goHome} className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors">
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Payment</h2>
-              <div className="w-10 h-10" />
-            </div>
-
-            <div className="flex-1 flex flex-col pt-8">
-               <span className="text-[#6B7280] text-sm font-medium mb-4">Enter Merchant Number</span>
-               <div className="relative">
-                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]" size={24} />
-                 <input
-                   type="tel"
-                   value={payNumber}
-                   onChange={(e) => setPayNumber(e.target.value.replace(/\D/g, ''))}
-                   placeholder="000 000"
-                   className="w-full h-16 pl-14 pr-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl text-2xl font-light tracking-wider outline-none focus:border-[#111827] transition-colors placeholder:text-[#D1D5DB]"
-                   autoFocus
-                 />
-               </div>
-            </div>
-
-            <div className="pb-8">
-              <button
-                onClick={handlePayNumberNext}
-                disabled={payNumber.length < 3}
-                className="w-full bg-[#111827] disabled:bg-[#D1D5DB] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-              >
-                Continue
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 2. PAY AMOUNT */}
-        {appState === "pay_amount" && (
-          <motion.div
-            key="pay_amount"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full p-6 bg-white"
-          >
-            <div className="pt-8 pb-8 flex justify-between items-center">
-              <button onClick={() => setAppState("pay_number")} className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors">
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Amount</h2>
-              <div className="w-10 h-10" />
-            </div>
-
-            <div className="flex-1 flex flex-col items-center justify-center mb-8">
-               <span className="text-[#6B7280] text-sm font-medium mb-4">To {payMerchantName}</span>
-               <div className="flex items-start justify-center gap-1">
-                <span className="text-4xl text-[#D1D5DB] mt-2">$</span>
-                <span className={`text-7xl font-light tracking-tight ${payAmount ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
-                  {payAmount || "0"}
-                </span>
-              </div>
-            </div>
-
-            <div className="pb-8">
-               <div className="grid grid-cols-3 gap-3 mb-6">
-                 {[1,2,3,4,5,6,7,8,9].map(num => (
-                   <button key={num} onClick={() => handlePayAmountKeypad(num.toString())} className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                     {num}
-                   </button>
-                 ))}
-                 <button className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   .
-                 </button>
-                 <button onClick={() => handlePayAmountKeypad('0')} className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   0
-                 </button>
-                 <button onClick={handlePayAmountBackspace} className="h-16 flex items-center justify-center rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   <ArrowLeft size={24} className="text-[#111827]" />
-                 </button>
-               </div>
-              <button
-                onClick={handlePayAmountNext}
-                disabled={!payAmount || Number(payAmount) <= 0}
-                className="w-full bg-[#111827] disabled:bg-[#D1D5DB] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-              >
-                Review Payment
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 3. PAY REVIEW/CONFIRM STATE */}
-        {appState === "pay_review" && (
-          <motion.div
-            key="pay_review"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full p-6 bg-white"
-          >
-            <div className="pt-8 pb-12 flex justify-between items-start">
-               <button onClick={() => setAppState("pay_amount")} className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center">
-                 <X size={20} className="text-[#374151]" />
-               </button>
-            </div>
-
-            <div className="flex-1 flex flex-col justify-center items-center text-center">
-              <div className="w-16 h-16 bg-[#F9FAFB] border border-[#E5E7EB] rounded-full flex items-center justify-center mb-6">
-                <ShoppingBag size={28} className="text-[#111827]" />
-              </div>
-              <h2 className="text-3xl font-light tracking-tight mb-2 text-[#111827]">{payMerchantName}</h2>
-              <div className="flex items-start justify-center gap-1 mb-8 text-[#111827]">
-                <span className="text-2xl text-[#6B7280] mt-1">$</span>
-                <span className="text-6xl font-light tracking-tight">{payAmount}</span>
-                <span className="text-2xl text-[#6B7280] mt-1">.00</span>
-              </div>
-
-              <div className="w-full bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl p-4 flex justify-between items-center mb-auto">
-                 <span className="text-[#6B7280] text-sm">Payment Source</span>
-                 <span className="text-[#111827] font-medium text-sm flex items-center gap-2">
-                   Network Balance <div className="w-1.5 h-1.5 rounded-full bg-[#111827]" />
-                 </span>
-              </div>
-            </div>
-
-            <div className="pb-8">
-              <p className="text-center text-[#9CA3AF] text-xs mb-4">No transaction fees</p>
-              <button
-                onClick={handleConfirmPayment}
-                className="w-full bg-[#111827] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-              >
-                Confirm Payment
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 4. PAY SUCCESS STATE */}
-        {appState === "pay_success" && (
-          <motion.div
-            key="pay_success"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col h-full bg-[#0A66C2] items-center justify-center p-6"
-          >
-            <motion.div
-               initial={{ scale: 0.8, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
-               className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl"
-            >
-              <CheckCircle2 size={48} className="text-[#0A66C2]" />
-            </motion.div>
-            <motion.h2
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-light tracking-tight text-white mb-2"
-            >
-              Approved
-            </motion.h2>
-            <motion.p
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-white/80 font-medium"
-            >
-              ${Number(payAmount).toFixed(2)} to {payMerchantName}
-            </motion.p>
-          </motion.div>
-        )}
-
-        {/* --- DEPOSIT FLOW --- */}
-
-        {/* DEPOSIT AMOUNT INPUT STATE */}
-        {appState === "deposit" && (
-          <motion.div
-            key="deposit"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full p-6 bg-white"
-          >
-            <div className="pt-8 pb-8 flex justify-between items-center">
-              <button
-                onClick={goHome}
-                className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
-              >
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Add Balance</h2>
-              <div className="w-10 h-10" />
-            </div>
-
-            <div className="flex-1 flex flex-col items-center justify-center mb-8">
-               <span className="text-[#6B7280] text-sm font-medium mb-4">Amount to Add</span>
-               <div className="flex items-start justify-center gap-1">
-                <span className="text-4xl text-[#D1D5DB] mt-2">$</span>
-                <span className={`text-7xl font-light tracking-tight ${depositAmount ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
-                  {depositAmount || "0"}
-                </span>
-              </div>
-            </div>
-
-            <div className="pb-8">
-               <div className="grid grid-cols-3 gap-3 mb-6">
-                 {[1,2,3,4,5,6,7,8,9].map(num => (
-                   <button key={num} onClick={() => handleDepositKeypad(num.toString())} className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                     {num}
-                   </button>
-                 ))}
-                 <button className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   .
-                 </button>
-                 <button onClick={() => handleDepositKeypad('0')} className="h-16 text-2xl font-light rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   0
-                 </button>
-                 <button onClick={handleDepositBackspace} className="h-16 flex items-center justify-center rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] active:bg-[#E5E7EB] transition-colors">
-                   <ArrowLeft size={24} className="text-[#111827]" />
-                 </button>
-               </div>
-              <button
-                onClick={handleDepositAmountNext}
-                disabled={!depositAmount || Number(depositAmount) <= 0}
-                className="w-full bg-[#111827] disabled:bg-[#D1D5DB] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-              >
-                Next
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* DEPOSIT FUNDING SOURCE SELECTION */}
-        {appState === "deposit_funding" && (
-           <motion.div
-           key="deposit_funding"
-           initial={{ opacity: 0, x: 20 }}
-           animate={{ opacity: 1, x: 0 }}
-           exit={{ opacity: 0, x: -20 }}
-           transition={{ duration: 0.2 }}
-           className="flex flex-col h-full bg-[#F9FAFB] p-6"
-         >
-           <div className="pt-8 pb-8 flex justify-between items-center">
-              <button onClick={() => setAppState("deposit")} className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center hover:bg-[#F3F4F6]">
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Connected Accounts</h2>
-              <div className="w-10 h-10" />
-           </div>
-
-           <div className="flex-1 overflow-y-auto no-scrollbar pb-8">
-             <div className="space-y-4">
-               {fundingSources.map((source) => (
-                 <button
-                   key={source.id}
-                   onClick={() => handleSelectFunding(source)}
-                   className="w-full bg-white border border-[#E5E7EB] rounded-2xl p-4 flex items-center justify-between group active:scale-[0.98] transition-all"
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${source.color} text-white font-bold text-xl`}>
-                        {source.name.charAt(0)}
-                     </div>
-                     <div className="text-left">
-                       <p className="font-medium text-[#111827] text-base">{source.name}</p>
-                       <p className="text-[#6B7280] text-sm">{source.type}</p>
-                     </div>
-                   </div>
-                 </button>
-               ))}
-
-               <button className="w-full border-2 border-dashed border-[#D1D5DB] rounded-2xl p-4 flex items-center justify-center gap-3 mt-4 hover:border-[#9CA3AF] hover:bg-white active:scale-[0.98] transition-all">
-                 <Plus size={20} className="text-[#6B7280]" />
-                 <span className="font-medium text-[#6B7280]">Add Account</span>
-               </button>
-             </div>
-           </div>
-         </motion.div>
-        )}
-
-        {/* DEPOSIT CONFIRM STATE */}
-        {appState === "deposit_confirm" && (
-           <motion.div
-           key="deposit_confirm"
-           initial={{ opacity: 0, scale: 0.95 }}
-           animate={{ opacity: 1, scale: 1 }}
-           exit={{ opacity: 0, scale: 1.05 }}
-           transition={{ duration: 0.2 }}
-           className="flex flex-col h-full p-6 bg-white"
-         >
-           <div className="pt-8 pb-12 flex justify-between items-start">
-              <button onClick={() => setAppState("deposit_funding")} className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#E5E7EB]">
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-           </div>
-
-           <div className="flex-1 flex flex-col justify-center items-center text-center">
-             <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-6 ${selectedFunding.color} text-white font-bold text-2xl`}>
-               {selectedFunding.name.charAt(0)}
-             </div>
-             <h2 className="text-3xl font-light tracking-tight mb-2 text-[#111827]">Add Balance</h2>
-             <div className="flex items-start justify-center gap-1 mb-8 text-[#111827]">
-               <span className="text-2xl text-[#6B7280] mt-1">$</span>
-               <span className="text-6xl font-light tracking-tight">{depositAmount}</span>
-               <span className="text-2xl text-[#6B7280] mt-1">.00</span>
-             </div>
-
-             <div className="w-full bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl p-4 flex justify-between items-center mb-auto">
-                <span className="text-[#6B7280] text-sm">From</span>
-                <span className="text-[#111827] font-medium text-sm flex items-center gap-2">
-                  {selectedFunding.name} <div className={`w-1.5 h-1.5 rounded-full ${selectedFunding.color}`} />
-                </span>
-             </div>
-           </div>
-
-           <div className="pb-8">
-             <p className="text-center text-[#9CA3AF] text-xs mb-4">Fast payments, no hidden fees</p>
-             <button
-               onClick={handleConfirmDeposit}
-               className="w-full bg-[#111827] text-white py-4 rounded-2xl font-semibold text-lg flex items-center justify-center transition-all active:scale-[0.98]"
-             >
-               Confirm Top Up
-             </button>
-           </div>
-         </motion.div>
-        )}
-
-        {/* DEPOSIT SUCCESS STATE */}
-        {appState === "deposit_success" && (
-           <motion.div
-           key="deposit_success"
-           initial={{ opacity: 0 }}
-           animate={{ opacity: 1 }}
-           exit={{ opacity: 0 }}
-           transition={{ duration: 0.3 }}
-           className="flex flex-col h-full bg-[#0A66C2] items-center justify-center p-6"
-         >
-           <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
-              className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl"
-           >
-             <CheckCircle2 size={48} className="text-[#0A66C2]" />
-           </motion.div>
-           <motion.h2
-             initial={{ y: 10, opacity: 0 }}
-             animate={{ y: 0, opacity: 1 }}
-             transition={{ delay: 0.2 }}
-             className="text-3xl font-light tracking-tight text-white mb-2"
-           >
-             Added to Balance
-           </motion.h2>
-           <motion.p
-             initial={{ y: 10, opacity: 0 }}
-             animate={{ y: 0, opacity: 1 }}
-             transition={{ delay: 0.3 }}
-             className="text-white/80 font-medium"
-           >
-             ${Number(depositAmount).toFixed(2)} is now available
-           </motion.p>
-         </motion.div>
-        )}
-
-        {/* --- RECEIPTS FLOW --- */}
-
-        {/* RECEIPTS LIST */}
-        {appState === "receipts" && (
-          <motion.div
-            key="receipts"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full bg-[#F9FAFB] p-6 pt-12"
-          >
-            <div className="flex items-center gap-4 mb-8">
-              <button
-                onClick={goHome}
-                className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors"
-              >
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Active Receipts</h2>
-            </div>
-
-            <div className="flex-1 overflow-y-auto no-scrollbar pb-8">
-              {hasActiveReceipt ? (
-                <button
-                  onClick={() => setAppState("receipt_detail")}
-                  className="w-full relative overflow-hidden bg-white border border-[#E5E7EB] rounded-[1.5rem] p-5 text-left active:scale-[0.98] transition-transform shadow-sm"
-                >
-                   {/* Animated pulse background to indicate "Active" */}
-                   <motion.div
-                     animate={{ opacity: [0.1, 0.3, 0.1] }}
-                     transition={{ duration: 3, repeat: Infinity }}
-                     className="absolute -top-10 -right-10 w-32 h-32 bg-[#0A66C2] rounded-full blur-3xl"
-                   />
-
-                   <div className="flex justify-between items-start mb-6 relative z-10">
-                      <div className="w-12 h-12 bg-[#F3F4F6] rounded-xl flex items-center justify-center">
-                         <Building2 size={24} className="text-[#111827]" />
-                      </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F0FDF4] rounded-full border border-[#BBF7D0]">
-                        <CircleDot size={12} className="text-[#16A34A] animate-pulse" />
-                        <span className="text-xs font-semibold text-[#16A34A] uppercase tracking-wide">Ready</span>
-                      </div>
-                   </div>
-
-                   <div className="relative z-10">
-                     <p className="text-[#6B7280] text-sm mb-1">{receiptData.date}</p>
-                     <h3 className="text-xl font-medium text-[#111827] mb-4">{receiptData.merchant}</h3>
-                     <div className="border-t border-dashed border-[#E5E7EB] pt-4 flex justify-between items-end">
-                        <p className="text-2xl font-light tracking-tight text-[#111827]">${receiptData.amount.toFixed(2)}</p>
-                        <ArrowLeft size={20} className="text-[#9CA3AF] rotate-180" />
-                     </div>
-                   </div>
-                </button>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                   <div className="w-20 h-20 bg-white border border-[#E5E7EB] rounded-full flex items-center justify-center mb-6 shadow-sm">
-                     <Receipt size={32} className="text-[#D1D5DB]" />
-                   </div>
-                   <h3 className="text-xl font-medium text-[#111827] mb-2">No active receipts</h3>
-                   <p className="text-[#6B7280] max-w-[240px]">Your next digital payment pass will appear here.</p>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-
-        {/* FULL-SCREEN DYNAMIC RECEIPT (DIGITAL PASS FOR NFC TAP) */}
-        {appState === "receipt_detail" && (
-           <motion.div
-           key="receipt_detail"
-           initial={{ opacity: 0, y: "100%" }}
-           animate={{ opacity: 1, y: 0 }}
-           exit={{ opacity: 0, y: "100%" }}
-           transition={{ duration: 0.4, type: "spring", damping: 25, stiffness: 200 }}
-           className={`flex flex-col h-full p-4 relative transition-colors duration-500 ${receiptStatus === "verified" ? "bg-[#0A66C2]" : receiptStatus === "redeemed" ? "bg-[#EF4444]" : "bg-[#111827]"}`}
-         >
-           <div className="pt-8 pb-4 flex justify-between items-center text-white px-2 relative z-20">
-              <button onClick={goHome} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm">
-                <X size={20} />
-              </button>
-              <span className="font-medium text-white/50 text-sm uppercase tracking-widest">
-                 {receiptStatus === "verified" ? "Confirmed" : receiptStatus === "redeemed" ? "Invalid" : "Digital Pass"}
-              </span>
-              <div className="w-10" />
-           </div>
-
-           <div className="flex-1 flex flex-col justify-center items-center relative z-10 w-full max-w-sm mx-auto">
-
-              {/* Premium Ticket UI */}
-              <motion.div
-                 layout
-                 className="w-full bg-white rounded-[2rem] overflow-hidden shadow-2xl relative"
-                 animate={{
-                    scale: receiptStatus === "verifying" ? 0.98 : 1,
-                    y: receiptStatus === "verified" ? -10 : 0
-                 }}
-              >
-
-                {/* Upper Section */}
-                <div className="p-8 pb-10 flex flex-col items-center">
-                   <div className="w-16 h-16 bg-[#F3F4F6] rounded-full flex items-center justify-center mb-6">
-                      <ShieldCheck size={32} className="text-[#111827]" />
-                   </div>
-                   <h2 className="text-3xl font-light text-[#111827] mb-1">{receiptData.merchant}</h2>
-                   <p className="text-[#6B7280] mb-8 text-sm">{receiptData.date}</p>
-                   <div className="flex items-start justify-center gap-1">
-                     <span className="text-3xl text-[#6B7280] mt-1">$</span>
-                     <span className="text-7xl font-light tracking-tight text-[#111827]">{receiptData.amount.toFixed(2)}</span>
-                   </div>
-                </div>
-
-                {/* Status / Footer Section */}
-                <div className={`p-8 relative transition-colors duration-500 ${receiptStatus === "verified" ? "bg-[#F0FDF4]" : receiptStatus === "redeemed" ? "bg-[#FEF2F2]" : "bg-[#F9FAFB]"}`}>
-
-                   {/* PENDING STATE (Ready for Tap) */}
-                   {receiptStatus === "pending" && (
-                     <div className="flex flex-col items-center">
-                       <motion.div
-                         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                         transition={{ duration: 2, repeat: Infinity }}
-                         className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-4 cursor-pointer"
-                         onClick={handleSimulateNFCTap}
-                       >
-                         <Wifi size={24} className="text-[#0A66C2]" />
-                       </motion.div>
-                       <h3 className="text-[#111827] font-medium text-lg mb-1">Hold near reader</h3>
-                       <p className="text-[#6B7280] text-sm text-center">Tap to validate payment</p>
-                     </div>
-                   )}
-
-                   {/* VERIFYING STATE */}
-                   {receiptStatus === "verifying" && (
-                     <div className="flex flex-col items-center py-4">
-                       <motion.div
-                         animate={{ rotate: 360 }}
-                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                         className="w-10 h-10 rounded-full border-4 border-[#E5E7EB] border-t-[#0A66C2] mb-4"
-                       />
-                       <h3 className="text-[#111827] font-medium">Verifying...</h3>
-                     </div>
-                   )}
-
-                   {/* VERIFIED SUCCESS STATE */}
-                   {receiptStatus === "verified" && (
-                     <motion.div
-                       initial={{ opacity: 0, scale: 0.8 }}
-                       animate={{ opacity: 1, scale: 1 }}
-                       className="flex flex-col items-center py-2 text-center"
-                     >
-                       <CheckCircle size={48} className="text-[#16A34A] mb-4" />
-                       <h3 className="text-[#16A34A] text-2xl font-semibold tracking-tight uppercase mb-1">Verified</h3>
-                       <p className="text-[#15803D] font-medium">Payment confirmed</p>
-                       {time && (
-                         <p className="text-xs font-mono text-[#16A34A]/70 mt-4 tracking-widest">
-                           {time.toLocaleTimeString()}
-                         </p>
-                       )}
-                     </motion.div>
-                   )}
-
-                   {/* FRAUD PREVENTED (ALREADY REDEEMED) STATE */}
-                   {receiptStatus === "redeemed" && (
-                     <motion.div
-                       initial={{ opacity: 0, scale: 0.8 }}
-                       animate={{ opacity: 1, scale: 1 }}
-                       className="flex flex-col items-center py-2 text-center"
-                     >
-                       <AlertCircle size={48} className="text-[#DC2626] mb-4" />
-                       <h3 className="text-[#DC2626] text-2xl font-semibold tracking-tight uppercase mb-1">Already Used</h3>
-                       <p className="text-[#B91C1C] font-medium">This receipt cannot be redeemed twice</p>
-                     </motion.div>
-                   )}
-
-                </div>
-              </motion.div>
-
-              {/* Hidden button to simulate tapping an old receipt for test purposes */}
-              {receiptStatus === "pending" && (
-                  <button
-                    onClick={handleSimulateUsedReceiptTap}
-                    className="mt-8 text-white/20 text-xs hover:text-white/50 transition-colors"
+            {/* Simulated Live Tracking Elements */}
+            <AnimatePresence>
+               {appState === "en_route" && (
+                  <motion.div
+                     initial={{ opacity: 0, scale: 0.5 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     exit={{ opacity: 0 }}
+                     className="absolute z-10 flex flex-col items-center"
+                     style={{ top: '40%', left: '50%', x: '-50%', y: '-50%' }}
                   >
-                    Simulate: Scan already used receipt
-                  </button>
-              )}
-           </div>
-         </motion.div>
-        )}
+                     <motion.div
+                       animate={{ y: [0, -10, 0] }}
+                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                       className="w-12 h-12 bg-black rounded-full shadow-2xl flex items-center justify-center border-4 border-white"
+                     >
+                       <Navigation size={20} className="text-white fill-white" />
+                     </motion.div>
+                     <div className="mt-2 bg-white px-3 py-1 rounded-full shadow-lg text-xs font-semibold tracking-wide">
+                        3 MIN
+                     </div>
+                  </motion.div>
+               )}
+            </AnimatePresence>
+        </div>
+      </div>
 
-        {/* --- HISTORY STATE --- */}
-        {appState === "history" && (
-          <motion.div
-            key="history"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col h-full p-6 pt-12 bg-white"
-          >
-            <div className="flex items-center gap-4 mb-8">
-              <button
-                onClick={goHome}
-                className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
-              >
-                <ArrowLeft size={20} className="text-[#374151]" />
-              </button>
-              <h2 className="text-xl font-medium tracking-tight text-[#111827]">Activity</h2>
-            </div>
+      {/* TOP NAVIGATION */}
+      <div className="absolute top-0 inset-x-0 z-20 p-6 pt-12 flex justify-between items-center pointer-events-none">
+         <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg pointer-events-auto active:scale-95 transition-transform">
+           <Menu size={24} className="text-black" />
+         </button>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar pb-8">
-              <div className="space-y-6">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between group">
+         <AnimatePresence>
+           {appState === "en_route" && (
+             <motion.div
+               initial={{ opacity: 0, y: -20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="bg-white px-5 py-3 rounded-full shadow-lg font-semibold text-sm tracking-wide"
+             >
+               Delivery in Progress
+             </motion.div>
+           )}
+         </AnimatePresence>
+      </div>
+
+      {/* BOTTOM SHEET INTERACTIONS */}
+      <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end">
+         <AnimatePresence mode="wait">
+
+            {/* IDLE STATE */}
+            {appState === "idle" && (
+               <motion.div
+                 key="idle"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                 className="bg-white rounded-t-3xl p-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+               >
+                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8" />
+
+                 <h1 className="text-4xl font-semibold tracking-tight mb-8">Need something?</h1>
+
+                 <button
+                   onClick={handleOpenRequest}
+                   className="w-full bg-[#F3F4F6] border border-[#E5E7EB] hover:bg-[#E5E7EB] text-left p-5 rounded-2xl flex items-center gap-4 transition-colors active:scale-[0.98]"
+                 >
+                    <Search size={24} className="text-black" />
+                    <span className="text-xl text-gray-500 font-light">What can we bring you?</span>
+                 </button>
+
+                 <div className="flex gap-4 mt-6">
+                    <div className="flex-1 bg-[#F9FAFB] p-4 rounded-2xl flex flex-col items-center justify-center border border-[#E5E7EB]">
+                       <Package size={24} className="mb-2 text-black" />
+                       <span className="text-sm font-medium">Deliver</span>
+                    </div>
+                    <div className="flex-1 bg-[#F9FAFB] p-4 rounded-2xl flex flex-col items-center justify-center border border-[#E5E7EB] opacity-50">
+                       <MapPin size={24} className="mb-2 text-black" />
+                       <span className="text-sm font-medium">Pickup</span>
+                    </div>
+                 </div>
+               </motion.div>
+            )}
+
+            {/* REQUEST STATE */}
+            {appState === "request" && (
+               <motion.div
+                 key="request"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                 className="bg-white h-[85dvh] rounded-t-3xl flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+               >
+                 <div className="flex items-center justify-between p-6 pb-2">
+                   <button onClick={closeRequest} className="p-2 -ml-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors">
+                     <ArrowLeft size={24} className="text-black" />
+                   </button>
+                   <span className="font-semibold text-lg">Request Delivery</span>
+                   <div className="w-10" />
+                 </div>
+
+                 <div className="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
+                    {/* What input */}
+                    <div className="flex flex-col gap-2">
+                       <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">What do you need?</label>
+                       <input
+                         type="text"
+                         value={requestText}
+                         onChange={(e) => setRequestText(e.target.value)}
+                         placeholder="e.g., Charger, Water, Notes..."
+                         className="w-full text-2xl font-light border-b-2 border-gray-200 py-3 focus:border-black outline-none transition-colors placeholder:text-gray-300"
+                         autoFocus
+                       />
+                    </div>
+
+                    {/* Where input */}
+                    <div className="flex flex-col gap-2 mt-4">
+                       <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Deliver To</label>
+                       <div className="relative">
+                          <CircleDot size={20} className="absolute left-0 top-1/2 -translate-y-1/2 text-black" />
+                          <input
+                            type="text"
+                            value={pickupLocation}
+                            onChange={(e) => setPickupLocation(e.target.value)}
+                            placeholder="Building, Library, Seat..."
+                            className="w-full text-xl font-light border-b-2 border-gray-200 py-3 pl-8 focus:border-black outline-none transition-colors placeholder:text-gray-300"
+                          />
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="p-6 pb-8 border-t border-gray-100">
+                    <div className="flex justify-between items-center mb-6">
+                       <div className="flex items-center gap-2">
+                          <Clock size={20} className="text-black" />
+                          <span className="font-medium">Est. 10-15 min</span>
+                       </div>
+                       <span className="text-xl font-semibold">$3.00</span>
+                    </div>
+
+                    <button
+                      onClick={handleConfirmRequest}
+                      disabled={!requestText || !pickupLocation}
+                      className="w-full bg-black text-white py-5 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 disabled:bg-gray-300 transition-colors active:scale-[0.98]"
+                    >
+                      Confirm Request
+                    </button>
+                 </div>
+               </motion.div>
+            )}
+
+            {/* SEARCHING STATE */}
+            {appState === "searching" && (
+               <motion.div
+                 key="searching"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                 className="bg-white rounded-t-3xl p-8 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col items-center text-center"
+               >
+                 <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="w-16 h-16 rounded-full border-4 border-gray-200 border-t-black mb-6"
+                 />
+                 <h2 className="text-2xl font-semibold tracking-tight mb-2">Finding a courier</h2>
+                 <p className="text-gray-500 font-light text-lg">Connecting your request to the nearest available person.</p>
+               </motion.div>
+            )}
+
+            {/* EN ROUTE (TRACKING) STATE */}
+            {appState === "en_route" && (
+               <motion.div
+                 key="en_route"
+                 initial={{ y: "100%" }}
+                 animate={{ y: 0 }}
+                 exit={{ y: "100%", opacity: 0 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                 className="bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+               >
+                 <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-4" />
+
+                 <div className="p-6 pt-0 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                       <h2 className="text-2xl font-semibold mb-1">Arriving in 3 min</h2>
+                       <p className="text-gray-500">{requestText} • {pickupLocation}</p>
+                    </div>
+                 </div>
+
+                 <div className="p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center group-hover:bg-[#F3F4F6] transition-colors">
-                        {tx.icon}
-                      </div>
-                      <div>
-                        <p className="font-medium text-[#111827] text-base">{tx.merchant}</p>
-                        <p className="text-[#6B7280] text-sm">{tx.date}</p>
-                      </div>
+                       <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl overflow-hidden border border-gray-200">
+                          J
+                       </div>
+                       <div>
+                          <p className="font-semibold text-lg">James</p>
+                          <div className="flex items-center gap-1 text-sm text-gray-500 font-medium">
+                             <span>★ 4.9</span>
+                             <span>•</span>
+                             <span>Courier</span>
+                          </div>
+                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium text-[#111827] text-base">-${tx.amount.toFixed(2)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
 
-      </AnimatePresence>
+                    <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                       <ChevronRight size={24} className="text-black" />
+                    </button>
+                 </div>
+
+                 <div className="p-6 pb-8 pt-0">
+                   <button
+                     onClick={() => setAppState("idle")}
+                     className="w-full bg-gray-100 text-black py-4 rounded-xl font-medium text-base hover:bg-gray-200 transition-colors active:scale-[0.98]"
+                   >
+                     Cancel Request
+                   </button>
+                 </div>
+               </motion.div>
+            )}
+
+         </AnimatePresence>
+      </div>
+
     </div>
   )
 }
