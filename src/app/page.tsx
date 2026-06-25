@@ -594,10 +594,10 @@ export default function CampusDeliveryApp() {
               animate={{ y: 0 }}
               exit={{ y: "100%", opacity: 0 }}
               transition={springSnappy}
-              className="bg-white rounded-t-3xl p-6 pb-[calc(2rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
+              className="bg-white rounded-t-3xl p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col pointer-events-auto"
             >
                <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
-               <div className="flex items-center gap-4">
+               <div className="flex items-center gap-4 mb-6">
                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
                    <Loader2 size={24} className="animate-spin text-black" />
                  </div>
@@ -606,14 +606,22 @@ export default function CampusDeliveryApp() {
                    <p className="text-gray-500 font-medium">Finding the best match</p>
                  </div>
                </div>
-               {/* Progress bar instead of old sweeping animation here, to match standard UX */}
-               <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mt-6 relative">
+
+               <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden relative mb-6">
                  <motion.div
                    className="absolute top-0 left-0 bottom-0 bg-black w-1/3"
                    animate={{ x: ["-100%", "300%"] }}
                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                  />
                </div>
+
+               <motion.button
+                 whileTap={{ scale: 0.98 }}
+                 onClick={cancelRequest}
+                 className="w-full bg-gray-100 text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-colors"
+               >
+                 Cancel Request
+               </motion.button>
             </motion.div>
           )}
 
