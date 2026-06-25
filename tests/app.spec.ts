@@ -17,16 +17,32 @@ test('Campus Delivery E2E flows', async ({ page }) => {
 
   // Fill out the request form
   await page.getByPlaceholder('What do you need? (e.g. Charger)').fill('Notebook');
-  await page.getByPlaceholder('Deliver to (e.g. Library Room 2)').fill('Library Floor 2');
+
+  // Note: We leave the default "Current Location" for the first test run to verify Cash payment.
 
   // Verify the 'Done' button is enabled and click it
   await expect(page.getByRole('button', { name: 'Done' })).toBeEnabled();
   await page.getByRole('button', { name: 'Done' }).click();
 
-  // Verify Confirm Delivery view
+  // Verify Confirm Delivery view with Cash allowed
   await expect(page.getByText('Choose Delivery')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Confirm Delivery' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Confirm Delivery' }).click();
+  await expect(page.getByRole('button', { name: 'Cash' })).not.toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Confirm Request' })).toBeVisible();
+
+  // Navigate back to change location
+  await page.locator('button').filter({ hasText: /^$/ }).first().click(); // Click back arrow
+
+  // Change location to a custom one
+  await page.getByPlaceholder('Deliver to (e.g. Library Room 2)').fill('Library Floor 2');
+  await page.getByRole('button', { name: 'Done' }).click();
+
+  // Verify Smart Payment Rule: Cash should be disabled, button should say Confirm & Pay
+  await expect(page.getByRole('button', { name: 'Cash' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Confirm & Pay' })).toBeVisible();
+
+  // Select Card to proceed
+  await page.getByRole('button', { name: 'Card' }).click();
+  await page.getByRole('button', { name: 'Confirm & Pay' }).click();
 
   // Verify 'Finding' state
   await expect(page.getByText('Connecting to courier...')).toBeVisible();
