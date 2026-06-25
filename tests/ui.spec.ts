@@ -23,11 +23,11 @@ test('campus delivery full flow', async ({ page }) => {
 
   // Verify Fare Selection Screen
   await expect(page.getByRole('button', { name: 'Select Standard' })).toBeVisible();
-  await expect(page.getByText('TZS 11,000')).toBeVisible();
+  await expect(page.getByText('TZS 4,500')).toBeVisible();
 
   // Test Vehicle Selection Interactivity
-  await page.getByText('Motorbike').first().click();
-  await expect(page.getByRole('button', { name: 'Select Motorbike' })).toBeVisible();
+  await page.getByText('Express').first().click();
+  await expect(page.getByRole('button', { name: 'Select Express' })).toBeVisible();
 });
 
 test('campus delivery menu interaction', async ({ page }) => {

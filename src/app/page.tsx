@@ -2,25 +2,42 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Tag, X, Car, Bike, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, Plus, ArrowDownUp, Menu } from "lucide-react"
+import { Tag, X, Car, Bike, Package, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, Plus, ArrowDownUp, Menu, Banknote, CreditCard, Smartphone, ChevronRight, Settings, Send, Timer, Navigation } from "lucide-react"
 
-type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION"
-type VehicleOption = "standard" | "motorbike"
+type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS"
+type VehicleOption = "standard" | "express"
+type PaymentMethod = "cash" | "mobile" | "card"
 
 const LOCATIONS = [
   { id: 1, name: "Moshi Urban", sub: "Tanzania", dist: "3.6 km", icon: Clock, type: "history" },
-  { id: 2, name: "MOSHI URBAN", sub: "Area", dist: "", icon: MapPin, type: "area" },
-  { id: 3, name: "KCMC", sub: "Hospital", dist: "5.2 km", icon: MapPin, type: "location" },
-  { id: 4, name: "Hugo's Garden", sub: "Restaurant", dist: "2.1 km", icon: MapPin, type: "location" },
+  { id: 2, name: "MOSHI URBAN", sub: "Area", dist: "", icon: Navigation, type: "area" },
+  { id: 3, name: "KCMC", sub: "Hospital", dist: "5.2 km", icon: Navigation, type: "location" },
+  { id: 4, name: "Hugo's Garden", sub: "Restaurant", dist: "2.1 km", icon: Navigation, type: "location" },
 ]
 
 export default function CampusDeliveryApp() {
-  const [appState, setAppState] = useState<AppState>("HOME")
+  const [navStack, setNavStack] = useState<AppState[]>(["HOME"])
+  const appState = navStack[navStack.length - 1]
   const [isPromoVisible, setIsPromoVisible] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleOption>("standard")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [sheetY, setSheetY] = useState(0)
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash")
+  const [isPaymentSheetOpen, setIsPaymentSheetOpen] = useState(false)
+
+  const navigateTo = (state: AppState) => {
+    setIsMenuOpen(false)
+    if (state === "HOME") {
+      setNavStack(["HOME"])
+    } else {
+      setNavStack(prev => [...prev, state])
+    }
+  }
+
+  const goBack = () => {
+    setNavStack(prev => prev.length > 1 ? prev.slice(0, -1) : ["HOME"])
+  }
 
   const filteredLocations = LOCATIONS.filter(loc => {
     if (!searchQuery) return loc.type !== "area"
@@ -52,7 +69,7 @@ export default function CampusDeliveryApp() {
   }
 
   const handleSuggestionClick = () => {
-    setAppState("FARE_SELECTION")
+    navigateTo("FARE_SELECTION")
   }
 
   return (
@@ -67,7 +84,7 @@ export default function CampusDeliveryApp() {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="flex flex-col h-full"
           >
-            <div className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] px-4">
+            <div className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] px-4 bg-[#F9FAFB]">
               {/* Hamburger and Promo */}
               <div className="mt-4 flex items-center justify-between mb-6">
                 <button
@@ -98,37 +115,37 @@ export default function CampusDeliveryApp() {
               )}
 
               {/* H1 Greeting */}
-              <h1 className="text-[24px] font-bold text-[#111827] mb-4 tracking-[-0.5px]">
+              <h1 className="text-[28px] font-extrabold text-[#111827] mb-6 tracking-[-0.5px]">
                 Smooth deliveries ahead.
               </h1>
 
               {/* Bento Grid */}
-              <div className="flex flex-row justify-between gap-4 mb-6">
+              <div className="flex flex-row justify-between gap-4 mb-8">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setAppState("ROUTE_SELECTION")}
-                  className="flex-1 h-[110px] bg-[#F3F4F6] rounded-[16px] p-3 flex flex-col justify-between cursor-pointer"
+                  onClick={() => navigateTo("ROUTE_SELECTION")}
+                  className="flex-1 h-[130px] bg-white rounded-[24px] border border-gray-100 shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center self-end mb-2">
-                     <Car className="w-6 h-6 text-gray-500" />
+                  <div className="w-10 h-10 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center self-start mb-2">
+                     <Package className="w-5 h-5 text-[#111827]" strokeWidth={1.5} />
                   </div>
-                  <div>
-                    <div className="text-[16px] font-medium text-[#111827]">Delivery</div>
-                    <div className="text-[12px] text-[#6B7280]">Let&apos;s get moving</div>
+                  <div className="mt-auto">
+                    <div className="text-[16px] font-bold text-[#111827] leading-tight">I Need Something</div>
+                    <div className="text-[13px] font-medium text-[#6B7280] mt-0.5">Request an item</div>
                   </div>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setAppState("ROUTE_SELECTION")}
-                  className="flex-1 h-[110px] bg-[#F3F4F6] rounded-[16px] p-3 flex flex-col justify-between cursor-pointer"
+                  onClick={() => navigateTo("ROUTE_SELECTION")}
+                  className="flex-1 h-[130px] bg-white rounded-[24px] border border-gray-100 shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center self-end mb-2">
-                     <Bike className="w-6 h-6 text-gray-500" />
+                  <div className="w-10 h-10 bg-[#F9FAFB] rounded-[14px] flex items-center justify-center self-start mb-2">
+                     <Send className="w-5 h-5 text-[#111827]" strokeWidth={1.5} />
                   </div>
-                  <div>
-                    <div className="text-[16px] font-medium text-[#111827]">Package</div>
-                    <div className="text-[12px] text-[#6B7280]">2-wheel deliveries</div>
+                  <div className="mt-auto">
+                    <div className="text-[16px] font-bold text-[#111827] leading-tight">Send Something</div>
+                    <div className="text-[13px] font-medium text-[#6B7280] mt-0.5">Deliver an item</div>
                   </div>
                 </motion.div>
               </div>
@@ -136,40 +153,41 @@ export default function CampusDeliveryApp() {
               {/* Search Input CTA */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setAppState("ROUTE_SELECTION")}
-                className="w-full h-[56px] bg-[#F3F4F6] rounded-[16px] flex items-center px-4 mb-6 cursor-text"
+                onClick={() => navigateTo("ROUTE_SELECTION")}
+                className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
-                <Search className="w-5 h-5 text-[#111827] mr-3" />
-                <span className="text-[18px] font-semibold text-[#111827]">Need something?</span>
+                <Search className="w-5 h-5 text-[#111827] mr-3" strokeWidth={2} />
+                <span className="text-[18px] font-bold text-[#111827]">Need something?</span>
               </motion.button>
 
               {/* Recent Locations */}
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
-                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
-                    <Clock className="w-5 h-5 text-[#111827]" />
+              <h2 className="text-[18px] font-bold text-[#111827] mb-4">Recent</h2>
+              <div className="flex flex-col gap-3 pb-8">
+                <div className="flex items-center cursor-pointer bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm" onClick={() => navigateTo("ROUTE_SELECTION")}>
+                  <div className="w-12 h-12 rounded-[14px] bg-[#F9FAFB] flex items-center justify-center mr-4 shrink-0">
+                    <Clock className="w-5 h-5 text-[#111827]" strokeWidth={1.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[16px] font-medium text-[#111827]">Moshi Urban</span>
-                    <span className="text-[14px] text-[#6B7280]">Tanzania</span>
+                    <span className="text-[16px] font-bold text-[#111827]">Moshi Urban</span>
+                    <span className="text-[14px] font-medium text-[#6B7280]">Tanzania</span>
                   </div>
                 </div>
-                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
-                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
-                    <PlusSquare className="w-5 h-5 text-[#111827]" />
+                <div className="flex items-center cursor-pointer bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm" onClick={() => navigateTo("ROUTE_SELECTION")}>
+                  <div className="w-12 h-12 rounded-[14px] bg-[#F9FAFB] flex items-center justify-center mr-4 shrink-0">
+                    <PlusSquare className="w-5 h-5 text-[#111827]" strokeWidth={1.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[16px] font-medium text-[#111827]">KCMC</span>
-                    <span className="text-[14px] text-[#6B7280]">Hospital</span>
+                    <span className="text-[16px] font-bold text-[#111827]">KCMC</span>
+                    <span className="text-[14px] font-medium text-[#6B7280]">Hospital</span>
                   </div>
                 </div>
-                <div className="flex items-center cursor-pointer" onClick={() => setAppState("ROUTE_SELECTION")}>
-                  <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-4">
-                    <Utensils className="w-5 h-5 text-[#111827]" />
+                <div className="flex items-center cursor-pointer bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm" onClick={() => navigateTo("ROUTE_SELECTION")}>
+                  <div className="w-12 h-12 rounded-[14px] bg-[#F9FAFB] flex items-center justify-center mr-4 shrink-0">
+                    <Utensils className="w-5 h-5 text-[#111827]" strokeWidth={1.5} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[16px] font-medium text-[#111827]">Hugo&apos;s Garden</span>
-                    <span className="text-[14px] text-[#6B7280]">Restaurant</span>
+                    <span className="text-[16px] font-bold text-[#111827]">Hugo&apos;s Garden</span>
+                    <span className="text-[14px] font-medium text-[#6B7280]">Restaurant</span>
                   </div>
                 </div>
               </div>
@@ -205,7 +223,7 @@ export default function CampusDeliveryApp() {
             {/* Top Nav */}
             <div className="h-[56px] w-full flex items-center px-4 relative">
               <button
-                onClick={() => setAppState("HOME")}
+                onClick={goBack}
                 className="absolute left-4 p-2 -ml-2"
               >
                 <X className="w-6 h-6 text-[#111827]" />
@@ -223,10 +241,16 @@ export default function CampusDeliveryApp() {
                  <div className="w-2 h-2 bg-black z-10"></div>
                </div>
 
-               <div className="flex-1 flex flex-col gap-3 justify-center">
+               <div className="flex-1 flex flex-col gap-3 justify-center pr-3">
                  <div className="w-full h-[48px] bg-[#F3F4F6] rounded-xl flex items-center px-3">
                    <span className="text-[16px] text-[#111827] flex-1">Shirimatunda</span>
-                   <Plus className="w-5 h-5 text-[#6B7280]" />
+                   <motion.div
+                     animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+                     transition={{ repeat: Infinity, duration: 2 }}
+                     className="w-8 h-8 rounded-full bg-[#1D965C]/10 flex items-center justify-center cursor-pointer"
+                   >
+                     <Plus className="w-5 h-5 text-[#1D965C]" />
+                   </motion.div>
                  </div>
                  <div className="w-full h-[48px] bg-white border-[2px] border-[#1D965C] rounded-[12px] flex items-center px-3 overflow-hidden shadow-sm relative">
                    <Search className="w-5 h-5 text-[#9CA3AF] mr-2 shrink-0" />
@@ -252,11 +276,6 @@ export default function CampusDeliveryApp() {
                    </div>
                  </div>
                </div>
-
-               {/* Swap Control */}
-               <div className="w-8 h-8 flex items-center justify-center absolute right-3 top-[44px] transform -translate-y-1/2 bg-white rounded-full shadow-md z-20 border border-gray-100">
-                 <ArrowDownUp className="w-4 h-4 text-[#6B7280]" />
-               </div>
             </div>
 
             {/* Suggestion List */}
@@ -278,6 +297,137 @@ export default function CampusDeliveryApp() {
                     </div>
                   )
                 })}
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "DELIVERIES" && (
+          <motion.div
+            key="deliveries"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 border-b border-gray-100">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
+                <X className="w-6 h-6 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Delivery History</h2>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                <Package className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-[20px] font-bold text-[#111827] mb-2">No deliveries yet</h3>
+              <p className="text-[16px] text-[#6B7280]">When you request a delivery, it will appear here.</p>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "ACCOUNT" && (
+          <motion.div
+            key="account"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-10">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
+                <X className="w-6 h-6 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Account</h2>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+               <div className="p-6 bg-white mb-4 shadow-sm flex items-center gap-4">
+                 <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                   <User className="w-8 h-8 text-gray-500" />
+                 </div>
+                 <div>
+                   <h2 className="text-[20px] font-bold text-[#111827]">Jane Doe</h2>
+                   <p className="text-[14px] text-[#6B7280]">jane.doe@example.com</p>
+                 </div>
+               </div>
+               <div className="bg-white shadow-sm flex flex-col">
+                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer" onClick={() => navigateTo("SETTINGS")}>
+                   <div className="flex items-center gap-3">
+                     <Settings className="w-5 h-5 text-[#111827]" />
+                     <span className="text-[16px] font-medium text-[#111827]">Settings</span>
+                   </div>
+                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 </div>
+                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer" onClick={() => navigateTo("PROMOTIONS")}>
+                   <div className="flex items-center gap-3">
+                     <Tag className="w-5 h-5 text-[#111827]" />
+                     <span className="text-[16px] font-medium text-[#111827]">Promotions</span>
+                   </div>
+                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 </div>
+               </div>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "PROMOTIONS" && (
+          <motion.div
+            key="promotions"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 border-b border-gray-100">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
+                <X className="w-6 h-6 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Promotions</h2>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                <Tag className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-[20px] font-bold text-[#111827] mb-2">No active promotions</h3>
+              <p className="text-[16px] text-[#6B7280]">Check back later for discounts and offers.</p>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "SETTINGS" && (
+          <motion.div
+            key="settings"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-10">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2">
+                <X className="w-6 h-6 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-semibold text-[#111827]">Settings</h2>
+            </div>
+            <div className="flex-1 overflow-y-auto mt-4">
+               <div className="bg-white shadow-sm flex flex-col">
+                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer">
+                   <div className="flex items-center gap-3">
+                     <User className="w-5 h-5 text-[#111827]" />
+                     <span className="text-[16px] font-medium text-[#111827]">Personal Information</span>
+                   </div>
+                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 </div>
+                 <div className="p-4 border-b border-gray-100 flex items-center justify-between cursor-pointer">
+                   <div className="flex items-center gap-3">
+                     <MapPin className="w-5 h-5 text-[#111827]" />
+                     <span className="text-[16px] font-medium text-[#111827]">Saved Locations</span>
+                   </div>
+                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 </div>
+               </div>
             </div>
           </motion.div>
         )}
@@ -321,7 +471,7 @@ export default function CampusDeliveryApp() {
             {/* Top Floating Nav */}
             <div className="absolute top-[env(safe-area-inset-top)] left-4 right-4 z-20 mt-4 flex justify-center">
               <div className="bg-white h-[48px] rounded-[24px] shadow-lg flex items-center px-2 py-1 max-w-full">
-                <button onClick={() => setAppState("ROUTE_SELECTION")} className="p-2 shrink-0">
+                <button onClick={goBack} className="p-2 shrink-0">
                   <X className="w-5 h-5 text-[#111827]" />
                 </button>
                 <div className="flex-1 flex items-center justify-center overflow-hidden px-2 gap-2 text-[14px]">
@@ -351,92 +501,80 @@ export default function CampusDeliveryApp() {
                 <div className="w-10 h-1 bg-gray-300 rounded-full" />
               </div>
 
-              {/* Sticky Promo Banner */}
-              <div className="w-full bg-[#4F46E5] text-white px-4 py-2 flex items-center justify-between shrink-0">
+              {/* Sticky Banner */}
+              <div className="w-full bg-[#EEF2FF] text-[#3730A3] px-4 py-2 flex items-center justify-center shrink-0">
                 <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                    <Tag className="w-3 h-3 text-white" />
-                  </div>
-                  <span className="text-[14px] font-medium">10% promo applied</span>
+                  <Timer className="w-4 h-4 text-[#4F46E5]" />
+                  <span className="text-[14px] font-medium">Priority Delivery Available</span>
                 </div>
-                <ArrowDownUp className="w-4 h-4 text-white/80" />
               </div>
 
               {/* Vehicle List */}
               <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-                {/* Standard Tier */}
+                {/* Standard Runner */}
                 <motion.div
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedVehicle("standard")}
-                  className={`w-full p-3 rounded-[12px] border-[2px] ${selectedVehicle === "standard" ? "border-[#1D965C]" : "border-transparent"} bg-white flex items-center justify-between shadow-sm cursor-pointer relative overflow-hidden`}
+                  className={`w-full p-4 rounded-[24px] border-[2px] ${selectedVehicle === "standard" ? "border-[#1D965C] bg-[#1D965C]/5" : "border-gray-100 bg-white shadow-sm"} flex items-center justify-between cursor-pointer relative overflow-hidden`}
                 >
-                   <div className="flex items-center gap-3 relative z-10">
-                     <div className={`w-16 h-12 flex items-center justify-center shrink-0 ${selectedVehicle === "standard" ? "" : "opacity-60"}`}>
-                        <Car className="w-10 h-10 text-gray-800" strokeWidth={1.5} />
+                   <div className="flex items-center gap-4 relative z-10">
+                     <div className={`w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 bg-white shadow-sm ${selectedVehicle === "standard" ? "" : "opacity-60"}`}>
+                        <Package className="w-6 h-6 text-gray-800" strokeWidth={1.5} />
                      </div>
                      <div className="flex flex-col">
                        <div className="flex items-center gap-2">
                          <span className={`text-[18px] ${selectedVehicle === "standard" ? "font-bold" : "font-semibold"} text-[#111827]`}>Standard</span>
-                         {selectedVehicle === "standard" && <span className="bg-[#1D965C] text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">FASTER</span>}
                        </div>
-                       <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
-                         <span className="font-medium text-[#111827]">11 min</span>
-                         <div className="flex items-center gap-0.5">
-                           <User className="w-3 h-3" />
-                           <span>4</span>
-                         </div>
-                       </div>
-                       <span className="text-[12px] text-[#6B7280]">Mid-size deliveries</span>
+                       <span className="text-[13px] font-medium text-[#6B7280]">~15 min • Normal speed</span>
                      </div>
                    </div>
                    <div className="flex flex-col items-end relative z-10">
-                     <span className={`text-[16px] ${selectedVehicle === "standard" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 11,000</span>
-                     {selectedVehicle === "standard" && <span className="text-[12px] text-[#6B7280] line-through">TZS 11,500</span>}
+                     <span className={`text-[18px] ${selectedVehicle === "standard" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 4,500</span>
                    </div>
-                   {selectedVehicle === "standard" && <div className="absolute inset-0 bg-[#1D965C] opacity-5 z-0" />}
                 </motion.div>
 
-                {/* Motorbike Tier */}
+                {/* Express Runner */}
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setSelectedVehicle("motorbike")}
-                  className={`w-full p-3 rounded-[12px] border-[2px] ${selectedVehicle === "motorbike" ? "border-[#1D965C]" : "border-transparent"} bg-white flex items-center justify-between cursor-pointer relative overflow-hidden`}
+                  onClick={() => setSelectedVehicle("express")}
+                  className={`w-full p-4 rounded-[24px] border-[2px] ${selectedVehicle === "express" ? "border-[#1D965C] bg-[#1D965C]/5" : "border-gray-100 bg-white shadow-sm"} flex items-center justify-between cursor-pointer relative overflow-hidden`}
                 >
-                   <div className="flex items-center gap-3 relative z-10">
-                     <div className={`w-16 h-12 flex items-center justify-center shrink-0 ${selectedVehicle === "motorbike" ? "" : "opacity-60"}`}>
-                        <Bike className="w-10 h-10 text-gray-600" strokeWidth={1.5} />
+                   <div className="flex items-center gap-4 relative z-10">
+                     <div className={`w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 bg-white shadow-sm ${selectedVehicle === "express" ? "" : "opacity-60"}`}>
+                        <Timer className="w-6 h-6 text-gray-800" strokeWidth={1.5} />
                      </div>
                      <div className="flex flex-col">
-                       <span className={`text-[18px] ${selectedVehicle === "motorbike" ? "font-bold" : "font-semibold"} text-[#111827]`}>Motorbike</span>
-                       <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
-                         <span className="font-medium text-[#111827]">7 min</span>
+                       <div className="flex items-center gap-2">
+                         <span className={`text-[18px] ${selectedVehicle === "express" ? "font-bold" : "font-semibold"} text-[#111827]`}>Express</span>
+                         {selectedVehicle === "express" && <span className="bg-[#1D965C] text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">FAST</span>}
                        </div>
-                       <span className="text-[12px] text-[#6B7280]">Small packages</span>
+                       <span className="text-[13px] font-medium text-[#6B7280]">~7 min • Priority delivery</span>
                      </div>
                    </div>
                    <div className="flex flex-col items-end relative z-10">
-                     <span className={`text-[16px] ${selectedVehicle === "motorbike" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 4,500</span>
+                     <span className={`text-[18px] ${selectedVehicle === "express" ? "font-bold" : "font-semibold"} text-[#111827]`}>TZS 6,000</span>
                    </div>
-                   {selectedVehicle === "motorbike" && <div className="absolute inset-0 bg-[#1D965C] opacity-5 z-0" />}
                 </motion.div>
               </div>
 
               {/* Bottom Action Bar */}
               <div className="p-4 border-t border-gray-100 bg-white shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] pb-6">
                 <div className="flex items-center justify-between mb-4 px-2">
-                  <div className="flex items-center gap-2 cursor-pointer">
-                    <div className="w-6 h-6 rounded bg-[#1D965C]/10 flex items-center justify-center">
-                      <span className="text-[#1D965C] font-bold text-xs">💵</span>
+                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setIsPaymentSheetOpen(true)}>
+                    <div className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-1">
+                       {paymentMethod === "cash" && <Banknote className="w-4 h-4 text-[#111827]" />}
+                       {paymentMethod === "mobile" && <Smartphone className="w-4 h-4 text-[#111827]" />}
+                       {paymentMethod === "card" && <CreditCard className="w-4 h-4 text-[#111827]" />}
                     </div>
-                    <span className="text-[16px] font-medium text-[#111827]">Cash</span>
-                    <ArrowDownUp className="w-4 h-4 text-[#6B7280] ml-1" />
+                    <span className="text-[16px] font-medium text-[#111827] capitalize">{paymentMethod === "mobile" ? "Mobile Money" : paymentMethod}</span>
+                    <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                   </div>
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   className="w-full h-[56px] bg-[#1D965C] text-white rounded-[28px] text-[18px] font-bold shadow-md flex items-center justify-center"
                 >
-                  Select {selectedVehicle === "standard" ? "Standard" : "Motorbike"}
+                  Select {selectedVehicle === "standard" ? "Standard" : "Express"}
                 </motion.button>
               </div>
 
@@ -485,6 +623,73 @@ export default function CampusDeliveryApp() {
                 <div className="flex items-center gap-4 cursor-pointer">
                   <User className="w-6 h-6 text-[#111827]" />
                   <span className="text-[16px] font-medium text-[#111827]">Settings</span>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Payment Selection Bottom Sheet Overlay */}
+      <AnimatePresence>
+        {isPaymentSheetOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPaymentSheetOpen(false)}
+              className="absolute inset-0 bg-black z-40"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="absolute bottom-0 left-0 right-0 bg-white z-50 rounded-t-[24px] pb-[env(safe-area-inset-bottom)] p-6 shadow-2xl flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-[20px] font-bold text-[#111827]">Payment method</h2>
+                <button onClick={() => setIsPaymentSheetOpen(false)} className="p-2 -mr-2 bg-gray-100 rounded-full">
+                  <X className="w-5 h-5 text-[#111827]" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4 mb-4">
+                <div
+                  onClick={() => { setPaymentMethod("cash"); setIsPaymentSheetOpen(false); }}
+                  className={`flex items-center justify-between p-4 rounded-[16px] border-[2px] cursor-pointer ${paymentMethod === "cash" ? "border-[#1D965C] bg-[#1D965C]/5" : "border-gray-100 bg-white"}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Banknote className={`w-6 h-6 ${paymentMethod === "cash" ? "text-[#1D965C]" : "text-[#111827]"}`} />
+                    <span className="text-[16px] font-medium text-[#111827]">Cash</span>
+                  </div>
+                  {paymentMethod === "cash" && <div className="w-5 h-5 rounded-full bg-[#1D965C] flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-white" /></div>}
+                  {paymentMethod !== "cash" && <div className="w-5 h-5 rounded-full border-2 border-gray-300" />}
+                </div>
+
+                <div
+                  onClick={() => { setPaymentMethod("mobile"); setIsPaymentSheetOpen(false); }}
+                  className={`flex items-center justify-between p-4 rounded-[16px] border-[2px] cursor-pointer ${paymentMethod === "mobile" ? "border-[#1D965C] bg-[#1D965C]/5" : "border-gray-100 bg-white"}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Smartphone className={`w-6 h-6 ${paymentMethod === "mobile" ? "text-[#1D965C]" : "text-[#111827]"}`} />
+                    <span className="text-[16px] font-medium text-[#111827]">Mobile Money</span>
+                  </div>
+                  {paymentMethod === "mobile" && <div className="w-5 h-5 rounded-full bg-[#1D965C] flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-white" /></div>}
+                  {paymentMethod !== "mobile" && <div className="w-5 h-5 rounded-full border-2 border-gray-300" />}
+                </div>
+
+                <div
+                  onClick={() => { setPaymentMethod("card"); setIsPaymentSheetOpen(false); }}
+                  className={`flex items-center justify-between p-4 rounded-[16px] border-[2px] cursor-pointer ${paymentMethod === "card" ? "border-[#1D965C] bg-[#1D965C]/5" : "border-gray-100 bg-white"}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <CreditCard className={`w-6 h-6 ${paymentMethod === "card" ? "text-[#1D965C]" : "text-[#111827]"}`} />
+                    <span className="text-[16px] font-medium text-[#111827]">Credit/Debit Card</span>
+                  </div>
+                  {paymentMethod === "card" && <div className="w-5 h-5 rounded-full bg-[#1D965C] flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-white" /></div>}
+                  {paymentMethod !== "card" && <div className="w-5 h-5 rounded-full border-2 border-gray-300" />}
                 </div>
               </div>
             </motion.div>
