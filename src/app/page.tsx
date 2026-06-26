@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {  Tag, X, Car, Bike, Package, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, WifiOff, Map, Phone, MessageSquare, CheckCircle, Star, Loader, Plus, ArrowDownUp, Menu, Banknote, CreditCard, Smartphone, ChevronRight, Settings, Send, Timer, Navigation, History as HistoryIcon  } from "lucide-react"
 
-type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE" | "SUGGESTION_BOX" | "RUNNER_ARRIVING" | "DELIVERY_COMPLETE" | "STAFF_DASHBOARD" | "STAFF_INCOMING_REQUEST" | "STAFF_ACTIVE_DELIVERIES"
+type AppState = "HOME" | "ROUTE_SELECTION" | "LOCATION_SEARCH" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE" | "SUGGESTION_BOX" | "RUNNER_ARRIVING" | "DELIVERY_COMPLETE" | "STAFF_DASHBOARD" | "STAFF_INCOMING_REQUEST" | "STAFF_ACTIVE_DELIVERIES"
 type VehicleOption = "standard" | "express"
 type PaymentMethod = "cash" | "mobile" | "card"
 
@@ -15,7 +15,7 @@ const LOCATIONS = [
   { id: 4, name: "Hugo's Garden", sub: "Restaurant", dist: "2.1 km", icon: Navigation, type: "location" },
 ]
 
-export default function CampusDeliveryApp() {
+export default function App() {
   const [navStack, setNavStack] = useState<AppState[]>(["HOME"])
   const appState = navStack[navStack.length - 1]
   const [isPromoVisible, setIsPromoVisible] = useState(true)
@@ -101,6 +101,8 @@ export default function CampusDeliveryApp() {
   })
 
   const [sheetY, setSheetY] = useState(0)
+  // Ensure the drag uses the latest react pointer types natively provided by framer-motion.
+  // Using explicit any to suppress the conflicting event type signature since it's an internal UI callback.
   const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number; y: number }, velocity: { x: number; y: number } }) => {
     // Uber/Bolt physics: Consider both offset and velocity for momentum
     const velocityThreshold = 500;
@@ -200,9 +202,9 @@ export default function CampusDeliveryApp() {
                   <div className="flex flex-col relative z-10">
                     <span className="text-[15px] font-bold text-[#3730A3] leading-tight flex items-center gap-2">
                        <Star className="w-4 h-4 text-[#4F46E5] fill-[#4F46E5]" />
-                       Anything on campus, delivered faster.
+                       Anything you need, delivered faster.
                     </span>
-                    <span className="text-[13px] font-medium text-[#4F46E5] mt-1 pr-4">Order anything from our trusted campus partners directly to your seat.</span>
+                    <span className="text-[13px] font-medium text-[#4F46E5] mt-1 pr-4">Order anything from our trusted local partners directly to your door.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
@@ -256,7 +258,7 @@ export default function CampusDeliveryApp() {
                 className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
                 <Search className="w-5 h-5 text-[#111827] mr-3" strokeWidth={2} />
-                <span className="text-[18px] font-bold text-[#111827]">Need something?</span>
+                <span className="text-[18px] font-bold text-[#111827]">Anything you need?</span>
               </motion.button>
 
               {/* Recent Locations */}
@@ -306,6 +308,65 @@ export default function CampusDeliveryApp() {
                 <User className="w-6 h-6 text-[#6B7280] mb-1" />
                 <span className="text-[12px] font-medium text-[#6B7280]">Account</span>
               </div>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "LOCATION_SEARCH" && (
+          <motion.div
+            key="location_search"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-white z-20 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
+          >
+            {/* Top Nav & Search */}
+            <div className="pt-4 px-4 pb-2 shrink-0 bg-white shadow-sm z-10 flex items-center gap-3">
+              <button
+                onClick={goBack}
+                className="p-2 -ml-2 bg-gray-50 rounded-full"
+              >
+                <X className="w-5 h-5 text-[#111827]" />
+              </button>
+              <div className="flex-1 bg-[#F3F4F6] rounded-[16px] flex items-center px-4 h-[48px]">
+                <Search className="w-5 h-5 text-gray-400 mr-2 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Where from?"
+                  autoFocus
+                  className="flex-1 text-[16px] text-[#111827] bg-transparent outline-none placeholder:text-[#6B7280] font-medium h-full"
+                />
+              </div>
+            </div>
+
+            {/* Results */}
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+               <h3 className="text-[14px] font-bold text-[#6B7280] mb-4 uppercase tracking-wider ml-2">Recent</h3>
+               <div className="flex flex-col gap-2">
+                 {[
+                   { name: "Cafeteria A", sub: "Main Campus" },
+                   { name: "Hostel Block C", sub: "North Wing" },
+                   { name: "Hugo's Garden", sub: "Restaurant" }
+                 ].map((loc, i) => (
+                   <div
+                     key={i}
+                     onClick={() => {
+                        setPickupLocation(loc.name);
+                        goBack();
+                     }}
+                     className="flex items-center gap-4 p-3 rounded-[16px] hover:bg-gray-50 cursor-pointer"
+                   >
+                      <div className="w-10 h-10 bg-[#F3F4F6] rounded-full flex items-center justify-center shrink-0">
+                         <Clock className="w-5 h-5 text-[#111827]" />
+                      </div>
+                      <div className="flex flex-col border-b border-gray-100 flex-1 pb-3">
+                         <span className="text-[16px] font-bold text-[#111827]">{loc.name}</span>
+                         <span className="text-[14px] font-medium text-[#6B7280]">{loc.sub}</span>
+                      </div>
+                   </div>
+                 ))}
+               </div>
             </div>
           </motion.div>
         )}
@@ -369,27 +430,12 @@ export default function CampusDeliveryApp() {
                    <label className="text-[14px] font-bold text-[#111827] ml-1 mb-2 block">
                      {deliveryMode === "fetch" ? "Where from?" : "Pickup from"}
                    </label>
-                   {deliveryMode === "fetch" ? (
-                     // Fetch: Dropdown to select a partner
-                     <div
-                       onClick={() => setIsPartnerDropdownOpen(true)}
-                       className="w-full bg-white border border-gray-200 rounded-[20px] flex items-center px-4 shadow-sm h-[60px] cursor-pointer hover:border-[#1D965C] transition-all"
-                     >
-                       <span className={`text-[16px] font-medium flex-1 ${pickupLocation ? "text-[#111827]" : "text-gray-400"}`}>{pickupLocation || "Select a campus partner..."}</span>
-                       <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
-                     </div>
-                   ) : (
-                     // Send: Text input for origin
-                     <div className="w-full bg-white border border-gray-200 rounded-[20px] flex items-center px-4 shadow-sm h-[60px] focus-within:border-[#1D965C] transition-all">
-                       <input
-                         type="text"
-                         value={pickupLocation}
-                         onChange={(e) => setPickupLocation(e.target.value)}
-                         placeholder="Pickup location"
-                         className="flex-1 text-[16px] text-[#111827] bg-transparent outline-none placeholder:text-gray-400 font-medium h-full"
-                       />
-                     </div>
-                   )}
+                   <div
+                     onClick={() => navigateTo("LOCATION_SEARCH")}
+                     className="w-full bg-[#F3F4F6] border border-transparent rounded-[16px] flex items-center px-4 h-[56px] cursor-pointer hover:bg-[#E5E7EB] transition-all"
+                   >
+                     <span className={`text-[16px] font-medium flex-1 ${pickupLocation ? "text-[#111827]" : "text-[#6B7280]"}`}>{pickupLocation || "Search for a location or partner..."}</span>
+                   </div>
                  </div>
 
 
@@ -840,7 +886,7 @@ export default function CampusDeliveryApp() {
              >
                 <div className="flex flex-col items-center justify-center text-center pb-4 pt-2">
                   <h2 className="text-[20px] font-bold text-[#111827] mb-2">Connecting to a Runner</h2>
-                  <p className="text-[14px] text-[#6B7280]">We are sending your request to nearby campus runners.</p>
+                  <p className="text-[14px] text-[#6B7280]">We are sending your request to nearby delivery staff.</p>
                 </div>
 
                 <button
@@ -905,7 +951,7 @@ export default function CampusDeliveryApp() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[18px] font-bold text-[#111827]">John Makata</span>
-                      <span className="text-[14px] text-[#6B7280] flex items-center gap-1">★ 4.9 • Campus Runner</span>
+                      <span className="text-[14px] text-[#6B7280] flex items-center gap-1">★ 4.9 • Delivery Professional</span>
                     </div>
                   </div>
                 </div>
@@ -998,7 +1044,7 @@ export default function CampusDeliveryApp() {
                  <CheckCircle className="w-12 h-12" />
                </div>
                <h1 className="text-[32px] font-extrabold text-[#111827] mb-2 leading-tight">Delivery<br/>Complete</h1>
-               <p className="text-[16px] text-[#6B7280] font-medium mb-12">Thank you for using Campus Delivery.</p>
+               <p className="text-[16px] text-[#6B7280] font-medium mb-12">Thank you for using our service.</p>
 
                <div className="w-full bg-[#F9FAFB] rounded-[24px] p-6 border border-gray-100 mb-8">
                  <h3 className="text-[18px] font-bold text-[#111827] mb-4">Rate your runner</h3>
@@ -1403,7 +1449,7 @@ export default function CampusDeliveryApp() {
               <div className="w-16 h-16 bg-[#F9FAFB] rounded-[20px] flex items-center justify-center mb-6">
                 <MessageSquare className="w-8 h-8 text-[#1D965C]" />
               </div>
-              <h1 className="text-[28px] font-extrabold text-[#111827] mb-2 leading-tight">Help us build<br/>a better campus.</h1>
+              <h1 className="text-[28px] font-extrabold text-[#111827] mb-2 leading-tight">Help us build<br/>a better service.</h1>
               <p className="text-[16px] text-[#6B7280] mb-8 font-medium">Tell us what you need. A new merchant? A missing feature? General feedback? We are listening.</p>
 
               <textarea
