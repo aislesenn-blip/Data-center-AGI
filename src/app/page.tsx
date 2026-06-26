@@ -7,10 +7,10 @@ import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, M
 type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK"
 
 const MOCK_TRANSACTIONS = [
-  { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User, unread: false },
-  { id: 2, type: "receive", amount: "+TZS 5,000", contactName: "Mike Smith", contactHandle: "@mike", date: "Today", time: "09:15", icon: User, unread: true },
-  { id: 3, type: "pay", amount: "-TZS 4,500", contactName: "Local Coffee", contactHandle: "@coffee_shop", date: "Yesterday", time: "08:45", icon: Utensils, unread: false },
-  { id: 4, type: "receive", amount: "+TZS 1,200", contactName: "System", contactHandle: "Promo", date: "This Week", time: "Mon", icon: Star, unread: false },
+  { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
+  { id: 2, type: "receive", amount: "+TZS 5,000", contactName: "Mike Smith", contactHandle: "@mike", date: "Today", time: "09:15", icon: User },
+  { id: 3, type: "pay", amount: "-TZS 4,500", contactName: "Local Coffee", contactHandle: "@coffee_shop", date: "Yesterday", time: "08:45", icon: Utensils },
+  { id: 4, type: "receive", amount: "+TZS 1,200", contactName: "System", contactHandle: "Promo", date: "This Week", time: "Mon", icon: Star },
 ]
 
 const CONTACTS = [
@@ -27,7 +27,12 @@ export default function App() {
   const [transactionMode, setTransactionMode] = useState<"send" | "receive" | "pay" | "deposit" | "withdraw">("send")
   const [payoutMethods, setPayoutMethods] = useState([{ id: 1, type: "bank", name: "Main Bank Account", details: "CRDB •••• 9012" }])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
-  const [linkedCards, setLinkedCards] = useState([{ id: 1, last4: "4242", brand: "Visa" }])
+  const [savedMethods, setSavedMethods] = useState([
+    { id: 1, type: "card", name: "Main Bank", details: "Visa •••• 4242", icon: CreditCard },
+    { id: 2, type: "mobile", name: "Personal M-Pesa", details: "0700 •••• 112", icon: Banknote }
+  ])
+  const [selectedMethodId, setSelectedMethodId] = useState<number | "new_mobile">(1)
+  const [isMethodSheetOpen, setIsMethodSheetOpen] = useState(false)
   const [pushNotifications, setPushNotifications] = useState(true)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
@@ -378,27 +383,44 @@ export default function App() {
 
             {/* Content */}
             <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto min-h-0">
-               {transactionMode === "deposit" ? (
+               {transactionMode === "deposit" || transactionMode === "withdraw" ? (
                  <div className="flex flex-col items-center w-full mb-4 shrink-0 px-2">
-                   <h3 className="text-[20px] font-extrabold text-[#1A1A1A] mb-4">Add Funds</h3>
-
-                   <div className="flex w-full bg-[#F4F4F4] rounded-full p-1 mb-6">
-                     <button
-                       onClick={() => setDepositMethod("card")}
-                       className={`flex-1 h-[40px] rounded-full text-[14px] font-bold transition-all ${depositMethod === "card" ? "bg-white text-[#1A1A1A] shadow-sm" : "text-[#666666]"}`}
-                     >
-                       Card
-                     </button>
-                     <button
-                       onClick={() => setDepositMethod("mobile")}
-                       className={`flex-1 h-[40px] rounded-full text-[14px] font-bold transition-all ${depositMethod === "mobile" ? "bg-white text-[#1A1A1A] shadow-sm" : "text-[#666666]"}`}
-                     >
-                       Mobile Money
-                     </button>
+                   <div className={`w-12 h-12 ${transactionMode === "deposit" ? "bg-[#1A73E8]/10 text-[#1A73E8]" : "bg-[#1A1A1A]/10 text-[#1A1A1A]"} rounded-full flex items-center justify-center mb-2 shadow-sm`}>
+                     {transactionMode === "deposit" ? <Banknote className="w-6 h-6" /> : <ArrowDownToLine className="w-6 h-6" />}
                    </div>
+                   <h3 className="text-[20px] font-extrabold text-[#1A1A1A] mb-4">
+                     {transactionMode === "deposit" ? "Add Funds" : "Withdraw"}
+                   </h3>
 
-                   {depositMethod === "mobile" && (
-                     <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 py-3 flex items-center mb-2 focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all border border-gray-100">
+                   <button
+                     onClick={() => setIsMethodSheetOpen(true)}
+                     className="w-full bg-[#F4F4F4] rounded-[20px] p-3 flex items-center justify-between shadow-sm active:bg-gray-100 transition-colors"
+                   >
+                     <div className="flex items-center gap-3">
+                       {selectedMethodId === "new_mobile" ? (
+                         <Banknote className="w-5 h-5 text-[#1A1A1A]" />
+                       ) : (
+                         (() => {
+                           const m = savedMethods.find(m => m.id === selectedMethodId);
+                           return m ? <m.icon className="w-5 h-5 text-[#1A1A1A]" /> : <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
+                         })()
+                       )}
+                       <div className="flex flex-col items-start">
+                         <span className="text-[14px] font-bold text-[#1A1A1A]">
+                           {selectedMethodId === "new_mobile" ? "New Mobile Money" : savedMethods.find(m => m.id === selectedMethodId)?.name || "Select Method"}
+                         </span>
+                         {selectedMethodId !== "new_mobile" && (
+                           <span className="text-[12px] font-medium text-[#666666]">
+                             {savedMethods.find(m => m.id === selectedMethodId)?.details}
+                           </span>
+                         )}
+                       </div>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </button>
+
+                   {selectedMethodId === "new_mobile" && (
+                     <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 py-3 flex items-center mt-3 focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all border border-gray-100">
                        <input
                          type="tel"
                          placeholder="Enter Mobile Number"
@@ -408,14 +430,6 @@ export default function App() {
                        />
                      </div>
                    )}
-                 </div>
-               ) : transactionMode === "withdraw" ? (
-                 <div className="flex flex-col items-center mb-4 shrink-0">
-                   <div className="w-12 h-12 bg-[#1A1A1A]/10 rounded-full flex items-center justify-center mb-2 shadow-sm">
-                     <ArrowDownToLine className="w-6 h-6 text-[#1A1A1A]" />
-                   </div>
-                   <h3 className="text-[18px] font-bold text-[#1A1A1A]">Withdraw</h3>
-                   <p className="text-[14px] font-medium text-[#666666]">To Mobile Money</p>
                  </div>
                ) : (
                  <div className="flex flex-col items-center mb-4 shrink-0">
@@ -473,8 +487,8 @@ export default function App() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigateTo("CONFIRMATION")}
-                disabled={!transactionAmount || Number(transactionAmount) <= 0 || (transactionMode === "deposit" && depositMethod === "mobile" && !depositMobile)}
-                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 || (transactionMode === "deposit" && depositMethod === "mobile" && !depositMobile) ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
+                disabled={!transactionAmount || Number(transactionAmount) <= 0 || ((transactionMode === "deposit" || transactionMode === "withdraw") && selectedMethodId === "new_mobile" && !depositMobile)}
+                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 || ((transactionMode === "deposit" || transactionMode === "withdraw") && selectedMethodId === "new_mobile" && !depositMobile) ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
               >
                 Continue
               </motion.button>
@@ -505,17 +519,12 @@ export default function App() {
                </div>
 
                <div className="bg-[#F4F4F4] rounded-[20px] p-5 flex flex-col gap-4 mb-8">
-                                    {transactionMode === "deposit" ? (
+                                    {transactionMode === "deposit" || transactionMode === "withdraw" ? (
                     <div className="flex justify-between items-center">
-                      <span className="text-[16px] font-medium text-[#666666]">Funding Source</span>
+                      <span className="text-[16px] font-medium text-[#666666]">{transactionMode === "deposit" ? "Funding Source" : "Destination"}</span>
                       <span className="text-[16px] font-bold text-[#1A1A1A]">
-                        {depositMethod === "card" ? `Visa •••• ${linkedCards.length > 0 ? linkedCards[0].last4 : "0000"}` : `Mobile •••• ${depositMobile.slice(-4)}`}
+                        {selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details}
                       </span>
-                    </div>
-                  ) : transactionMode === "withdraw" ? (
-                    <div className="flex justify-between items-center">
-                      <span className="text-[16px] font-medium text-[#666666]">Destination</span>
-                      <span className="text-[16px] font-bold text-[#1A1A1A]">M-Pesa •••• 9921</span>
                     </div>
                   ) : (
                     <div className="flex justify-between items-center">
@@ -623,16 +632,14 @@ export default function App() {
                       <h3 className="text-[14px] font-bold text-[#666666] uppercase tracking-wider ml-1">{group}</h3>
                       <div className="flex flex-col gap-3">
                         {groupTxs.map(tx => (
-                          <div key={tx.id} className={`p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors ${tx.unread ? "bg-[#1A73E8]/5 border border-[#1A73E8]/20" : "bg-[#F4F4F4] border border-transparent"}`}>
+                          <div key={tx.id} className="bg-[#F4F4F4] p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors">
                             <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0 relative">
-                                {tx.unread && <CircleDot className="w-4 h-4 text-[#1A73E8] absolute -top-1 -right-1 bg-white rounded-full border border-white" fill="#1A73E8" />}
+                              <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
                                 <tx.icon className={`w-6 h-6 ${tx.type === "receive" ? "text-[#27A163]" : "text-[#1A1A1A]"}`} />
                               </div>
                               <div className="flex flex-col">
-                                <span className="text-[16px] font-bold text-[#1A1A1A] flex items-center gap-2">
+                                <span className="text-[16px] font-bold text-[#1A1A1A]">
                                   {activitySearchQuery ? renderHighlightedText(tx.contactName, activitySearchQuery) : tx.contactName}
-                                  {tx.unread && <span className="text-[10px] font-bold text-[#1A73E8] uppercase tracking-wider bg-[#1A73E8]/10 px-2 py-0.5 rounded-full">New</span>}
                                 </span>
                                 <span className="text-[14px] font-medium text-[#666666]">{tx.time} • {tx.contactHandle}</span>
                               </div>
@@ -775,29 +782,29 @@ export default function App() {
               <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
                 <X className="w-5 h-5 text-[#1A1A1A]" />
               </button>
-              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Linked Cards</h2>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Payment Methods</h2>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
-               {linkedCards.length === 0 ? (
+               {savedMethods.length === 0 ? (
                  <div className="text-center text-[#666666] mt-8 font-medium">
-                   No linked cards found. Add a card to fund your account.
+                   No saved payment methods found.
                  </div>
                ) : (
-                 linkedCards.map(card => (
-                   <div key={card.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
+                 savedMethods.map(method => (
+                   <div key={method.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
                      <div className="flex items-center gap-4">
-                       <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
-                         <CreditCard className="w-6 h-6 text-[#1A1A1A]" />
+                       <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
+                         <method.icon className="w-6 h-6 text-[#1A1A1A]" />
                        </div>
                        <div className="flex flex-col">
-                         <span className="text-[16px] font-bold text-[#1A1A1A]">{card.brand}</span>
-                         <span className="text-[14px] font-medium text-[#666666]">•••• {card.last4}</span>
+                         <span className="text-[16px] font-bold text-[#1A1A1A]">{method.name}</span>
+                         <span className="text-[14px] font-medium text-[#666666]">{method.details}</span>
                        </div>
                      </div>
                      <button
-                       onClick={() => setLinkedCards(linkedCards.filter(c => c.id !== card.id))}
-                       className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                       onClick={() => setSavedMethods(savedMethods.filter(m => m.id !== method.id))}
+                       className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
                      >
                        <Trash2 className="w-5 h-5" />
                      </button>
@@ -807,7 +814,7 @@ export default function App() {
 
                <button
                  onClick={() => navigateTo("ADD_CARD")}
-                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors"
+                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors shrink-0"
                >
                  <Plus className="w-5 h-5" />
                  Add New Card
@@ -861,7 +868,7 @@ export default function App() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => {
-                  setLinkedCards([...linkedCards, { id: Date.now(), last4: "8888", brand: "Mastercard" }]);
+                  setSavedMethods([...savedMethods, { id: Date.now(), type: "card", name: "New Card", details: "Mastercard •••• 8888", icon: CreditCard }]);
                   goBack();
                 }}
                 className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
@@ -1072,6 +1079,82 @@ export default function App() {
           </motion.div>
         )}
 
+      </AnimatePresence>
+
+
+      {/* Payment Method Selector Bottom Sheet Overlay */}
+      <AnimatePresence>
+        {isMethodSheetOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMethodSheetOpen(false)}
+              className="absolute inset-0 bg-black z-40"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="absolute bottom-0 left-0 right-0 bg-white z-50 rounded-t-[24px] pb-[env(safe-area-inset-bottom)] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden max-h-[85vh]"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-[20px] font-bold text-[#1A1A1A]">Select Method</h2>
+                <button onClick={() => setIsMethodSheetOpen(false)} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
+                  <X className="w-5 h-5 text-[#1A1A1A]" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto flex flex-col gap-3">
+                {savedMethods.map(method => (
+                  <div
+                    key={method.id}
+                    onClick={() => { setSelectedMethodId(method.id); setIsMethodSheetOpen(false); }}
+                    className={`flex items-center justify-between p-4 rounded-[16px] border-[2px] cursor-pointer transition-all ${selectedMethodId === method.id ? "border-[#1A1A1A] bg-[#1A1A1A]/5" : "border-transparent bg-[#F4F4F4] hover:bg-gray-100"}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-white rounded-[12px] flex items-center justify-center shadow-sm">
+                        <method.icon className="w-5 h-5 text-[#1A1A1A]" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[16px] font-bold text-[#1A1A1A]">{method.name}</span>
+                        <span className="text-[13px] font-medium text-[#666666]">{method.details}</span>
+                      </div>
+                    </div>
+                    {selectedMethodId === method.id && <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-white" /></div>}
+                  </div>
+                ))}
+
+                <div className="h-px bg-gray-200 my-2" />
+
+                <div
+                  onClick={() => { setSelectedMethodId("new_mobile"); setIsMethodSheetOpen(false); }}
+                  className={`flex items-center justify-between p-4 rounded-[16px] border-[2px] cursor-pointer transition-all ${selectedMethodId === "new_mobile" ? "border-[#1A1A1A] bg-[#1A1A1A]/5" : "border-transparent bg-[#F4F4F4] hover:bg-gray-100"}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white rounded-[12px] flex items-center justify-center shadow-sm">
+                      <Banknote className="w-5 h-5 text-[#1A1A1A]" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">Enter New Mobile Number</span>
+                    </div>
+                  </div>
+                  {selectedMethodId === "new_mobile" && <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0"><div className="w-2 h-2 rounded-full bg-white" /></div>}
+                </div>
+
+                <button
+                  onClick={() => { setIsMethodSheetOpen(false); navigateTo("ADD_CARD"); }}
+                  className="mt-2 flex items-center justify-center gap-2 w-full h-[56px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[16px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add New Card
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
       </AnimatePresence>
 
       {/* Hamburger Overlay Menu */}

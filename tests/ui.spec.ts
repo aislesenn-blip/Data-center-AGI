@@ -55,7 +55,7 @@ test('financial ui deposit flow and balance visibility', async ({ page }) => {
 
   // Confirmation
   await expect(page.getByText('Confirm Deposit').first()).toBeVisible();
-  await expect(page.getByText('Visa •••• 4242')).toBeVisible();
+  await expect(page.getByText('Visa •••• 4242').last()).toBeVisible();
   await page.getByText('Confirm Deposit').nth(1).click();
 
   await page.waitForTimeout(600);
@@ -120,13 +120,14 @@ test('financial ui withdraw funds flow', async ({ page }) => {
 
   // Amount screen
   await expect(page.getByText('Withdraw', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: '2' }).first().click();
+  await page.waitForTimeout(1000);
+  await page.getByRole('button', { name: '2', exact: true }).first().click();
   await page.getByRole('button', { name: '00' }).first().click();
   await page.getByText('Continue').click();
 
   // Confirmation
   await expect(page.getByText('Confirm Withdrawal').first()).toBeVisible();
-  await expect(page.getByText('M-Pesa •••• 9921')).toBeVisible();
+  await expect(page.getByText('Visa •••• 4242').last()).toBeVisible();
   await page.getByText('Confirm Withdrawal').nth(1).click();
 
   await page.waitForTimeout(600);
