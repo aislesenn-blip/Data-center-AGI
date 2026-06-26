@@ -135,3 +135,17 @@ test('financial ui withdraw funds flow', async ({ page }) => {
   await expect(page.getByText('Withdrawal Started')).toBeVisible();
   await page.getByText('Done').click();
 });
+
+test('financial ui receive link flow', async ({ page }) => {
+  await page.goto('/');
+
+  // Go to Receive
+  await page.getByText('Receive', { exact: true }).click();
+
+  // Link screen
+  await expect(page.getByText('pay.app/@')).toBeVisible();
+  await expect(page.getByText('Copy Payment Link')).toBeVisible();
+
+  // Close
+  await page.locator('button', { has: page.locator('.lucide-x') }).first().click();
+});
