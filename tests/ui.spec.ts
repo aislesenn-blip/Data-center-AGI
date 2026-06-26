@@ -15,7 +15,9 @@ test('financial ui basic flow', async ({ page }) => {
 
   // 3. Amount Screen
   await expect(page.getByText('Send Money')).toBeVisible();
-  await page.getByPlaceholder('0').fill('1000');
+  await page.getByRole('button', { name: '1' }).first().click();
+  await page.getByRole('button', { name: '0' }).first().click();
+  await page.getByRole('button', { name: '00' }).first().click();
   await page.getByText('Continue').click();
 
   // 4. Confirmation
@@ -46,7 +48,9 @@ test('financial ui deposit flow and balance visibility', async ({ page }) => {
 
   // Deposit Amount screen
   await expect(page.getByText('Add Funds')).toBeVisible();
-  await page.getByPlaceholder('0').fill('50000');
+  await page.getByRole('button', { name: '5' }).first().click();
+  await page.getByRole('button', { name: '00' }).first().click();
+  await page.getByRole('button', { name: '00' }).first().click();
   await page.getByText('Continue').click();
 
   // Confirmation
@@ -89,4 +93,18 @@ test('financial ui settings and linked cards', async ({ page }) => {
 
   // Remove first card
   await page.locator('.lucide-trash-2').first().click();
+});
+
+test('financial ui payout config', async ({ page }) => {
+  await page.goto('/');
+
+  // Navigate to Account
+  await page.getByText('Account', { exact: true }).first().click();
+
+  // Go to Payout Config
+  await page.getByText('Payout Configuration').click();
+
+  // Verify payout screen
+  await expect(page.getByText('Payout Methods')).toBeVisible();
+  await expect(page.getByText('Main Bank Account')).toBeVisible();
 });

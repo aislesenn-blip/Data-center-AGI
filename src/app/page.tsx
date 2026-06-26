@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2 } from "lucide-react"
+import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete } from "lucide-react"
 
-type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD"
+type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG"
 
 const MOCK_TRANSACTIONS = [
   { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
@@ -72,6 +72,27 @@ export default function App() {
       }
       return ["HOME"];
     });
+  }
+
+
+  const handleKeypadPress = (val: string) => {
+    if (val === "backspace") {
+      setTransactionAmount(prev => prev.slice(0, -1));
+    } else {
+      setTransactionAmount(prev => {
+        // limit length if necessary, e.g., to 10 chars
+        if (prev.length >= 10) return prev;
+        // prevent leading zero if it's the only char
+        if (prev === "0" && val !== "0") return val;
+        if (prev === "0" && val === "0") return prev;
+        return prev + val;
+      });
+    }
+  }
+
+  const formatAmount = (val: string) => {
+    if (!val) return "0";
+    return Number(val).toLocaleString();
   }
 
   const filteredTransactions = MOCK_TRANSACTIONS.filter(tx => {
@@ -362,20 +383,15 @@ export default function App() {
                  </div>
                )}
 
-               <div className="w-full flex justify-center items-center gap-1 mb-8">
-                 <span className="text-[28px] font-bold text-[#666666] self-start mt-2">TZS</span>
-                 <input
-                   type="number"
-                   placeholder="0"
-                   autoFocus
-                   value={transactionAmount}
-                   onChange={(e) => setTransactionAmount(e.target.value)}
-                   className="text-[64px] font-extrabold text-[#1A1A1A] bg-transparent outline-none text-center w-full max-w-[200px] placeholder:text-gray-300"
-                 />
+               <div className="w-full flex justify-center items-end gap-2 mb-8">
+                 <span className="text-[18px] font-bold text-[#666666] mb-2">TZS</span>
+                 <div className="text-[64px] font-extrabold text-[#1A1A1A] tracking-tight leading-none">
+                   {formatAmount(transactionAmount)}
+                 </div>
                </div>
 
                {transactionMode !== "deposit" && (
-                 <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center focus-within:ring-2 focus-within:ring-[#27A163]/50 transition-all">
+                 <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center mb-4">
                    <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
                    <input
                      type="text"
@@ -388,7 +404,28 @@ export default function App() {
                )}
             </div>
 
-            <div className="p-4 bg-white shrink-0 pb-[max(env(safe-area-inset-bottom),24px)]">
+            {/* Custom Keypad */}
+            <div className="w-full bg-white shrink-0 px-4 pb-4">
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0"].map((key) => (
+                  <motion.button
+                    key={key}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleKeypadPress(key)}
+                    className="h-[60px] flex items-center justify-center text-[24px] font-bold text-[#1A1A1A] rounded-2xl active:bg-gray-100 transition-colors"
+                  >
+                    {key}
+                  </motion.button>
+                ))}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleKeypadPress("backspace")}
+                  className="h-[60px] flex items-center justify-center rounded-2xl active:bg-gray-100 transition-colors"
+                >
+                  <Delete className="w-7 h-7 text-[#1A1A1A]" />
+                </motion.button>
+              </div>
+
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigateTo("CONFIRMATION")}
@@ -617,7 +654,7 @@ export default function App() {
                <div className="flex flex-col gap-2">
                  <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Merchant</h3>
                  <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => navigateTo("PAYOUT_CONFIG")}>
                      <div className="flex items-center gap-4">
                        <Banknote className="w-5 h-5 text-[#1A1A1A]" />
                        <div className="flex flex-col">
@@ -812,6 +849,50 @@ export default function App() {
 
                  </div>
               </div>
+            </div>
+          </motion.div>
+        )}
+
+
+        {appState === "PAYOUT_CONFIG" && (
+          <motion.div
+            key="payout_config"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Payout Methods</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
+               <div className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
+                 <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
+                     <Banknote className="w-6 h-6 text-[#1A1A1A]" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-[16px] font-bold text-[#1A1A1A]">Main Bank Account</span>
+                     <span className="text-[14px] font-medium text-[#666666]">CRDB •••• 9012</span>
+                   </div>
+                 </div>
+                 <div className="bg-[#27A163]/10 text-[#27A163] px-3 py-1 rounded-full text-[12px] font-bold">
+                   Default
+                 </div>
+               </div>
+
+               <button
+                 onClick={() => {}}
+                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors"
+               >
+                 <Plus className="w-5 h-5" />
+                 Add Disbursement Method
+               </button>
             </div>
           </motion.div>
         )}
