@@ -82,7 +82,7 @@ export default function App() {
     } else {
       setTransactionAmount(prev => {
         // limit length if necessary, e.g., to 10 chars
-        if (prev.length >= 10) return prev;
+        if (prev.length >= 12) return prev;
         // prevent leading zero if it's the only char
         if (prev === "0" && val !== "0") return val;
         if (prev === "0" && val === "0") return prev;
@@ -94,6 +94,15 @@ export default function App() {
   const formatAmount = (val: string) => {
     if (!val) return "0";
     return Number(val).toLocaleString();
+  }
+
+
+  const getAmountFontSize = (val: string) => {
+    const formattedLength = formatAmount(val).length;
+    if (formattedLength > 12) return 'text-[28px] sm:text-[32px]';
+    if (formattedLength > 9) return 'text-[36px] sm:text-[42px]';
+    if (formattedLength > 6) return 'text-[44px] sm:text-[50px]';
+    return 'text-[48px] sm:text-[56px]';
   }
 
   const filteredTransactions = MOCK_TRANSACTIONS.filter(tx => {
@@ -395,7 +404,7 @@ export default function App() {
 
                <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
                  <span className="text-[18px] font-bold text-[#666666] mb-2">TZS</span>
-                 <div className="text-[48px] sm:text-[56px] font-extrabold text-[#1A1A1A] tracking-tight leading-none overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%] text-center">
+                 <div className={`${getAmountFontSize(transactionAmount)} font-extrabold text-[#1A1A1A] tracking-tight leading-none text-center transition-all duration-200 break-words w-full max-w-[95%]`}>
                    {formatAmount(transactionAmount)}
                  </div>
                </div>
