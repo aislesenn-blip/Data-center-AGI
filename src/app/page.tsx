@@ -27,6 +27,8 @@ export default function App() {
   const [transactionMode, setTransactionMode] = useState<"send" | "receive" | "pay" | "deposit" | "withdraw">("send")
   const [payoutMethods, setPayoutMethods] = useState([{ id: 1, type: "bank", name: "Main Bank Account", details: "CRDB •••• 9012" }])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
+  const [balance, setBalance] = useState(142500)
+  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS)
   const [savedMethods, setSavedMethods] = useState([
     { id: 1, type: "card", name: "Main Bank", details: "Visa •••• 4242", icon: CreditCard },
     { id: 2, type: "mobile", name: "Personal M-Pesa", details: "0700 •••• 112", icon: Banknote }
@@ -112,7 +114,7 @@ export default function App() {
     return 'text-[48px] sm:text-[56px]';
   }
 
-  const filteredTransactions = MOCK_TRANSACTIONS.filter(tx => {
+  const filteredTransactions = transactions.filter(tx => {
     if (!activitySearchQuery) return true;
     const query = activitySearchQuery.toLowerCase();
     return tx.contactName.toLowerCase().includes(query) ||
@@ -184,7 +186,7 @@ export default function App() {
               <div className="mb-6 flex flex-col items-start">
                 <div className="flex items-center gap-3">
                   <h1 className="text-[32px] font-extrabold text-[#1A1A1A] tracking-[-0.5px]">
-                    {isBalanceVisible ? "TZS 142,500" : "••••••••"}
+                    {isBalanceVisible ? `TZS ${balance.toLocaleString()}` : "••••••••"}
                   </h1>
                   <button onClick={() => setIsBalanceVisible(!isBalanceVisible)} className="p-1.5 bg-[#F4F4F4] rounded-full mt-1">
                     {isBalanceVisible ? <EyeOff className="w-5 h-5 text-[#666666]" /> : <Eye className="w-5 h-5 text-[#666666]" />}
@@ -346,7 +348,7 @@ export default function App() {
                  ))}
 
                  {filteredContacts.length === 0 && (
-                    <div className="text-center text-[#666666] mt-8 font-medium">
+                    <div className="text-center text-[#666666] mt-8 font-medium bg-[#F4F4F4] rounded-[24px] p-6">
                       No contacts found for &quot;{searchQuery}&quot;
                     </div>
                  )}
@@ -547,6 +549,44 @@ export default function App() {
                <motion.button
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
+                   const amt = Number(transactionAmount);
+                   if (transactionMode === "deposit") {
+                     setBalance(prev => prev + amt);
+                     setTransactions([{
+                       id: Date.now(),
+                       type: "receive",
+                       amount: `+TZS ${amt.toLocaleString()}`,
+                       contactName: "Self Deposit",
+                       contactHandle: selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details || "Card",
+                       date: "Today",
+                       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                       icon: Banknote
+                     }, ...transactions]);
+                   } else if (transactionMode === "withdraw") {
+                     setBalance(prev => prev - amt);
+                     setTransactions([{
+                       id: Date.now(),
+                       type: "send",
+                       amount: `-TZS ${amt.toLocaleString()}`,
+                       contactName: "Withdrawal",
+                       contactHandle: selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details || "Mobile Money",
+                       date: "Today",
+                       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                       icon: ArrowDownToLine
+                     }, ...transactions]);
+                   } else {
+                     setBalance(prev => prev - amt);
+                     setTransactions([{
+                       id: Date.now(),
+                       type: "send",
+                       amount: `-TZS ${amt.toLocaleString()}`,
+                       contactName: selectedContact?.name || "Unknown",
+                       contactHandle: selectedContact?.handle || "Unknown",
+                       date: "Today",
+                       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                       icon: selectedContact?.icon ? (selectedContact.icon as any) : User
+                     }, ...transactions]);
+                   }
                    setTimeout(() => navigateTo("SUCCESS"), 500);
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
@@ -620,7 +660,7 @@ export default function App() {
 
             <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-6">
               {filteredTransactions.length === 0 ? (
-                 <div className="text-center text-[#666666] mt-8 font-medium">
+                 <div className="text-center text-[#666666] mt-8 font-medium bg-[#F4F4F4] rounded-[24px] p-6">
                    No transactions found for &quot;{activitySearchQuery}&quot;
                  </div>
               ) : (
