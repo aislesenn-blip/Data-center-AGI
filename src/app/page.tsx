@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {  Tag, X, Car, Bike, Package, Search, Clock, PlusSquare, Utensils, Home, Calendar, User, MapPin, WifiOff, Map, Phone, MessageSquare, CheckCircle, Star, Loader, Plus, ArrowDownUp, Menu, Banknote, CreditCard, Smartphone, ChevronRight, Settings, Send, Timer, Navigation, History as HistoryIcon  } from "lucide-react"
 
-type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE" | "SUGGESTION_BOX" | "RUNNER_ARRIVING" | "DELIVERY_COMPLETE"
+type AppState = "HOME" | "ROUTE_SELECTION" | "FARE_SELECTION" | "PAYMENT_METHODS" | "DELIVERIES" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "FINDING" | "EN_ROUTE" | "SUGGESTION_BOX" | "RUNNER_ARRIVING" | "DELIVERY_COMPLETE" | "STAFF_DASHBOARD" | "STAFF_INCOMING_REQUEST" | "STAFF_ACTIVE_DELIVERIES"
 type VehicleOption = "standard" | "express"
 type PaymentMethod = "cash" | "mobile" | "card"
 
@@ -78,6 +78,10 @@ export default function CampusDeliveryApp() {
   const [chatMessage, setChatMessage] = useState("")
   const [isOnline, setIsOnline] = useState(true)
   const [isGpsDenied, setIsGpsDenied] = useState(false)
+
+  // --- Staff State Variables ---
+  const [staffStatus, setStaffStatus] = useState<"offline" | "online">("offline");
+  const [activeOrders, setActiveOrders] = useState<Array<{id: string, status: string, pickup: string, dropoff: string}>>([]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true)
@@ -342,11 +346,10 @@ export default function CampusDeliveryApp() {
                      className="flex-1 text-[16px] text-[#111827] bg-transparent outline-none placeholder:text-gray-400 font-medium h-full"
                      autoFocus
                    />
-
-                 <span className="text-[12px] font-medium text-gray-500 mt-2 block ml-1">
+                 </div>
+                 <span className="text-[13px] font-medium text-gray-500 mt-2 block ml-2">
                    {deliveryMode === "fetch" ? "Describe the item and its approximate price." : "Describe the item."}
                  </span>
-</div>
                </div>
 
                {/* Route Timeline */}
@@ -793,6 +796,8 @@ export default function CampusDeliveryApp() {
                   Confirm Delivery
                 </motion.button>
               </div>
+              {/* Spacer to push everything up due to bottom-[-50%] on container */}
+              <div className="h-[50vh] shrink-0 pointer-events-none" />
 
             </motion.div>
           </motion.div>
@@ -1049,9 +1054,324 @@ export default function CampusDeliveryApp() {
                    <MessageSquare className="w-6 h-6 text-[#111827]" />
                    <span className="text-[18px] font-bold text-[#111827]">Suggestion Box</span>
                  </div>
+
+                 <div
+                   onClick={() => { setIsMenuOpen(false); navigateTo("STAFF_DASHBOARD"); }}
+                   className="flex items-center gap-4 cursor-pointer p-3 hover:bg-gray-50 rounded-[16px] transition-colors mt-2"
+                 >
+                   <User className="w-6 h-6 text-[#111827]" />
+                   <span className="text-[18px] font-bold text-[#111827]">Staff</span>
+                 </div>
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Staff Dashboard Screen */}
+      <AnimatePresence>
+        {appState === "STAFF_DASHBOARD" && (
+          <motion.div
+            key="staff_dashboard"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            {/* Top Nav */}
+            <div className="h-[60px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-gray-50 rounded-full">
+                <X className="w-5 h-5 text-[#111827]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#111827]">Staff Portal</h2>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto pb-[100px]">
+               {/* Header / Toggle */}
+               <div className="bg-white p-6 shadow-sm mb-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col">
+                      <span className="text-[24px] font-extrabold text-[#111827]">John Makata</span>
+                      <span className="text-[14px] text-gray-500 font-medium">Runner ID: 4892</span>
+                    </div>
+                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                       <User className="w-8 h-8 text-gray-400 mt-2" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between bg-[#F9FAFB] p-4 rounded-[16px] border border-gray-100">
+                     <span className={`text-[16px] font-bold ${staffStatus === "online" ? "text-[#1D965C]" : "text-gray-500"}`}>
+                       {staffStatus === "online" ? "You are Online" : "You are Offline"}
+                     </span>
+                     <button
+                       onClick={() => setStaffStatus(prev => prev === "online" ? "offline" : "online")}
+                       className={`w-14 h-8 rounded-full p-1 transition-colors ${staffStatus === "online" ? "bg-[#1D965C]" : "bg-gray-300"} relative`}
+                     >
+                       <motion.div
+                         layout
+                         className="w-6 h-6 bg-white rounded-full shadow-sm"
+                         animate={{ x: staffStatus === "online" ? 24 : 0 }}
+                       />
+                     </button>
+                  </div>
+               </div>
+
+               {/* Metrics */}
+               <div className="px-4 mb-4 flex gap-4">
+                 <div className="flex-1 bg-white p-4 rounded-[16px] border border-gray-100 shadow-sm flex flex-col">
+                   <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1">Today</span>
+                   <span className="text-[20px] font-extrabold text-[#111827]">TZS 25,000</span>
+                 </div>
+                 <div className="flex-1 bg-white p-4 rounded-[16px] border border-gray-100 shadow-sm flex flex-col">
+                   <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1">Deliveries</span>
+                   <span className="text-[20px] font-extrabold text-[#111827]">12</span>
+                 </div>
+               </div>
+
+               {/* Queue Management */}
+               <div className="px-4 mb-6">
+                 <h3 className="text-[16px] font-bold text-[#111827] mb-3 ml-1">Active Deliveries</h3>
+
+                 {activeOrders.length === 0 ? (
+                   <div className="bg-white p-6 rounded-[16px] border border-gray-100 shadow-sm flex flex-col items-center text-center justify-center h-[140px]">
+                      <Package className="w-8 h-8 text-gray-300 mb-2" />
+                      <span className="text-[14px] text-gray-500 font-medium">No active deliveries.</span>
+                   </div>
+                 ) : (
+                   <div className="flex flex-col gap-3">
+                     {activeOrders.map((order, i) => (
+                       <div key={i} className="bg-white p-4 rounded-[16px] border-l-4 border-[#1D965C] border-y border-r border-gray-100 shadow-sm flex flex-col" onClick={() => navigateTo("STAFF_ACTIVE_DELIVERIES")}>
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="text-[14px] font-bold text-[#111827]">Order #{order.id}</span>
+                            <span className="text-[12px] bg-green-50 text-[#1D965C] px-2 py-1 rounded font-bold">{order.status}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mb-1">
+                             <div className="w-2 h-2 rounded-full bg-gray-400" />
+                             <span className="text-[14px] text-gray-600 font-medium truncate">{order.pickup}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-[#1D965C]" />
+                             <span className="text-[14px] text-[#111827] font-bold truncate">{order.dropoff}</span>
+                          </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </div>
+
+               {/* Simulate Incoming Request */}
+               {staffStatus === "online" && activeOrders.length === 0 && (
+                 <div className="px-4 mt-8 flex justify-center">
+                    <button
+                      onClick={() => navigateTo("STAFF_INCOMING_REQUEST")}
+                      className="text-[14px] font-bold text-[#4F46E5] bg-[#EEF2FF] px-4 py-2 rounded-full"
+                    >
+                      [Simulate Incoming Request]
+                    </button>
+                 </div>
+               )}
+            </div>
+
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Staff Incoming Request Screen */}
+      <AnimatePresence>
+        {appState === "STAFF_INCOMING_REQUEST" && (
+          <motion.div
+            key="staff_incoming"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            className="absolute inset-0 bg-[#E5E7EB] z-30 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-hidden"
+          >
+             {/* Map Backdrop Mock */}
+             <div className="absolute inset-0 z-0">
+               <svg className="w-full h-[60%] mt-10" preserveAspectRatio="none" viewBox="0 0 100 100">
+                  <path d="M 20 80 Q 50 50 80 20" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+               </svg>
+               <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                 <div className="bg-white rounded-full px-3 py-1 shadow-md border border-gray-100 mb-1 flex items-center gap-1">
+                   <span className="text-[12px] font-semibold text-[#111827]">New Request</span>
+                 </div>
+                 <div className="w-8 h-8 bg-[#111827] rounded-full flex items-center justify-center border-2 border-white shadow-lg animate-pulse">
+                   <div className="w-3 h-3 bg-white rounded-full" />
+                 </div>
+               </div>
+             </div>
+
+             {/* Ringing Header */}
+             <div className="absolute top-10 left-0 right-0 z-10 flex justify-center">
+                <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-gray-100 flex items-center gap-3">
+                   <div className="w-3 h-3 bg-[#1D965C] rounded-full animate-ping absolute" />
+                   <div className="w-3 h-3 bg-[#1D965C] rounded-full relative" />
+                   <span className="text-[16px] font-bold text-[#111827]">Incoming Delivery</span>
+                </div>
+             </div>
+
+             {/* Details Bottom Sheet (Always Expanded) */}
+             <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-20 flex flex-col p-6 pb-[max(env(safe-area-inset-bottom),24px)]">
+                <div className="flex justify-between items-start mb-6">
+                   <div className="flex flex-col">
+                      <span className="text-[24px] font-extrabold text-[#111827]">TZS 2,500</span>
+                      <span className="text-[14px] text-gray-500 font-medium">Estimated payout</span>
+                   </div>
+                   <div className="flex flex-col items-end">
+                      <span className="text-[18px] font-bold text-[#111827]">~15 min</span>
+                      <span className="text-[14px] text-gray-500 font-medium">Total time</span>
+                   </div>
+                </div>
+
+                <div className="flex flex-col gap-4 mb-8">
+                   <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center shrink-0 mt-1">
+                         <div className="w-3 h-3 bg-gray-400 rounded-full" />
+                      </div>
+                      <div className="flex flex-col border-b border-gray-100 pb-4 flex-1">
+                         <span className="text-[16px] font-bold text-[#111827]">Cafeteria A</span>
+                         <span className="text-[14px] text-gray-500 font-medium">Pickup • 1.2 km away</span>
+                      </div>
+                   </div>
+                   <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center shrink-0 mt-1">
+                         <div className="w-3 h-3 bg-[#1D965C] rounded-full" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                         <span className="text-[16px] font-bold text-[#111827]">Hostel Block C</span>
+                         <span className="text-[14px] text-gray-500 font-medium">Dropoff • 2.5 km total</span>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Batching Info (If already has active) */}
+                {activeOrders.length > 0 && (
+                   <div className="bg-[#EEF2FF] rounded-[16px] p-4 mb-6 border border-[#E0E7FF] flex items-start gap-3">
+                      <Plus className="w-5 h-5 text-[#4F46E5] shrink-0 mt-0.5" />
+                      <div className="flex flex-col">
+                         <span className="text-[14px] font-bold text-[#3730A3]">Queue addition</span>
+                         <span className="text-[12px] text-[#4F46E5] font-medium leading-tight mt-1">Adds ~8 mins to your current route. Customer ETAs will be automatically updated.</span>
+                      </div>
+                   </div>
+                )}
+
+                <div className="flex gap-4">
+                   <button
+                     onClick={goBack}
+                     className="flex-1 h-[60px] bg-white border-2 border-gray-200 text-[#111827] rounded-[30px] text-[18px] font-bold"
+                   >
+                     Decline
+                   </button>
+                   <button
+                     onClick={() => {
+                        setActiveOrders([{id: "1094", status: "Heading to pickup", pickup: "Cafeteria A", dropoff: "Hostel Block C"}]);
+                        navigateTo("STAFF_ACTIVE_DELIVERIES");
+                     }}
+                     className="flex-1 h-[60px] bg-[#1D965C] text-white rounded-[30px] text-[18px] font-bold shadow-md"
+                   >
+                     Accept
+                   </button>
+                </div>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Staff Active Deliveries Screen */}
+      <AnimatePresence>
+        {appState === "STAFF_ACTIVE_DELIVERIES" && (
+          <motion.div
+            key="staff_active_deliveries"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-30 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-hidden pointer-events-auto"
+          >
+             {/* Map Backdrop Simulation for Navigation */}
+             <div className="absolute inset-0 bg-[#E5E7EB] z-0">
+               <svg className="absolute w-full h-[60%] top-[10%]" preserveAspectRatio="none" viewBox="0 0 100 100">
+                 <path d="M 50 80 Q 50 50 80 20" fill="none" stroke="#4F46E5" strokeWidth="1.5" strokeLinecap="round" />
+               </svg>
+               {/* Nav Marker */}
+               <div className="absolute top-[80%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg border border-gray-100">
+                    <Navigation className="w-6 h-6 text-[#4F46E5] transform rotate-45" fill="#4F46E5" />
+                 </div>
+               </div>
+
+               {/* Next Destination Marker */}
+               <div className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                 <div className="bg-white rounded-full px-3 py-1 shadow-md border border-gray-100 mb-1 flex items-center gap-1">
+                   <span className="text-[12px] font-semibold text-[#111827]">Pickup</span>
+                   <span className="text-[12px] text-[#6B7280]">2 min</span>
+                 </div>
+                 <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                   <div className="w-2 h-2 bg-white rounded-full" />
+                 </div>
+               </div>
+             </div>
+
+             {/* Top Bar Navigation */}
+             <div className="absolute top-[env(safe-area-inset-top)] left-4 right-4 z-10 flex gap-2 mt-4">
+               <button onClick={() => navigateTo("STAFF_DASHBOARD")} className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center shrink-0">
+                 <ArrowDownUp className="w-6 h-6 text-[#111827] rotate-90" />
+               </button>
+               <div className="flex-1 bg-white rounded-full shadow-lg flex items-center px-4 overflow-hidden border border-gray-100">
+                  <div className="w-3 h-3 bg-gray-800 rounded-full shrink-0 mr-3" />
+                  <span className="text-[16px] font-bold text-[#111827] truncate">Continue on University Rd</span>
+               </div>
+             </div>
+
+             {/* Bottom Sheet - Current Task */}
+             <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-20 flex flex-col pb-[max(env(safe-area-inset-bottom),24px)]">
+
+               {/* Queue Status Header */}
+               <div className="w-full bg-[#111827] text-white px-6 py-3 rounded-t-[24px] flex items-center justify-between shrink-0">
+                  <div className="flex flex-col">
+                     <span className="text-[14px] font-bold">1 of 1 Tasks</span>
+                     <span className="text-[12px] text-gray-400 font-medium">No queued orders</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                     <span className="text-[16px] font-extrabold text-[#1D965C]">2 min</span>
+                     <span className="text-[12px] font-medium text-gray-400 ml-1">(1.2 km)</span>
+                  </div>
+               </div>
+
+               {/* Task Details */}
+               <div className="p-6">
+                  <h2 className="text-[22px] font-extrabold text-[#111827] mb-1">Pickup at Cafeteria A</h2>
+                  <p className="text-[15px] text-gray-500 font-medium mb-6">Order #1094 • 1x Burger, 1x Coke</p>
+
+                  <div className="flex gap-4 mb-6">
+                    <button onClick={() => setIsCalling(true)} className="flex-1 h-[56px] bg-[#F9FAFB] border border-gray-200 rounded-[16px] flex items-center justify-center gap-2">
+                       <Phone className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[15px] font-bold text-[#111827]">Call</span>
+                    </button>
+                    <button onClick={() => setIsChatting(true)} className="flex-1 h-[56px] bg-[#F9FAFB] border border-gray-200 rounded-[16px] flex items-center justify-center gap-2">
+                       <MessageSquare className="w-5 h-5 text-[#111827]" />
+                       <span className="text-[15px] font-bold text-[#111827]">Message</span>
+                    </button>
+                  </div>
+
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                       setActiveOrders([]); // clear after complete for demo
+                       navigateTo("STAFF_DASHBOARD");
+                    }}
+                    className="w-full h-[60px] bg-[#1D965C] text-white rounded-[30px] text-[18px] font-bold shadow-md flex items-center justify-center relative overflow-hidden"
+                  >
+                     <span className="relative z-10">Confirm Pickup</span>
+                     {/* Swipe to confirm overlay mock */}
+                     <div className="absolute left-1 top-1 bottom-1 w-14 bg-white/20 rounded-full flex items-center justify-center">
+                        <ChevronRight className="w-6 h-6 text-white" />
+                     </div>
+                  </motion.button>
+               </div>
+             </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
