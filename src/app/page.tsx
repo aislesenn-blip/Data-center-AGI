@@ -757,12 +757,13 @@ export default function App() {
             <motion.div
               drag="y"
               dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={0.05}
+              dragElastic={{ top: 0, bottom: 0.5 }}
               onDragEnd={handleDragEnd}
-              initial={{ y: "100%" }}
-              animate={{ y: sheetY }}
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
               transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
-              className="absolute bottom-[-50%] left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col touch-none h-[115%]"
+              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col touch-none overflow-hidden max-h-[85vh]"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               {/* Drag Handle */}
@@ -847,8 +848,6 @@ export default function App() {
                   Confirm Delivery
                 </motion.button>
               </div>
-              {/* Spacer to push everything up due to bottom-[-50%] on container */}
-              <div className="h-[50vh] shrink-0 pointer-events-none" />
 
             </motion.div>
           </motion.div>
@@ -880,9 +879,11 @@ export default function App() {
 
              {/* Bottom Sheet */}
              <motion.div
-               initial={{ y: "100%" }}
-               animate={{ y: 0 }}
-               className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-30 flex flex-col p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto"
+               initial={{ height: 0 }}
+               animate={{ height: "auto" }}
+               exit={{ height: 0 }}
+               transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
+               className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-30 flex flex-col overflow-hidden p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto"
              >
                 <div className="flex flex-col items-center justify-center text-center pb-4 pt-2">
                   <h2 className="text-[20px] font-bold text-[#111827] mb-2">Connecting to a Runner</h2>
@@ -940,9 +941,11 @@ export default function App() {
 
              {/* Bottom Sheet - En Route */}
              <motion.div
-               initial={{ y: "100%" }}
-               animate={{ y: 0 }}
-               className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto"
+               initial={{ height: 0 }}
+               animate={{ height: "auto" }}
+               exit={{ height: 0 }}
+               transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
+               className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col overflow-hidden p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto"
              >
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
@@ -1010,9 +1013,11 @@ export default function App() {
 
              {/* Bottom Sheet - Arriving */}
              <motion.div
-               initial={{ y: "100%" }}
-               animate={{ y: 0 }}
-               className="absolute bottom-0 left-0 right-0 bg-[#1D965C] rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-30 flex flex-col p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto text-white"
+               initial={{ height: 0 }}
+               animate={{ height: "auto" }}
+               exit={{ height: 0 }}
+               transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
+               className="absolute bottom-0 left-0 right-0 bg-[#1D965C] rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] z-30 flex flex-col overflow-hidden p-6 pb-[env(safe-area-inset-bottom)] pointer-events-auto text-white"
              >
                 <div className="flex flex-col items-center text-center mb-6">
                   <h2 className="text-[28px] font-extrabold mb-1">Your runner is here</h2>
