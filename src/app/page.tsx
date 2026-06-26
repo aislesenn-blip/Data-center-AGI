@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete, QrCode, Link, ArrowUpRight, ArrowDownLeft, Landmark, ArrowDownToLine, CircleDot } from "lucide-react"
+import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete, QrCode, Link, ArrowUpRight, ArrowDownLeft, Landmark, ArrowDownToLine, CircleDot, Share2, Copy } from "lucide-react"
 
 type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK"
 
@@ -31,6 +31,8 @@ export default function App() {
   const [pushNotifications, setPushNotifications] = useState(true)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
+  const [depositMethod, setDepositMethod] = useState<"card" | "mobile">("card")
+  const [depositMobile, setDepositMobile] = useState("")
   const [transactionNote, setTransactionNote] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -377,12 +379,35 @@ export default function App() {
             {/* Content */}
             <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto min-h-0">
                {transactionMode === "deposit" ? (
-                 <div className="flex flex-col items-center mb-4 shrink-0">
-                   <div className="w-12 h-12 bg-[#1A73E8]/10 rounded-full flex items-center justify-center mb-2 shadow-sm">
-                     <Banknote className="w-6 h-6 text-[#1A73E8]" />
+                 <div className="flex flex-col items-center w-full mb-4 shrink-0 px-2">
+                   <h3 className="text-[20px] font-extrabold text-[#1A1A1A] mb-4">Add Funds</h3>
+
+                   <div className="flex w-full bg-[#F4F4F4] rounded-full p-1 mb-6">
+                     <button
+                       onClick={() => setDepositMethod("card")}
+                       className={`flex-1 h-[40px] rounded-full text-[14px] font-bold transition-all ${depositMethod === "card" ? "bg-white text-[#1A1A1A] shadow-sm" : "text-[#666666]"}`}
+                     >
+                       Card
+                     </button>
+                     <button
+                       onClick={() => setDepositMethod("mobile")}
+                       className={`flex-1 h-[40px] rounded-full text-[14px] font-bold transition-all ${depositMethod === "mobile" ? "bg-white text-[#1A1A1A] shadow-sm" : "text-[#666666]"}`}
+                     >
+                       Mobile Money
+                     </button>
                    </div>
-                   <h3 className="text-[18px] font-bold text-[#1A1A1A]">Add Funds</h3>
-                   <p className="text-[14px] font-medium text-[#666666]">From Linked Card</p>
+
+                   {depositMethod === "mobile" && (
+                     <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 py-3 flex items-center mb-2 focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all border border-gray-100">
+                       <input
+                         type="tel"
+                         placeholder="Enter Mobile Number"
+                         value={depositMobile}
+                         onChange={(e) => setDepositMobile(e.target.value)}
+                         className="flex-1 bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none placeholder:text-gray-400 text-center"
+                       />
+                     </div>
+                   )}
                  </div>
                ) : transactionMode === "withdraw" ? (
                  <div className="flex flex-col items-center mb-4 shrink-0">
@@ -448,8 +473,8 @@ export default function App() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigateTo("CONFIRMATION")}
-                disabled={!transactionAmount || Number(transactionAmount) <= 0}
-                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
+                disabled={!transactionAmount || Number(transactionAmount) <= 0 || (transactionMode === "deposit" && depositMethod === "mobile" && !depositMobile)}
+                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 || (transactionMode === "deposit" && depositMethod === "mobile" && !depositMobile) ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
               >
                 Continue
               </motion.button>
@@ -483,7 +508,9 @@ export default function App() {
                                     {transactionMode === "deposit" ? (
                     <div className="flex justify-between items-center">
                       <span className="text-[16px] font-medium text-[#666666]">Funding Source</span>
-                      <span className="text-[16px] font-bold text-[#1A1A1A]">Visa •••• {linkedCards.length > 0 ? linkedCards[0].last4 : "0000"}</span>
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">
+                        {depositMethod === "card" ? `Visa •••• ${linkedCards.length > 0 ? linkedCards[0].last4 : "0000"}` : `Mobile •••• ${depositMobile.slice(-4)}`}
+                      </span>
                     </div>
                   ) : transactionMode === "withdraw" ? (
                     <div className="flex justify-between items-center">
@@ -1017,26 +1044,29 @@ export default function App() {
 
             <div className="flex-1 flex flex-col items-center justify-center px-6 -mt-10">
                <div className="w-full max-w-[320px] bg-white rounded-[32px] shadow-xl p-8 flex flex-col items-center">
-                 <div className="w-16 h-16 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-4">
-                   <User className="w-8 h-8 text-[#1A1A1A]" />
+                 <div className="w-20 h-20 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-6">
+                   <User className="w-10 h-10 text-[#1A1A1A]" />
                  </div>
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A] mb-1">John User</h2>
-                 <p className="text-[16px] font-medium text-[#666666] mb-8">@john_user</p>
+                 <h2 className="text-[28px] font-extrabold text-[#1A1A1A] mb-1 tracking-tight">John User</h2>
+                 <p className="text-[20px] font-medium text-[#666666] mb-10">@john_user</p>
 
-                 <div className="w-full aspect-square bg-[#F4F4F4] rounded-[24px] flex items-center justify-center mb-8 relative overflow-hidden border border-gray-100">
-                    <QrCode className="w-32 h-32 text-[#1A1A1A] opacity-20" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-                      <span className="text-[14px] font-bold text-[#1A1A1A]">pay.app/@john_user</span>
-                    </div>
+                 <div className="flex flex-col gap-3 w-full">
+                   <motion.button
+                     whileTap={{ scale: 0.95 }}
+                     className="w-full h-[56px] bg-[#1A1A1A] text-white rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2 shadow-md"
+                   >
+                     <Copy className="w-5 h-5" />
+                     Copy @handle
+                   </motion.button>
+
+                   <motion.button
+                     whileTap={{ scale: 0.95 }}
+                     className="w-full h-[56px] bg-[#F4F4F4] text-[#1A1A1A] border border-gray-200 rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2"
+                   >
+                     <Share2 className="w-5 h-5" />
+                     Share @handle
+                   </motion.button>
                  </div>
-
-                 <motion.button
-                   whileTap={{ scale: 0.95 }}
-                   className="w-full h-[56px] bg-[#1A73E8]/10 text-[#1A73E8] rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2"
-                 >
-                   <Link className="w-5 h-5" />
-                   Copy Payment Link
-                 </motion.button>
                </div>
             </div>
           </motion.div>
