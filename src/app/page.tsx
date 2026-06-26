@@ -111,20 +111,18 @@ export default function App() {
 
               {/* Promo Banner */}
               {isPromoVisible && (
-                <div className="mt-12 w-full bg-[#F4F4F4] rounded-[16px] p-4 relative mb-6 overflow-hidden">
-                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#1A73E8]/10 rounded-full blur-2xl pointer-events-none" />
-                  <div className="flex flex-col relative z-10">
-                    <span className="text-[15px] font-bold text-[#1A73E8] leading-tight flex items-center gap-2">
-                       <Star className="w-4 h-4 text-[#1A73E8] fill-[#1A73E8]" />
-                       5% Cashback on Merchants
+                <div className="mt-12 w-full bg-[#F2F4F7] rounded-[16px] p-4 flex items-center justify-between mb-6 shadow-sm">
+                  <div className="flex flex-col">
+                    <span className="text-[16px] font-bold text-[#002D72] leading-tight">
+                       5% Cashback
                     </span>
-                    <span className="text-[13px] font-medium text-[#1A73E8] mt-1 pr-4">Pay local merchants instantly and earn.</span>
+                    <span className="text-[14px] font-normal text-[#666666] mt-1">Go cashless for your daily needs.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
-                    className="absolute top-3 right-3 p-1 bg-[#1A73E8]/10 rounded-full hover:bg-[#1A73E8]/20 transition-colors z-10"
+                    className="p-1 hover:bg-gray-200 rounded-full transition-colors flex shrink-0"
                   >
-                    <X className="w-4 h-4 text-[#1A73E8]" />
+                    <X className="w-5 h-5 text-[#666666]" />
                   </button>
                 </div>
               )}
