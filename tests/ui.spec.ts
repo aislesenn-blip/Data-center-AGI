@@ -76,10 +76,10 @@ test('financial ui settings and linked cards', async ({ page }) => {
   await expect(page.getByText('Push Notifications')).toBeVisible();
 
   // Go back
-  await page.locator('button').first().click(); // back button
+  await page.locator('button', { has: page.locator('.lucide-x') }).first().click(); // explicit back button
 
   // Go to Linked Cards
-  await page.getByText('Linked Cards & Banks').click();
+  await page.getByText('Linked Cards & Banks').first().click();
   await expect(page.getByText('Visa')).toBeVisible();
   await expect(page.getByText('•••• 4242')).toBeVisible();
 
@@ -107,4 +107,31 @@ test('financial ui payout config', async ({ page }) => {
   // Verify payout screen
   await expect(page.getByText('Payout Methods')).toBeVisible();
   await expect(page.getByText('Main Bank Account')).toBeVisible();
+});
+
+test('financial ui withdraw funds flow', async ({ page }) => {
+  await page.goto('/');
+
+  // Navigate to Account
+  await page.getByText('Account', { exact: true }).first().click();
+
+  // Go to Withdraw
+  await page.getByText('Withdraw Funds').click();
+
+  // Amount screen
+  await expect(page.getByText('Withdraw', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '2' }).first().click();
+  await page.getByRole('button', { name: '00' }).first().click();
+  await page.getByText('Continue').click();
+
+  // Confirmation
+  await expect(page.getByText('Confirm Withdrawal').first()).toBeVisible();
+  await expect(page.getByText('M-Pesa •••• 9921')).toBeVisible();
+  await page.getByText('Confirm Withdrawal').nth(1).click();
+
+  await page.waitForTimeout(600);
+
+  // Success
+  await expect(page.getByText('Withdrawal Started')).toBeVisible();
+  await page.getByText('Done').click();
 });

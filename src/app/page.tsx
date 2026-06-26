@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete } from "lucide-react"
 
-type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG"
+type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT"
 
 const MOCK_TRANSACTIONS = [
   { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
@@ -24,7 +24,8 @@ export default function App() {
   const [navStack, setNavStack] = useState<AppState[]>(["HOME"])
   const appState = navStack[navStack.length - 1]
   const [isPromoVisible, setIsPromoVisible] = useState(true)
-  const [transactionMode, setTransactionMode] = useState<"send" | "request" | "pay" | "deposit">("send")
+  const [transactionMode, setTransactionMode] = useState<"send" | "request" | "pay" | "deposit" | "withdraw">("send")
+  const [payoutMethods, setPayoutMethods] = useState([{ id: 1, type: "bank", name: "Main Bank Account", details: "CRDB •••• 9012" }])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
   const [linkedCards, setLinkedCards] = useState([{ id: 1, last4: "4242", brand: "Visa" }])
   const [pushNotifications, setPushNotifications] = useState(true)
@@ -132,9 +133,9 @@ export default function App() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="flex flex-col h-full"
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
           >
-            <div className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] px-4 bg-[#FFFFFF]">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 bg-[#FFFFFF]">
               {/* Hamburger and Promo */}
               <div className="mt-4 flex items-center justify-between mb-6">
                 <button
@@ -360,38 +361,47 @@ export default function App() {
                 {transactionMode === "request" && "Request Money"}
                 {transactionMode === "pay" && "Pay Merchant"}
                 {transactionMode === "deposit" && "Deposit Funds"}
+                {transactionMode === "withdraw" && "Withdraw Funds"}
               </h2>
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col items-center px-6 pt-10">
-               {transactionMode !== "deposit" ? (
-                 <div className="flex flex-col items-center mb-10">
-                   <div className="w-16 h-16 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-3 shadow-sm">
-                     {selectedContact?.icon ? <selectedContact.icon className="w-8 h-8 text-[#1A1A1A]" /> : <User className="w-8 h-8 text-[#1A1A1A]" />}
+            <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto min-h-0">
+               {transactionMode === "deposit" ? (
+                 <div className="flex flex-col items-center mb-4 shrink-0">
+                   <div className="w-12 h-12 bg-[#1A73E8]/10 rounded-full flex items-center justify-center mb-2 shadow-sm">
+                     <Banknote className="w-6 h-6 text-[#1A73E8]" />
                    </div>
-                   <h3 className="text-[20px] font-bold text-[#1A1A1A]">{selectedContact?.name}</h3>
-                   <p className="text-[16px] font-medium text-[#666666]">{selectedContact?.handle}</p>
+                   <h3 className="text-[18px] font-bold text-[#1A1A1A]">Add Funds</h3>
+                   <p className="text-[14px] font-medium text-[#666666]">From Linked Card</p>
+                 </div>
+               ) : transactionMode === "withdraw" ? (
+                 <div className="flex flex-col items-center mb-4 shrink-0">
+                   <div className="w-12 h-12 bg-[#1A1A1A]/10 rounded-full flex items-center justify-center mb-2 shadow-sm">
+                     <Banknote className="w-6 h-6 text-[#1A1A1A]" />
+                   </div>
+                   <h3 className="text-[18px] font-bold text-[#1A1A1A]">Withdraw</h3>
+                   <p className="text-[14px] font-medium text-[#666666]">To Mobile Money</p>
                  </div>
                ) : (
-                 <div className="flex flex-col items-center mb-10">
-                   <div className="w-16 h-16 bg-[#1A73E8]/10 rounded-full flex items-center justify-center mb-3 shadow-sm">
-                     <Banknote className="w-8 h-8 text-[#1A73E8]" />
+                 <div className="flex flex-col items-center mb-4 shrink-0">
+                   <div className="w-12 h-12 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-2 shadow-sm">
+                     {selectedContact?.icon ? <selectedContact.icon className="w-6 h-6 text-[#1A1A1A]" /> : <User className="w-6 h-6 text-[#1A1A1A]" />}
                    </div>
-                   <h3 className="text-[20px] font-bold text-[#1A1A1A]">Add Funds</h3>
-                   <p className="text-[16px] font-medium text-[#666666]">From Linked Card</p>
+                   <h3 className="text-[18px] font-bold text-[#1A1A1A]">{selectedContact?.name}</h3>
+                   <p className="text-[14px] font-medium text-[#666666]">{selectedContact?.handle}</p>
                  </div>
                )}
 
-               <div className="w-full flex justify-center items-end gap-2 mb-8">
+               <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
                  <span className="text-[18px] font-bold text-[#666666] mb-2">TZS</span>
-                 <div className="text-[64px] font-extrabold text-[#1A1A1A] tracking-tight leading-none">
+                 <div className="text-[48px] sm:text-[56px] font-extrabold text-[#1A1A1A] tracking-tight leading-none overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%] text-center">
                    {formatAmount(transactionAmount)}
                  </div>
                </div>
 
-               {transactionMode !== "deposit" && (
-                 <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center mb-4">
+               {transactionMode !== "deposit" && transactionMode !== "withdraw" && (
+                 <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center mb-4 shrink-0 mt-4">
                    <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
                    <input
                      type="text"
@@ -412,7 +422,7 @@ export default function App() {
                     key={key}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleKeypadPress(key)}
-                    className="h-[60px] flex items-center justify-center text-[24px] font-bold text-[#1A1A1A] rounded-2xl active:bg-gray-100 transition-colors"
+                    className="min-h-[48px] max-h-[64px] h-[7vh] flex items-center justify-center text-[22px] font-bold text-[#1A1A1A] rounded-2xl active:bg-gray-100 transition-colors"
                   >
                     {key}
                   </motion.button>
@@ -420,9 +430,9 @@ export default function App() {
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleKeypadPress("backspace")}
-                  className="h-[60px] flex items-center justify-center rounded-2xl active:bg-gray-100 transition-colors"
+                  className="min-h-[48px] max-h-[64px] h-[7vh] flex items-center justify-center rounded-2xl active:bg-gray-100 transition-colors"
                 >
-                  <Delete className="w-7 h-7 text-[#1A1A1A]" />
+                  <Delete className="w-6 h-6 text-[#1A1A1A]" />
                 </motion.button>
               </div>
 
@@ -430,7 +440,7 @@ export default function App() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigateTo("CONFIRMATION")}
                 disabled={!transactionAmount || Number(transactionAmount) <= 0}
-                className={`w-full h-[60px] rounded-[30px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
+                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
               >
                 Continue
               </motion.button>
@@ -454,22 +464,27 @@ export default function App() {
                className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
             >
                <div className="flex justify-between items-center mb-8">
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" || transactionMode === "pay" ? "Payment" : transactionMode === "deposit" ? "Deposit" : "Request"}</h2>
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" || transactionMode === "pay" ? "Payment" : transactionMode === "deposit" ? "Deposit" : transactionMode === "withdraw" ? "Withdrawal" : "Request"}</h2>
                  <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
                    <X className="w-6 h-6 text-[#1A1A1A]" />
                  </button>
                </div>
 
                <div className="bg-[#F4F4F4] rounded-[20px] p-5 flex flex-col gap-4 mb-8">
-                                    {transactionMode !== "deposit" ? (
-                    <div className="flex justify-between items-center">
-                      <span className="text-[16px] font-medium text-[#666666]">{transactionMode === "request" ? "From" : "To"}</span>
-                      <span className="text-[16px] font-bold text-[#1A1A1A]">{selectedContact?.name} ({selectedContact?.handle})</span>
-                    </div>
-                  ) : (
+                                    {transactionMode === "deposit" ? (
                     <div className="flex justify-between items-center">
                       <span className="text-[16px] font-medium text-[#666666]">Funding Source</span>
                       <span className="text-[16px] font-bold text-[#1A1A1A]">Visa •••• {linkedCards.length > 0 ? linkedCards[0].last4 : "0000"}</span>
+                    </div>
+                  ) : transactionMode === "withdraw" ? (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[16px] font-medium text-[#666666]">Destination</span>
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">M-Pesa •••• 9921</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[16px] font-medium text-[#666666]">{transactionMode === "request" ? "From" : "To"}</span>
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">{selectedContact?.name} ({selectedContact?.handle})</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
@@ -491,7 +506,7 @@ export default function App() {
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                >
-                 {transactionMode === "send" || transactionMode === "pay" ? "Send Instantly" : transactionMode === "deposit" ? "Confirm Deposit" : "Request Now"}
+                 {transactionMode === "send" || transactionMode === "pay" ? "Send Instantly" : transactionMode === "deposit" ? "Confirm Deposit" : transactionMode === "withdraw" ? "Confirm Withdrawal" : "Request Now"}
                </motion.button>
             </motion.div>
           </motion.div>
@@ -515,10 +530,10 @@ export default function App() {
                <CheckCircle className="w-12 h-12 text-[#27A163]" />
              </motion.div>
              <h1 className="text-[32px] font-extrabold text-white mb-2 text-center leading-tight">
-               {transactionMode === "send" || transactionMode === "pay" ? "Sent Successfully" : transactionMode === "deposit" ? "Deposit Successful" : "Request Sent"}
+               {transactionMode === "send" || transactionMode === "pay" ? "Sent Successfully" : transactionMode === "deposit" ? "Deposit Successful" : transactionMode === "withdraw" ? "Withdrawal Started" : "Request Sent"}
              </h1>
              <p className="text-[18px] font-medium text-white/90 mb-12 text-center">
-               TZS {Number(transactionAmount).toLocaleString()} {transactionMode === "deposit" ? "added to balance" : `to ${selectedContact?.handle}`}
+               TZS {Number(transactionAmount).toLocaleString()} {transactionMode === "deposit" ? "added to balance" : transactionMode === "withdraw" ? "sent to mobile money" : `to ${selectedContact?.handle}`}
              </p>
 
              <motion.button
@@ -641,10 +656,17 @@ export default function App() {
                <div className="flex flex-col gap-2">
                  <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Financials</h3>
                  <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => navigateTo("LINKED_CARDS")}>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 border-b border-gray-200" onClick={() => navigateTo("LINKED_CARDS")}>
                      <div className="flex items-center gap-4">
                        <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Linked Cards & Banks</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("withdraw"); navigateTo("PAYMENT_AMOUNT"); }}>
+                     <div className="flex items-center gap-4">
+                       <Banknote className="w-5 h-5 text-[#1A1A1A]" />
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">Withdraw Funds</span>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
@@ -861,7 +883,7 @@ export default function App() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
           >
             <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
               <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
@@ -871,28 +893,97 @@ export default function App() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
-               <div className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
-                 <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
-                     <Banknote className="w-6 h-6 text-[#1A1A1A]" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[16px] font-bold text-[#1A1A1A]">Main Bank Account</span>
-                     <span className="text-[14px] font-medium text-[#666666]">CRDB •••• 9012</span>
-                   </div>
+               {payoutMethods.length === 0 ? (
+                 <div className="text-center text-[#666666] mt-8 font-medium">
+                   No payout methods configured. Add one to receive settlements.
                  </div>
-                 <div className="bg-[#27A163]/10 text-[#27A163] px-3 py-1 rounded-full text-[12px] font-bold">
-                   Default
-                 </div>
-               </div>
+               ) : (
+                 payoutMethods.map((method, index) => (
+                   <div key={method.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
+                         <Banknote className="w-6 h-6 text-[#1A1A1A]" />
+                       </div>
+                       <div className="flex flex-col">
+                         <span className="text-[16px] font-bold text-[#1A1A1A]">{method.name}</span>
+                         <span className="text-[14px] font-medium text-[#666666]">{method.details}</span>
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       {index === 0 && (
+                         <div className="bg-[#27A163]/10 text-[#27A163] px-3 py-1 rounded-full text-[12px] font-bold shrink-0">
+                           Default
+                         </div>
+                       )}
+                       <button
+                         onClick={() => setPayoutMethods(payoutMethods.filter(m => m.id !== method.id))}
+                         className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
+                       >
+                         <Trash2 className="w-5 h-5" />
+                       </button>
+                     </div>
+                   </div>
+                 ))
+               )}
 
                <button
-                 onClick={() => {}}
-                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors"
+                 onClick={() => navigateTo("ADD_PAYOUT")}
+                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors shrink-0"
                >
                  <Plus className="w-5 h-5" />
-                 Add Disbursement Method
+                 Add Payout Destination
                </button>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "ADD_PAYOUT" && (
+          <motion.div
+            key="add_payout"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-20 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Add Payout Destination</h2>
+            </div>
+
+            <div className="flex-1 px-6 pt-8 flex flex-col gap-6 overflow-y-auto">
+              <div className="flex flex-col gap-2">
+                <label className="text-[14px] font-bold text-[#1A1A1A] ml-1">Destination Type</label>
+                <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 h-[56px] flex items-center focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all">
+                  <Banknote className="w-5 h-5 text-gray-400 mr-3 shrink-0" />
+                  <select className="flex-1 bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none">
+                    <option>Merchant Till</option>
+                    <option>Bank Account</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-[14px] font-bold text-[#1A1A1A] ml-1">Account / Till Number</label>
+                <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 h-[56px] flex items-center focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all">
+                  <input type="text" placeholder="e.g., 0150 0000 0000" className="flex-1 bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none placeholder:text-gray-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-white shrink-0 pb-[max(env(safe-area-inset-bottom),24px)]">
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setPayoutMethods([...payoutMethods, { id: Date.now(), type: "till", name: "Merchant Till", details: "M-Pesa •••• 1234" }]);
+                  goBack();
+                }}
+                className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
+              >
+                Save Payout Destination
+              </motion.button>
             </div>
           </motion.div>
         )}
