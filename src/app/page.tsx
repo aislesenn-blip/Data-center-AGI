@@ -195,16 +195,20 @@ export default function CampusDeliveryApp() {
 
               {/* Promo Banner */}
               {isPromoVisible && (
-                <div className="mt-12 w-full bg-[#F9FAFB] border border-gray-100 shadow-sm rounded-[16px] p-4 relative mb-6">
-                  <div className="flex flex-col">
-                    <span className="text-[14px] font-bold text-[#111827] leading-tight">Anything on campus, delivered faster.</span>
-                    <span className="text-[13px] font-medium text-[#6B7280] mt-1 pr-4">Order anything from our trusted campus partners directly to your seat.</span>
+                <div className="mt-12 w-full bg-gradient-to-r from-[#EEF2FF] to-[#E0E7FF] border border-[#C7D2FE] shadow-sm rounded-[16px] p-4 relative mb-6 overflow-hidden">
+                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#4F46E5]/10 rounded-full blur-2xl pointer-events-none" />
+                  <div className="flex flex-col relative z-10">
+                    <span className="text-[15px] font-bold text-[#3730A3] leading-tight flex items-center gap-2">
+                       <Star className="w-4 h-4 text-[#4F46E5] fill-[#4F46E5]" />
+                       Anything on campus, delivered faster.
+                    </span>
+                    <span className="text-[13px] font-medium text-[#4F46E5] mt-1 pr-4">Order anything from our trusted campus partners directly to your seat.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
-                    className="absolute top-3 right-3 p-1 bg-gray-100 rounded-full"
+                    className="absolute top-3 right-3 p-1 bg-[#4F46E5]/10 rounded-full hover:bg-[#4F46E5]/20 transition-colors z-10"
                   >
-                    <X className="w-3 h-3 text-[#111827]" />
+                    <X className="w-4 h-4 text-[#3730A3]" />
                   </button>
                 </div>
               )}
@@ -309,11 +313,11 @@ export default function CampusDeliveryApp() {
         {appState === "ROUTE_SELECTION" && (
           <motion.div
             key="route_selection"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-[#F9FAFB] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
           >
             {/* Top Nav */}
             <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
@@ -652,9 +656,10 @@ export default function CampusDeliveryApp() {
         {appState === "FARE_SELECTION" && (
           <motion.div
             key="fare_selection"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
             className="absolute inset-0 bg-[#E5E7EB] z-10 flex flex-col overflow-hidden"
           >
             {/* Map Simulation Background Layer */}
@@ -705,12 +710,12 @@ export default function CampusDeliveryApp() {
             {/* Bottom Sheet Foreground */}
             <motion.div
               drag="y"
-              dragConstraints={{ top: -250, bottom: 300 }}
-              dragElastic={0.1}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.05}
               onDragEnd={handleDragEnd}
               initial={{ y: "100%" }}
               animate={{ y: sheetY }}
-              transition={{ type: "spring", damping: 24, stiffness: 300, mass: 0.8 }}
+              transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
               className="absolute bottom-[-50%] left-0 right-0 bg-white rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-30 flex flex-col touch-none h-[115%]"
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
@@ -809,9 +814,10 @@ export default function CampusDeliveryApp() {
         {appState === "FINDING" && (
           <motion.div
             key="finding"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="absolute inset-0 z-10 flex flex-col pointer-events-none"
           >
              {/* Map Backdrop */}
