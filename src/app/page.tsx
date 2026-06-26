@@ -6,6 +6,13 @@ import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, M
 
 type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD"
 
+const MOCK_TRANSACTIONS = [
+  { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
+  { id: 2, type: "receive", amount: "+TZS 5,000", contactName: "Mike Smith", contactHandle: "@mike", date: "Today", time: "09:15", icon: User },
+  { id: 3, type: "pay", amount: "-TZS 4,500", contactName: "Local Coffee", contactHandle: "@coffee_shop", date: "Yesterday", time: "08:45", icon: Utensils },
+  { id: 4, type: "receive", amount: "+TZS 1,200", contactName: "System", contactHandle: "Promo", date: "This Week", time: "Mon", icon: Star },
+]
+
 const CONTACTS = [
   { id: 1, handle: "@jane", name: "Jane Doe", icon: User, type: "history" },
   { id: 2, handle: "@mike", name: "Mike Smith", icon: User, type: "history" },
@@ -21,12 +28,12 @@ export default function App() {
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
   const [linkedCards, setLinkedCards] = useState([{ id: 1, last4: "4242", brand: "Visa" }])
   const [pushNotifications, setPushNotifications] = useState(true)
-  const [emailReceipts, setEmailReceipts] = useState(false)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
   const [transactionNote, setTransactionNote] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [activitySearchQuery, setActivitySearchQuery] = useState("")
 
   // Sync navStack with window.history to prevent accidental browser exits
   useEffect(() => {
@@ -66,6 +73,14 @@ export default function App() {
       return ["HOME"];
     });
   }
+
+  const filteredTransactions = MOCK_TRANSACTIONS.filter(tx => {
+    if (!activitySearchQuery) return true;
+    const query = activitySearchQuery.toLowerCase();
+    return tx.contactName.toLowerCase().includes(query) ||
+           tx.contactHandle.toLowerCase().includes(query) ||
+           tx.amount.includes(query);
+  })
 
   const filteredContacts = CONTACTS.filter(contact => {
     if (!searchQuery) return contact.type !== "merchant"
@@ -114,9 +129,9 @@ export default function App() {
                 <div className="mt-12 w-full bg-[#F2F4F7] rounded-[16px] p-4 flex items-center justify-between mb-6 shadow-sm">
                   <div className="flex flex-col">
                     <span className="text-[16px] font-bold text-[#002D72] leading-tight">
-                       5% Cashback
+                       100% Free Transactions
                     </span>
-                    <span className="text-[14px] font-normal text-[#666666] mt-1">Go cashless for your daily needs.</span>
+                    <span className="text-[14px] font-normal text-[#666666] mt-1">Send and receive money with zero hidden fees.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
@@ -492,39 +507,56 @@ export default function App() {
             transition={{ type: "tween", duration: 0 }}
             className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+            <div className="pt-4 px-4 pb-4 shrink-0 bg-white shadow-sm z-20 flex flex-col gap-4">
               <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Activity</h2>
+              <div className="w-full bg-[#F4F4F4] rounded-[16px] flex items-center px-4 h-[44px] focus-within:ring-2 focus-within:ring-[#27A163]/50 transition-all">
+                <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search transactions..."
+                  value={activitySearchQuery}
+                  onChange={(e) => setActivitySearchQuery(e.target.value)}
+                  className="flex-1 text-[15px] text-[#1A1A1A] bg-transparent outline-none placeholder:text-[#666666] font-medium h-full"
+                />
+              </div>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
-              <div className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex flex-col gap-3">
-                 <div className="flex items-center justify-between">
-                   <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
-                       <User className="w-5 h-5 text-[#1A1A1A]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">Jane Doe</span>
-                       <span className="text-[13px] font-medium text-[#666666]">Sent • 2 days ago</span>
-                     </div>
-                   </div>
-                   <span className="text-[14px] font-bold text-[#1A1A1A]">-TZS 15,000</span>
-                 </div>
-              </div>
 
-              <div className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex flex-col gap-3">
-                 <div className="flex items-center justify-between">
-                   <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
-                       <Star className="w-5 h-5 text-[#1A73E8]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">Cashback</span>
-                       <span className="text-[13px] font-medium text-[#666666]">Received • Last week</span>
-                     </div>
-                   </div>
-                   <span className="text-[14px] font-bold text-[#27A163]">+TZS 1,200</span>
+            <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-6">
+              {filteredTransactions.length === 0 ? (
+                 <div className="text-center text-[#666666] mt-8 font-medium">
+                   No transactions found for &quot;{activitySearchQuery}&quot;
                  </div>
-              </div>
+              ) : (
+                ["Today", "Yesterday", "This Week"].map(group => {
+                  const groupTxs = filteredTransactions.filter(tx => tx.date === group);
+                  if (groupTxs.length === 0) return null;
+                  return (
+                    <div key={group} className="flex flex-col gap-3">
+                      <h3 className="text-[14px] font-bold text-[#666666] uppercase tracking-wider ml-1">{group}</h3>
+                      <div className="flex flex-col gap-3">
+                        {groupTxs.map(tx => (
+                          <div key={tx.id} className="bg-[#F4F4F4] p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
+                                <tx.icon className={`w-6 h-6 ${tx.type === "receive" ? "text-[#27A163]" : "text-[#1A1A1A]"}`} />
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-[16px] font-bold text-[#1A1A1A]">
+                                  {activitySearchQuery ? renderHighlightedText(tx.contactName, activitySearchQuery) : tx.contactName}
+                                </span>
+                                <span className="text-[14px] font-medium text-[#666666]">{tx.time} • {tx.contactHandle}</span>
+                              </div>
+                            </div>
+                            <span className={`text-[16px] font-bold ${tx.type === 'receive' ? 'text-[#27A163]' : 'text-[#1A1A1A]'}`}>
+                              {activitySearchQuery ? renderHighlightedText(tx.amount, activitySearchQuery) : tx.amount}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             {/* Bottom Nav Bar */}
@@ -576,6 +608,22 @@ export default function App() {
                      <div className="flex items-center gap-4">
                        <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Linked Cards & Banks</span>
+                     </div>
+                     <ChevronRight className="w-5 h-5 text-gray-400" />
+                   </div>
+                 </div>
+               </div>
+
+               <div className="flex flex-col gap-2">
+                 <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Merchant</h3>
+                 <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                     <div className="flex items-center gap-4">
+                       <Banknote className="w-5 h-5 text-[#1A1A1A]" />
+                       <div className="flex flex-col">
+                         <span className="text-[16px] font-bold text-[#1A1A1A]">Payout Configuration</span>
+                         <span className="text-[12px] font-medium text-[#666666]">Cards & Mobile Numbers</span>
+                       </div>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
@@ -761,19 +809,7 @@ export default function App() {
                        />
                      </button>
                    </div>
-                   <div className="p-4 flex items-center justify-between">
-                     <span className="text-[16px] font-bold text-[#1A1A1A]">Email Receipts</span>
-                     <button
-                       onClick={() => setEmailReceipts(!emailReceipts)}
-                       className={`w-14 h-8 rounded-full p-1 transition-colors ${emailReceipts ? "bg-[#27A163]" : "bg-gray-300"} relative`}
-                     >
-                       <motion.div
-                         layout
-                         className="w-6 h-6 bg-white rounded-full shadow-sm"
-                         animate={{ x: emailReceipts ? 24 : 0 }}
-                       />
-                     </button>
-                   </div>
+
                  </div>
               </div>
             </div>

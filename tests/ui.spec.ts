@@ -7,7 +7,7 @@ test('financial ui basic flow', async ({ page }) => {
   await expect(page.getByText('Available Balance')).toBeVisible();
 
   // click Send button
-  await page.getByText('Send').click();
+  await page.getByText('Send', { exact: true }).click();
 
   // 2. Handle Search
   await expect(page.getByPlaceholder('Who to? (@handle, name)')).toBeVisible();
