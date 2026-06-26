@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils } from "lucide-react"
+import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2 } from "lucide-react"
 
-type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS"
+type AppState = "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "LINKED_CARDS" | "ADD_CARD"
 
 const CONTACTS = [
   { id: 1, handle: "@jane", name: "Jane Doe", icon: User, type: "history" },
@@ -17,8 +17,12 @@ export default function App() {
   const [navStack, setNavStack] = useState<AppState[]>(["HOME"])
   const appState = navStack[navStack.length - 1]
   const [isPromoVisible, setIsPromoVisible] = useState(true)
-  const [transactionMode, setTransactionMode] = useState<"send" | "request">("send")
-  const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: any} | null>(null)
+  const [transactionMode, setTransactionMode] = useState<"send" | "request" | "pay" | "deposit">("send")
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false)
+  const [linkedCards, setLinkedCards] = useState([{ id: 1, last4: "4242", brand: "Visa" }])
+  const [pushNotifications, setPushNotifications] = useState(true)
+  const [emailReceipts, setEmailReceipts] = useState(false)
+  const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
   const [transactionNote, setTransactionNote] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
@@ -126,39 +130,62 @@ export default function App() {
               )}
 
               {/* Balance Display */}
-              <div className="mb-6">
-                <h1 className="text-[32px] font-extrabold text-[#1A1A1A] tracking-[-0.5px]">
-                  TZS 142,500
-                </h1>
+              <div className="mb-6 flex flex-col items-start">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-[32px] font-extrabold text-[#1A1A1A] tracking-[-0.5px]">
+                    {isBalanceVisible ? "TZS 142,500" : "••••••••"}
+                  </h1>
+                  <button onClick={() => setIsBalanceVisible(!isBalanceVisible)} className="p-1.5 bg-[#F4F4F4] rounded-full mt-1">
+                    {isBalanceVisible ? <EyeOff className="w-5 h-5 text-[#666666]" /> : <Eye className="w-5 h-5 text-[#666666]" />}
+                  </button>
+                </div>
                 <p className="text-[14px] font-medium text-[#666666]">Available Balance</p>
               </div>
 
               {/* Bento Grid */}
-              <div className="flex flex-row justify-between gap-4 mb-8">
+              <div className="grid grid-cols-2 gap-4 mb-8">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
-                  className="flex-1 h-[120px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
+                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center self-start mb-2 shadow-sm">
-                     <ArrowDownUp className="w-5 h-5 text-[#1A1A1A] rotate-[135deg]" strokeWidth={2} />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
+                     <ArrowDownUp className="w-4 h-4 text-[#1A1A1A] rotate-[135deg]" strokeWidth={2} />
                   </div>
-                  <div className="mt-auto">
-                    <div className="text-[16px] font-bold text-[#1A1A1A] leading-tight">Send</div>
-                  </div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Send</div>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   onClick={() => { setTransactionMode("request"); navigateTo("HANDLE_SEARCH"); }}
-                  className="flex-1 h-[120px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
+                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center self-start mb-2 shadow-sm">
-                     <ArrowDownUp className="w-5 h-5 text-[#1A1A1A] rotate-[-45deg]" strokeWidth={2} />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
+                     <ArrowDownUp className="w-4 h-4 text-[#1A1A1A] rotate-[-45deg]" strokeWidth={2} />
                   </div>
-                  <div className="mt-auto">
-                    <div className="text-[16px] font-bold text-[#1A1A1A] leading-tight">Request</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Request</div>
+                </motion.div>
+
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { setTransactionMode("pay"); navigateTo("HANDLE_SEARCH"); }}
+                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
+                >
+                  <div className="w-8 h-8 bg-[#27A163]/10 rounded-full flex items-center justify-center self-start shadow-sm">
+                     <Utensils className="w-4 h-4 text-[#27A163]" strokeWidth={2} />
                   </div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Pay</div>
+                </motion.div>
+
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { setTransactionMode("deposit"); navigateTo("PAYMENT_AMOUNT"); }}
+                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
+                >
+                  <div className="w-8 h-8 bg-[#1A73E8]/10 rounded-full flex items-center justify-center self-start shadow-sm">
+                     <Banknote className="w-4 h-4 text-[#1A73E8]" strokeWidth={2} />
+                  </div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Deposit</div>
                 </motion.div>
               </div>
 
@@ -169,7 +196,7 @@ export default function App() {
                 className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
                 <Search className="w-5 h-5 text-[#1A1A1A] mr-3" strokeWidth={2} />
-                <span className="text-[18px] font-bold text-[#1A1A1A]">Who to? (@handle)</span>
+                <span className="text-[18px] font-bold text-[#1A1A1A]">Search (@handle)</span>
               </motion.button>
 
               {/* Recent Locations */}
@@ -228,7 +255,7 @@ export default function App() {
                 <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
                 <input
                   type="text"
-                  placeholder="Who to? (@handle, name)"
+                  placeholder={transactionMode === "request" ? "From (@handle, name)" : "Who to? (@handle, name)"}
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -295,19 +322,32 @@ export default function App() {
                 <X className="w-5 h-5 text-[#1A1A1A]" />
               </button>
               <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">
-                {transactionMode === "send" ? "Send Money" : "Request Money"}
+                {transactionMode === "send" && "Send Money"}
+                {transactionMode === "request" && "Request Money"}
+                {transactionMode === "pay" && "Pay Merchant"}
+                {transactionMode === "deposit" && "Deposit Funds"}
               </h2>
             </div>
 
             {/* Content */}
             <div className="flex-1 flex flex-col items-center px-6 pt-10">
-               <div className="flex flex-col items-center mb-10">
-                 <div className="w-16 h-16 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-3">
-                   {selectedContact?.icon ? <selectedContact.icon className="w-8 h-8 text-[#1A1A1A]" /> : <User className="w-8 h-8 text-[#1A1A1A]" />}
+               {transactionMode !== "deposit" ? (
+                 <div className="flex flex-col items-center mb-10">
+                   <div className="w-16 h-16 bg-[#F4F4F4] rounded-full flex items-center justify-center mb-3 shadow-sm">
+                     {selectedContact?.icon ? <selectedContact.icon className="w-8 h-8 text-[#1A1A1A]" /> : <User className="w-8 h-8 text-[#1A1A1A]" />}
+                   </div>
+                   <h3 className="text-[20px] font-bold text-[#1A1A1A]">{selectedContact?.name}</h3>
+                   <p className="text-[16px] font-medium text-[#666666]">{selectedContact?.handle}</p>
                  </div>
-                 <h3 className="text-[20px] font-bold text-[#1A1A1A]">{selectedContact?.name}</h3>
-                 <p className="text-[16px] font-medium text-[#666666]">{selectedContact?.handle}</p>
-               </div>
+               ) : (
+                 <div className="flex flex-col items-center mb-10">
+                   <div className="w-16 h-16 bg-[#1A73E8]/10 rounded-full flex items-center justify-center mb-3 shadow-sm">
+                     <Banknote className="w-8 h-8 text-[#1A73E8]" />
+                   </div>
+                   <h3 className="text-[20px] font-bold text-[#1A1A1A]">Add Funds</h3>
+                   <p className="text-[16px] font-medium text-[#666666]">From Linked Card</p>
+                 </div>
+               )}
 
                <div className="w-full flex justify-center items-center gap-1 mb-8">
                  <span className="text-[28px] font-bold text-[#666666] self-start mt-2">TZS</span>
@@ -321,16 +361,18 @@ export default function App() {
                  />
                </div>
 
-               <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center focus-within:ring-2 focus-within:ring-[#27A163]/50 transition-all">
-                 <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
-                 <input
-                   type="text"
-                   placeholder="What's this for? (Optional)"
-                   value={transactionNote}
-                   onChange={(e) => setTransactionNote(e.target.value)}
-                   className="flex-1 bg-transparent text-[16px] font-medium text-[#1A1A1A] outline-none placeholder:text-[#666666]"
-                 />
-               </div>
+               {transactionMode !== "deposit" && (
+                 <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center focus-within:ring-2 focus-within:ring-[#27A163]/50 transition-all">
+                   <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
+                   <input
+                     type="text"
+                     placeholder="What's this for? (Optional)"
+                     value={transactionNote}
+                     onChange={(e) => setTransactionNote(e.target.value)}
+                     className="flex-1 bg-transparent text-[16px] font-medium text-[#1A1A1A] outline-none placeholder:text-[#666666]"
+                   />
+                 </div>
+               )}
             </div>
 
             <div className="p-4 bg-white shrink-0 pb-[max(env(safe-area-inset-bottom),24px)]">
@@ -362,17 +404,24 @@ export default function App() {
                className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
             >
                <div className="flex justify-between items-center mb-8">
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" ? "Payment" : "Request"}</h2>
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" || transactionMode === "pay" ? "Payment" : transactionMode === "deposit" ? "Deposit" : "Request"}</h2>
                  <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
                    <X className="w-6 h-6 text-[#1A1A1A]" />
                  </button>
                </div>
 
                <div className="bg-[#F4F4F4] rounded-[20px] p-5 flex flex-col gap-4 mb-8">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-medium text-[#666666]">To</span>
-                    <span className="text-[16px] font-bold text-[#1A1A1A]">{selectedContact?.name} ({selectedContact?.handle})</span>
-                  </div>
+                                    {transactionMode !== "deposit" ? (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[16px] font-medium text-[#666666]">{transactionMode === "request" ? "From" : "To"}</span>
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">{selectedContact?.name} ({selectedContact?.handle})</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[16px] font-medium text-[#666666]">Funding Source</span>
+                      <span className="text-[16px] font-bold text-[#1A1A1A]">Visa •••• {linkedCards.length > 0 ? linkedCards[0].last4 : "0000"}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
                     <span className="text-[16px] font-medium text-[#666666]">Amount</span>
                     <span className="text-[20px] font-extrabold text-[#1A1A1A]">TZS {Number(transactionAmount).toLocaleString()}</span>
@@ -392,7 +441,7 @@ export default function App() {
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                >
-                 {transactionMode === "send" ? "Send Instantly" : "Request Now"}
+                 {transactionMode === "send" || transactionMode === "pay" ? "Send Instantly" : transactionMode === "deposit" ? "Confirm Deposit" : "Request Now"}
                </motion.button>
             </motion.div>
           </motion.div>
@@ -416,10 +465,10 @@ export default function App() {
                <CheckCircle className="w-12 h-12 text-[#27A163]" />
              </motion.div>
              <h1 className="text-[32px] font-extrabold text-white mb-2 text-center leading-tight">
-               {transactionMode === "send" ? "Sent Successfully" : "Request Sent"}
+               {transactionMode === "send" || transactionMode === "pay" ? "Sent Successfully" : transactionMode === "deposit" ? "Deposit Successful" : "Request Sent"}
              </h1>
              <p className="text-[18px] font-medium text-white/90 mb-12 text-center">
-               TZS {Number(transactionAmount).toLocaleString()} to {selectedContact?.handle}
+               TZS {Number(transactionAmount).toLocaleString()} {transactionMode === "deposit" ? "added to balance" : `to ${selectedContact?.handle}`}
              </p>
 
              <motion.button
@@ -525,9 +574,9 @@ export default function App() {
                <div className="flex flex-col gap-2">
                  <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Financials</h3>
                  <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => navigateTo("LINKED_CARDS")}>
                      <div className="flex items-center gap-4">
-                       <Banknote className="w-5 h-5 text-[#1A1A1A]" />
+                       <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Linked Cards & Banks</span>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -564,6 +613,170 @@ export default function App() {
               <div className="flex flex-col items-center cursor-pointer">
                 <User className="w-6 h-6 text-[#1A1A1A] mb-1" strokeWidth={2.5} />
                 <span className="text-[12px] font-bold text-[#1A1A1A]">Account</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+
+        {appState === "LINKED_CARDS" && (
+          <motion.div
+            key="linked_cards"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Linked Cards</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
+               {linkedCards.length === 0 ? (
+                 <div className="text-center text-[#666666] mt-8 font-medium">
+                   No linked cards found. Add a card to fund your account.
+                 </div>
+               ) : (
+                 linkedCards.map(card => (
+                   <div key={card.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm">
+                         <CreditCard className="w-6 h-6 text-[#1A1A1A]" />
+                       </div>
+                       <div className="flex flex-col">
+                         <span className="text-[16px] font-bold text-[#1A1A1A]">{card.brand}</span>
+                         <span className="text-[14px] font-medium text-[#666666]">•••• {card.last4}</span>
+                       </div>
+                     </div>
+                     <button
+                       onClick={() => setLinkedCards(linkedCards.filter(c => c.id !== card.id))}
+                       className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                     >
+                       <Trash2 className="w-5 h-5" />
+                     </button>
+                   </div>
+                 ))
+               )}
+
+               <button
+                 onClick={() => navigateTo("ADD_CARD")}
+                 className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors"
+               >
+                 <Plus className="w-5 h-5" />
+                 Add New Card
+               </button>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "ADD_CARD" && (
+          <motion.div
+            key="add_card"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-20 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Add Card</h2>
+            </div>
+
+            <div className="flex-1 px-6 pt-8 flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-[14px] font-bold text-[#1A1A1A] ml-1">Card Number</label>
+                <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 h-[56px] flex items-center focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all">
+                  <CreditCard className="w-5 h-5 text-gray-400 mr-3" />
+                  <input type="text" placeholder="0000 0000 0000 0000" className="flex-1 bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none placeholder:text-gray-400" />
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex flex-col gap-2 flex-1">
+                  <label className="text-[14px] font-bold text-[#1A1A1A] ml-1">Expiry Date</label>
+                  <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 h-[56px] flex items-center focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all">
+                    <input type="text" placeholder="MM/YY" className="w-full bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none placeholder:text-gray-400" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 flex-1">
+                  <label className="text-[14px] font-bold text-[#1A1A1A] ml-1">CVC</label>
+                  <div className="w-full bg-[#F4F4F4] rounded-[16px] px-4 h-[56px] flex items-center focus-within:ring-2 focus-within:ring-[#1A1A1A]/20 transition-all">
+                    <input type="password" placeholder="•••" className="w-full bg-transparent text-[16px] font-bold text-[#1A1A1A] outline-none placeholder:text-gray-400" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-white shrink-0 pb-[max(env(safe-area-inset-bottom),24px)]">
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setLinkedCards([...linkedCards, { id: Date.now(), last4: "8888", brand: "Mastercard" }]);
+                  goBack();
+                }}
+                className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
+              >
+                Save Card
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+
+        {appState === "SETTINGS" && (
+          <motion.div
+            key="settings"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Settings</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                 <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Notifications</h3>
+                 <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                   <div className="p-4 flex items-center justify-between border-b border-gray-100">
+                     <span className="text-[16px] font-bold text-[#1A1A1A]">Push Notifications</span>
+                     <button
+                       onClick={() => setPushNotifications(!pushNotifications)}
+                       className={`w-14 h-8 rounded-full p-1 transition-colors ${pushNotifications ? "bg-[#27A163]" : "bg-gray-300"} relative`}
+                     >
+                       <motion.div
+                         layout
+                         className="w-6 h-6 bg-white rounded-full shadow-sm"
+                         animate={{ x: pushNotifications ? 24 : 0 }}
+                       />
+                     </button>
+                   </div>
+                   <div className="p-4 flex items-center justify-between">
+                     <span className="text-[16px] font-bold text-[#1A1A1A]">Email Receipts</span>
+                     <button
+                       onClick={() => setEmailReceipts(!emailReceipts)}
+                       className={`w-14 h-8 rounded-full p-1 transition-colors ${emailReceipts ? "bg-[#27A163]" : "bg-gray-300"} relative`}
+                     >
+                       <motion.div
+                         layout
+                         className="w-6 h-6 bg-white rounded-full shadow-sm"
+                         animate={{ x: emailReceipts ? 24 : 0 }}
+                       />
+                     </button>
+                   </div>
+                 </div>
               </div>
             </div>
           </motion.div>
