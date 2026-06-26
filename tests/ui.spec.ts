@@ -32,3 +32,61 @@ test('financial ui basic flow', async ({ page }) => {
   // back to home
   await expect(page.getByText('Available Balance')).toBeVisible();
 });
+
+test('financial ui deposit flow and balance visibility', async ({ page }) => {
+  await page.goto('/');
+
+  // Toggle balance visibility
+  await expect(page.getByText('••••••••')).toBeVisible();
+  await page.locator('button', { has: page.locator('.lucide-eye') }).click();
+  await expect(page.getByText('TZS 142,500')).toBeVisible();
+
+  // Click Deposit
+  await page.getByText('Deposit').click();
+
+  // Deposit Amount screen
+  await expect(page.getByText('Add Funds')).toBeVisible();
+  await page.getByPlaceholder('0').fill('50000');
+  await page.getByText('Continue').click();
+
+  // Confirmation
+  await expect(page.getByText('Confirm Deposit').first()).toBeVisible();
+  await expect(page.getByText('Visa •••• 4242')).toBeVisible();
+  await page.getByText('Confirm Deposit').nth(1).click();
+
+  await page.waitForTimeout(600);
+
+  // Success
+  await expect(page.getByText('Deposit Successful')).toBeVisible();
+  await page.getByText('Done').click();
+});
+
+test('financial ui settings and linked cards', async ({ page }) => {
+  await page.goto('/');
+
+  // Navigate to Account
+  await page.getByText('Account', { exact: true }).first().click();
+
+  // Go to Settings
+  await page.getByText('General Settings').click();
+  await expect(page.getByText('Push Notifications')).toBeVisible();
+
+  // Go back
+  await page.locator('button').first().click(); // back button
+
+  // Go to Linked Cards
+  await page.getByText('Linked Cards & Banks').click();
+  await expect(page.getByText('Visa')).toBeVisible();
+  await expect(page.getByText('•••• 4242')).toBeVisible();
+
+  // Add new card
+  await page.getByText('Add New Card').click();
+  await page.getByText('Save Card').click();
+
+  // Verify new card exists
+  await expect(page.getByText('Mastercard')).toBeVisible();
+  await expect(page.getByText('•••• 8888')).toBeVisible();
+
+  // Remove first card
+  await page.locator('.lucide-trash-2').first().click();
+});
