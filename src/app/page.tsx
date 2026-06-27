@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete, QrCode, Link, ArrowUpRight, ArrowDownLeft, Landmark, ArrowDownToLine, CircleDot, Share2, Copy, ShoppingBag, Car, Laptop, Wrench, Store } from "lucide-react"
 
-type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK"
+type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT"
 
 const MOCK_TRANSACTIONS = [
   { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
@@ -24,7 +24,10 @@ export default function App() {
   const [navStack, setNavStack] = useState<AppState[]>(["ONBOARDING"])
   const appState = navStack[navStack.length - 1]
   const [userHandle, setUserHandle] = useState("")
-  const [onboardingStep, setOnboardingStep] = useState<1 | 2>(1)
+  const [onboardingStep, setOnboardingStep] = useState<1 | 2 | 3 | 4>(1)
+  const [onboardingName, setOnboardingName] = useState("")
+  const [onboardingEmail, setOnboardingEmail] = useState("")
+  const [onboardingPin, setOnboardingPin] = useState("")
   const [authPin, setAuthPin] = useState("")
   const [isAuthorizing, setIsAuthorizing] = useState(false)
   const [isPromoVisible, setIsPromoVisible] = useState(true)
@@ -32,7 +35,7 @@ export default function App() {
   const [transactionMode, setTransactionMode] = useState<"send" | "receive" | "pay" | "deposit" | "withdraw">("send")
   const [payoutMethods, setPayoutMethods] = useState([{ id: 1, type: "bank", name: "Main Bank Account", details: "CRDB •••• 9012" }])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
-  const [balance, setBalance] = useState(142500)
+  const [balance, setBalance] = useState(0) // Default to 0 to trigger the fund wallet prompt
   const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS)
   const [savedMethods, setSavedMethods] = useState([
     { id: 1, type: "card", name: "Main Bank", details: "Visa •••• 4242", icon: CreditCard },
@@ -173,7 +176,7 @@ export default function App() {
                   <motion.button
                     whileTap={{ scale: 0.95, opacity: 0.8 }}
                     onClick={() => setOnboardingStep(2)}
-                    className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
+                    className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                   >
                     Get Started
                   </motion.button>
@@ -188,22 +191,129 @@ export default function App() {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex-1 flex flex-col w-full h-full"
               >
-                <div className="flex justify-between items-center mb-8">
-                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Claim your<br/>handle</h2>
+                <div className="flex flex-col mb-8 mt-4 gap-2">
+                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Create your<br/>account</h2>
+                   <p className="text-[16px] font-medium text-[#666666]">Enter your legal details to get started.</p>
                 </div>
-                <div className="flex-1 flex flex-col mt-8">
+                <div className="flex-1 flex flex-col gap-6 mt-4">
+                   <div className="flex flex-col gap-2">
+                     <span className="text-[14px] font-bold text-[#1A1A1A] px-2">Legal Name</span>
+                     <input
+                       autoFocus
+                       type="text"
+                       value={onboardingName}
+                       onChange={(e) => setOnboardingName(e.target.value)}
+                       placeholder="e.g., John Doe"
+                       className="w-full h-[64px] bg-[#F4F4F4] rounded-[20px] px-6 text-[18px] font-bold text-[#1A1A1A] outline-none placeholder:text-[#666666]/50"
+                     />
+                   </div>
+                   <div className="flex flex-col gap-2">
+                     <span className="text-[14px] font-bold text-[#1A1A1A] px-2">Email Address</span>
+                     <input
+                       type="email"
+                       value={onboardingEmail}
+                       onChange={(e) => setOnboardingEmail(e.target.value)}
+                       placeholder="e.g., john@example.com"
+                       className="w-full h-[64px] bg-[#F4F4F4] rounded-[20px] px-6 text-[18px] font-bold text-[#1A1A1A] outline-none placeholder:text-[#666666]/50"
+                     />
+                   </div>
+                </div>
+
+                <div className="w-full mt-auto pt-4">
+                  <motion.button
+                    whileTap={{ scale: 0.95, opacity: 0.8 }}
+                    onClick={() => setOnboardingStep(3)}
+                    disabled={onboardingName.length < 3 || onboardingEmail.length < 5}
+                    className={`w-full h-[60px] rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2 transition-colors ${onboardingName.length >= 3 && onboardingEmail.length >= 5 ? "bg-[#27A163] text-white" : "bg-[#F4F4F4] text-[#666666] shadow-none"}`}
+                  >
+                    Continue
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
+
+            {onboardingStep === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex-1 flex flex-col w-full h-full relative"
+              >
+                <div className="flex flex-col mb-8 mt-4 gap-2">
+                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Set your PIN</h2>
+                   <p className="text-[16px] font-medium text-[#666666]">This protects your transactions and account access.</p>
+                </div>
+
+                <div className="flex-1 flex flex-col items-center justify-center -mt-10">
+                   <div className="flex items-center gap-6 mb-12">
+                     {[1, 2, 3, 4].map((i) => (
+                       <div key={i} className={`w-5 h-5 rounded-full border-2 transition-colors duration-200 ${onboardingPin.length >= i ? "bg-[#1A1A1A] border-[#1A1A1A]" : "border-gray-300 bg-transparent"}`} />
+                     ))}
+                   </div>
+                </div>
+
+                <div className="w-full px-2 pb-2 mt-auto grid grid-cols-3 gap-y-6 gap-x-4 max-w-[320px] mx-auto">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, "spacer", 0, "backspace"].map((val, idx) => (
+                    <div key={idx} className="flex items-center justify-center h-[60px]">
+                      {val === "backspace" ? (
+                        <motion.button
+                          whileTap={{ scale: 0.9, backgroundColor: "#E5E7EB" }}
+                          onClick={() => setOnboardingPin(prev => prev.slice(0, -1))}
+                          className="w-16 h-16 rounded-full flex items-center justify-center bg-[#F4F4F4] text-[#1A1A1A]"
+                        >
+                          <Delete className="w-6 h-6" />
+                        </motion.button>
+                      ) : val === "spacer" ? (
+                        <div className="w-16 h-16" />
+                      ) : (
+                        <motion.button
+                          whileTap={{ scale: 0.9, backgroundColor: "#E5E7EB" }}
+                          onClick={() => {
+                            if (onboardingPin.length >= 4) return;
+                            const newPin = onboardingPin + val;
+                            setOnboardingPin(newPin);
+                            if (newPin.length === 4) {
+                              setTimeout(() => setOnboardingStep(4), 300);
+                            }
+                          }}
+                          className="w-16 h-16 rounded-full flex items-center justify-center bg-[#F4F4F4] text-[28px] font-medium text-[#1A1A1A]"
+                        >
+                          {val}
+                        </motion.button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {onboardingStep === 4 && (
+              <motion.div
+                key="step4"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex-1 flex flex-col w-full h-full"
+              >
+                <div className="flex flex-col mb-6 mt-4 gap-2">
+                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Create your Payment Tag</h2>
+                </div>
+                <div className="flex-1 flex flex-col mt-2 gap-y-6">
                    <div className="relative w-full h-[72px] bg-[#F4F4F4] rounded-[24px] flex items-center px-6">
-                     <span className="text-[24px] font-bold text-[#666666] mr-1">@</span>
                      <input
                        autoFocus
                        type="text"
                        value={userHandle}
                        onChange={(e) => setUserHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                       placeholder="yourname"
-                       className="flex-1 bg-transparent text-[24px] font-bold text-[#1A1A1A] outline-none placeholder:text-[#666666]/50"
+                       placeholder="e.g. JohnDoe123"
+                       className="flex-1 bg-transparent text-[22px] font-bold text-[#1A1A1A] outline-none placeholder:text-[#666666]/50"
                      />
                    </div>
-                   <p className="text-[14px] font-medium text-[#666666] mt-4 px-2">This is how friends and businesses will find you. You can change it later.</p>
+                   <p className="text-[15px] font-medium text-[#666666] leading-relaxed px-2">
+                     At Wi-Pa, we give every customer a unique payment identity so you never have to memorize long account numbers or risk sending money to the wrong person.
+                   </p>
+                   <p className="text-[15px] font-medium text-[#666666] leading-relaxed px-2">
+                     Your Payment Tag ensures safe, error-free transfers. It must relate to your real name to maintain a secure financial environment. Random internet aliases are not permitted.
+                   </p>
                 </div>
 
                 <div className="w-full mt-auto pt-4">
@@ -211,9 +321,9 @@ export default function App() {
                     whileTap={{ scale: 0.95, opacity: 0.8 }}
                     onClick={() => navigateTo("HOME")}
                     disabled={userHandle.length < 3}
-                    className={`w-full h-[60px] rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2 transition-colors ${userHandle.length >= 3 ? "bg-[#1A1A1A] text-white" : "bg-[#F4F4F4] text-[#666666] shadow-none"}`}
+                    className={`w-full h-[60px] rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2 transition-colors ${userHandle.length >= 3 ? "bg-[#27A163] text-white" : "bg-[#F4F4F4] text-[#666666] shadow-none"}`}
                   >
-                    Continue
+                    Finish Setup
                   </motion.button>
                 </div>
               </motion.div>
@@ -281,7 +391,13 @@ export default function App() {
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
+                  onClick={() => {
+                    if (balance <= 0) {
+                      navigateTo("FUND_WALLET_PROMPT");
+                    } else {
+                      setTransactionMode("send"); navigateTo("HANDLE_SEARCH");
+                    }
+                  }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
@@ -303,7 +419,13 @@ export default function App() {
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("pay"); navigateTo("HANDLE_SEARCH"); }}
+                  onClick={() => {
+                    if (balance <= 0) {
+                      navigateTo("FUND_WALLET_PROMPT");
+                    } else {
+                      setTransactionMode("pay"); navigateTo("HANDLE_SEARCH");
+                    }
+                  }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-[#27A163]/10 rounded-full flex items-center justify-center self-start shadow-sm">
@@ -704,10 +826,14 @@ export default function App() {
                </div>
 
                {isAuthorizing && (
-                 <div className="absolute flex flex-col items-center">
-                   <div className="w-8 h-8 border-4 border-[#F4F4F4] border-t-[#27A163] rounded-full animate-spin" />
-                   <span className="text-[14px] font-medium text-[#666666] mt-4">Verifying...</span>
-                 </div>
+                 <motion.div
+                   initial={{ opacity: 0, scale: 0.9 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   className="absolute flex flex-col items-center mt-32"
+                 >
+                   <div className="w-10 h-10 border-[3px] border-[#F4F4F4] border-t-[#27A163] rounded-full animate-spin shadow-sm" />
+                   <span className="text-[16px] font-medium text-[#1A1A1A] mt-6 tracking-wide">Verifying Securely...</span>
+                 </motion.div>
                )}
             </div>
 
@@ -752,6 +878,57 @@ export default function App() {
                 </div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {appState === "FUND_WALLET_PROMPT" && (
+          <motion.div
+            key="fund_wallet"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/40 z-[80] flex flex-col justify-end pt-[env(safe-area-inset-top)]"
+          >
+            <motion.div
+               initial={{ y: "100%" }}
+               animate={{ y: 0 }}
+               exit={{ y: "100%" }}
+               transition={{ type: "spring", damping: 30, stiffness: 400, mass: 0.8 }}
+               className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
+            >
+               <div className="flex justify-between items-center mb-6">
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Fund Your Wallet</h2>
+                 <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
+                   <X className="w-6 h-6 text-[#1A1A1A]" />
+                 </button>
+               </div>
+
+               <div className="flex flex-col items-center text-center mb-8">
+                 <div className="w-16 h-16 bg-[#1A73E8]/10 rounded-full flex items-center justify-center mb-4">
+                   <Banknote className="w-8 h-8 text-[#1A73E8]" />
+                 </div>
+                 <p className="text-[16px] font-medium text-[#666666] leading-relaxed">
+                   To send money or make payments, you must first link a payment method and fund your Wi-Pa wallet. It is 100% free to deposit funds.
+                 </p>
+               </div>
+
+               <motion.button
+                 whileTap={{ scale: 0.98 }}
+                 onClick={() => {
+                   setTransactionMode("deposit");
+                   navigateTo("PAYMENT_AMOUNT");
+                 }}
+                 className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
+               >
+                 Add Funds Now
+               </motion.button>
+               <button
+                 onClick={goBack}
+                 className="w-full h-[60px] bg-transparent text-[#666666] rounded-[30px] text-[18px] font-bold flex items-center justify-center mt-2"
+               >
+                 Maybe Later
+               </button>
+            </motion.div>
           </motion.div>
         )}
 
@@ -1069,7 +1246,7 @@ export default function App() {
                   setSavedMethods([...savedMethods, { id: Date.now(), type: "card", name: "New Card", details: "Mastercard •••• 8888", icon: CreditCard }]);
                   goBack();
                 }}
-                className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
+                className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
               >
                 Save Card
               </motion.button>
@@ -1295,7 +1472,7 @@ export default function App() {
                   setPayoutMethods([...payoutMethods, { id: Date.now(), type: "till", name: "Merchant Till", details: "M-Pesa •••• 1234" }]);
                   goBack();
                 }}
-                className="w-full h-[60px] bg-[#1A1A1A] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
+                className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold flex items-center justify-center shadow-md"
               >
                 Save Payout Destination
               </motion.button>
@@ -1330,10 +1507,10 @@ export default function App() {
                  <div className="flex flex-col gap-3 w-full">
                    <motion.button
                      whileTap={{ scale: 0.95 }}
-                     className="w-full h-[56px] bg-[#1A1A1A] text-white rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2 shadow-md"
+                     className="w-full h-[56px] bg-[#27A163] text-white rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2 shadow-md"
                    >
                      <Copy className="w-5 h-5" />
-                     Copy @handle
+                     Copy Payment Tag
                    </motion.button>
 
                    <motion.button
