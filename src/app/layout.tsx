@@ -14,8 +14,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Campus Delivery",
-  description: "World-class campus delivery platform.",
+  title: "Wi-Pa",
+  description: "Wireless Paper - Instant, trusted money movement.",
 };
 
 export default function RootLayout({
