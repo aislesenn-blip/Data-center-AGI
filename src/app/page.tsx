@@ -33,15 +33,12 @@ export default function App() {
   const [isPromoVisible, setIsPromoVisible] = useState(true)
   const [merchantCategory, setMerchantCategory] = useState<{name: string, icon: React.ElementType}>({ name: "Cafe", icon: Utensils })
   const [transactionMode, setTransactionMode] = useState<"send" | "receive" | "pay" | "deposit" | "withdraw">("send")
-  const [payoutMethods, setPayoutMethods] = useState([{ id: 1, type: "bank", name: "Main Bank Account", details: "CRDB •••• 9012" }])
+  const [payoutMethods, setPayoutMethods] = useState<{id: number, type: string, name: string, details: string}[]>([])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
   const [balance, setBalance] = useState(0) // Default to 0 to trigger the fund wallet prompt
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS)
-  const [savedMethods, setSavedMethods] = useState([
-    { id: 1, type: "card", name: "Main Bank", details: "Visa •••• 4242", icon: CreditCard },
-    { id: 2, type: "mobile", name: "Personal M-Pesa", details: "0700 •••• 112", icon: Banknote }
-  ])
-  const [selectedMethodId, setSelectedMethodId] = useState<number | "new_mobile">(1)
+  const [transactions, setTransactions] = useState<{id: number, type: string, amount: string, contactName: string, contactHandle: string, date: string, time: string, icon: React.ElementType}[]>([])
+  const [savedMethods, setSavedMethods] = useState<{id: number | string, type: string, name: string, details: string, icon: React.ElementType}[]>([])
+  const [selectedMethodId, setSelectedMethodId] = useState<number | string | "new_mobile">(1)
   const [isMethodSheetOpen, setIsMethodSheetOpen] = useState(false)
   const [pushNotifications, setPushNotifications] = useState(true)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
@@ -169,8 +166,9 @@ export default function App() {
                 exit={{ opacity: 0, x: -50 }}
                 className="flex-1 flex flex-col items-center justify-center w-full"
               >
-                <div className="flex-1 flex items-center justify-center">
+                <div className="flex-1 flex flex-col items-center justify-center">
                   <h1 className="text-[48px] font-light tracking-widest text-[#1A1A1A]">Wi-Pa</h1>
+                  <p className="text-[16px] font-medium text-[#666666] tracking-wide mt-2">Wireless Payments</p>
                 </div>
                 <div className="w-full">
                   <motion.button
@@ -309,10 +307,10 @@ export default function App() {
                      />
                    </div>
                    <p className="text-[15px] font-medium text-[#666666] leading-relaxed px-2">
-                     At Wi-Pa, we give every customer a unique payment identity so you never have to memorize long account numbers or risk sending money to the wrong person.
+                     At Wi-Pa, we give every user a unique payment identity so you never have to memorize long account numbers or risk sending money to the wrong person.
                    </p>
                    <p className="text-[15px] font-medium text-[#666666] leading-relaxed px-2">
-                     Your Payment Tag ensures safe, error-free transfers. It must relate to your real name to maintain a secure financial environment. Random internet aliases are not permitted.
+                     Your Payment Tag ensures safe, error-free transfers. It must be derived from or closely resemble your legal name. Random aliases, unrelated nicknames, or social-media-style identities are strictly not permitted. Every Payment Tag must remain globally unique.
                    </p>
                 </div>
 
@@ -449,11 +447,17 @@ export default function App() {
               {/* Search Input CTA */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
+                onClick={() => {
+                  if (balance <= 0) {
+                    navigateTo("FUND_WALLET_PROMPT");
+                  } else {
+                    setTransactionMode("send"); navigateTo("HANDLE_SEARCH");
+                  }
+                }}
                 className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
                 <Search className="w-5 h-5 text-[#1A1A1A] mr-3" strokeWidth={2} />
-                <span className="text-[18px] font-bold text-[#1A1A1A]">Search (@handle)</span>
+                <span className="text-[18px] font-bold text-[#1A1A1A]">Search Name or Payment Tag</span>
               </motion.button>
 
               {/* Recent Locations */}
@@ -512,7 +516,7 @@ export default function App() {
                 <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
                 <input
                   type="text"
-                  placeholder={ "Who to? (@handle, name)"}
+                  placeholder={ "Who to? (Payment Tag, Name)"}
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -994,7 +998,17 @@ export default function App() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-6">
-              {filteredTransactions.length === 0 ? (
+              {transactions.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center mt-12 bg-[#F4F4F4] rounded-[24px] p-8 shadow-sm">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                    <HistoryIcon className="w-8 h-8 text-[#666666]" />
+                  </div>
+                  <h3 className="text-[18px] font-bold text-[#1A1A1A] mb-2">No Transactions Yet</h3>
+                  <p className="text-[15px] font-medium text-[#666666] leading-relaxed">
+                    Your financial activity will appear here once you start sending, receiving, or depositing money.
+                  </p>
+                </div>
+              ) : filteredTransactions.length === 0 ? (
                  <div className="text-center text-[#666666] mt-8 font-medium bg-[#F4F4F4] rounded-[24px] p-6">
                    No transactions found for &quot;{activitySearchQuery}&quot;
                  </div>
@@ -1162,8 +1176,14 @@ export default function App() {
 
             <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
                {savedMethods.length === 0 ? (
-                 <div className="text-center text-[#666666] mt-8 font-medium">
-                   No saved payment methods found.
+                 <div className="flex flex-col items-center justify-center text-center mt-12 bg-[#F4F4F4] rounded-[24px] p-8 shadow-sm">
+                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                     <CreditCard className="w-8 h-8 text-[#666666]" />
+                   </div>
+                   <h3 className="text-[18px] font-bold text-[#1A1A1A] mb-2">No Saved Methods</h3>
+                   <p className="text-[15px] font-medium text-[#666666] leading-relaxed">
+                     Link a card or mobile money account to easily fund your Wi-Pa wallet.
+                   </p>
                  </div>
                ) : (
                  savedMethods.map(method => (
@@ -1386,8 +1406,14 @@ export default function App() {
 
             <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
                {payoutMethods.length === 0 ? (
-                 <div className="text-center text-[#666666] mt-8 font-medium">
-                   No payout methods configured. Add one to receive settlements.
+                 <div className="flex flex-col items-center justify-center text-center mt-12 bg-[#F4F4F4] rounded-[24px] p-8 shadow-sm">
+                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                     <Landmark className="w-8 h-8 text-[#666666]" />
+                   </div>
+                   <h3 className="text-[18px] font-bold text-[#1A1A1A] mb-2">No Payout Methods</h3>
+                   <p className="text-[15px] font-medium text-[#666666] leading-relaxed">
+                     Configure a payout destination to receive your settlements seamlessly.
+                   </p>
                  </div>
                ) : (
                  payoutMethods.map((method, index) => (
@@ -1518,7 +1544,7 @@ export default function App() {
                      className="w-full h-[56px] bg-[#F4F4F4] text-[#1A1A1A] border border-gray-200 rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2"
                    >
                      <Share2 className="w-5 h-5" />
-                     Share @handle
+                     Share Payment Tag
                    </motion.button>
                  </div>
                </div>
