@@ -7,17 +7,17 @@ import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, M
 type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT"
 
 const MOCK_TRANSACTIONS = [
-  { id: 1, type: "send", amount: "-TZS 15,000", contactName: "Jane Doe", contactHandle: "@jane", date: "Today", time: "14:30", icon: User },
-  { id: 2, type: "receive", amount: "+TZS 5,000", contactName: "Mike Smith", contactHandle: "@mike", date: "Today", time: "09:15", icon: User },
-  { id: 3, type: "pay", amount: "-TZS 4,500", contactName: "Local Coffee", contactHandle: "@coffee_shop", date: "Yesterday", time: "08:45", icon: Utensils },
-  { id: 4, type: "receive", amount: "+TZS 1,200", contactName: "System", contactHandle: "Promo", date: "This Week", time: "Mon", icon: Star },
+  { id: 1, type: "send", amount: "-1 Breakfast", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "14:30", icon: Utensils },
+  { id: 2, type: "receive", amount: "+20 Lunch", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "09:15", icon: Utensils },
+  { id: 3, type: "pay", amount: "-1 Wash", contactName: "Campus Laundry", contactHandle: "@CampusLaundry", date: "Yesterday", time: "08:45", icon: Utensils },
+  { id: 4, type: "receive", amount: "+10 Rides", contactName: "City Transit", contactHandle: "@CityTransit", date: "This Week", time: "Mon", icon: Star },
 ]
 
 const CONTACTS = [
-  { id: 1, handle: "@jane", name: "Jane Doe", icon: User, type: "history" },
-  { id: 2, handle: "@mike", name: "Mike Smith", icon: User, type: "history" },
-  { id: 3, handle: "@sarah", name: "Sarah Connor", icon: User, type: "history" },
-  { id: 4, handle: "@coffee_shop", name: "Local Coffee", icon: Utensils, type: "merchant" },
+  { id: 1, handle: "@MamaRose", name: "Mama Rose Cafe", icon: Utensils, type: "merchant" },
+  { id: 2, handle: "@CampusLaundry", name: "Campus Laundry", icon: Utensils, type: "merchant" },
+  { id: 3, handle: "@CityTransit", name: "City Transit", icon: Star, type: "merchant" },
+  { id: 4, handle: "@john_user", name: "John User", icon: User, type: "history" },
 ]
 
 export default function App() {
@@ -168,7 +168,7 @@ export default function App() {
               >
                 <div className="flex-1 flex flex-col items-center justify-center">
                   <h1 className="text-[48px] font-light tracking-widest text-[#1A1A1A]">Wi-Pa</h1>
-                  <p className="text-[16px] font-medium text-[#666666] tracking-wide mt-2">Wireless Payments</p>
+                  <p className="text-[16px] font-medium text-[#666666] tracking-wide mt-2">Digital Service Card</p>
                 </div>
                 <div className="w-full">
                   <motion.button
@@ -293,7 +293,7 @@ export default function App() {
                 className="flex-1 flex flex-col w-full h-full"
               >
                 <div className="flex flex-col mb-6 mt-4 gap-2">
-                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Create your Payment Tag</h2>
+                   <h2 className="text-[28px] font-extrabold text-[#1A1A1A] leading-tight">Create your Card ID</h2>
                 </div>
                 <div className="flex-1 flex flex-col mt-2 gap-y-6">
                    <div className="relative w-full h-[72px] bg-[#F4F4F4] rounded-[24px] flex items-center px-6">
@@ -310,7 +310,7 @@ export default function App() {
                      At Wi-Pa, we give every user a unique payment identity so you never have to memorize long account numbers or risk sending money to the wrong person.
                    </p>
                    <p className="text-[15px] font-medium text-[#666666] leading-relaxed px-2">
-                     Your Payment Tag ensures safe, error-free transfers. It must be derived from or closely resemble your legal name. Random aliases, unrelated nicknames, or social-media-style identities are strictly not permitted. Every Payment Tag must remain globally unique.
+                     Your Card ID holds your real-world services and ensures seamless usage at merchants.
                    </p>
                 </div>
 
@@ -359,9 +359,9 @@ export default function App() {
                 <div className="mt-12 w-full bg-[#F2F4F7] rounded-[16px] p-4 flex items-center justify-between mb-6 shadow-sm">
                   <div className="flex flex-col">
                     <span className="text-[16px] font-bold text-[#002D72] leading-tight">
-                       100% Free Transactions
+                       Prepay & Save
                     </span>
-                    <span className="text-[14px] font-normal text-[#666666] mt-1">Send and receive money with zero hidden fees.</span>
+                    <span className="text-[14px] font-normal text-[#666666] mt-1">Never carry cash again. Prepay for services.</span>
                   </div>
                   <button
                     onClick={() => setIsPromoVisible(false)}
@@ -375,33 +375,37 @@ export default function App() {
               {/* Balance Display */}
               <div className="mb-6 flex flex-col items-start">
                 <div className="flex items-center gap-3">
-                  <h1 className="text-[32px] font-extrabold text-[#1A1A1A] tracking-[-0.5px]">
-                    {isBalanceVisible ? `TZS ${balance.toLocaleString()}` : "••••••••"}
-                  </h1>
-                  <button onClick={() => setIsBalanceVisible(!isBalanceVisible)} className="p-1.5 bg-[#F4F4F4] rounded-full mt-1">
-                    {isBalanceVisible ? <EyeOff className="w-5 h-5 text-[#666666]" /> : <Eye className="w-5 h-5 text-[#666666]" />}
-                  </button>
-                </div>
-                <p className="text-[14px] font-medium text-[#666666]">Available Balance</p>
+    <div className="flex flex-col gap-1 w-full">
+      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="bg-[#27A163]/10 px-4 py-2 rounded-xl whitespace-nowrap">
+          <span className="text-[18px] font-bold text-[#27A163]">18</span>
+          <span className="text-[14px] font-medium text-[#27A163] ml-1">Breakfast</span>
+        </div>
+        <div className="bg-[#1A73E8]/10 px-4 py-2 rounded-xl whitespace-nowrap">
+          <span className="text-[18px] font-bold text-[#1A73E8]">5</span>
+          <span className="text-[14px] font-medium text-[#1A73E8] ml-1">Laundry</span>
+        </div>
+        <div className="bg-gray-100 px-4 py-2 rounded-xl whitespace-nowrap">
+          <span className="text-[18px] font-bold text-gray-700">76</span>
+          <span className="text-[14px] font-medium text-gray-700 ml-1">Pages</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p className="text-[14px] font-medium text-[#666666] mt-2">Available on Card</p>
               </div>
 
               {/* Bento Grid */}
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    if (balance <= 0) {
-                      navigateTo("FUND_WALLET_PROMPT");
-                    } else {
-                      setTransactionMode("send"); navigateTo("HANDLE_SEARCH");
-                    }
-                  }}
+                  onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
                      <ArrowUpRight className="w-4 h-4 text-[#1A1A1A]" strokeWidth={2} />
                   </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Send</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Add to Card</div>
                 </motion.div>
 
                 <motion.div
@@ -412,24 +416,18 @@ export default function App() {
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
                      <QrCode className="w-4 h-4 text-[#1A1A1A]" strokeWidth={2} />
                   </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Receive</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Card Identity</div>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    if (balance <= 0) {
-                      navigateTo("FUND_WALLET_PROMPT");
-                    } else {
-                      setTransactionMode("pay"); navigateTo("HANDLE_SEARCH");
-                    }
-                  }}
+                  onClick={() => { setTransactionMode("pay"); navigateTo("HANDLE_SEARCH"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-[#27A163]/10 rounded-full flex items-center justify-center self-start shadow-sm">
                      <Utensils className="w-4 h-4 text-[#27A163]" strokeWidth={2} />
                   </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Pay</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Use Card</div>
                 </motion.div>
 
                 <motion.div
@@ -440,24 +438,18 @@ export default function App() {
                   <div className="w-8 h-8 bg-[#1A73E8]/10 rounded-full flex items-center justify-center self-start shadow-sm">
                      <ArrowDownLeft className="w-4 h-4 text-[#1A73E8]" strokeWidth={2} />
                   </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Deposit</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Accept Card</div>
                 </motion.div>
               </div>
 
               {/* Search Input CTA */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  if (balance <= 0) {
-                    navigateTo("FUND_WALLET_PROMPT");
-                  } else {
-                    setTransactionMode("send"); navigateTo("HANDLE_SEARCH");
-                  }
-                }}
+                onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
                 className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
                 <Search className="w-5 h-5 text-[#1A1A1A] mr-3" strokeWidth={2} />
-                <span className="text-[18px] font-bold text-[#1A1A1A]">Search Name or Payment Tag</span>
+                <span className="text-[18px] font-bold text-[#1A1A1A]">Search Merchant Username</span>
               </motion.button>
 
               {/* Recent Locations */}
@@ -516,7 +508,7 @@ export default function App() {
                 <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
                 <input
                   type="text"
-                  placeholder={ "Who to? (Payment Tag, Name)"}
+                  placeholder={ "Search @MamaRose..."}
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -583,10 +575,10 @@ export default function App() {
                 <X className="w-5 h-5 text-[#1A1A1A]" />
               </button>
               <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">
-                {transactionMode === "send" && "Send Money"}
+                {transactionMode === "send" && "Quantity to Add"}
 
-                {transactionMode === "pay" && "Pay Merchant"}
-                {transactionMode === "deposit" && "Deposit Funds"}
+                {transactionMode === "pay" && "Use Service"}
+                {transactionMode === "deposit" && "Quantity to Add"}
                 {transactionMode === "withdraw" && "Withdraw Funds"}
               </h2>
             </div>
@@ -651,8 +643,11 @@ export default function App() {
                  </div>
                )}
 
-               <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
-                 <span className="text-[18px] font-bold text-[#666666] mb-2">TZS</span>
+               <div className="w-full max-w-[200px] bg-[#F4F4F4] rounded-full py-2 px-4 flex items-center justify-center mx-auto mb-4 mt-2">
+     <span className="text-[14px] font-bold text-[#1A1A1A]">Service: Regular</span>
+   </div>
+   <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
+
                  <div className={`${getAmountFontSize(transactionAmount)} font-extrabold text-[#1A1A1A] tracking-tight leading-none text-center transition-all duration-200 break-words w-full max-w-[95%]`}>
                    {formatAmount(transactionAmount)}
                  </div>
@@ -722,7 +717,7 @@ export default function App() {
                className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
             >
                <div className="flex justify-between items-center mb-8">
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" || transactionMode === "pay" ? "Payment" : transactionMode === "deposit" ? "Deposit" : transactionMode === "withdraw" ? "Withdrawal" : ""}</h2>
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" ? "Addition" : transactionMode === "pay" ? "Usage" : "Details"}</h2>
                  <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
                    <X className="w-6 h-6 text-[#1A1A1A]" />
                  </button>
@@ -743,8 +738,8 @@ export default function App() {
                     </div>
                   )}
                   <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-medium text-[#666666]">Amount</span>
-                    <span className="text-[20px] font-extrabold text-[#1A1A1A]">TZS {Number(transactionAmount).toLocaleString()}</span>
+                    <span className="text-[16px] font-medium text-[#666666]">Quantity</span>
+                    <span className="text-[20px] font-extrabold text-[#1A1A1A]">{Number(transactionAmount).toLocaleString()}</span>
                   </div>
                   {transactionNote && (
                     <div className="flex justify-between items-start border-t border-gray-200 pt-4 mt-2">
@@ -763,7 +758,7 @@ export default function App() {
                      setTransactions([{
                        id: Date.now(),
                        type: "receive",
-                       amount: `+TZS ${amt.toLocaleString()}`,
+                       amount: `+${amt.toLocaleString()}`,
                        contactName: "Self Deposit",
                        contactHandle: selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details || "Card",
                        date: "Today",
@@ -775,7 +770,7 @@ export default function App() {
                      setTransactions([{
                        id: Date.now(),
                        type: "send",
-                       amount: `-TZS ${amt.toLocaleString()}`,
+                       amount: `-${amt.toLocaleString()}`,
                        contactName: "Withdrawal",
                        contactHandle: selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details || "Mobile Money",
                        date: "Today",
@@ -787,7 +782,7 @@ export default function App() {
                      setTransactions([{
                        id: Date.now(),
                        type: "send",
-                       amount: `-TZS ${amt.toLocaleString()}`,
+                       amount: `-${amt.toLocaleString()}`,
                        contactName: selectedContact?.name || "Unknown",
                        contactHandle: selectedContact?.handle || "Unknown",
                        date: "Today",
@@ -800,7 +795,7 @@ export default function App() {
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                >
-                 {transactionMode === "send" || transactionMode === "pay" ? "Send Instantly" : transactionMode === "deposit" ? "Confirm Deposit" : transactionMode === "withdraw" ? "Confirm Withdrawal" : ""}
+                 {transactionMode === "send" ? "Confirm Addition" : transactionMode === "pay" ? "Confirm Usage" : "Confirm"}
                </motion.button>
             </motion.div>
           </motion.div>
@@ -954,10 +949,10 @@ export default function App() {
                <CheckCircle className="w-12 h-12 text-[#27A163]" />
              </motion.div>
              <h1 className="text-[32px] font-extrabold text-white mb-2 text-center leading-tight">
-               {transactionMode === "send" || transactionMode === "pay" ? "Sent Successfully" : transactionMode === "deposit" ? "Deposit Successful" : transactionMode === "withdraw" ? "Withdrawal Started" : ""}
+               {transactionMode === "send" ? "Added to Card" : transactionMode === "pay" ? "Service Consumed" : "Success"}
              </h1>
              <p className="text-[18px] font-medium text-white/90 mb-12 text-center">
-               TZS {Number(transactionAmount).toLocaleString()} {transactionMode === "deposit" ? "added to balance" : transactionMode === "withdraw" ? "sent to mobile money" : `to ${selectedContact?.handle}`}
+               {Number(transactionAmount).toLocaleString()} {transactionMode === "send" ? `added to your card from ${selectedContact?.handle}` : `redeemed at ${selectedContact?.handle}`}
              </p>
 
              <motion.button
@@ -1088,19 +1083,19 @@ export default function App() {
                </div>
 
                <div className="flex flex-col gap-2">
-                 <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Financials</h3>
+                 <h3 className="text-[16px] font-bold text-[#1A1A1A] px-2">Card Details</h3>
                  <div className="bg-[#F4F4F4] rounded-[24px] shadow-sm overflow-hidden flex flex-col">
                    <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 border-b border-gray-200" onClick={() => navigateTo("LINKED_CARDS")}>
                      <div className="flex items-center gap-4">
                        <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">Linked Cards & Banks</span>
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">Card Value</span>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
                    <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("withdraw"); navigateTo("PAYMENT_AMOUNT"); }}>
                      <div className="flex items-center gap-4">
                        <ArrowDownToLine className="w-5 h-5 text-[#1A1A1A]" />
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">Withdraw Funds</span>
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">Usage History</span>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
@@ -1114,8 +1109,8 @@ export default function App() {
                      <div className="flex items-center gap-4">
                        <Landmark className="w-5 h-5 text-[#1A1A1A]" />
                        <div className="flex flex-col">
-                         <span className="text-[16px] font-bold text-[#1A1A1A]">Payout Configuration</span>
-                         <span className="text-[12px] font-medium text-[#666666]">Cards & Mobile Numbers</span>
+                         <span className="text-[16px] font-bold text-[#1A1A1A]">Catalogue Management</span>
+                         <span className="text-[12px] font-medium text-[#666666]">Services & Pricing</span>
                        </div>
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -1536,7 +1531,7 @@ export default function App() {
                      className="w-full h-[56px] bg-[#27A163] text-white rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2 shadow-md"
                    >
                      <Copy className="w-5 h-5" />
-                     Copy Payment Tag
+                     Copy Card ID
                    </motion.button>
 
                    <motion.button
@@ -1544,7 +1539,7 @@ export default function App() {
                      className="w-full h-[56px] bg-[#F4F4F4] text-[#1A1A1A] border border-gray-200 rounded-[28px] text-[16px] font-bold flex items-center justify-center gap-2"
                    >
                      <Share2 className="w-5 h-5" />
-                     Share Payment Tag
+                     Share Card ID
                    </motion.button>
                  </div>
                </div>
