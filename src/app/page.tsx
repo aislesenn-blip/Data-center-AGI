@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete, QrCode, Link, ArrowUpRight, ArrowDownLeft, Landmark, ArrowDownToLine, CircleDot, Share2, Copy, ShoppingBag, Car, Laptop, Wrench, Store } from "lucide-react"
 
-type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT"
+type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT" | "CATALOGUE_STUDIO" | "MERCHANT_STOREFRONT" | "MERCHANT_CONSUME_VIEW"
 
 const MOCK_TRANSACTIONS = [
   { id: 1, type: "send", amount: "-1 Breakfast", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "14:30", icon: Utensils },
@@ -32,7 +32,7 @@ export default function App() {
   const [isAuthorizing, setIsAuthorizing] = useState(false)
   const [isPromoVisible, setIsPromoVisible] = useState(true)
   const [merchantCategory, setMerchantCategory] = useState<{name: string, icon: React.ElementType}>({ name: "Cafe", icon: Utensils })
-  const [transactionMode, setTransactionMode] = useState<"send" | "receive" | "pay" | "deposit" | "withdraw">("send")
+  const [transactionMode, setTransactionMode] = useState<"subscribe" | "share" | "accept" | "catalogue">("subscribe")
   const [payoutMethods, setPayoutMethods] = useState<{id: number, type: string, name: string, details: string}[]>([])
   const [isBalanceVisible, setIsBalanceVisible] = useState(false)
   const [balance, setBalance] = useState(0) // Default to 0 to trigger the fund wallet prompt
@@ -43,6 +43,8 @@ export default function App() {
   const [pushNotifications, setPushNotifications] = useState(true)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
+  const [selectedService, setSelectedService] = useState<{name: string, price: number} | null>(null)
+  const [merchantCatalogue, setMerchantCatalogue] = useState<{id: number, name: string, price: number, icon: React.ElementType}[]>([{id: 1, name: "Breakfast", price: 5000, icon: Utensils}, {id: 2, name: "Lunch", price: 8000, icon: Utensils}])
   const [depositMethod, setDepositMethod] = useState<"card" | "mobile">("card")
   const [depositMobile, setDepositMobile] = useState("")
   const [transactionNote, setTransactionNote] = useState("")
@@ -399,7 +401,7 @@ export default function App() {
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
+                  onClick={() => { setTransactionMode("subscribe"); navigateTo("HANDLE_SEARCH"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
@@ -410,7 +412,7 @@ export default function App() {
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("receive"); navigateTo("RECEIVE_LINK"); }}
+                  onClick={() => { setTransactionMode("share"); navigateTo("RECEIVE_LINK"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
@@ -421,18 +423,18 @@ export default function App() {
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("pay"); navigateTo("HANDLE_SEARCH"); }}
+                  onClick={() => { setTransactionMode("accept"); navigateTo("HANDLE_SEARCH"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-[#27A163]/10 rounded-full flex items-center justify-center self-start shadow-sm">
                      <Utensils className="w-4 h-4 text-[#27A163]" strokeWidth={2} />
                   </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Use Card</div>
+                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Manage Catalogue</div>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("deposit"); navigateTo("PAYMENT_AMOUNT"); }}
+                  onClick={() => { navigateTo("CATALOGUE_STUDIO"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-[#1A73E8]/10 rounded-full flex items-center justify-center self-start shadow-sm">
@@ -445,7 +447,7 @@ export default function App() {
               {/* Search Input CTA */}
               <motion.button
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { setTransactionMode("send"); navigateTo("HANDLE_SEARCH"); }}
+                onClick={() => { setTransactionMode("subscribe"); navigateTo("HANDLE_SEARCH"); }}
                 className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
               >
                 <Search className="w-5 h-5 text-[#1A1A1A] mr-3" strokeWidth={2} />
@@ -508,7 +510,7 @@ export default function App() {
                 <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
                 <input
                   type="text"
-                  placeholder={ "Search @MamaRose..."}
+                  placeholder={transactionMode === "accept" ? "Search Customer @user..." : "Search Merchant @MamaRose..."}
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -527,9 +529,7 @@ export default function App() {
                    <div
                      key={contact.id}
                      onClick={() => {
-                        setSelectedContact(contact);
-                        setSearchQuery("");
-                        navigateTo("PAYMENT_AMOUNT");
+                        setSelectedContact(contact); setSearchQuery(""); navigateTo(transactionMode === "accept" ? "MERCHANT_CONSUME_VIEW" : "MERCHANT_STOREFRONT");
                      }}
                      className="flex items-center gap-4 p-3 rounded-[16px] hover:bg-[#F4F4F4] cursor-pointer transition-colors"
                    >
@@ -575,23 +575,23 @@ export default function App() {
                 <X className="w-5 h-5 text-[#1A1A1A]" />
               </button>
               <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">
-                {transactionMode === "send" && "Quantity to Add"}
+                {transactionMode === "subscribe" && <span>Quantity to Add <span className="text-[14px] font-medium text-[#666666] block mt-1 font-normal">Total: TZS {((selectedService?.price || 0) * (Number(transactionAmount) || 0)).toLocaleString()}</span></span>}
 
-                {transactionMode === "pay" && "Use Service"}
-                {transactionMode === "deposit" && "Quantity to Add"}
-                {transactionMode === "withdraw" && "Withdraw Funds"}
+                {transactionMode === "accept" && "Use Service"}
+
+                {false && "Withdraw Funds"}
               </h2>
             </div>
 
             {/* Content */}
             <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto min-h-0">
-               {transactionMode === "deposit" || transactionMode === "withdraw" ? (
+               {false ? (
                  <div className="flex flex-col items-center w-full mb-4 shrink-0 px-2">
-                   <div className={`w-12 h-12 ${transactionMode === "deposit" ? "bg-[#1A73E8]/10 text-[#1A73E8]" : "bg-[#1A1A1A]/10 text-[#1A1A1A]"} rounded-full flex items-center justify-center mb-2 shadow-sm`}>
-                     {transactionMode === "deposit" ? <Banknote className="w-6 h-6" /> : <ArrowDownToLine className="w-6 h-6" />}
+                   <div className={`w-12 h-12 ${false ? "bg-[#1A73E8]/10 text-[#1A73E8]" : "bg-[#1A1A1A]/10 text-[#1A1A1A]"} rounded-full flex items-center justify-center mb-2 shadow-sm`}>
+                     {false ? <Banknote className="w-6 h-6" /> : <ArrowDownToLine className="w-6 h-6" />}
                    </div>
                    <h3 className="text-[20px] font-extrabold text-[#1A1A1A] mb-4">
-                     {transactionMode === "deposit" ? "Add Funds" : "Withdraw"}
+                     {false ? "Add Funds" : "Withdraw"}
                    </h3>
 
                    <button
@@ -602,10 +602,7 @@ export default function App() {
                        {selectedMethodId === "new_mobile" ? (
                          <Banknote className="w-5 h-5 text-[#1A1A1A]" />
                        ) : (
-                         (() => {
-                           const m = savedMethods.find(m => m.id === selectedMethodId);
-                           return m ? <m.icon className="w-5 h-5 text-[#1A1A1A]" /> : <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
-                         })()
+                         <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
                        )}
                        <div className="flex flex-col items-start">
                          <span className="text-[14px] font-bold text-[#1A1A1A]">
@@ -644,7 +641,7 @@ export default function App() {
                )}
 
                <div className="w-full max-w-[200px] bg-[#F4F4F4] rounded-full py-2 px-4 flex items-center justify-center mx-auto mb-4 mt-2">
-     <span className="text-[14px] font-bold text-[#1A1A1A]">Service: Regular</span>
+     <span className="text-[14px] font-bold text-[#1A1A1A]">{selectedService?.name || "Service"}</span>
    </div>
    <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
 
@@ -653,7 +650,7 @@ export default function App() {
                  </div>
                </div>
 
-               {transactionMode !== "deposit" && transactionMode !== "withdraw" && (
+               {true && (
                  <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center mb-4 shrink-0 mt-4">
                    <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
                    <input
@@ -692,8 +689,8 @@ export default function App() {
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigateTo("CONFIRMATION")}
-                disabled={!transactionAmount || Number(transactionAmount) <= 0 || ((transactionMode === "deposit" || transactionMode === "withdraw") && selectedMethodId === "new_mobile" && !depositMobile)}
-                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 || ((transactionMode === "deposit" || transactionMode === "withdraw") && selectedMethodId === "new_mobile" && !depositMobile) ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
+                disabled={!transactionAmount || Number(transactionAmount) <= 0 || ((false) && selectedMethodId === "new_mobile" && !depositMobile)}
+                className={`w-full h-[56px] rounded-[28px] text-[18px] font-bold flex items-center justify-center transition-colors ${!transactionAmount || Number(transactionAmount) <= 0 || ((false) && selectedMethodId === "new_mobile" && !depositMobile) ? "bg-gray-200 text-gray-400" : "bg-[#27A163] text-white shadow-md"}`}
               >
                 Continue
               </motion.button>
@@ -717,16 +714,16 @@ export default function App() {
                className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
             >
                <div className="flex justify-between items-center mb-8">
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "send" ? "Addition" : transactionMode === "pay" ? "Usage" : "Details"}</h2>
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "subscribe" ? "Addition" : transactionMode === "accept" ? "Usage" : "Details"}</h2>
                  <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
                    <X className="w-6 h-6 text-[#1A1A1A]" />
                  </button>
                </div>
 
                <div className="bg-[#F4F4F4] rounded-[20px] p-5 flex flex-col gap-4 mb-8">
-                                    {transactionMode === "deposit" || transactionMode === "withdraw" ? (
+                                    {false ? (
                     <div className="flex justify-between items-center">
-                      <span className="text-[16px] font-medium text-[#666666]">{transactionMode === "deposit" ? "Funding Source" : "Destination"}</span>
+                      <span className="text-[16px] font-medium text-[#666666]">{""}</span>
                       <span className="text-[16px] font-bold text-[#1A1A1A]">
                         {selectedMethodId === "new_mobile" ? `Mobile •••• ${depositMobile.slice(-4)}` : savedMethods.find(m => m.id === selectedMethodId)?.details}
                       </span>
@@ -753,7 +750,7 @@ export default function App() {
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
                    const amt = Number(transactionAmount);
-                   if (transactionMode === "deposit") {
+                   if (false) {
                      setBalance(prev => prev + amt);
                      setTransactions([{
                        id: Date.now(),
@@ -765,7 +762,7 @@ export default function App() {
                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
                        icon: Banknote
                      }, ...transactions]);
-                   } else if (transactionMode === "withdraw") {
+                   } else if (false) {
                      setBalance(prev => prev - amt);
                      setTransactions([{
                        id: Date.now(),
@@ -795,7 +792,7 @@ export default function App() {
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                >
-                 {transactionMode === "send" ? "Confirm Addition" : transactionMode === "pay" ? "Confirm Usage" : "Confirm"}
+                 {transactionMode === "subscribe" ? "Confirm Addition" : transactionMode === "accept" ? "Confirm Usage" : "Confirm"}
                </motion.button>
             </motion.div>
           </motion.div>
@@ -914,7 +911,7 @@ export default function App() {
                <motion.button
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
-                   setTransactionMode("deposit");
+                   setTransactionMode("catalogue");
                    navigateTo("PAYMENT_AMOUNT");
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
@@ -949,10 +946,10 @@ export default function App() {
                <CheckCircle className="w-12 h-12 text-[#27A163]" />
              </motion.div>
              <h1 className="text-[32px] font-extrabold text-white mb-2 text-center leading-tight">
-               {transactionMode === "send" ? "Added to Card" : transactionMode === "pay" ? "Service Consumed" : "Success"}
+               {transactionMode === "subscribe" ? "Added to Card" : transactionMode === "accept" ? "Service Consumed" : "Success"}
              </h1>
              <p className="text-[18px] font-medium text-white/90 mb-12 text-center">
-               {Number(transactionAmount).toLocaleString()} {transactionMode === "send" ? `added to your card from ${selectedContact?.handle}` : `redeemed at ${selectedContact?.handle}`}
+               {Number(transactionAmount).toLocaleString()} {transactionMode === "subscribe" ? `added to your card from ${selectedContact?.handle}` : `redeemed at ${selectedContact?.handle}`}
              </p>
 
              <motion.button
@@ -1092,7 +1089,7 @@ export default function App() {
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("withdraw"); navigateTo("PAYMENT_AMOUNT"); }}>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("catalogue"); navigateTo("PAYMENT_AMOUNT"); }}>
                      <div className="flex items-center gap-4">
                        <ArrowDownToLine className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Usage History</span>
@@ -1547,7 +1544,152 @@ export default function App() {
           </motion.div>
         )}
 
+
+
+        {appState === "MERCHANT_STOREFRONT" && (
+          <motion.div
+            key="merchant_storefront"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm border-b border-gray-100">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">{selectedContact?.name || "Merchant"}</h2>
+            </div>
+
+            <div className="flex flex-col px-4 pt-6 pb-2 shrink-0">
+               <div className="w-16 h-16 bg-[#F4F4F4] rounded-[16px] flex items-center justify-center mb-4">
+                 {selectedContact?.icon ? <selectedContact.icon className="w-8 h-8 text-[#1A1A1A]" /> : <Store className="w-8 h-8 text-[#1A1A1A]" />}
+               </div>
+               <h1 className="text-[24px] font-extrabold text-[#1A1A1A] mb-1">{selectedContact?.name || "Merchant"}</h1>
+               <p className="text-[15px] font-medium text-[#666666]">Select a service to add to your card.</p>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+               {merchantCatalogue.map(service => (
+                 <div
+                   key={service.id}
+                   onClick={() => { setSelectedService(service); navigateTo("PAYMENT_AMOUNT"); }}
+                   className="bg-[#F4F4F4] p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
+                 >
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
+                       <service.icon className="w-6 h-6 text-[#1A1A1A]" />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
+                       <span className="text-[14px] font-medium text-[#666666]">TZS {service.price.toLocaleString()}</span>
+                     </div>
+                   </div>
+                   <ChevronRight className="w-5 h-5 text-gray-400" />
+                 </div>
+               ))}
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "CATALOGUE_STUDIO" && (
+          <motion.div
+            key="catalogue_studio"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Manage Catalogue</h2>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
+               {merchantCatalogue.map(service => (
+                 <div key={service.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
+                       <service.icon className="w-6 h-6 text-[#1A1A1A]" />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
+                       <span className="text-[14px] font-medium text-[#666666]">TZS {service.price.toLocaleString()}</span>
+                     </div>
+                   </div>
+                   <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0">
+                     <Trash2 className="w-5 h-5" />
+                   </button>
+                 </div>
+               ))}
+
+               <button className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors shrink-0">
+                 <Plus className="w-5 h-5" />
+                 Add New Service
+               </button>
+            </div>
+          </motion.div>
+        )}
+
+        {appState === "MERCHANT_CONSUME_VIEW" && (
+          <motion.div
+            key="merchant_consume_view"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
+            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
+          >
+            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm border-b border-gray-100">
+              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
+                <X className="w-5 h-5 text-[#1A1A1A]" />
+              </button>
+              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">{selectedContact?.name || "Customer"}</h2>
+            </div>
+
+            <div className="flex flex-col px-4 pt-6 pb-2 shrink-0">
+               <div className="w-16 h-16 bg-[#F4F4F4] rounded-[16px] flex items-center justify-center mb-4">
+                 <User className="w-8 h-8 text-[#1A1A1A]" />
+               </div>
+               <h1 className="text-[24px] font-extrabold text-[#1A1A1A] mb-1">{selectedContact?.name || "Customer"}</h1>
+               <p className="text-[15px] font-medium text-[#666666]">Available services on their card.</p>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+               {[{id: 1, name: "Breakfast", count: 18, icon: Utensils}, {id: 2, name: "Lunch", count: 5, icon: Utensils}].map(service => (
+                 <div
+                   key={service.id}
+                   onClick={() => {
+                      setSelectedService({name: service.name, price: 0});
+                      setTransactionAmount("1");
+                      navigateTo("CONFIRMATION");
+                   }}
+                   className="bg-[#27A163]/10 p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-[#27A163]/20 transition-colors"
+                 >
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
+                       <service.icon className="w-6 h-6 text-[#27A163]" />
+                     </div>
+                     <div className="flex flex-col">
+                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
+                       <span className="text-[14px] font-medium text-[#27A163]">{service.count} remaining</span>
+                     </div>
+                   </div>
+                   <button className="px-4 py-2 bg-[#27A163] text-white rounded-full text-[14px] font-bold">
+                     Consume
+                   </button>
+                 </div>
+               ))}
+            </div>
+          </motion.div>
+        )}
+
       </AnimatePresence>
+
 
 
       {/* Payment Method Selector Bottom Sheet Overlay */}
