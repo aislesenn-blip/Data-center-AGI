@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, Menu, Banknote, ChevronRight, Settings, History as HistoryIcon, Utensils, Eye, EyeOff, CreditCard, Plus, Trash2, Delete, QrCode, Link, ArrowUpRight, ArrowDownLeft, Landmark, ArrowDownToLine, CircleDot, Share2, Copy, ShoppingBag, Car, Laptop, Wrench, Store } from "lucide-react"
 
-type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT"
+type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT" | "CATALOGUE_STUDIO" | "MERCHANT_STOREFRONT" | "MERCHANT_CONSUME_VIEW"
 
 const MOCK_TRANSACTIONS = [
   { id: 1, type: "send", amount: "-1 Breakfast", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "14:30", icon: Utensils },
@@ -412,7 +412,7 @@ export default function App() {
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("receive"); navigateTo("RECEIVE_LINK"); }}
+                  onClick={() => { setTransactionMode("share"); navigateTo("RECEIVE_LINK"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
@@ -434,7 +434,7 @@ export default function App() {
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("deposit"); navigateTo("PAYMENT_AMOUNT"); }}
+                  onClick={() => { navigateTo("CATALOGUE_STUDIO"); }}
                   className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
                 >
                   <div className="w-8 h-8 bg-[#1A73E8]/10 rounded-full flex items-center justify-center self-start shadow-sm">
@@ -577,9 +577,9 @@ export default function App() {
               <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">
                 {transactionMode === "subscribe" && <span>Quantity to Add <span className="text-[14px] font-medium text-[#666666] block mt-1 font-normal">Total: TZS {((selectedService?.price || 0) * (Number(transactionAmount) || 0)).toLocaleString()}</span></span>}
 
-                {transactionMode === "consume" && "Use Service"}
+                {transactionMode === "accept" && "Use Service"}
 
-                {transactionMode === "withdraw" && "Withdraw Funds"}
+                {false && "Withdraw Funds"}
               </h2>
             </div>
 
@@ -587,11 +587,11 @@ export default function App() {
             <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto min-h-0">
                {false ? (
                  <div className="flex flex-col items-center w-full mb-4 shrink-0 px-2">
-                   <div className={`w-12 h-12 ${transactionMode === "deposit" ? "bg-[#1A73E8]/10 text-[#1A73E8]" : "bg-[#1A1A1A]/10 text-[#1A1A1A]"} rounded-full flex items-center justify-center mb-2 shadow-sm`}>
-                     {transactionMode === "deposit" ? <Banknote className="w-6 h-6" /> : <ArrowDownToLine className="w-6 h-6" />}
+                   <div className={`w-12 h-12 ${false ? "bg-[#1A73E8]/10 text-[#1A73E8]" : "bg-[#1A1A1A]/10 text-[#1A1A1A]"} rounded-full flex items-center justify-center mb-2 shadow-sm`}>
+                     {false ? <Banknote className="w-6 h-6" /> : <ArrowDownToLine className="w-6 h-6" />}
                    </div>
                    <h3 className="text-[20px] font-extrabold text-[#1A1A1A] mb-4">
-                     {transactionMode === "deposit" ? "Add Funds" : "Withdraw"}
+                     {false ? "Add Funds" : "Withdraw"}
                    </h3>
 
                    <button
@@ -602,10 +602,7 @@ export default function App() {
                        {selectedMethodId === "new_mobile" ? (
                          <Banknote className="w-5 h-5 text-[#1A1A1A]" />
                        ) : (
-                         (() => {
-                           const m = savedMethods.find(m => m.id === selectedMethodId);
-                           return m ? <m.icon className="w-5 h-5 text-[#1A1A1A]" /> : <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
-                         })()
+                         <CreditCard className="w-5 h-5 text-[#1A1A1A]" />
                        )}
                        <div className="flex flex-col items-start">
                          <span className="text-[14px] font-bold text-[#1A1A1A]">
@@ -653,7 +650,7 @@ export default function App() {
                  </div>
                </div>
 
-               {transactionMode !== "deposit" && transactionMode !== "withdraw" && (
+               {true && (
                  <div className="w-full bg-[#F4F4F4] rounded-[20px] px-4 py-3 flex items-center mb-4 shrink-0 mt-4">
                    <MessageSquare className="w-5 h-5 text-gray-400 mr-3" />
                    <input
@@ -753,7 +750,7 @@ export default function App() {
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
                    const amt = Number(transactionAmount);
-                   if (transactionMode === "deposit") {
+                   if (false) {
                      setBalance(prev => prev + amt);
                      setTransactions([{
                        id: Date.now(),
@@ -765,7 +762,7 @@ export default function App() {
                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
                        icon: Banknote
                      }, ...transactions]);
-                   } else if (transactionMode === "withdraw") {
+                   } else if (false) {
                      setBalance(prev => prev - amt);
                      setTransactions([{
                        id: Date.now(),
@@ -914,7 +911,7 @@ export default function App() {
                <motion.button
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
-                   setTransactionMode("deposit");
+                   setTransactionMode("catalogue");
                    navigateTo("PAYMENT_AMOUNT");
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
@@ -1092,7 +1089,7 @@ export default function App() {
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("withdraw"); navigateTo("PAYMENT_AMOUNT"); }}>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("catalogue"); navigateTo("PAYMENT_AMOUNT"); }}>
                      <div className="flex items-center gap-4">
                        <ArrowDownToLine className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Usage History</span>
