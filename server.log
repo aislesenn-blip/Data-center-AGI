@@ -5,11 +5,7 @@
 ▲ Next.js 16.2.9 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 523ms
+✓ Ready in 503ms
 
 ○ Compiling / ...
- GET / 200 in 6.8s (next.js: 6.2s, application-code: 570ms)
- GET /dashboard 200 in 1129ms (next.js: 1053ms, application-code: 77ms)
- GET /dashboard/campaigns/create 200 in 947ms (next.js: 895ms, application-code: 52ms)
- GET /dashboard 200 in 43ms (next.js: 5ms, application-code: 38ms)
- GET /dashboard/analytics 200 in 1297ms (next.js: 1054ms, application-code: 244ms)
+ GET / 200 in 5.8s (next.js: 5.4s, application-code: 455ms)
