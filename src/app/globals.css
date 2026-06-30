@@ -6,23 +6,19 @@
   --color-off-white: #F9FAFB;
   --color-border: #E5E7EB;
 
-  --color-background: var(--color-pure-white);
-  --color-foreground: var(--color-pitch-black);
+  --color-primary: #111827;
+  --color-secondary: #4B5563;
+  --color-accent: #2563EB;
 }
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #000000;
+  --background: #F9FAFB;
+  --foreground: #111827;
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
-  }
-
-  html, body {
-    height: 100%;
-    overscroll-behavior-y: none;
   }
 
   body {
