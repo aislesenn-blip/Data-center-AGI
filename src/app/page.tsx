@@ -6,12 +6,6 @@ import { X, Search, Home, User, MessageSquare, CheckCircle, Star, ArrowDownUp, M
 
 type AppState = "ONBOARDING" | "HOME" | "HANDLE_SEARCH" | "PAYMENT_AMOUNT" | "CONFIRMATION" | "AUTHORIZATION" | "SUCCESS" | "HISTORY" | "ACCOUNT" | "PROMOTIONS" | "SETTINGS" | "MERCHANT_SETTINGS" | "LINKED_CARDS" | "ADD_CARD" | "PAYOUT_CONFIG" | "ADD_PAYOUT" | "RECEIVE_LINK" | "FUND_WALLET_PROMPT" | "CATALOGUE_STUDIO" | "MERCHANT_STOREFRONT" | "MERCHANT_CONSUME_VIEW"
 
-const MOCK_TRANSACTIONS = [
-  { id: 1, type: "send", amount: "-1 Breakfast", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "14:30", icon: Utensils },
-  { id: 2, type: "receive", amount: "+20 Lunch", contactName: "Mama Rose Cafe", contactHandle: "@MamaRose", date: "Today", time: "09:15", icon: Utensils },
-  { id: 3, type: "pay", amount: "-1 Wash", contactName: "Campus Laundry", contactHandle: "@CampusLaundry", date: "Yesterday", time: "08:45", icon: Utensils },
-  { id: 4, type: "receive", amount: "+10 Rides", contactName: "City Transit", contactHandle: "@CityTransit", date: "This Week", time: "Mon", icon: Star },
-]
 
 const CONTACTS = [
   { id: 1, handle: "@MamaRose", name: "Mama Rose Cafe", icon: Utensils, type: "merchant" },
@@ -32,21 +26,17 @@ export default function App() {
   const [isAuthorizing, setIsAuthorizing] = useState(false)
   const [isPromoVisible, setIsPromoVisible] = useState(true)
   const [merchantCategory, setMerchantCategory] = useState<{name: string, icon: React.ElementType}>({ name: "Cafe", icon: Utensils })
-  const [transactionMode, setTransactionMode] = useState<"subscribe" | "share" | "accept" | "catalogue">("subscribe")
+  const [transactionMode, setTransactionMode] = useState<"access">("access")
+  const [earnedBalance, setEarnedBalance] = useState(245000)
   const [payoutMethods, setPayoutMethods] = useState<{id: number, type: string, name: string, details: string}[]>([])
-  const [isBalanceVisible, setIsBalanceVisible] = useState(false)
-  const [balance, setBalance] = useState(0) // Default to 0 to trigger the fund wallet prompt
-  const [transactions, setTransactions] = useState<{id: number, type: string, amount: string, contactName: string, contactHandle: string, date: string, time: string, icon: React.ElementType}[]>([])
+      const [transactions, setTransactions] = useState<{id: number, type: string, amount: string, contactName: string, contactHandle: string, date: string, time: string, icon: React.ElementType}[]>([])
   const [savedMethods, setSavedMethods] = useState<{id: number | string, type: string, name: string, details: string, icon: React.ElementType}[]>([])
   const [selectedMethodId, setSelectedMethodId] = useState<number | string | "new_mobile">(1)
   const [isMethodSheetOpen, setIsMethodSheetOpen] = useState(false)
   const [pushNotifications, setPushNotifications] = useState(true)
   const [selectedContact, setSelectedContact] = useState<{handle: string, name: string, icon?: React.ElementType} | null>(null)
   const [transactionAmount, setTransactionAmount] = useState("")
-  const [selectedService, setSelectedService] = useState<{name: string, price: number} | null>(null)
-  const [merchantCatalogue, setMerchantCatalogue] = useState<{id: number, name: string, price: number, icon: React.ElementType}[]>([{id: 1, name: "Breakfast", price: 5000, icon: Utensils}, {id: 2, name: "Lunch", price: 8000, icon: Utensils}])
-  const [depositMethod, setDepositMethod] = useState<"card" | "mobile">("card")
-  const [depositMobile, setDepositMobile] = useState("")
+        const [depositMobile, setDepositMobile] = useState("")
   const [transactionNote, setTransactionNote] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -398,80 +388,23 @@ export default function App() {
               </div>
 
               {/* Bento Grid */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("subscribe"); navigateTo("HANDLE_SEARCH"); }}
-                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
-                     <ArrowUpRight className="w-4 h-4 text-[#1A1A1A]" strokeWidth={2} />
-                  </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Add to Card</div>
-                </motion.div>
-
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("share"); navigateTo("RECEIVE_LINK"); }}
-                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center self-start shadow-sm">
-                     <QrCode className="w-4 h-4 text-[#1A1A1A]" strokeWidth={2} />
-                  </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Card Identity</div>
-                </motion.div>
-
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { setTransactionMode("accept"); navigateTo("HANDLE_SEARCH"); }}
-                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-[#27A163]/10 rounded-full flex items-center justify-center self-start shadow-sm">
-                     <Utensils className="w-4 h-4 text-[#27A163]" strokeWidth={2} />
-                  </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Manage Catalogue</div>
-                </motion.div>
-
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { navigateTo("CATALOGUE_STUDIO"); }}
-                  className="h-[100px] bg-[#F4F4F4] rounded-[16px] shadow-sm p-4 flex flex-col justify-between cursor-pointer"
-                >
-                  <div className="w-8 h-8 bg-[#1A73E8]/10 rounded-full flex items-center justify-center self-start shadow-sm">
-                     <ArrowDownLeft className="w-4 h-4 text-[#1A73E8]" strokeWidth={2} />
-                  </div>
-                  <div className="text-[15px] font-bold text-[#1A1A1A] leading-tight">Accept Card</div>
-                </motion.div>
-              </div>
-
-              {/* Search Input CTA */}
-              <motion.button
-                whileTap={{ scale: 0.98 }}
-                onClick={() => { setTransactionMode("subscribe"); navigateTo("HANDLE_SEARCH"); }}
-                className="w-full h-[60px] bg-white rounded-[24px] border border-gray-100 shadow-sm flex items-center px-5 mb-8 cursor-text"
-              >
-                <Search className="w-5 h-5 text-[#1A1A1A] mr-3" strokeWidth={2} />
-                <span className="text-[18px] font-bold text-[#1A1A1A]">Search Merchant Username</span>
-              </motion.button>
-
-              {/* Recent Locations */}
-              <h2 className="text-[18px] font-bold text-[#1A1A1A] mb-4">Recent</h2>
-              <div className="flex flex-col gap-3 pb-8">
-                {CONTACTS.slice(0, 3).map((contact) => (
-                  <div key={contact.id} className="flex items-center cursor-pointer bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm" onClick={() => { setSelectedContact(contact); navigateTo("PAYMENT_AMOUNT"); }}>
-                    <div className="w-12 h-12 rounded-[14px] bg-[#F4F4F4] flex items-center justify-center mr-4 shrink-0">
-                      <contact.icon className="w-5 h-5 text-[#1A1A1A]" strokeWidth={1.5} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[16px] font-bold text-[#1A1A1A]">{contact.name}</span>
-                      <span className="text-[14px] font-medium text-[#666666]">{contact.handle}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom Nav Bar */}
+              <div className="grid grid-cols-1 gap-4 mb-8 mt-6">
+    <motion.div
+      whileTap={{ scale: 0.98 }}
+      onClick={() => { setTransactionMode("access"); navigateTo("PAYMENT_AMOUNT"); }}
+      className="w-full h-[80px] bg-[#1A1A1A] rounded-[24px] shadow-lg p-5 flex items-center justify-between cursor-pointer"
+    >
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
+           <ArrowDownToLine className="w-6 h-6 text-white" strokeWidth={2} />
+        </div>
+        <div className="text-[18px] font-bold text-white">Access Wages</div>
+      </div>
+      <ChevronRight className="w-6 h-6 text-white/50" />
+    </motion.div>
+  </div>
+  </div>
+  {/* Bottom Nav Bar */}
             <div className="h-[80px] w-full border-t border-[#E5E7EB] flex flex-row justify-around items-center pb-[env(safe-area-inset-bottom)] bg-white shrink-0">
               <div className="flex flex-col items-center cursor-pointer">
                 <Home className="w-6 h-6 text-[#1A1A1A] mb-1" strokeWidth={2.5} />
@@ -510,7 +443,7 @@ export default function App() {
                 <Search className="w-5 h-5 text-[#666666] mr-2 shrink-0" />
                 <input
                   type="text"
-                  placeholder={transactionMode === "accept" ? "Search Customer @user..." : "Search Merchant @MamaRose..."}
+                  placeholder="Search..."
                   autoFocus
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -529,7 +462,7 @@ export default function App() {
                    <div
                      key={contact.id}
                      onClick={() => {
-                        setSelectedContact(contact); setSearchQuery(""); navigateTo(transactionMode === "accept" ? "MERCHANT_CONSUME_VIEW" : "MERCHANT_STOREFRONT");
+                        setSelectedContact(contact); setSearchQuery(""); navigateTo("PAYMENT_AMOUNT");
                      }}
                      className="flex items-center gap-4 p-3 rounded-[16px] hover:bg-[#F4F4F4] cursor-pointer transition-colors"
                    >
@@ -575,9 +508,9 @@ export default function App() {
                 <X className="w-5 h-5 text-[#1A1A1A]" />
               </button>
               <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">
-                {transactionMode === "subscribe" && <span>Quantity to Add <span className="text-[14px] font-medium text-[#666666] block mt-1 font-normal">Total: TZS {((selectedService?.price || 0) * (Number(transactionAmount) || 0)).toLocaleString()}</span></span>}
+                {transactionMode === "access" && <span>Access Amount <span className="text-[14px] font-medium text-[#666666] block mt-1 font-normal">Available: TZS {earnedBalance.toLocaleString()}</span></span>}
 
-                {transactionMode === "accept" && "Use Service"}
+
 
                 {false && "Withdraw Funds"}
               </h2>
@@ -640,9 +573,7 @@ export default function App() {
                  </div>
                )}
 
-               <div className="w-full max-w-[200px] bg-[#F4F4F4] rounded-full py-2 px-4 flex items-center justify-center mx-auto mb-4 mt-2">
-     <span className="text-[14px] font-bold text-[#1A1A1A]">{selectedService?.name || "Service"}</span>
-   </div>
+
    <div className="w-full flex flex-1 justify-center items-center gap-2 min-h-[80px]">
 
                  <div className={`${getAmountFontSize(transactionAmount)} font-extrabold text-[#1A1A1A] tracking-tight leading-none text-center transition-all duration-200 break-words w-full max-w-[95%]`}>
@@ -714,7 +645,7 @@ export default function App() {
                className="bg-white rounded-t-[24px] shadow-2xl flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]"
             >
                <div className="flex justify-between items-center mb-8">
-                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm {transactionMode === "subscribe" ? "Addition" : transactionMode === "accept" ? "Usage" : "Details"}</h2>
+                 <h2 className="text-[24px] font-extrabold text-[#1A1A1A]">Confirm Access</h2>
                  <button onClick={goBack} className="p-2 -mr-2 bg-[#F4F4F4] rounded-full">
                    <X className="w-6 h-6 text-[#1A1A1A]" />
                  </button>
@@ -751,7 +682,7 @@ export default function App() {
                  onClick={() => {
                    const amt = Number(transactionAmount);
                    if (false) {
-                     setBalance(prev => prev + amt);
+                     ;
                      setTransactions([{
                        id: Date.now(),
                        type: "receive",
@@ -763,7 +694,7 @@ export default function App() {
                        icon: Banknote
                      }, ...transactions]);
                    } else if (false) {
-                     setBalance(prev => prev - amt);
+                     ;
                      setTransactions([{
                        id: Date.now(),
                        type: "send",
@@ -775,7 +706,7 @@ export default function App() {
                        icon: ArrowDownToLine
                      }, ...transactions]);
                    } else {
-                     setBalance(prev => prev - amt);
+                     ;
                      setTransactions([{
                        id: Date.now(),
                        type: "send",
@@ -792,7 +723,7 @@ export default function App() {
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
                >
-                 {transactionMode === "subscribe" ? "Confirm Addition" : transactionMode === "accept" ? "Confirm Usage" : "Confirm"}
+                 Confirm Access
                </motion.button>
             </motion.div>
           </motion.div>
@@ -911,7 +842,7 @@ export default function App() {
                <motion.button
                  whileTap={{ scale: 0.98 }}
                  onClick={() => {
-                   setTransactionMode("catalogue");
+                   setTransactionMode("access");
                    navigateTo("PAYMENT_AMOUNT");
                  }}
                  className="w-full h-[60px] bg-[#27A163] text-white rounded-[30px] text-[18px] font-bold shadow-lg flex items-center justify-center gap-2"
@@ -946,10 +877,10 @@ export default function App() {
                <CheckCircle className="w-12 h-12 text-[#27A163]" />
              </motion.div>
              <h1 className="text-[32px] font-extrabold text-white mb-2 text-center leading-tight">
-               {transactionMode === "subscribe" ? "Added to Card" : transactionMode === "accept" ? "Service Consumed" : "Success"}
+               Access Successful
              </h1>
              <p className="text-[18px] font-medium text-white/90 mb-12 text-center">
-               {Number(transactionAmount).toLocaleString()} {transactionMode === "subscribe" ? `added to your card from ${selectedContact?.handle}` : `redeemed at ${selectedContact?.handle}`}
+               TZS {Number(transactionAmount).toLocaleString()} will be transferred to your linked bank account instantly.
              </p>
 
              <motion.button
@@ -1089,7 +1020,7 @@ export default function App() {
                      </div>
                      <ChevronRight className="w-5 h-5 text-gray-400" />
                    </div>
-                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("catalogue"); navigateTo("PAYMENT_AMOUNT"); }}>
+                   <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onClick={() => { setTransactionMode("access"); navigateTo("PAYMENT_AMOUNT"); }}>
                      <div className="flex items-center gap-4">
                        <ArrowDownToLine className="w-5 h-5 text-[#1A1A1A]" />
                        <span className="text-[16px] font-bold text-[#1A1A1A]">Usage History</span>
@@ -1546,149 +1477,7 @@ export default function App() {
 
 
 
-        {appState === "MERCHANT_STOREFRONT" && (
-          <motion.div
-            key="merchant_storefront"
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
-            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
-          >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm border-b border-gray-100">
-              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
-                <X className="w-5 h-5 text-[#1A1A1A]" />
-              </button>
-              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">{selectedContact?.name || "Merchant"}</h2>
-            </div>
-
-            <div className="flex flex-col px-4 pt-6 pb-2 shrink-0">
-               <div className="w-16 h-16 bg-[#F4F4F4] rounded-[16px] flex items-center justify-center mb-4">
-                 {selectedContact?.icon ? <selectedContact.icon className="w-8 h-8 text-[#1A1A1A]" /> : <Store className="w-8 h-8 text-[#1A1A1A]" />}
-               </div>
-               <h1 className="text-[24px] font-extrabold text-[#1A1A1A] mb-1">{selectedContact?.name || "Merchant"}</h1>
-               <p className="text-[15px] font-medium text-[#666666]">Select a service to add to your card.</p>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
-               {merchantCatalogue.map(service => (
-                 <div
-                   key={service.id}
-                   onClick={() => { setSelectedService(service); navigateTo("PAYMENT_AMOUNT"); }}
-                   className="bg-[#F4F4F4] p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
-                       <service.icon className="w-6 h-6 text-[#1A1A1A]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
-                       <span className="text-[14px] font-medium text-[#666666]">TZS {service.price.toLocaleString()}</span>
-                     </div>
-                   </div>
-                   <ChevronRight className="w-5 h-5 text-gray-400" />
-                 </div>
-               ))}
-            </div>
-          </motion.div>
-        )}
-
-        {appState === "CATALOGUE_STUDIO" && (
-          <motion.div
-            key="catalogue_studio"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute inset-0 bg-[#FFFFFF] z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
-          >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white shadow-sm z-20">
-              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
-                <X className="w-5 h-5 text-[#1A1A1A]" />
-              </button>
-              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">Manage Catalogue</h2>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-4">
-               {merchantCatalogue.map(service => (
-                 <div key={service.id} className="bg-[#F4F4F4] p-4 rounded-[24px] shadow-sm flex items-center justify-between">
-                   <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
-                       <service.icon className="w-6 h-6 text-[#1A1A1A]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
-                       <span className="text-[14px] font-medium text-[#666666]">TZS {service.price.toLocaleString()}</span>
-                     </div>
-                   </div>
-                   <button className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0">
-                     <Trash2 className="w-5 h-5" />
-                   </button>
-                 </div>
-               ))}
-
-               <button className="mt-4 flex items-center justify-center gap-2 w-full h-[60px] bg-[#F4F4F4] border-2 border-dashed border-gray-300 rounded-[24px] text-[#1A1A1A] font-bold hover:border-[#1A1A1A] transition-colors shrink-0">
-                 <Plus className="w-5 h-5" />
-                 Add New Service
-               </button>
-            </div>
-          </motion.div>
-        )}
-
-        {appState === "MERCHANT_CONSUME_VIEW" && (
-          <motion.div
-            key="merchant_consume_view"
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 300, mass: 0.8 }}
-            className="absolute inset-0 bg-white z-10 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] h-[100dvh]"
-          >
-            <div className="h-[56px] w-full flex items-center px-4 relative shrink-0 bg-white z-20 shadow-sm border-b border-gray-100">
-              <button onClick={goBack} className="absolute left-4 p-2 -ml-2 bg-[#F4F4F4] rounded-full">
-                <X className="w-5 h-5 text-[#1A1A1A]" />
-              </button>
-              <h2 className="w-full text-center text-[18px] font-bold text-[#1A1A1A]">{selectedContact?.name || "Customer"}</h2>
-            </div>
-
-            <div className="flex flex-col px-4 pt-6 pb-2 shrink-0">
-               <div className="w-16 h-16 bg-[#F4F4F4] rounded-[16px] flex items-center justify-center mb-4">
-                 <User className="w-8 h-8 text-[#1A1A1A]" />
-               </div>
-               <h1 className="text-[24px] font-extrabold text-[#1A1A1A] mb-1">{selectedContact?.name || "Customer"}</h1>
-               <p className="text-[15px] font-medium text-[#666666]">Available services on their card.</p>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
-               {[{id: 1, name: "Breakfast", count: 18, icon: Utensils}, {id: 2, name: "Lunch", count: 5, icon: Utensils}].map(service => (
-                 <div
-                   key={service.id}
-                   onClick={() => {
-                      setSelectedService({name: service.name, price: 0});
-                      setTransactionAmount("1");
-                      navigateTo("CONFIRMATION");
-                   }}
-                   className="bg-[#27A163]/10 p-4 rounded-[20px] flex items-center justify-between cursor-pointer hover:bg-[#27A163]/20 transition-colors"
-                 >
-                   <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm shrink-0">
-                       <service.icon className="w-6 h-6 text-[#27A163]" />
-                     </div>
-                     <div className="flex flex-col">
-                       <span className="text-[16px] font-bold text-[#1A1A1A]">{service.name}</span>
-                       <span className="text-[14px] font-medium text-[#27A163]">{service.count} remaining</span>
-                     </div>
-                   </div>
-                   <button className="px-4 py-2 bg-[#27A163] text-white rounded-full text-[14px] font-bold">
-                     Consume
-                   </button>
-                 </div>
-               ))}
-            </div>
-          </motion.div>
-        )}
-
-      </AnimatePresence>
+        </AnimatePresence>
 
 
 
