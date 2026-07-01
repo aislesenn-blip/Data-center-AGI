@@ -4,39 +4,42 @@ import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function PricingPage() {
-  const plans = [
+  const tiers = [
     {
-      name: "SME Local",
-      desc: "Perfect for local businesses wanting premium neighborhood visibility.",
+      name: "Local Fleet Activation",
       price: "Custom",
+      desc: "Perfect for local businesses wanting targeted exposure on a set number of rickshaw screens within a specific zone.",
       features: [
-        "Hyper-local targeting",
-        "Flexible daily/weekly buying",
-        "Self-service portal access",
-        "Standard reporting"
+        "Select up to 50 vehicles",
+        "Geofenced to specific neighborhoods",
+        "Standard static or video creative",
+        "Weekly playback reports",
+        "Standard support"
       ]
     },
     {
-      name: "Agency Partner",
-      desc: "Designed for media buyers and advertising agencies.",
-      price: "Programmatic",
+      name: "City Domination",
+      price: "Custom",
+      desc: "Designed for regional brands aiming for maximum reach across the entire active urban fleet.",
       features: [
-        "Full API & SSP integration",
-        "Volume-based CPM rates",
-        "Dynamic creative capabilities",
-        "Advanced attribution analytics"
+        "Full fleet access (500+ vehicles)",
+        "City-wide roaming coverage",
+        "Dynamic location-based creative",
+        "Real-time dashboard access",
+        "Dedicated campaign manager"
       ],
       popular: true
     },
     {
-      name: "Enterprise Global",
-      desc: "For multinational brands requiring massive scale and custom executions.",
-      price: "Managed",
+      name: "Programmatic Access",
+      price: "CPM Based",
+      desc: "For agencies and trading desks. Access our mobility inventory via your preferred DSP.",
       features: [
-        "Dedicated account director",
-        "National network takeovers",
-        "Custom experiential builds",
-        "Priority premium inventory"
+        "Integrates with major SSPs",
+        "Real-time passenger targeting",
+        "Flexible daily budgets",
+        "Granular attribution reporting",
+        "API access for live data"
       ]
     }
   ];
@@ -44,37 +47,37 @@ export default function PricingPage() {
   return (
     <>
       <Hero
-        title={<>Investment tiers for <span className="text-[#1E3A8A]">every scale.</span></>}
-        subtitle="Transparent, flexible commercial models designed to accommodate hyper-local campaigns up to multi-national brand rollouts."
+        title={<>Flexible pricing for <span className="text-[#1E3A8A]">mobility media.</span></>}
+        subtitle="Whether you need a targeted local campaign or a city-wide takeover, our pricing models are designed to deliver transparent, measurable ROI."
         align="center"
       />
-      <Section bg="gray" className="border-t border-gray-100">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {plans.map((plan, idx) => (
-            <div key={idx} className={`bg-white rounded-2xl p-8 border ${plan.popular ? 'border-[#1E3A8A] shadow-2xl relative' : 'border-gray-200 shadow-sm'}`}>
-              {plan.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1E3A8A] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                  Most Popular
-                </div>
-              )}
-              <h3 className="text-2xl font-bold text-[#0F172A] mb-2">{plan.name}</h3>
-              <p className="text-gray-500 mb-6 min-h-[48px]">{plan.desc}</p>
-              <div className="mb-8">
-                <span className="text-4xl font-bold text-[#0F172A]">{plan.price}</span>
-                {plan.price !== "Programmatic" && plan.price !== "Managed" && plan.price !== "Custom" && <span className="text-gray-500">/mo</span>}
-              </div>
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3 text-gray-700">
-                    <Check className="w-5 h-5 text-[#2563EB] shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/contact" className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-colors ${plan.popular ? 'bg-[#1E3A8A] text-white hover:bg-[#2563EB]' : 'bg-gray-100 text-[#0F172A] hover:bg-gray-200'}`}>
-                Contact Sales <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+
+      <Section bg="white" className="border-t border-gray-100">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {tiers.map((tier, idx) => (
+             <div key={idx} className={`relative bg-white rounded-3xl p-8 border ${tier.popular ? 'border-[#1E3A8A] shadow-2xl scale-105 z-10' : 'border-gray-200 shadow-sm'} transition-transform`}>
+               {tier.popular && (
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1E3A8A] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                   Most Popular
+                 </div>
+               )}
+               <h3 className="text-2xl font-bold text-[#0F172A] mb-2">{tier.name}</h3>
+               <p className="text-gray-500 mb-6 min-h-[60px]">{tier.desc}</p>
+               <div className="mb-8">
+                 <span className="text-4xl font-black text-[#1E3A8A]">{tier.price}</span>
+               </div>
+               <ul className="space-y-4 mb-8">
+                 {tier.features.map((feature, i) => (
+                   <li key={i} className="flex items-start gap-3">
+                     <Check className="w-5 h-5 text-[#2563EB] flex-shrink-0" />
+                     <span className="text-gray-600">{feature}</span>
+                   </li>
+                 ))}
+               </ul>
+               <Link href="/contact" className={`w-full py-4 rounded-xl font-bold text-center transition-colors flex items-center justify-center gap-2 ${tier.popular ? 'bg-[#1E3A8A] text-white hover:bg-[#2563EB]' : 'bg-blue-50 text-[#1E3A8A] hover:bg-blue-100'}`}>
+                 Get a Quote <ArrowRight className="w-4 h-4" />
+               </Link>
+             </div>
           ))}
         </div>
       </Section>

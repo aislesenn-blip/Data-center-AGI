@@ -50,7 +50,7 @@ export default function Footer() {
                <div className="w-8 h-8 bg-[#1E3A8A] rounded-lg flex items-center justify-center shadow-md">
                   <Globe className="text-white w-4 h-4" />
                </div>
-               <span className="text-lg font-bold text-[#0F172A] tracking-tight">Ovation DOOH</span>
+               <span className="text-lg font-bold text-[#0F172A] tracking-tight">[Company Name]</span>
             </Link>
             <p className="text-gray-500 text-sm max-w-sm mb-6 leading-relaxed">
               Africa&apos;s premier digital out-of-home advertising network. Connecting global brands with high-value audiences through world-class screen infrastructure.
@@ -77,7 +77,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} Ovation DOOH Networks. All rights reserved.
+            &copy; {new Date().getFullYear()} [Company Name] Networks. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-sm text-gray-500">
              <span>Global Headquarters</span>

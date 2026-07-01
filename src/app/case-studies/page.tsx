@@ -6,16 +6,16 @@ import Link from "next/link";
 
 export default function CaseStudiesPage() {
   const cases = [
-    { brand: "Global Beverage Co.", metric: "+42%", result: "Increase in Footfall", desc: "Using weather-triggered dynamic creative to drive sales during heatwaves.", image: "https://images.unsplash.com/photo-1600320254374-ce2d293c324e?auto=format&fit=crop&q=80&w=800" },
-    { brand: "Auto Manufacturer", metric: "2.1M", result: "Verified Impressions", desc: "A two-week domination campaign across major arterial routes for a new EV launch.", image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800" },
-    { brand: "Fintech Startup", metric: "3x", result: "App Downloads", desc: "Combining street furniture DOOH with mobile retargeting to acquire high-value users.", image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=800" },
+    { brand: "FMCG Brand", metric: "+42%", result: "Sales Lift in Geofenced Areas", desc: "Using dynamic creative to trigger specific product ads as rickshaws entered key retail neighborhoods.", image: "https://images.unsplash.com/photo-1600320254374-ce2d293c324e?auto=format&fit=crop&q=80&w=800" },
+    { brand: "Telecom Provider", metric: "2.1M", result: "Verified Passenger Impressions", desc: "A two-week full fleet domination campaign to launch a new data package to daily commuters.", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800" },
+    { brand: "Fintech App", metric: "3x", result: "Increase in App Installs", desc: "Combining in-rickshaw QR codes and screen ads to capture a highly captive, distraction-free audience.", image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=800" },
   ];
 
   return (
     <>
       <Hero
         title={<>Impact you can <span className="text-[#1E3A8A]">measure.</span></>}
-        subtitle="Explore how top-tier brands use our digital network to drive real-world business outcomes."
+        subtitle="Explore how top-tier brands use our mobility network to drive real-world business outcomes."
         align="center"
       />
       <Section bg="white" className="border-t border-gray-100">

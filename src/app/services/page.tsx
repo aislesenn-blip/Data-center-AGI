@@ -5,17 +5,17 @@ import { Settings, Zap, LineChart, Cpu } from "lucide-react";
 
 export default function ServicesPage() {
   const solutions = [
-    { title: "Programmatic DOOH (pDOOH)", desc: "Buy out-of-home media with the same precision and flexibility as digital online advertising. Integrate with major SSPs/DSPs.", icon: <Cpu className="w-6 h-6 text-[#1E3A8A]" /> },
-    { title: "Dynamic Creative Optimization", desc: "Serve contextually relevant ads triggered by real-time data such as weather, traffic conditions, or live sports scores.", icon: <Zap className="w-6 h-6 text-[#1E3A8A]" /> },
-    { title: "Managed Campaign Services", desc: "End-to-end campaign management for enterprise clients, from media planning to execution and final reporting.", icon: <Settings className="w-6 h-6 text-[#1E3A8A]" /> },
-    { title: "Attribution & Measurement", desc: "Measure the real-world impact of your campaigns with footfall attribution and mobile retargeting integrations.", icon: <LineChart className="w-6 h-6 text-[#1E3A8A]" /> },
+    { title: "Mobility Programmatic (pDOOH)", desc: "Buy moving digital media with the same precision as online advertising. Integrate seamlessly with major SSPs to target rickshaw passengers in real-time.", icon: <Cpu className="w-6 h-6 text-[#1E3A8A]" /> },
+    { title: "Geo-Fenced Dynamic Creative", desc: "Serve contextually relevant ads triggered by the exact location of the rickshaw—change messaging as the vehicle enters different neighborhoods or commercial zones.", icon: <Zap className="w-6 h-6 text-[#1E3A8A]" /> },
+    { title: "Managed Fleet Campaigns", desc: "End-to-end campaign management for enterprise clients, handling everything from creative adaptation for in-vehicle screens to execution and final reporting.", icon: <Settings className="w-6 h-6 text-[#1E3A8A]" /> },
+    { title: "Passenger Attribution & Measurement", desc: "Measure the real-world impact of your campaigns by linking ride data, route mapping, and subsequent passenger actions.", icon: <LineChart className="w-6 h-6 text-[#1E3A8A]" /> },
   ];
 
   return (
     <>
       <Hero
-        title={<>Smart solutions for <span className="text-[#1E3A8A]">complex campaigns.</span></>}
-        subtitle="Go beyond basic broadcasting. Leverage our technological solutions to deliver dynamic, data-driven, and highly measurable advertising."
+        title={<>Smart solutions for <span className="text-[#1E3A8A]">moving audiences.</span></>}
+        subtitle="Go beyond static broadcasting. Leverage our mobility AdTech solutions to deliver dynamic, location-based, and highly measurable advertising directly to passengers."
         align="center"
       />
       <Section bg="gray" className="border-t border-gray-100">

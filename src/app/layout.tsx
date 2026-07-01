@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Ovation DOOH | Premium Digital Out-of-Home Network",
+  title: "[Company Name] | Premium Digital Out-of-Home Network",
   description: "Africa's most premium, reliable, and globally competitive DOOH network. Connect with high-value audiences through world-class digital screen infrastructure.",
 };
 
