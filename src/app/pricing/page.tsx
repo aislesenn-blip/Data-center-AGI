@@ -6,36 +6,36 @@ import Link from "next/link";
 export default function PricingPage() {
   const plans = [
     {
-      name: "SME Local",
-      desc: "Perfect for local businesses wanting premium neighborhood visibility.",
+      name: "Local Fleet",
+      desc: "Perfect for local businesses wanting premium visibility in specific neighborhoods.",
       price: "Custom",
       features: [
-        "Hyper-local targeting",
-        "Flexible daily/weekly buying",
-        "Self-service portal access",
-        "Standard reporting"
+        "Select specific vehicle routes",
+        "Standard static or video creative",
+        "Weekly reporting",
+        "Self-service dashboard access"
       ]
     },
     {
       name: "Agency Partner",
-      desc: "Designed for media buyers and advertising agencies.",
+      desc: "Designed for media buyers requiring scale and flexibility.",
       price: "Programmatic",
       features: [
-        "Full API & SSP integration",
+        "API & programmatic access",
         "Volume-based CPM rates",
-        "Dynamic creative capabilities",
-        "Advanced attribution analytics"
+        "Dynamic location-based creative",
+        "Advanced route analytics"
       ],
       popular: true
     },
     {
-      name: "Enterprise Global",
-      desc: "For multinational brands requiring massive scale and custom executions.",
+      name: "City Domination",
+      desc: "For multinational brands requiring maximum share of voice.",
       price: "Managed",
       features: [
+        "100% Share of Voice on selected fleet",
         "Dedicated account director",
-        "National network takeovers",
-        "Custom experiential builds",
+        "Custom creative optimization",
         "Priority premium inventory"
       ]
     }
@@ -45,34 +45,33 @@ export default function PricingPage() {
     <>
       <Hero
         title={<>Investment tiers for <span className="text-[#1E3A8A]">every scale.</span></>}
-        subtitle="Transparent, flexible commercial models designed to accommodate hyper-local campaigns up to multi-national brand rollouts."
+        subtitle="Transparent, flexible commercial models designed to accommodate hyper-local campaigns up to city-wide brand rollouts."
         align="center"
       />
-      <Section bg="gray" className="border-t border-gray-100">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <Section bg="gray" className="border-t border-gray-100 px-4 sm:px-6">
+        <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {plans.map((plan, idx) => (
-            <div key={idx} className={`bg-white rounded-2xl p-8 border ${plan.popular ? 'border-[#1E3A8A] shadow-2xl relative' : 'border-gray-200 shadow-sm'}`}>
+            <div key={idx} className={`bg-white rounded-3xl p-6 sm:p-8 border ${plan.popular ? 'border-[#1E3A8A] shadow-2xl relative mt-4 md:mt-0 md:-translate-y-4' : 'border-gray-200 shadow-sm mt-4 md:mt-0'}`}>
               {plan.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1E3A8A] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1E3A8A] text-white px-4 sm:px-6 py-1 sm:py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
                   Most Popular
                 </div>
               )}
-              <h3 className="text-2xl font-bold text-[#0F172A] mb-2">{plan.name}</h3>
-              <p className="text-gray-500 mb-6 min-h-[48px]">{plan.desc}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#0F172A] mb-2">{plan.name}</h3>
+              <p className="text-sm sm:text-base text-gray-500 mb-6 md:min-h-[60px] leading-relaxed">{plan.desc}</p>
               <div className="mb-8">
-                <span className="text-4xl font-bold text-[#0F172A]">{plan.price}</span>
-                {plan.price !== "Programmatic" && plan.price !== "Managed" && plan.price !== "Custom" && <span className="text-gray-500">/mo</span>}
+                <span className="text-3xl sm:text-4xl font-black text-[#0F172A] tracking-tight">{plan.price}</span>
               </div>
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-4 mb-8 sm:mb-10">
                 {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3 text-gray-700">
-                    <Check className="w-5 h-5 text-[#2563EB] shrink-0" />
+                  <li key={i} className="flex items-start gap-3 text-gray-700 text-sm sm:text-base">
+                    <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-colors ${plan.popular ? 'bg-[#1E3A8A] text-white hover:bg-[#2563EB]' : 'bg-gray-100 text-[#0F172A] hover:bg-gray-200'}`}>
-                Contact Sales <ArrowRight className="w-4 h-4" />
+              <Link href="/contact" className={`w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-xl font-bold transition-colors text-[17px] min-h-[56px] md:min-h-[48px] touch-manipulation ${plan.popular ? 'bg-[#1E3A8A] text-white hover:bg-[#2563EB] shadow-lg shadow-blue-900/20' : 'bg-gray-100 text-[#0F172A] hover:bg-gray-200'}`}>
+                Contact Sales <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           ))}
