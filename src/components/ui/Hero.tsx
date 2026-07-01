@@ -25,28 +25,28 @@ export function Hero({ title, subtitle, primaryCta, secondaryCta, imageSrc, alig
 
           <div className={`flex-1 ${align === "center" ? "max-w-3xl mx-auto" : "max-w-2xl"}`}>
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0F172A] tracking-tight leading-[1.1] mb-4 sm:mb-6"
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0F172A] tracking-tight leading-[1.1] mb-6 sm:mb-8"
             >
               {title}
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-              className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl"
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="text-base sm:text-lg md:text-xl text-gray-600 mb-10 leading-relaxed max-w-2xl"
             >
               {subtitle}
             </motion.p>
 
             {(primaryCta || secondaryCta) && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                 className={`flex flex-col sm:flex-row gap-4 ${align === "center" ? "justify-center" : ""}`}
               >
                 {primaryCta && (
@@ -66,14 +66,14 @@ export function Hero({ title, subtitle, primaryCta, secondaryCta, imageSrc, alig
 
           {imageSrc && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
               className={`flex-1 w-full ${align === "center" ? "mt-12" : ""}`}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-100 aspect-[4/3] lg:aspect-[3/2] bg-gray-100">
-                <img src={imageSrc} alt="DOOH Network Preview" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-2xl"></div>
+              <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 aspect-[4/3] lg:aspect-[3/2] bg-gray-100 group">
+                <img src={imageSrc} alt="Mobility Network Preview" className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[2rem]"></div>
               </div>
             </motion.div>
           )}
