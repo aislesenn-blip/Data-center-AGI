@@ -5,16 +5,16 @@ import { ShieldCheck, Award, TrendingUp } from "lucide-react";
 
 export default function WhyUsPage() {
   const reasons = [
-    { title: "Premium Inventory Only", desc: "We don't do low-quality placements. Every screen is high-definition, meticulously maintained, and situated in a prime location.", icon: <Award className="w-8 h-8 text-[#1E3A8A]" /> },
-    { title: "Absolute Transparency", desc: "No black boxes. You see exactly where and when your ads played with verified third-party proof-of-play reports.", icon: <ShieldCheck className="w-8 h-8 text-[#1E3A8A]" /> },
-    { title: "Data-Led Approach", desc: "We leverage mobility data and audience intelligence to ensure you are buying audiences, not just locations.", icon: <TrendingUp className="w-8 h-8 text-[#1E3A8A]" /> },
+    { title: "Captive Audience", desc: "Unlike roadside billboards, our in-rickshaw screens offer an intimate, distraction-free environment where passengers engage for an average of 18 minutes.", icon: <Award className="w-8 h-8 text-[#1E3A8A]" /> },
+    { title: "Absolute Transparency", desc: "No black boxes. You see exactly where and when your ads played with verified GPS-backed proof-of-play reports.", icon: <ShieldCheck className="w-8 h-8 text-[#1E3A8A]" /> },
+    { title: "Data-Led Mobility", desc: "We leverage real-time location data and routing intelligence to ensure you are targeting audiences based on movement, not just static locations.", icon: <TrendingUp className="w-8 h-8 text-[#1E3A8A]" /> },
   ];
 
   return (
     <>
       <Hero
-        title={<>Why choose <span className="text-[#1E3A8A]">Ovation DOOH?</span></>}
-        subtitle="We are setting a new standard for out-of-home advertising in Africa. Here is why the world's most demanding brands partner with us."
+        title={<>Why choose <span className="text-[#1E3A8A]">[Company Name]?</span></>}
+        subtitle="We are setting a new standard for mobility advertising. Here is why forward-thinking brands partner with us to reach urban audiences."
         align="center"
       />
       <Section bg="gray" className="border-t border-gray-100">

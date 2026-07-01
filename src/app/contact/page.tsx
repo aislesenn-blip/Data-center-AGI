@@ -6,8 +6,8 @@ export default function ContactPage() {
   return (
     <>
       <Hero
-        title={<>Let&apos;s build your <span className="text-[#1E3A8A]">campaign.</span></>}
-        subtitle="Our team of media strategists is ready to help you dominate the physical space. Reach out to discuss inventory, programmatic integrations, or custom builds."
+        title={<>Let&apos;s build your <span className="text-[#1E3A8A]">mobility campaign.</span></>}
+        subtitle="Our team of media strategists is ready to help you dominate the physical space. Reach out to discuss fleet inventory, programmatic integrations, or custom builds."
         align="center"
       />
       <Section bg="gray" className="border-t border-gray-100">
@@ -51,7 +51,7 @@ export default function ContactPage() {
                    <Mail className="w-6 h-6 text-[#1E3A8A]" />
                 </div>
                 <h3 className="text-xl font-bold text-[#0F172A] mb-2">Sales Inquiries</h3>
-                <p className="text-gray-600">sales@ovationdooh.com</p>
+                <p className="text-gray-600">sales@[companyname].com</p>
              </div>
           </div>
         </div>

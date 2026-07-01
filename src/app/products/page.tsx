@@ -1,38 +1,38 @@
 import { Hero } from "@/components/ui/Hero";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { Monitor, Smartphone, Train, ArrowRight } from "lucide-react";
+import { Monitor, Car, Cpu, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function ProductsPage() {
   const products = [
     {
-      id: "billboards",
-      title: "Large Format Digital Billboards",
-      desc: "Dominate the skyline with ultra-high-definition, monumental digital screens on key arterial routes. Perfect for building massive brand awareness and delivering memorable creative campaigns.",
+      id: "in-rickshaw-displays",
+      title: "In-Rickshaw Smart Screens",
+      desc: "Transform every ride into an immersive brand experience. Our high-definition screens installed inside auto-rickshaws provide an unmissable, distraction-free environment for passengers during their daily commute.",
+      icon: <Car className="w-8 h-8 text-[#1E3A8A]" />,
+      image: "https://images.unsplash.com/photo-1593950315186-76a92975b60c?auto=format&fit=crop&q=80&w=1200" // Note: Replaced with a more generic tech/mobility image, a specific rickshaw screen image would be best
+    },
+    {
+      id: "connected-fleet",
+      title: "Connected Fleet Technology",
+      desc: "Our displays are powered by a proprietary OS ensuring constant connectivity, real-time diagnostic reporting, and precise location tracking, turning analog vehicles into a synchronized digital network.",
+      icon: <Cpu className="w-8 h-8 text-[#1E3A8A]" />,
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200"
+    },
+    {
+      id: "dynamic-content",
+      title: "Context-Aware Content Delivery",
+      desc: "Deliver the right message at the right place. Our system allows for dynamic creative swapping based on real-time location, time of day, and environmental triggers as the vehicle moves through the city.",
       icon: <Monitor className="w-8 h-8 text-[#1E3A8A]" />,
-      image: "https://images.unsplash.com/photo-1598285906232-2630cecc3a42?auto=format&fit=crop&q=80&w=1200"
-    },
-    {
-      id: "street-furniture",
-      title: "Street Furniture & Urban Panels",
-      desc: "Engage pedestrians and vehicular traffic at eye level. Located in high-dwell environments like transit shelters and pedestrian zones, offering opportunities for detailed messaging and mobile integration.",
-      icon: <Smartphone className="w-8 h-8 text-[#1E3A8A]" />,
-      image: "https://images.unsplash.com/photo-1518972554767-f58c73229862?auto=format&fit=crop&q=80&w=1200"
-    },
-    {
-      id: "transit",
-      title: "Transit & Airport Networks",
-      desc: "Reach a captive audience of business travelers, tourists, and daily commuters. Premium indoor digital networks that offer 100% video completion rates and highly targeted audience profiles.",
-      icon: <Train className="w-8 h-8 text-[#1E3A8A]" />,
-      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=1200"
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
     }
   ];
 
   return (
     <>
       <Hero
-        title={<>Premium canvas for <span className="text-[#1E3A8A]">premium brands.</span></>}
-        subtitle="Explore our portfolio of high-impact digital out-of-home products. From monumental billboards to intimate street-level screens, we provide the infrastructure for world-class storytelling."
+        title={<>Next-generation <span className="text-[#1E3A8A]">mobility media.</span></>}
+        subtitle="Explore our advanced in-vehicle digital advertising technology. We turn auto-rickshaws into powerful, moving digital canvases that capture attention where it matters most."
         align="center"
       />
 
@@ -52,7 +52,7 @@ export default function ProductsPage() {
                 <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4 tracking-tight">{product.title}</h2>
                 <p className="text-lg text-gray-600 mb-8 leading-relaxed">{product.desc}</p>
                 <ul className="space-y-3 mb-8">
-                  {["100% Share of Voice Options", "Full-Motion Video Capabilities", "Programmatic Integration (VIOOH/Broadsign)", "Dynamic Creative Support"].map((feature, i) => (
+                  {["100% Share of Voice Options", "Full-Motion Video Capabilities", "Location-Based Triggers", "Verified Playback Reporting"].map((feature, i) => (
                     <li key={i} className="flex items-center gap-3 text-gray-700 font-medium">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></div>
                       {feature}
