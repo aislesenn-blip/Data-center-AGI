@@ -44,7 +44,7 @@ export function SegmentedControl({ tabs }: SegmentedControlProps) {
       </div>
 
       {/* Content Area */}
-      <div className="relative min-h-[400px]">
+      <div className="relative w-full">
          <AnimatePresence mode="wait">
             {tabs.map((tab) =>
               tab.id === activeTabId ? (
@@ -54,7 +54,7 @@ export function SegmentedControl({ tabs }: SegmentedControlProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="w-full"
                 >
                   {tab.content}
                 </motion.div>
