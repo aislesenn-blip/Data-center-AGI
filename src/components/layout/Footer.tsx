@@ -6,10 +6,10 @@ export default function Footer() {
     {
       title: "Solutions",
       links: [
-        { name: "Billboards", href: "/products" },
-        { name: "Street Furniture", href: "/products" },
-        { name: "Transit Networks", href: "/products" },
-        { name: "Programmatic DOOH", href: "/services" },
+        { name: "In-Transit Displays", href: "/products" },
+        { name: "Geo-Fenced Campaigns", href: "/products" },
+        { name: "Programmatic Transit", href: "/services" },
+        { name: "Dynamic Creative", href: "/services" },
       ],
     },
     {
@@ -41,31 +41,31 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+    <footer className="bg-white border-t border-gray-200 pt-16 sm:pt-20 pb-8 sm:pb-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-10 lg:gap-8 mb-16">
 
-          <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-               <div className="w-8 h-8 bg-[#1E3A8A] rounded-lg flex items-center justify-center shadow-md">
-                  <Globe className="text-white w-4 h-4" />
+          <div className="sm:col-span-2 lg:col-span-2">
+            <Link href="/" className="flex items-center gap-2 mb-6 group touch-manipulation inline-flex">
+               <div className="w-10 h-10 bg-[#1E3A8A] rounded-xl flex items-center justify-center shadow-md">
+                  <Globe className="text-white w-5 h-5" />
                </div>
-               <span className="text-lg font-bold text-[#0F172A] tracking-tight">Ovation DOOH</span>
+               <span className="text-xl font-black text-[#0F172A] tracking-tight">[Company Name]</span>
             </Link>
-            <p className="text-gray-500 text-sm max-w-sm mb-6 leading-relaxed">
-              Africa&apos;s premier digital out-of-home advertising network. Connecting global brands with high-value audiences through world-class screen infrastructure.
+            <p className="text-gray-500 text-sm sm:text-base max-w-sm mb-6 leading-relaxed">
+              An innovative AdTech platform building the future of urban advertising through connected transit screens.
             </p>
           </div>
 
           {footerLinks.map((column) => (
-            <div key={column.title}>
-              <h3 className="text-sm font-semibold text-[#0F172A] uppercase tracking-wider mb-4">
+            <div key={column.title} className="col-span-1">
+              <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-5 sm:mb-6">
                 {column.title}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {column.links.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="text-sm text-gray-500 hover:text-[#2563EB] transition-colors flex items-center gap-1 group">
+                    <Link href={link.href} className="text-sm sm:text-base text-gray-500 hover:text-[#2563EB] transition-colors font-medium touch-manipulation inline-block py-1">
                       {link.name}
                     </Link>
                   </li>
@@ -75,13 +75,13 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} Ovation DOOH Networks. All rights reserved.
+        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <p className="text-sm text-gray-500 font-medium">
+            &copy; {new Date().getFullYear()} [Company Name] AdTech. All rights reserved.
           </p>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 font-medium">
              <span>Global Headquarters</span>
-             <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+             <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:block"></span>
              <span>Nairobi, Kenya</span>
           </div>
         </div>
