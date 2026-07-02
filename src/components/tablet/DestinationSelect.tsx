@@ -35,7 +35,7 @@ export function DestinationSelect({ onSelect }: Props) {
               transition={{ delay: i * 0.05, type: "spring", damping: 20 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onSelect(dest)}
-              className="bg-white border-2 border-slate-200 shadow-sm rounded-[2rem] p-8 text-center flex items-center justify-center min-h-[160px] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 transition-all"
+              className="bg-white border-0 shadow-xl shadow-slate-200/50 rounded-[2rem] p-8 text-center flex items-center justify-center min-h-[160px] hover:shadow-2xl hover:shadow-blue-500/10 transition-all"
             >
               <span className="text-3xl font-bold text-slate-800">{dest}</span>
             </motion.button>

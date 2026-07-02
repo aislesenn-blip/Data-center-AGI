@@ -28,7 +28,7 @@ function Carousel({ title, merchants, onSelect }: { title: string, merchants: Me
             transition={{ delay: i * 0.1 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelect(merchant.id)}
-            className="shrink-0 w-[500px] bg-white shadow-xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden snap-start flex flex-col text-left border-2 border-slate-100"
+            className="shrink-0 w-[500px] bg-white shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden snap-start flex flex-col text-left border-0"
           >
             <div className="h-[250px] w-full relative">
               <Image
@@ -92,7 +92,7 @@ export function SearchResults({ category, destination, onSelect, onBack }: Props
       <BrandHeader />
 
       <div className="px-12 flex items-center gap-6 mb-8 mt-20 shrink-0">
-        <button onClick={onBack} className="p-4 bg-white border-2 border-slate-200 shadow-sm rounded-full active:scale-95 transition-transform">
+        <button onClick={onBack} className="p-4 bg-white border-0 shadow-md shadow-slate-200/50 rounded-full active:scale-95 transition-transform">
           <ArrowLeft className="w-8 h-8 text-slate-700" />
         </button>
         <div>
@@ -108,10 +108,10 @@ export function SearchResults({ category, destination, onSelect, onBack }: Props
             <button
               key={sub}
               onClick={() => setActiveSubCat(sub)}
-              className={`shrink-0 px-8 py-3 rounded-full text-xl font-bold transition-colors ${
+              className={`shrink-0 px-8 py-3 rounded-full text-xl font-bold transition-all ${
                 activeSubCat === sub
-                  ? "bg-slate-900 text-white"
-                  : "bg-white text-slate-600 border-2 border-slate-200 hover:border-slate-300"
+                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                  : "bg-white text-slate-600 border-0 shadow-sm shadow-slate-200/50 hover:shadow-md"
               }`}
             >
               {sub}

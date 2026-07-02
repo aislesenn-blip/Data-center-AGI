@@ -41,12 +41,12 @@ export function AttractLoop() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
-          className="flex items-center gap-4 bg-white/80 backdrop-blur-md px-8 py-4 rounded-full shadow-lg border border-white"
+          className="flex items-center gap-1 bg-white/80 backdrop-blur-md px-8 py-4 rounded-full shadow-lg border border-white"
         >
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md bg-blue-600">
-            <span className="font-black text-3xl text-white">R</span>
-          </div>
-          <span className="font-extrabold text-4xl tracking-tight text-slate-900">Rickpedia</span>
+          <span className="font-extrabold text-4xl tracking-tight">
+            <span className="text-blue-600">rik</span>
+            <span className="text-slate-900">pedia</span>
+          </span>
         </motion.div>
       </div>
 
