@@ -4,14 +4,11 @@ test('corporate website basic rendering', async ({ page }) => {
   await page.goto('/');
 
   // 1. Home - check for Hero title
-  await expect(page.getByText('for the modern city.')).toBeVisible();
+  await expect(page.getByText('Command attention in the')).toBeVisible();
 
-  // Open mobile menu to navigate (since it's Mobile Chrome test)
-  await page.getByRole('button', { name: 'Toggle menu' }).click();
-
-  // click Network
-  await page.locator('div.md\\:hidden').getByText('Network', { exact: true }).click();
+  // click Explore the Network
+  await page.getByText('Explore the Network').click();
 
   // 2. Verify navigation to Network
-  await expect(page.getByText('Infrastructure built for')).toBeVisible();
+  await expect(page.getByText('A network built for')).toBeVisible();
 });
