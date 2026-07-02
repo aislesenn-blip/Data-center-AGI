@@ -13,7 +13,7 @@ export function WarningModal({ onContinue, onReset }: Props) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white border-2 border-slate-200 rounded-[3rem] p-16 max-w-2xl w-full text-center shadow-2xl"
+        className="bg-white border-0 rounded-[3rem] p-16 max-w-2xl w-full text-center shadow-2xl"
       >
         <h2 className="text-6xl font-extrabold text-slate-900 mb-6 tracking-tight">Are you still looking?</h2>
         <p className="text-3xl text-slate-500 font-medium mb-12 leading-relaxed">

@@ -26,10 +26,10 @@ export function CategoryGrid({ destination, onSelect, onBack }: Props) {
     >
       <BrandHeader />
       <div className="flex items-center gap-6 mb-12 mt-20">
-        <button onClick={onBack} className="p-4 bg-white border-2 border-slate-200 shadow-sm rounded-full active:scale-95 transition-transform">
+        <button onClick={onBack} className="p-4 bg-white border-0 shadow-md shadow-slate-200/50 rounded-full active:scale-95 transition-transform">
           <ArrowLeft className="w-8 h-8 text-slate-700" />
         </button>
-        <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-full border-2 border-slate-200 shadow-sm">
+        <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-full border-0 shadow-md shadow-slate-200/50">
           <MapPin className="w-8 h-8 text-blue-600" />
           <span className="text-2xl font-bold text-slate-800">{destination}</span>
         </div>

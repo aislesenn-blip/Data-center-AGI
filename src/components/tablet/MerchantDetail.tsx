@@ -80,7 +80,7 @@ export function MerchantDetail({ merchantId, onClose }: Props) {
 
           {/* Recommendation */}
           {product.recommendationReason && (
-            <section className="bg-blue-50 border-2 border-blue-100 rounded-3xl p-8">
+            <section className="bg-blue-50/50 border-0 shadow-lg shadow-blue-100/50 rounded-3xl p-8">
               <div className="flex items-center gap-3 mb-4">
                 <Info className="w-8 h-8 text-blue-600" />
                 <h2 className="text-2xl font-bold text-slate-900">Why we recommend it</h2>
@@ -120,7 +120,7 @@ export function MerchantDetail({ merchantId, onClose }: Props) {
 
             <div className="flex overflow-x-auto gap-8 hide-scrollbar snap-x snap-mandatory">
               {merchant.otherProducts.map(p => (
-                <div key={p.id} className="shrink-0 w-[400px] bg-white rounded-3xl overflow-hidden shadow-md snap-start border border-slate-200">
+                <div key={p.id} className="shrink-0 w-[400px] bg-white rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 snap-start border-0">
                    <div className="h-[250px] w-full relative">
                       <Image src={p.image} alt={p.name} fill className="object-cover" />
                    </div>
