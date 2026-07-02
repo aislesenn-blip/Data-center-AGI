@@ -26,7 +26,7 @@ export function AttractLoop() {
     >
       <div className="absolute inset-0 w-full h-full">
          <Image
-            src={currentDeal.image}
+            src={currentDeal.heroProduct.image}
             alt={currentDeal.name}
             fill
             className="object-cover transition-transform duration-[6000ms] ease-out scale-110 object-center"
@@ -35,6 +35,20 @@ export function AttractLoop() {
       </div>
       {/* Light gradient overlay for text readability without being dark */}
       <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent" />
+
+      <div className="absolute top-12 left-0 w-full flex justify-center z-20">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="flex items-center gap-4 bg-white/80 backdrop-blur-md px-8 py-4 rounded-full shadow-lg border border-white"
+        >
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md bg-blue-600">
+            <span className="font-black text-3xl text-white">R</span>
+          </div>
+          <span className="font-extrabold text-4xl tracking-tight text-slate-900">Rickpedia</span>
+        </motion.div>
+      </div>
 
       <div className="relative z-10 p-12 pb-24 w-full text-center">
         <motion.div
@@ -48,7 +62,7 @@ export function AttractLoop() {
             Tap anywhere to discover
           </div>
           <h1 className="text-7xl font-extrabold text-slate-900 mt-6 tracking-tight drop-shadow-sm">
-            {currentDeal.discount} at {currentDeal.name}
+            {currentDeal.heroProduct.discount || currentDeal.heroProduct.price} at {currentDeal.name}
           </h1>
           <p className="text-4xl text-slate-600 mt-2 font-semibold">
             Only {currentDeal.distance}
