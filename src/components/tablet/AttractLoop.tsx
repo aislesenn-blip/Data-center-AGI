@@ -3,11 +3,11 @@
 import { motion } from "framer-motion"
 import { mockMerchants } from "@/lib/mockData"
 import { useState, useEffect } from "react"
+import Image from "next/image"
 
 export function AttractLoop() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Rotate images every 5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % mockMerchants.length)
@@ -22,29 +22,35 @@ export function AttractLoop() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 w-full h-full bg-black flex flex-col justify-end"
+      className="absolute inset-0 w-full h-full bg-slate-50 flex flex-col justify-end overflow-hidden"
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
-        style={{ backgroundImage: `url(${currentDeal.image})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+      <div className="absolute inset-0 w-full h-full">
+         <Image
+            src={currentDeal.image}
+            alt={currentDeal.name}
+            fill
+            className="object-cover transition-transform duration-[6000ms] ease-out scale-110 object-center"
+            priority
+         />
+      </div>
+      {/* Light gradient overlay for text readability without being dark */}
+      <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent" />
 
       <div className="relative z-10 p-12 pb-24 w-full text-center">
         <motion.div
           key={currentDeal.id}
-          initial={{ y: 20, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", damping: 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
           className="flex flex-col items-center gap-4"
         >
-          <div className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-2xl uppercase tracking-widest">
+          <div className="inline-block px-8 py-3 rounded-full bg-blue-600 shadow-xl shadow-blue-500/20 text-white font-bold text-2xl uppercase tracking-widest backdrop-blur-md">
             Tap anywhere to discover
           </div>
-          <h1 className="text-7xl font-bold text-white drop-shadow-xl mt-4">
+          <h1 className="text-7xl font-extrabold text-slate-900 mt-6 tracking-tight drop-shadow-sm">
             {currentDeal.discount} at {currentDeal.name}
           </h1>
-          <p className="text-3xl text-gray-300 mt-2 font-medium">
+          <p className="text-4xl text-slate-600 mt-2 font-semibold">
             Only {currentDeal.distance}
           </p>
         </motion.div>
