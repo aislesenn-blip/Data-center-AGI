@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { categories } from "@/lib/mockData"
+import { categoryStructure } from "@/lib/mockData"
 import { ShoppingBag, Utensils, Smartphone, Pill, ShoppingCart, Sparkles, MapPin, LucideIcon, ArrowLeft } from "lucide-react"
+import { BrandHeader } from "./BrandHeader"
 
 const iconMap: Record<string, LucideIcon> = {
   ShoppingBag, Utensils, Smartphone, Pill, ShoppingCart, Sparkles
@@ -21,10 +22,11 @@ export function CategoryGrid({ destination, onSelect, onBack }: Props) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ type: "spring", damping: 30, stiffness: 300 }}
-      className="absolute inset-0 w-full h-full bg-slate-50 flex flex-col p-12"
+      className="absolute inset-0 w-full h-full bg-slate-50 flex flex-col p-12 overflow-y-auto touch-pan-y"
     >
-      <div className="flex items-center gap-6 mb-12">
-        <button onClick={onBack} className="p-5 bg-white border-2 border-slate-200 shadow-sm rounded-full active:scale-95 transition-transform">
+      <BrandHeader />
+      <div className="flex items-center gap-6 mb-12 mt-20">
+        <button onClick={onBack} className="p-4 bg-white border-2 border-slate-200 shadow-sm rounded-full active:scale-95 transition-transform">
           <ArrowLeft className="w-8 h-8 text-slate-700" />
         </button>
         <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-full border-2 border-slate-200 shadow-sm">
@@ -39,7 +41,7 @@ export function CategoryGrid({ destination, onSelect, onBack }: Props) {
         </h2>
 
         <div className="grid grid-cols-3 gap-8">
-          {categories.map((cat, i) => {
+          {categoryStructure.map((cat, i) => {
             const Icon = iconMap[cat.icon]
             return (
               <motion.button

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { destinations } from "@/lib/mockData"
+import { BrandHeader } from "./BrandHeader"
 
 interface Props {
   onSelect: (dest: string) => void
@@ -14,9 +15,10 @@ export function DestinationSelect({ onSelect }: Props) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
-      className="absolute inset-0 w-full h-full bg-slate-50 flex flex-col p-12"
+      className="absolute inset-0 w-full h-full bg-slate-50 flex flex-col p-12 overflow-y-auto touch-pan-y"
     >
-      <div className="flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full">
+      <BrandHeader />
+      <div className="flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full pt-16">
         <h1 className="text-6xl font-extrabold text-slate-900 mb-4 tracking-tight">
           Where are you heading today?
         </h1>
