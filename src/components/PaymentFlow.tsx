@@ -89,15 +89,14 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col pt-12 pb-6"
+              className="absolute inset-0 flex flex-col pt-6 pb-6"
             >
-              <div className="px-8 text-center mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-3">Pay a merchant</h1>
-                <p className="text-slate-500 font-medium">Enter the 5 digit code displayed at the store.</p>
+              <div className="px-8 text-center mb-4">
+                <h1 className="text-3xl font-bold text-slate-900">Enter Merchant Code</h1>
               </div>
 
               {/* Code Display */}
-              <div className="flex gap-4 mb-12 h-16 items-center justify-center">
+              <div className="flex gap-4 mb-6 h-16 items-center justify-center">
                 {[0, 1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
@@ -208,10 +207,10 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col p-6"
+              className="absolute inset-0 flex flex-col p-6 pt-10"
             >
-              <h2 className="text-3xl font-bold text-slate-900 mb-2 px-2">How would you like to pay?</h2>
-              <p className="text-slate-500 font-medium mb-8 px-2">Total: ${amounts.final.toFixed(2)} to {MOCK_MERCHANT.name}</p>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2 px-2 pb-1">How would you like to pay?</h2>
+              <p className="text-slate-500 font-medium mb-6 px-2">Total: ${amounts.final.toFixed(2)} to {MOCK_MERCHANT.name}</p>
 
               <div className="space-y-4">
                 {["M-Pesa", "Airtel Money", "Bank Card ending in 4242"].map((provider) => (
@@ -255,19 +254,19 @@ export function PaymentFlow() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col p-6 pt-12"
+              className="absolute inset-0 flex flex-col p-6 pt-6"
             >
               <div className="flex-1 flex flex-col items-center">
                 <motion.div
                   initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
-                  className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-100"
+                  className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-100"
                 >
-                  <CheckCircle2 className="w-12 h-12" />
+                  <CheckCircle2 className="w-10 h-10" />
                 </motion.div>
-                <h2 className="text-4xl font-extrabold text-slate-900 mb-2">Payment Sent</h2>
-                <p className="text-slate-500 text-lg font-medium mb-12">to {MOCK_MERCHANT.name}</p>
+                <h2 className="text-3xl font-extrabold text-slate-900 mb-1">Payment Sent</h2>
+                <p className="text-slate-500 text-base font-medium mb-6">to {MOCK_MERCHANT.name}</p>
 
-                <div className="w-full bg-slate-50 rounded-[2rem] p-8 border border-slate-100 relative overflow-hidden">
+                <div className="w-full bg-slate-50 rounded-[2rem] p-6 border border-slate-100 relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-500" />
                   <div className="flex justify-between items-end mb-6">
                     <span className="text-slate-500 font-medium">Total Paid</span>
