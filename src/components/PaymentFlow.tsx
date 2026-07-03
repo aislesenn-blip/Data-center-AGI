@@ -80,7 +80,7 @@ export function PaymentFlow() {
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden relative pt-2">
+      <div className="flex-1 overflow-hidden relative">
         <AnimatePresence mode="wait">
           {step === "keypad" && (
             <motion.div
@@ -89,11 +89,10 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col pt-12 pb-6"
+              className="absolute inset-0 flex flex-col pt-6 pb-4"
             >
-              <div className="px-8 text-center mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-3">Pay a merchant</h1>
-                <p className="text-slate-500 font-medium">Enter the 5 digit code displayed at the store.</p>
+              <div className="px-8 text-center mb-6">
+                <h1 className="text-3xl font-bold text-slate-900 mb-1">Enter Merchant Code</h1>
               </div>
 
               {/* Code Display */}
@@ -111,7 +110,7 @@ export function PaymentFlow() {
                 ))}
               </div>
 
-              <div className="flex-1 flex flex-col justify-end pb-8">
+              <div className="flex-1 flex flex-col justify-end pb-4">
                 <div className="px-6 h-[60px] flex items-center justify-center">
                   <AnimatePresence mode="popLayout">
                     {merchantCode.length === 5 && (
@@ -120,7 +119,7 @@ export function PaymentFlow() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 10 }}
                         onClick={() => setStep("merchant_details")}
-                        className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 max-w-sm mx-auto"
+                        className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-4 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 max-w-sm mx-auto"
                       >
                         Continue
                         <ChevronRight className="w-5 h-5 ml-1" />
@@ -141,12 +140,12 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col p-6 pb-2"
+              className="absolute inset-0 flex flex-col p-4 pb-2"
             >
               {/* Merchant Card */}
-              <div className="bg-slate-50 rounded-[2rem] p-4 sm:p-6 mb-4 sm:mb-8 border border-slate-100 flex items-center gap-4 shadow-sm shrink-0 mt-12 sm:mt-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center shadow-md text-blue-600 shrink-0">
-                  <Store className="w-6 h-6 sm:w-8 sm:h-8" />
+              <div className="bg-slate-50 rounded-3xl p-3 sm:p-4 mb-2 sm:mb-4 border border-slate-100 flex items-center gap-4 shadow-sm shrink-0 mt-12">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center shadow-md text-blue-600 shrink-0">
+                  <Store className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">{MOCK_MERCHANT.name}</h2>
@@ -157,7 +156,7 @@ export function PaymentFlow() {
               {/* Amount Display (No system keyboard needed) */}
               <div className="flex-1 flex flex-col justify-center items-center shrink-0 min-h-[100px]">
                 <div className="text-center">
-                  <label className="block text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Total Bill Amount</label>
+                  <label className="block text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Total Bill Amount</label>
                   <div className="flex items-center justify-center">
                     <span className="text-3xl sm:text-4xl text-slate-400 font-medium mr-1">$</span>
                     <span className={`text-5xl sm:text-6xl font-extrabold ${billAmount ? 'text-slate-900' : 'text-slate-300'}`}>
@@ -168,7 +167,7 @@ export function PaymentFlow() {
               </div>
 
               {/* CTA strictly above the keypad */}
-              <div className="shrink-0 mb-4 h-[60px] flex items-center justify-center">
+              <div className="shrink-0 mb-2 h-[50px] flex items-center justify-center">
                 <AnimatePresence mode="popLayout">
                   {parseFloat(billAmount) > 0 ? (
                     <motion.button
@@ -176,7 +175,7 @@ export function PaymentFlow() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9, y: 10 }}
                       onClick={handleConfirmAmount}
-                      className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                      className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-3 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
                       <span>Pay ${amounts.final.toFixed(2)}</span>
                       <span className="bg-white/20 text-white px-2 py-0.5 rounded text-sm font-bold ml-2">Save ${amounts.saved.toFixed(2)}</span>
@@ -208,17 +207,17 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col p-6"
+              className="absolute inset-0 flex flex-col p-6 pt-16"
             >
-              <h2 className="text-3xl font-bold text-slate-900 mb-2 px-2">How would you like to pay?</h2>
-              <p className="text-slate-500 font-medium mb-8 px-2">Total: ${amounts.final.toFixed(2)} to {MOCK_MERCHANT.name}</p>
+              <h2 className="text-2xl font-bold text-slate-900 mb-2 px-2">How would you like to pay?</h2>
+              <p className="text-slate-500 font-medium mb-6 px-2">Total: ${amounts.final.toFixed(2)} to {MOCK_MERCHANT.name}</p>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {["M-Pesa", "Airtel Money", "Bank Card ending in 4242"].map((provider) => (
                   <button
                     key={provider}
                     onClick={() => handleProcessPayment(provider)}
-                    className="w-full flex items-center justify-between bg-white border border-slate-200 p-6 rounded-[2rem] hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all group"
+                    className="w-full flex items-center justify-between bg-white border border-slate-200 p-4 sm:p-5 rounded-3xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all group"
                   >
                     <span className="text-xl font-bold text-slate-800">{provider}</span>
                     <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-blue-500" />

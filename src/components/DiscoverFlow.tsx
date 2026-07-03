@@ -23,8 +23,8 @@ export function DiscoverFlow() {
 
       {/* Header */}
       <div className="px-6 pt-6 pb-4 shrink-0 bg-slate-50">
-        <h1 className="text-3xl font-bold text-slate-900 mb-1">Discover</h1>
-        <p className="text-slate-500 font-medium text-sm">Find participating merchants to save instantly.</p>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Partner Merchants</h1>
+        <p className="text-slate-500 font-medium text-sm leading-relaxed">Discover exclusive PayFriday partner merchants and enjoy instant savings every time you pay.</p>
       </div>
 
       {/* Categories (Horizontal Scroll) */}

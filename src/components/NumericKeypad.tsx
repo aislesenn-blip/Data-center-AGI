@@ -40,7 +40,7 @@ export function NumericKeypad({ value, onChange, isAmountMode = false }: Props) 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-sm mx-auto px-6">
       {/* Keypad */}
-      <div className="grid grid-cols-3 gap-x-8 gap-y-4 sm:gap-y-6 w-full">
+      <div className="grid grid-cols-3 gap-x-8 gap-y-2 sm:gap-y-4 w-full">
         {keys.flat().map((key, index) => {
           if (key === null) return <div key={`empty-${index}`} />
 
@@ -50,9 +50,9 @@ export function NumericKeypad({ value, onChange, isAmountMode = false }: Props) 
                 key="del"
                 whileTap={{ scale: 0.9 }}
                 onClick={handleDelete}
-                className="h-16 sm:h-20 flex items-center justify-center text-slate-400 active:text-slate-900 transition-colors"
+                className="h-14 sm:h-16 flex items-center justify-center text-slate-400 active:text-slate-900 transition-colors"
               >
-                <Delete className="w-8 h-8" />
+                <Delete className="w-7 h-7" />
               </motion.button>
             )
           }
@@ -62,7 +62,7 @@ export function NumericKeypad({ value, onChange, isAmountMode = false }: Props) 
               key={key}
               whileTap={{ scale: 0.9, backgroundColor: "#f1f5f9" }}
               onClick={() => handlePress(key as string)}
-              className="h-16 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl font-bold text-slate-900 transition-colors active:bg-slate-100"
+              className="h-14 sm:h-16 rounded-full flex items-center justify-center text-2xl sm:text-3xl font-bold text-slate-900 transition-colors active:bg-slate-100"
             >
               {key}
             </motion.button>
