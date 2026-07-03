@@ -29,11 +29,7 @@ export function PaymentFlow() {
   const [selectedPaymentProvider, setSelectedPaymentProvider] = useState<string | null>(null)
 
   const handleKeypadSubmit = (code: string) => {
-    // In reality, this checks the code against an API
-    if (code.length >= 4) {
-      setMerchantCode(code)
-      setStep("merchant_details")
-    }
+    setMerchantCode(code)
   }
 
   const handleConfirmAmount = () => {
@@ -99,7 +95,41 @@ export function PaymentFlow() {
                 <h1 className="text-3xl font-bold text-slate-900 mb-3">Pay a merchant</h1>
                 <p className="text-slate-500 font-medium">Enter the 5 digit code displayed at the store.</p>
               </div>
-              <div className="flex-1" />
+
+              {/* Code Display */}
+              <div className="flex gap-4 mb-12 h-16 items-center justify-center">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className={`w-12 h-16 rounded-2xl border-0 flex items-center justify-center text-4xl font-black transition-all duration-200
+                      ${i < merchantCode.length ? 'text-slate-900 bg-slate-100 shadow-inner' : 'bg-slate-50 text-transparent'}
+                      ${i === merchantCode.length ? 'shadow-md shadow-blue-500/20 ring-2 ring-blue-500' : ''}
+                    `}
+                  >
+                    {merchantCode[i] || ""}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex-1 flex flex-col justify-end pb-8">
+                <div className="px-6 h-[60px] flex items-center justify-center">
+                  <AnimatePresence mode="popLayout">
+                    {merchantCode.length === 5 && (
+                      <motion.button
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                        onClick={() => setStep("merchant_details")}
+                        className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 max-w-sm mx-auto"
+                      >
+                        Continue
+                        <ChevronRight className="w-5 h-5 ml-1" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
               <NumericKeypad value={merchantCode} onChange={handleKeypadSubmit} />
             </motion.div>
           )}
