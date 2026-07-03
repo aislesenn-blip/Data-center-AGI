@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { PaymentFlow } from "@/components/PaymentFlow"
 import { DiscoverFlow } from "@/components/DiscoverFlow"
-import { Wallet, Search } from "lucide-react"
+import { Wallet, Search, History } from "lucide-react"
 
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<"pay" | "discover">("pay")
@@ -12,13 +12,15 @@ export function AppShell() {
     <div className="flex flex-col h-[100dvh] w-full max-w-md mx-auto relative bg-slate-50 sm:h-auto sm:max-h-[850px] sm:shadow-2xl sm:rounded-[3rem] overflow-hidden border-0 sm:border border-slate-200">
 
       {/* Global Header */}
-      <header className="h-16 flex items-center justify-between px-6 shrink-0 bg-slate-50 z-50">
-        <div className="font-extrabold text-2xl tracking-tight">
+      <header className="h-14 flex items-center justify-between px-6 shrink-0 bg-slate-50 z-50">
+        <div className="font-extrabold text-xl tracking-tight">
           <span className="text-blue-600">Pay</span>
           <span className="text-slate-900">Friday</span>
         </div>
-        {/* Placeholder for User Profile / Settings Avatar */}
-        <div className="w-8 h-8 rounded-full bg-slate-200" />
+        {/* History Action */}
+        <button className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors">
+          <History className="w-6 h-6" />
+        </button>
       </header>
 
       {/* Main Content Area */}
