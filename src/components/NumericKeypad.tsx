@@ -39,24 +39,6 @@ export function NumericKeypad({ value, onChange, isAmountMode = false }: Props) 
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-sm mx-auto px-6">
-
-      {/* Code Display (Only show if NOT amount mode, as Amount Mode uses its own display in PaymentFlow) */}
-      {!isAmountMode && (
-        <div className="flex gap-4 mb-12 h-16 items-center justify-center">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className={`w-12 h-16 rounded-2xl border-0 flex items-center justify-center text-4xl font-black transition-all duration-200
-                ${i < value.length ? 'text-slate-900 bg-slate-100 shadow-inner' : 'bg-slate-50 text-transparent'}
-                ${i === value.length ? 'shadow-md shadow-blue-500/20 ring-2 ring-blue-500' : ''}
-              `}
-            >
-              {value[i] || ""}
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* Keypad */}
       <div className="grid grid-cols-3 gap-x-8 gap-y-4 sm:gap-y-6 w-full">
         {keys.flat().map((key, index) => {
