@@ -73,23 +73,18 @@ export function PaymentFlow() {
   const amounts = calculateDiscountedAmount()
 
   return (
-    <div className="flex flex-col h-full w-full max-w-md mx-auto relative overflow-hidden bg-white shadow-2xl rounded-3xl border border-slate-100">
+    <div className="flex flex-col h-full w-full relative overflow-hidden bg-white">
 
-      {/* Premium Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-50 shrink-0">
-        {step !== "keypad" && step !== "processing" && step !== "receipt" ? (
-          <button onClick={() => setStep(step === "payment_methods" ? "merchant_details" : "keypad")} className="p-2 -ml-2 text-slate-400 hover:text-slate-900 transition-colors">
+      {/* Contextual Sub-Header (Back button if needed) */}
+      {step !== "keypad" && step !== "processing" && step !== "receipt" && (
+        <div className="absolute top-4 left-4 z-10">
+          <button onClick={() => setStep(step === "payment_methods" ? "merchant_details" : "keypad")} className="p-3 bg-white/80 backdrop-blur-md border border-slate-100 shadow-sm rounded-full text-slate-600 hover:text-slate-900 transition-colors active:scale-95">
              <ArrowLeft className="w-6 h-6" />
           </button>
-        ) : <div className="w-10" />} {/* Spacer */}
-        <div className="font-extrabold text-xl tracking-tight">
-          <span className="text-blue-600">Pay</span>
-          <span className="text-slate-900">Friday</span>
         </div>
-        <div className="w-10" /> {/* Spacer */}
-      </div>
+      )}
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden relative pt-2">
         <AnimatePresence mode="wait">
           {step === "keypad" && (
             <motion.div
@@ -98,13 +93,14 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col pt-12"
+              className="absolute inset-0 flex flex-col pt-12 pb-6"
             >
               <div className="px-8 text-center mb-8">
                 <h1 className="text-3xl font-bold text-slate-900 mb-3">Pay a merchant</h1>
-                <p className="text-slate-500 font-medium">Enter the 4 to 6 digit code displayed at the store.</p>
+                <p className="text-slate-500 font-medium">Enter the 5 digit code displayed at the store.</p>
               </div>
-              <NumericKeypad onSubmit={handleKeypadSubmit} />
+              <div className="flex-1" />
+              <NumericKeypad value={merchantCode} onChange={handleKeypadSubmit} />
             </motion.div>
           )}
 
@@ -115,65 +111,62 @@ export function PaymentFlow() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute inset-0 flex flex-col p-6"
+              className="absolute inset-0 flex flex-col p-6 pb-2"
             >
               {/* Merchant Card */}
-              <div className="bg-slate-50 rounded-[2rem] p-6 mb-8 border border-slate-100 flex items-center gap-4 shadow-sm">
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md text-blue-600 shrink-0">
-                  <Store className="w-8 h-8" />
+              <div className="bg-slate-50 rounded-[2rem] p-4 sm:p-6 mb-4 sm:mb-8 border border-slate-100 flex items-center gap-4 shadow-sm shrink-0 mt-12 sm:mt-0">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center shadow-md text-blue-600 shrink-0">
+                  <Store className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900 leading-tight">{MOCK_MERCHANT.name}</h2>
-                  <p className="text-slate-500 font-medium">{MOCK_MERCHANT.category} &middot; ID: {merchantCode}</p>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">{MOCK_MERCHANT.name}</h2>
+                  <p className="text-sm sm:text-base text-slate-500 font-medium">{MOCK_MERCHANT.category} &middot; ID: {merchantCode}</p>
                 </div>
               </div>
 
-              {/* Amount Entry */}
-              <div className="flex-1">
-                <label className="block text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Total Bill Amount</label>
-                <div className="relative">
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl text-slate-400 font-medium">$</span>
-                  <input
-                    type="number"
-                    value={billAmount}
-                    onChange={(e) => setBillAmount(e.target.value)}
-                    placeholder="0.00"
-                    autoFocus
-                    className="w-full text-5xl font-bold text-slate-900 bg-white border-2 border-slate-200 rounded-[2rem] py-8 pl-16 pr-6 outline-none focus:border-blue-500 focus:shadow-xl focus:shadow-blue-500/10 transition-all placeholder:text-slate-200"
-                  />
+              {/* Amount Display (No system keyboard needed) */}
+              <div className="flex-1 flex flex-col justify-center items-center shrink-0 min-h-[100px]">
+                <div className="text-center">
+                  <label className="block text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Total Bill Amount</label>
+                  <div className="flex items-center justify-center">
+                    <span className="text-3xl sm:text-4xl text-slate-400 font-medium mr-1">$</span>
+                    <span className={`text-5xl sm:text-6xl font-extrabold ${billAmount ? 'text-slate-900' : 'text-slate-300'}`}>
+                      {billAmount || "0"}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Discount Summary & CTA */}
-              <div className="mt-auto">
-                <AnimatePresence>
-                  {parseFloat(billAmount) > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-blue-50/50 border border-blue-100 rounded-3xl p-6 mb-6 flex items-center justify-between"
+              {/* CTA strictly above the keypad */}
+              <div className="shrink-0 mb-4 h-[60px] flex items-center justify-center">
+                <AnimatePresence mode="popLayout">
+                  {parseFloat(billAmount) > 0 ? (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                      onClick={handleConfirmAmount}
+                      className="w-full bg-slate-900 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-full shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
-                      <div>
-                        <p className="text-blue-600 font-bold mb-1">PayFriday Discount ({MOCK_MERCHANT.discount}%)</p>
-                        <p className="text-2xl font-extrabold text-slate-900">
-                           ${amounts.final.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-slate-500 text-sm font-medium mb-1 line-through">${amounts.original.toFixed(2)}</p>
-                        <p className="text-green-600 font-bold bg-green-100 px-3 py-1 rounded-full text-sm inline-block">Save ${amounts.saved.toFixed(2)}</p>
-                      </div>
+                      <span>Pay ${amounts.final.toFixed(2)}</span>
+                      <span className="bg-white/20 text-white px-2 py-0.5 rounded text-sm font-bold ml-2">Save ${amounts.saved.toFixed(2)}</span>
+                    </motion.button>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="text-slate-400 text-sm font-medium"
+                    >
+                      Enter amount to continue
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
 
-                <button
-                  disabled={!parseFloat(billAmount)}
-                  onClick={handleConfirmAmount}
-                  className="w-full bg-slate-900 text-white font-bold text-xl py-6 rounded-[2rem] shadow-xl shadow-slate-900/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100"
-                >
-                  Choose Payment Method
-                </button>
+              {/* Custom Keypad locked to bottom */}
+              <div className="shrink-0 pt-2 border-t border-slate-50">
+                 <NumericKeypad value={billAmount} onChange={setBillAmount} isAmountMode={true} />
               </div>
             </motion.div>
           )}
