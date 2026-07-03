@@ -1,5 +1,10 @@
 import "./globals.css"
 
+export const metadata = {
+  title: "PayFriday",
+  description: "Pay smarter. Save instantly.",
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -7,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-slate-50 text-slate-900 antialiased">
-      <body className="w-screen h-screen overflow-hidden overscroll-none select-none touch-manipulation bg-slate-50">
+      <body className="w-full h-full min-h-[100dvh] bg-slate-50 font-sans selection:bg-blue-100 selection:text-blue-900 overscroll-none touch-manipulation">
         {children}
       </body>
     </html>
