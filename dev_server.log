@@ -1,0 +1,14 @@
+
+> rikpedia-main@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 526ms
+
+○ Compiling / ...
+ GET / 200 in 7.2s (next.js: 6.4s, application-code: 832ms)
+ GET /subscriber 200 in 990ms (next.js: 937ms, application-code: 53ms)
+ GET /station 200 in 992ms (next.js: 858ms, application-code: 133ms)
+ GET /admin 200 in 1292ms (next.js: 1159ms, application-code: 132ms)
