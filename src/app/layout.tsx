@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#FAFAFA",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -14,17 +14,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "TankTo - Fuel Access",
-  description: "Fuel Access Membership Platform",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "TankTo",
-  },
-  formatDetection: {
-    telephone: false,
-  },
+  title: "BEN MONGI BOT",
+  description: "Premium Contacts Export Utility",
 };
 
 export default function RootLayout({
@@ -33,9 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full bg-white antialiased">
+    <html lang="en" className="h-full antialiased">
       <body className={`${inter.className} flex h-full flex-col overflow-hidden`}>
-        {/* We use a flex container that fills the screen and hides overflow for a native app feel. */}
         {children}
       </body>
     </html>
