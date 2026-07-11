@@ -13,6 +13,9 @@ export function generateVCF(contacts: Contact[]): string {
 
   const vcfLines: string[] = [];
 
+  // Standard vCard phone types to cycle through for multiple numbers
+  const phoneTypes = ['CELL', 'WORK', 'HOME', 'OTHER'];
+
   for (const contact of validContacts) {
     vcfLines.push('BEGIN:VCARD');
     vcfLines.push('VERSION:3.0');
@@ -26,10 +29,12 @@ export function generateVCF(contacts: Contact[]): string {
         vcfLines.push(`TITLE:${contact.suffix}`);
     }
 
-    // Add all available phone numbers
-    for (const phone of contact.phones) {
-      vcfLines.push(`TEL;TYPE=CELL:${phone}`);
-    }
+    // Add all available phone numbers with distinct types
+    contact.phones.forEach((phone, index) => {
+      // Pick a type based on the index, falling back to OTHER if there are many
+      const type = index < phoneTypes.length ? phoneTypes[index] : 'OTHER';
+      vcfLines.push(`TEL;TYPE=${type}:${phone}`);
+    });
 
     vcfLines.push('END:VCARD');
   }
