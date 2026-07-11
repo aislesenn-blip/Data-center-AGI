@@ -2,29 +2,15 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
-  title: "TankTo - Fuel Access",
-  description: "Fuel Access Membership Platform",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "TankTo",
-  },
-  formatDetection: {
-    telephone: false,
-  },
+  title: "BEN MONGI BOT",
+  description: "Generate VCF from contacts list",
 };
 
 export default function RootLayout({
@@ -33,9 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full bg-white antialiased">
-      <body className={`${inter.className} flex h-full flex-col overflow-hidden`}>
-        {/* We use a flex container that fills the screen and hides overflow for a native app feel. */}
+    <html lang="en" className="bg-white text-zinc-900 selection:bg-zinc-200">
+      <body className={`${inter.className} min-h-screen bg-[#F9FAFB] text-zinc-900 antialiased`}>
         {children}
       </body>
     </html>

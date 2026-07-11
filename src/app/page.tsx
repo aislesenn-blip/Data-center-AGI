@@ -1,82 +1,207 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Droplet, ArrowRight, ShieldCheck, Building2, User } from "lucide-react";
-import { Card, CardContent } from "@/components/Card";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, Users, UserCheck, UserMinus, FileCheck2, Loader2, CheckCircle2 } from "lucide-react";
+import rawContacts from "../data/contacts.json";
+import { generateVCF, downloadVCF, Contact } from "../lib/vcf";
 
 export default function Home() {
+  const contacts = rawContacts as Contact[];
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const totalContacts = contacts.length;
+  const validContacts = contacts.filter((c) => c.status === "valid");
+  const missingContacts = contacts.filter((c) => c.status === "missing");
+  const isReady = validContacts.length > 0;
+
+  const handleDownload = async () => {
+    if (isGenerating || !isReady) return;
+
+    setIsGenerating(true);
+
+    // Simulate slight delay for premium feel
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const vcfContent = generateVCF(contacts);
+    downloadVCF(vcfContent, "ben_mongi_bot_contacts.vcf");
+
+    setIsGenerating(false);
+    setShowSuccess(true);
+
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 4000);
+  };
+
+  const statCards = [
+    { label: "Total Contacts", value: totalContacts, icon: Users },
+    { label: "Valid Contacts", value: validContacts.length, icon: UserCheck },
+    { label: "Missing Numbers", value: missingContacts.length, icon: UserMinus },
+    { label: "Ready for Export", value: validContacts.length, icon: FileCheck2 },
+  ];
+
   return (
-    <div className="flex h-full flex-col bg-slate-50 items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8"
-      >
-        <div className="text-center space-y-4">
-          <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-900 text-white shadow-2xl mx-auto mb-4">
-            <Droplet className="h-10 w-10" fill="currentColor" />
+    <div className="min-h-screen pb-20 selection:bg-zinc-200">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 w-full border-b border-zinc-200/60 bg-white/80 backdrop-blur-xl transition-all">
+        <div className="mx-auto flex h-16 max-w-5xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white shadow-sm">
+              <Download className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold tracking-tight text-zinc-900">BEN MONGI BOT</h1>
+              <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Contacts Utility</p>
+            </div>
           </div>
-          <h1 className="text-display">TankTo</h1>
-          <p className="text-body-secondary text-slate-500">
-            Fuel Access Membership Platform
+        </div>
+      </nav>
+
+      <main className="mx-auto mt-12 max-w-5xl px-4 sm:px-6 lg:px-8">
+
+        {/* Welcome Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mb-12 max-w-2xl"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-3">
+            Hi, I am BEN MONGI BOT.
+          </h2>
+          <p className="text-base sm:text-lg text-zinc-600 leading-relaxed">
+            I help you safely generate a clean VCF file from your contacts.
+            I will automatically remove any incomplete or broken records so your phone imports cleanly.
           </p>
+        </motion.div>
+
+        {/* Statistics Grid */}
+        <div className="mb-12 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+          {statCards.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
+              className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-sm border border-zinc-100 transition-all hover:shadow-md"
+            >
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 text-zinc-700">
+                <stat.icon className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-3xl font-semibold tracking-tight text-zinc-900">{stat.value}</div>
+                <div className="mt-1 text-sm font-medium text-zinc-500">{stat.label}</div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="space-y-4 mt-12">
-          <Link href="/subscriber" className="block">
-            <Card className="hover:border-slate-300 transition-colors border-2 cursor-pointer group">
-              <CardContent className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <User className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-slate-900">Subscriber</h3>
-                    <p className="text-sm text-slate-500">Access fuel immediately</p>
-                  </div>
-                </div>
-                <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-slate-900 transition-colors" />
-              </CardContent>
-            </Card>
-          </Link>
+        {/* Primary CTA Action Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
+          className="mb-16"
+        >
+          <div className="overflow-hidden rounded-3xl bg-zinc-900 p-1 sm:p-2 shadow-xl shadow-zinc-900/10">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-[20px] bg-white p-6 sm:p-8">
+              <div className="text-center sm:text-left">
+                <h3 className="text-xl font-semibold text-zinc-900 mb-1">Your Contacts Are Ready</h3>
+                <p className="text-sm text-zinc-500">Only valid numbers will be included.</p>
+              </div>
+              <motion.button
+                whileHover={{ scale: isReady ? 1.02 : 1 }}
+                whileTap={{ scale: isReady ? 0.98 : 1 }}
+                onClick={handleDownload}
+                disabled={!isReady || isGenerating}
+                className={`
+                  relative flex h-14 w-full sm:w-auto min-w-[240px] items-center justify-center gap-3 rounded-xl px-8 text-base font-semibold transition-all duration-200
+                  ${!isReady ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed' : 'bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-lg hover:shadow-zinc-900/20'}
+                `}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Preparing File...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-5 w-5" />
+                    <span>Save to Your Phone</span>
+                  </>
+                )}
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
 
-          <Link href="/station" className="block">
-            <Card className="hover:border-slate-300 transition-colors border-2 cursor-pointer group">
-              <CardContent className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <Building2 className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-slate-900">Fuel Station</h3>
-                    <p className="text-sm text-slate-500">Process fuel codes</p>
-                  </div>
-                </div>
-                <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-slate-900 transition-colors" />
-              </CardContent>
-            </Card>
-          </Link>
+        {/* Missing Contacts List */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-zinc-900">Contacts Missing Phone Numbers</h3>
+            <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-600">
+              {missingContacts.length} Skipped
+            </span>
+          </div>
 
-          <Link href="/admin" className="block">
-            <Card className="hover:border-slate-300 transition-colors border-2 cursor-pointer group">
-              <CardContent className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center">
-                    <ShieldCheck className="h-6 w-6" />
+          {missingContacts.length > 0 ? (
+            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+              <div className="max-h-[400px] overflow-y-auto p-2">
+                {missingContacts.map((contact, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between rounded-xl px-4 py-3 transition-colors hover:bg-zinc-50"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 font-medium text-zinc-600">
+                        {contact.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-zinc-900">{contact.name}</div>
+                        <div className="text-xs text-zinc-500">
+                          {contact.raw || "No Phone Number"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+                      Skipped
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-slate-900">Admin</h3>
-                    <p className="text-sm text-slate-500">System management</p>
-                  </div>
-                </div>
-                <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-slate-900 transition-colors" />
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-      </motion.div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-zinc-200 border-dashed bg-white py-12 text-center">
+              <UserCheck className="mb-3 h-8 w-8 text-zinc-400" />
+              <div className="text-sm font-medium text-zinc-900">All contacts are valid</div>
+              <div className="mt-1 text-sm text-zinc-500">No missing phone numbers found.</div>
+            </div>
+          )}
+        </motion.div>
+
+      </main>
+
+      {/* Success Notification */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full bg-[#10b981] px-5 py-3 text-white shadow-2xl shadow-[#10b981]/20"
+          >
+            <CheckCircle2 className="h-5 w-5" />
+            <span className="text-sm font-medium">Contacts ready to import.</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
