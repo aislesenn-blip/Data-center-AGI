@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Download, Users, UserCheck, FileCheck2,
-  Loader2, CheckCircle2, ArrowLeft, Phone, XCircle, ChevronRight, Building2, Briefcase, FileSignature
+  Loader2, CheckCircle2, ArrowLeft, Phone, XCircle, ChevronRight, Building2, Briefcase, FileSignature, Copy, AlertTriangle
 } from "lucide-react";
 import rawContacts from "../data/contacts.json";
 import { generateVCF, downloadVCF, Contact } from "../lib/vcf";
@@ -13,7 +13,7 @@ export default function Home() {
   const contacts = rawContacts as Contact[];
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  type ViewMode = 'dashboard' | 'verification' | 'total_contacts' | 'ready_to_save' | 'total_phones' | 'organizations' | 'positions';
+  type ViewMode = 'dashboard' | 'verification' | 'total_contacts' | 'ready_to_save' | 'total_phones' | 'organizations' | 'positions' | 'duplicates';
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
 
 
@@ -76,8 +76,25 @@ export default function Home() {
   const missingContacts = contacts.filter((c) => c.status === "missing");
   const isReady = validContacts.length > 0;
 
+
   const totalPhoneNumbers = contacts.reduce((sum, c) => sum + c.phones.length, 0);
   const uniquePositions = new Set(contacts.map(c => c.suffix).filter(Boolean)).size;
+
+  // Duplicate Detection Logic
+  const duplicateMap = new Map<string, { contact: Contact, count: number, ids: number[] }>();
+  contacts.forEach(c => {
+      const key = `${c.name}|${c.suffix || ''}|${[...c.phones].sort().join(',')}`;
+      if (duplicateMap.has(key)) {
+          duplicateMap.get(key)!.count++;
+          duplicateMap.get(key)!.ids.push(c.id);
+      } else {
+          duplicateMap.set(key, { contact: c, count: 1, ids: [c.id] });
+      }
+  });
+
+  const duplicateRecords = Array.from(duplicateMap.values()).filter(v => v.count > 1);
+  const totalDuplicateInstances = duplicateRecords.reduce((sum, r) => sum + r.count, 0);
+
 
   const handleDownload = async () => {
     if (isGenerating || !isReady) return;
@@ -132,6 +149,15 @@ export default function Home() {
         clickable: true,
         onClick: () => navigateTo('positions'),
         trend: { value: uniquePositions, label: "Unique", color: "text-indigo-500", bg: "bg-indigo-100", data: [2, 3, 4, 5, 6] }
+    },
+
+    {
+        label: "Exact Duplicates",
+        value: totalDuplicateInstances,
+        icon: Copy,
+        clickable: true,
+        onClick: () => navigateTo('duplicates'),
+        trend: { value: duplicateRecords.length, label: "Groups", color: totalDuplicateInstances > 0 ? "text-amber-600" : "text-zinc-400", bg: totalDuplicateInstances > 0 ? "bg-amber-100" : "bg-zinc-100", data: [totalDuplicateInstances, totalDuplicateInstances, totalDuplicateInstances, totalDuplicateInstances] }
     },
     {
         label: "Verification Status",
@@ -189,6 +215,59 @@ export default function Home() {
                 <div className="text-sm font-semibold px-3 py-1 bg-zinc-100 rounded-full text-zinc-600">
                     {totalContacts} Contacts
                 </div>
+            </div>
+          )
+        };
+
+      case 'duplicates':
+        return {
+          title: "Exact Duplicates Report",
+          description: "Contacts sharing the exact same Name, Title, and Phone Numbers.",
+          customRender: (
+            <div className="grid gap-3">
+                {duplicateRecords.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-zinc-200 border-dashed bg-white py-12 text-center">
+                        <CheckCircle2 className="mb-3 h-8 w-8 text-[#10b981]" />
+                        <div className="text-sm font-medium text-zinc-900">Database is Clean</div>
+                        <div className="mt-1 text-sm text-zinc-500">No exact duplicates found.</div>
+                    </div>
+                ) : (
+                    duplicateRecords.map((r, idx) => (
+                        <div key={idx} className="bg-white rounded-2xl p-5 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+                            <div>
+                                <div className="flex items-center gap-3 mb-1">
+                                    <h3 className="text-base font-semibold text-zinc-900">{r.contact.name}</h3>
+                                    {r.contact.suffix && (
+                                        <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded uppercase tracking-wide">
+                                            {r.contact.suffix}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1 mt-3">
+                                    {r.contact.phones.length > 0 ? (
+                                        r.contact.phones.map((phone, pIdx) => (
+                                            <div key={pIdx} className="flex items-center gap-2 text-sm text-zinc-700">
+                                                <Phone className="h-3.5 w-3.5 text-zinc-400" />
+                                                {phone}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-sm text-zinc-400 italic">No phone numbers</div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold">
+                                    <AlertTriangle className="h-3.5 w-3.5" />
+                                    Appears {r.count} times
+                                </div>
+                                <div className="text-[10px] text-zinc-400 font-mono">Row IDs: {r.ids.join(', ')}</div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
           )
         };
