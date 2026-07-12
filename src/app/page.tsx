@@ -13,18 +13,62 @@ export default function Home() {
   const contacts = rawContacts as Contact[];
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [viewMode, setViewMode] = useState<'dashboard' | 'verification'>('dashboard');
+  type ViewMode = 'dashboard' | 'verification' | 'total_contacts' | 'ready_to_save' | 'total_phones' | 'organizations' | 'positions';
+  const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
+
+
+  const navigateTo = (mode: ViewMode) => {
+    if (mode === viewMode) return;
+    window.history.pushState({ viewMode: mode }, '', mode === 'dashboard' ? '/' : `?view=${mode}`);
+    setViewMode(mode);
+  };
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state && event.state.viewMode) {
+        setViewMode(event.state.viewMode as ViewMode);
+      } else {
+        setViewMode('dashboard');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    if (!window.history.state) {
+        window.history.replaceState({ viewMode: 'dashboard' }, '');
+    }
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const [displayedWelcome, setDisplayedWelcome] = useState("");
   useEffect(() => {
     const text = "Hi! I'm Ben Mongi Bot. I already have a verified database of all the relevant contacts. I'll help you save every contact directly to your phone. Simply tap the \"Save Contacts\" button below. After the contact file has been downloaded, open it, choose \"Import Contacts,\" and your contacts will be saved automatically.";
     let i = 0;
-    const interval = setInterval(() => {
+    let isTyping = true;
+
+    const typeNextChar = () => {
+      if (i > text.length) return;
+
       setDisplayedWelcome(text.substring(0, i));
       i++;
-      if (i > text.length) clearInterval(interval);
-    }, 20); // Fast typing speed
-    return () => clearInterval(interval);
+
+      let delay = 45; // Default normal speed
+      const char = text[i - 1];
+
+      if (char === '.') delay = 600;
+      else if (char === ',') delay = 300;
+      else if (char === '!' || char === '?') delay = 500;
+      else delay += Math.random() * 20; // Add slight natural variation
+
+      if (isTyping) {
+        setTimeout(typeNextChar, delay);
+      }
+    };
+
+    typeNextChar();
+
+    return () => { isTyping = false; };
   }, []);
 
   const totalContacts = contacts.length;
@@ -58,11 +102,11 @@ export default function Home() {
         value: totalContacts,
         icon: Users,
         clickable: true,
-        onClick: () => setViewMode('verification'),
+        onClick: () => navigateTo('total_contacts'),
         trend: { value: 100, label: "Coverage", color: "text-zinc-500", bg: "bg-zinc-100", data: [40, 50, 60, 80, 100] }
     },
     {
-        label: "Ready to Save", value: validContacts.length, icon: FileCheck2, clickable: true, onClick: () => setViewMode('verification'),
+        label: "Ready to Save", value: validContacts.length, icon: FileCheck2, clickable: true, onClick: () => navigateTo('ready_to_save'),
         trend: { value: Math.round((validContacts.length/Math.max(totalContacts, 1))*100), label: "Success", color: "text-[#10b981]", bg: "bg-[#10b981]/10", data: [30, 45, 65, 85, 95] }
     },
     {
@@ -70,7 +114,7 @@ export default function Home() {
         value: totalPhoneNumbers,
         icon: Phone,
         clickable: true,
-        onClick: () => setViewMode('verification'),
+        onClick: () => navigateTo('total_phones'),
         trend: { value: 100, label: "Assigned", color: "text-blue-500", bg: "bg-blue-100", data: [40, 60, 75, 90, 100] }
     },
     {
@@ -78,7 +122,7 @@ export default function Home() {
         value: 1, // Dataset is all for BEN MONGI BOT
         icon: Building2,
         clickable: true,
-        onClick: () => setViewMode('verification'),
+        onClick: () => navigateTo('organizations'),
         trend: { value: 100, label: "Unified", color: "text-purple-500", bg: "bg-purple-100", data: [100, 100, 100, 100, 100] }
     },
     {
@@ -86,7 +130,7 @@ export default function Home() {
         value: uniquePositions,
         icon: Briefcase,
         clickable: true,
-        onClick: () => setViewMode('verification'),
+        onClick: () => navigateTo('positions'),
         trend: { value: uniquePositions, label: "Unique", color: "text-indigo-500", bg: "bg-indigo-100", data: [2, 3, 4, 5, 6] }
     },
     {
@@ -94,10 +138,97 @@ export default function Home() {
         value: "100%",
         icon: FileSignature,
         clickable: true,
-        onClick: () => setViewMode('verification'),
+        onClick: () => navigateTo('verification'),
         trend: { value: 100, label: "Trace Log", color: "text-emerald-500", bg: "bg-emerald-100", data: [100, 100, 100, 100, 100] }
     },
   ];
+
+
+  const getDetailViewData = () => {
+    switch (viewMode) {
+      case 'verification':
+        return {
+          title: "Verification Status",
+          description: "100% Traceability Audit Log",
+          list: contacts
+        };
+      case 'total_contacts':
+        return {
+          title: "Total Contacts",
+          description: "All imported contacts from the source.",
+          list: contacts
+        };
+      case 'ready_to_save':
+        return {
+          title: "Ready to Save",
+          description: "Contacts with valid phone numbers ready for VCF generation.",
+          list: validContacts
+        };
+      case 'total_phones':
+        // Show contacts but emphasize phones
+        return {
+          title: "Phone Number Directory",
+          description: "All extracted and verified phone numbers.",
+          list: contacts.filter(c => c.phones.length > 0)
+        };
+      case 'organizations':
+        return {
+          title: "Organizations",
+          description: "Unique organizations found in the database.",
+          customRender: (
+            <div className="bg-white rounded-2xl p-6 border border-zinc-200 shadow-sm flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                        <Building2 className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-zinc-900">BEN MONGI BOT</h3>
+                        <p className="text-sm text-zinc-500">Master Dataset Entity</p>
+                    </div>
+                </div>
+                <div className="text-sm font-semibold px-3 py-1 bg-zinc-100 rounded-full text-zinc-600">
+                    {totalContacts} Contacts
+                </div>
+            </div>
+          )
+        };
+      case 'positions':
+        // Generate list of unique positions and their counts
+        const posMap = new Map();
+        contacts.forEach(c => {
+            if (c.suffix) {
+                posMap.set(c.suffix, (posMap.get(c.suffix) || 0) + 1);
+            }
+        });
+        const posArray = Array.from(posMap.entries()).sort((a,b) => b[1] - a[1]);
+
+        return {
+          title: "Positions & Titles",
+          description: "Distribution of mapped job roles across contacts.",
+          customRender: (
+            <div className="grid gap-3">
+                {posArray.map(([title, count], idx) => (
+                    <div key={idx} className="bg-white rounded-2xl p-5 border border-zinc-200 shadow-sm flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                                <Briefcase className="h-5 w-5" />
+                            </div>
+                            <h3 className="text-sm font-bold text-zinc-900 uppercase">{title}</h3>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                            {count} people
+                        </div>
+                    </div>
+                ))}
+            </div>
+          )
+        };
+      default:
+        return { title: "", description: "", list: [] };
+    }
+  };
+
+  const currentView = getDetailViewData();
 
   return (
     <div className="min-h-screen pb-20 selection:bg-zinc-200 bg-[#F9FAFB]">
@@ -119,7 +250,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
-                onClick={() => setViewMode('dashboard')}
+                onClick={() => navigateTo('dashboard')}
                 className="flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -295,13 +426,14 @@ export default function Home() {
             >
                 <div className="mb-8 border-b border-zinc-200 pb-6 flex items-end justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 mb-1">Dataset Verification</h2>
-                        <p className="text-sm text-zinc-500">100% Traceability Audit Log ({contacts.length} total records)</p>
+                        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 mb-1">{currentView.title}</h2>
+                        <p className="text-sm text-zinc-500">{currentView.description} {currentView.list && currentView.list.length > 0 && `(${currentView.list.length} records)`}</p>
                     </div>
                 </div>
 
+                {currentView.customRender ? currentView.customRender : (
                 <div className="space-y-3">
-                    {contacts.map(contact => {
+                    {currentView.list?.map(contact => {
                         let statusColor = "text-zinc-600 bg-zinc-100 border-zinc-200";
                         let statusLabel = "Unknown";
                         let StatusIcon = CheckCircle2;
@@ -357,6 +489,7 @@ export default function Home() {
                         )
                     })}
                 </div>
+                )}
             </motion.div>
           )}
         </AnimatePresence>
