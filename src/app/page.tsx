@@ -38,10 +38,32 @@ export default function Home() {
   };
 
   const statCards = [
-    { label: "Total Contacts", value: totalContacts, icon: Users, clickable: true, onClick: () => setViewMode('verification') },
-    { label: "Valid Contacts", value: validContacts.length, icon: UserCheck },
-    { label: "Missing Numbers", value: missingContacts.length, icon: UserMinus },
-    { label: "Ready for Export", value: validContacts.length, icon: FileCheck2 },
+    {
+        label: "Total Contacts",
+        value: totalContacts,
+        icon: Users,
+        clickable: true,
+        onClick: () => setViewMode('verification'),
+        trend: { value: 100, label: "Coverage", color: "text-zinc-500", bg: "bg-zinc-100", data: [40, 50, 60, 80, 100] }
+    },
+    {
+        label: "Valid Contacts",
+        value: validContacts.length,
+        icon: UserCheck,
+        trend: { value: Math.round((validContacts.length/Math.max(totalContacts, 1))*100), label: "Success", color: "text-[#10b981]", bg: "bg-[#10b981]/10", data: [30, 45, 65, 85, 95] }
+    },
+    {
+        label: "Missing Numbers",
+        value: missingContacts.length,
+        icon: UserMinus,
+        trend: { value: Math.round((missingContacts.length/Math.max(totalContacts, 1))*100), label: "Error Rate", color: "text-amber-500", bg: "bg-amber-100", data: [60, 45, 35, 20, 10] }
+    },
+    {
+        label: "Ready for Export",
+        value: validContacts.length,
+        icon: FileCheck2,
+        trend: { value: Math.round((validContacts.length/Math.max(totalContacts, 1))*100), label: "Exportable", color: "text-blue-500", bg: "bg-blue-100", data: [20, 40, 60, 80, 100] }
+    },
   ];
 
   return (
@@ -114,14 +136,27 @@ export default function Home() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 text-zinc-700">
                         <stat.icon className="h-5 w-5" />
                       </div>
-                      {stat.clickable && (
+                      {stat.clickable ? (
                         <div className="text-zinc-300 group-hover:text-zinc-600 transition-colors">
                             <ChevronRight className="h-5 w-5" />
                         </div>
+                      ) : (
+                         <div className="flex items-end gap-1 h-6">
+                            {stat.trend?.data.map((h, j) => (
+                                <div key={j} className={`w-1.5 rounded-full ${stat.trend?.bg}`} style={{ height: `${Math.max(20, h)}%` }}></div>
+                            ))}
+                         </div>
                       )}
                     </div>
                     <div>
-                      <div className="text-3xl font-semibold tracking-tight text-zinc-900">{stat.value}</div>
+                      <div className="flex items-baseline gap-2">
+                        <div className="text-3xl font-semibold tracking-tight text-zinc-900">{stat.value}</div>
+                        {stat.trend && (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${stat.trend.bg} ${stat.trend.color}`}>
+                                {stat.trend.value}%
+                            </span>
+                        )}
+                      </div>
                       <div className="mt-1 text-sm font-medium text-zinc-500">{stat.label}</div>
                     </div>
                   </motion.div>
@@ -173,7 +208,7 @@ export default function Home() {
               {missingContacts.length > 0 ? (
                 <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                   <div className="max-h-[400px] overflow-y-auto p-2">
-                    {missingContacts.map((contact, idx) => (
+                    {missingContacts.map((contact) => (
                       <div
                         key={contact.id}
                         className="flex items-center justify-between rounded-xl px-4 py-3 transition-colors hover:bg-zinc-50"
