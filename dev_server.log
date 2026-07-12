@@ -1,0 +1,16 @@
+
+> rikpedia-main@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
+✓ Ready in 555ms
+⨯ Another next dev server is already  GET / 200 in 71ms (next.js: 4ms, application-code: 67ms)
+      139115
+- Dir:          /app
+- Log:          .next/dev/logs/next-development.log
+
+Run kill 139115 to stop it.
+[?25h
