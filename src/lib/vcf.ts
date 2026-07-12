@@ -21,6 +21,7 @@ export function generateVCF(contacts: Contact[]): string {
     vcfLines.push('VERSION:3.0');
 
     // Add Name and Title
+    // Now contact.suffix contains exactly the formatted job title requested by the user, e.g., "Mwenyekiti: FJ01"
     const fullName = contact.suffix ? `${contact.name} - ${contact.suffix}` : contact.name;
     vcfLines.push(`FN:${fullName}`);
     vcfLines.push(`N:${contact.name};;;;`);
