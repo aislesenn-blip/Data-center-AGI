@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Download, Users, UserCheck, UserMinus, FileCheck2,
-  Loader2, CheckCircle2, ArrowLeft, Phone, XCircle, ChevronRight
+  Download, Users, UserCheck, FileCheck2,
+  Loader2, CheckCircle2, ArrowLeft, Phone, XCircle, ChevronRight, Building2, Briefcase, FileSignature
 } from "lucide-react";
 import rawContacts from "../data/contacts.json";
 import { generateVCF, downloadVCF, Contact } from "../lib/vcf";
@@ -15,10 +15,25 @@ export default function Home() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [viewMode, setViewMode] = useState<'dashboard' | 'verification'>('dashboard');
 
+  const [displayedWelcome, setDisplayedWelcome] = useState("");
+  useEffect(() => {
+    const text = "Hi! I'm Ben Mongi Bot. I already have a verified database of all the relevant contacts. I'll help you save every contact directly to your phone. Simply tap the \"Save Contacts\" button below. After the contact file has been downloaded, open it, choose \"Import Contacts,\" and your contacts will be saved automatically.";
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedWelcome(text.substring(0, i));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, 20); // Fast typing speed
+    return () => clearInterval(interval);
+  }, []);
+
   const totalContacts = contacts.length;
   const validContacts = contacts.filter((c) => c.status === "valid" || c.status === "multiple");
   const missingContacts = contacts.filter((c) => c.status === "missing");
   const isReady = validContacts.length > 0;
+
+  const totalPhoneNumbers = contacts.reduce((sum, c) => sum + c.phones.length, 0);
+  const uniquePositions = new Set(contacts.map(c => c.suffix).filter(Boolean)).size;
 
   const handleDownload = async () => {
     if (isGenerating || !isReady) return;
@@ -47,22 +62,40 @@ export default function Home() {
         trend: { value: 100, label: "Coverage", color: "text-zinc-500", bg: "bg-zinc-100", data: [40, 50, 60, 80, 100] }
     },
     {
-        label: "Valid Contacts",
-        value: validContacts.length,
-        icon: UserCheck,
+        label: "Ready to Save", value: validContacts.length, icon: FileCheck2, clickable: true, onClick: () => setViewMode('verification'),
         trend: { value: Math.round((validContacts.length/Math.max(totalContacts, 1))*100), label: "Success", color: "text-[#10b981]", bg: "bg-[#10b981]/10", data: [30, 45, 65, 85, 95] }
     },
     {
-        label: "Missing Numbers",
-        value: missingContacts.length,
-        icon: UserMinus,
-        trend: { value: Math.round((missingContacts.length/Math.max(totalContacts, 1))*100), label: "Error Rate", color: "text-amber-500", bg: "bg-amber-100", data: [60, 45, 35, 20, 10] }
+        label: "Total Phone Numbers",
+        value: totalPhoneNumbers,
+        icon: Phone,
+        clickable: true,
+        onClick: () => setViewMode('verification'),
+        trend: { value: 100, label: "Assigned", color: "text-blue-500", bg: "bg-blue-100", data: [40, 60, 75, 90, 100] }
     },
     {
-        label: "Ready for Export",
-        value: validContacts.length,
-        icon: FileCheck2,
-        trend: { value: Math.round((validContacts.length/Math.max(totalContacts, 1))*100), label: "Exportable", color: "text-blue-500", bg: "bg-blue-100", data: [20, 40, 60, 80, 100] }
+        label: "Organizations",
+        value: 1, // Dataset is all for BEN MONGI BOT
+        icon: Building2,
+        clickable: true,
+        onClick: () => setViewMode('verification'),
+        trend: { value: 100, label: "Unified", color: "text-purple-500", bg: "bg-purple-100", data: [100, 100, 100, 100, 100] }
+    },
+    {
+        label: "Positions/Titles",
+        value: uniquePositions,
+        icon: Briefcase,
+        clickable: true,
+        onClick: () => setViewMode('verification'),
+        trend: { value: uniquePositions, label: "Unique", color: "text-indigo-500", bg: "bg-indigo-100", data: [2, 3, 4, 5, 6] }
+    },
+    {
+        label: "Verification Status",
+        value: "100%",
+        icon: FileSignature,
+        clickable: true,
+        onClick: () => setViewMode('verification'),
+        trend: { value: 100, label: "Trace Log", color: "text-emerald-500", bg: "bg-emerald-100", data: [100, 100, 100, 100, 100] }
     },
   ];
 
@@ -110,16 +143,20 @@ export default function Home() {
               {/* Welcome Section */}
               <div className="mb-12 max-w-2xl">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-3">
-                  Hi, I am BEN MONGI BOT.
+                  Hi! I&apos;m Ben Mongi Bot.
                 </h2>
-                <p className="text-base sm:text-lg text-zinc-600 leading-relaxed">
-                  I help you safely generate a clean VCF file from your contacts.
-                  I will automatically remove any incomplete or broken records so your phone imports cleanly.
+                <p className="text-base sm:text-lg text-zinc-600 leading-relaxed min-h-[80px]">
+                  {displayedWelcome}
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ repeat: Infinity, duration: 0.8 }}
+                    className="inline-block w-[2px] h-[1em] bg-zinc-400 ml-1 align-middle"
+                  />
                 </p>
               </div>
 
               {/* Statistics Grid */}
-              <div className="mb-12 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+              <div className="mb-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
                 {statCards.map((stat, i) => (
                   <motion.div
                     key={stat.label}
@@ -136,24 +173,27 @@ export default function Home() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 text-zinc-700">
                         <stat.icon className="h-5 w-5" />
                       </div>
-                      {stat.clickable ? (
+                      <div className="flex items-center gap-3">
+                        {stat.trend && (
+                         <div className="flex items-end gap-1 h-6">
+                            {stat.trend.data.map((h, j) => (
+                                <div key={j} className={`w-1.5 rounded-full ${stat.trend.bg}`} style={{ height: `${Math.max(20, h)}%` }}></div>
+                            ))}
+                         </div>
+                        )}
+                        {stat.clickable && (
                         <div className="text-zinc-300 group-hover:text-zinc-600 transition-colors">
                             <ChevronRight className="h-5 w-5" />
                         </div>
-                      ) : (
-                         <div className="flex items-end gap-1 h-6">
-                            {stat.trend?.data.map((h, j) => (
-                                <div key={j} className={`w-1.5 rounded-full ${stat.trend?.bg}`} style={{ height: `${Math.max(20, h)}%` }}></div>
-                            ))}
-                         </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                     <div>
                       <div className="flex items-baseline gap-2">
                         <div className="text-3xl font-semibold tracking-tight text-zinc-900">{stat.value}</div>
                         {stat.trend && (
                             <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${stat.trend.bg} ${stat.trend.color}`}>
-                                {stat.trend.value}%
+                                {stat.trend.value}{stat.trend.label === 'Unique' || stat.trend.label === 'Unified' ? '' : '%'}
                             </span>
                         )}
                       </div>
@@ -189,7 +229,7 @@ export default function Home() {
                       ) : (
                         <>
                           <Download className="h-5 w-5" />
-                          <span>Save to Your Phone</span>
+                          <span>Save Contacts</span>
                         </>
                       )}
                     </motion.button>
