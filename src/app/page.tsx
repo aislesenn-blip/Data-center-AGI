@@ -38,10 +38,10 @@ export default function Home() {
   };
 
   const statCards = [
-    { label: "Total Contacts", value: totalContacts, icon: Users, clickable: true, onClick: () => setViewMode('verification') },
-    { label: "Valid Contacts", value: validContacts.length, icon: UserCheck },
-    { label: "Missing Numbers", value: missingContacts.length, icon: UserMinus },
-    { label: "Ready for Export", value: validContacts.length, icon: FileCheck2 },
+    { label: "Total Contacts", value: totalContacts, icon: Users, clickable: true, onClick: () => setViewMode('verification'), bg: "bg-blue-500/10", color: "text-blue-500", sparkline: "M0 10 Q 5 0 10 10 T 20 10 T 30 10" },
+    { label: "Valid Contacts", value: validContacts.length, icon: UserCheck, bg: "bg-green-500/10", color: "text-green-500", sparkline: "M0 15 L 10 5 L 20 10 L 30 0" },
+    { label: "Missing Numbers", value: missingContacts.length, icon: UserMinus, bg: "bg-red-500/10", color: "text-red-500", sparkline: "M0 0 L 10 10 L 20 5 L 30 15" },
+    { label: "Ready for Export", value: validContacts.length, icon: FileCheck2, bg: "bg-zinc-800/10", color: "text-zinc-800", sparkline: "M0 15 L 10 10 L 20 15 L 30 5" },
   ];
 
   return (
@@ -106,13 +106,13 @@ export default function Home() {
                     transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
                     onClick={stat.clickable ? stat.onClick : undefined}
                     className={`
-                      flex flex-col justify-between rounded-2xl bg-white p-5 shadow-sm border border-zinc-100 transition-all
+                      relative overflow-hidden flex flex-col justify-between rounded-2xl bg-white p-5 shadow-sm border border-zinc-100 transition-all
                       ${stat.clickable ? 'cursor-pointer hover:shadow-md hover:border-zinc-300 group' : ''}
                     `}
                   >
-                    <div className="mb-4 flex items-start justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 text-zinc-700">
-                        <stat.icon className="h-5 w-5" />
+                    <div className="mb-4 flex items-start justify-between relative z-10">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full ${stat.bg || 'bg-zinc-50'}`}>
+                        <stat.icon className={`h-5 w-5 ${stat.color || 'text-zinc-700'}`} />
                       </div>
                       {stat.clickable && (
                         <div className="text-zinc-300 group-hover:text-zinc-600 transition-colors">
@@ -120,9 +120,15 @@ export default function Home() {
                         </div>
                       )}
                     </div>
-                    <div>
+                    <div className="relative z-10">
                       <div className="text-3xl font-semibold tracking-tight text-zinc-900">{stat.value}</div>
                       <div className="mt-1 text-sm font-medium text-zinc-500">{stat.label}</div>
+                    </div>
+                    {/* Sparkline Background */}
+                    <div className="absolute bottom-0 right-0 left-0 h-16 opacity-[0.08] pointer-events-none">
+                      <svg viewBox="0 0 30 15" preserveAspectRatio="none" className="w-full h-full">
+                        <path d={stat.sparkline || "M0 15 L 30 15"} fill="none" stroke="currentColor" strokeWidth="2" className={stat.color || 'text-zinc-400'} />
+                      </svg>
                     </div>
                   </motion.div>
                 ))}
