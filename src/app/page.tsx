@@ -419,7 +419,10 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-[20px] bg-white p-6 sm:p-8">
                     <div className="text-center sm:text-left">
                       <h3 className="text-xl font-semibold text-zinc-900 mb-1">Your Contacts Are Ready</h3>
-                      <p className="text-sm text-zinc-500">Only valid numbers will be included.</p>
+                      <p className="text-sm text-zinc-500 mb-2">Only valid numbers will be included.</p>
+                      <div className="text-xs text-zinc-400 bg-zinc-50 p-2 rounded-lg border border-zinc-100 max-w-sm">
+                        <span className="font-semibold text-zinc-600">Important:</span> When importing, select <strong className="text-zinc-600">Merge with Existing</strong> (iOS) or <strong className="text-zinc-600">Import and Merge</strong> (Android) if prompted, to properly update old contacts.
+                      </div>
                     </div>
                     <motion.button
                       whileHover={{ scale: isReady ? 1.02 : 1 }}

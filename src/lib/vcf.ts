@@ -21,10 +21,12 @@ export function generateVCF(contacts: Contact[]): string {
     vcfLines.push('VERSION:3.0');
 
     // Add Name and Title
-    // Now contact.suffix contains exactly the formatted job title requested by the user, e.g., "Mwenyekiti: FJ01"
     const fullName = contact.suffix ? `${contact.name} - ${contact.suffix}` : contact.name;
     vcfLines.push(`FN:${fullName}`);
-    vcfLines.push(`N:${contact.name};;;;`);
+
+    // To ensure maximum visibility on mobile devices (e.g. iOS),
+    // we also inject the job title (suffix) into the N property as a suffix.
+    vcfLines.push(`N:${contact.name};;;;${contact.suffix ? contact.suffix : ''}`);
 
     if (contact.suffix) {
         vcfLines.push(`TITLE:${contact.suffix}`);
@@ -36,6 +38,15 @@ export function generateVCF(contacts: Contact[]): string {
       const type = index < phoneTypes.length ? phoneTypes[index] : 'OTHER';
       vcfLines.push(`TEL;TYPE=${type}:${phone}`);
     });
+
+    // Create a deterministic UUID format based on the contact ID for standard clients
+    const uuidStr = `00000000-0000-0000-0000-${String(contact.id).padStart(12, '0')}`;
+
+    // Add UID and REV for reliable update/replacement on mobile OS
+    vcfLines.push(`UID:${uuidStr}`);
+    // Add Apple-specific deduplication tag
+    vcfLines.push(`X-ABUID:${uuidStr}`);
+    vcfLines.push(`REV:${new Date().toISOString()}`);
 
     vcfLines.push('END:VCARD');
   }

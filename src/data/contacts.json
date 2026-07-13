@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "name": "ZAKARIA MONTIMA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Zakaria Montima",
+    "suffix": "FJ05",
     "originalName": "ZAKARIA MONTIMA FJ05",
     "phones": [
       "0696625992"
@@ -12,8 +12,8 @@
   },
   {
     "id": 2,
-    "name": "GETRUDA ANANIA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Getruda Anania",
+    "suffix": "FJ01",
     "originalName": "GETRUDA ANANIA FJ01",
     "phones": [
       "0753670932"
@@ -23,8 +23,8 @@
   },
   {
     "id": 3,
-    "name": "MAGRETH MSUYA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Magreth Msuya",
+    "suffix": "FJ02",
     "originalName": "MAGRETH MSUYA FJ02",
     "phones": [
       "0715789903"
@@ -34,8 +34,8 @@
   },
   {
     "id": 4,
-    "name": "SALOME IMANI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Salome Imani",
+    "suffix": "FJ03",
     "originalName": "SALOME IMANI FJ03",
     "phones": [
       "0787900161"
@@ -45,8 +45,8 @@
   },
   {
     "id": 5,
-    "name": "JESCA WILBERT",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Jesca Wilbert",
+    "suffix": "FJ04",
     "originalName": "JESCA WILBERT FJ04",
     "phones": [
       "0789282354"
@@ -56,8 +56,8 @@
   },
   {
     "id": 6,
-    "name": "AMODZEDZE MHONDA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Amodzedze Mhonda",
+    "suffix": "FJ05",
     "originalName": "AMODZEDZE MHONDA FJ05",
     "phones": [
       "0788932852"
@@ -67,8 +67,8 @@
   },
   {
     "id": 7,
-    "name": "FLORA TARIMO",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Flora Tarimo",
+    "suffix": "FJ06",
     "originalName": "FLORA TARIMO FJ06",
     "phones": [
       "0684755911"
@@ -78,8 +78,8 @@
   },
   {
     "id": 8,
-    "name": "HAPPINESS MURO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Happiness Muro",
+    "suffix": "FJ01",
     "originalName": "HAPPINESS MURO FJ01",
     "phones": [
       "0654146745"
@@ -89,8 +89,8 @@
   },
   {
     "id": 9,
-    "name": "JUDITH SEKADODO",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Judith Sekadodo",
+    "suffix": "FJ02",
     "originalName": "JUDITH SEKADODO FJ02",
     "phones": [],
     "status": "missing",
@@ -98,8 +98,8 @@
   },
   {
     "id": 10,
-    "name": "SOPHIA KISOMA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Sophia Kisoma",
+    "suffix": "FJ03",
     "originalName": "SOPHIA KISOMA FJ03",
     "phones": [],
     "status": "missing",
@@ -107,8 +107,8 @@
   },
   {
     "id": 11,
-    "name": "MARTHA WILSONY",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Martha Wilsony",
+    "suffix": "FJ04",
     "originalName": ",MARTHA WILSONY FJ04",
     "phones": [
       "0653892396"
@@ -118,8 +118,8 @@
   },
   {
     "id": 12,
-    "name": "BENEDICT MONGI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Benedict Mongi",
+    "suffix": "FJ01",
     "originalName": "BENEDICT MONGI FJ01",
     "phones": [
       "0754833909",
@@ -130,8 +130,8 @@
   },
   {
     "id": 13,
-    "name": "NELSON BETETSE",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Nelson Betetse",
+    "suffix": "FJ02",
     "originalName": "NELSON BETETSE FJ02",
     "phones": [
       "0784558400"
@@ -141,8 +141,8 @@
   },
   {
     "id": 14,
-    "name": "WILFRED SENYAGWA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Wilfred Senyagwa",
+    "suffix": "FJ03",
     "originalName": "WILFRED SENYAGWA FJ03",
     "phones": [
       "0712606897",
@@ -153,8 +153,8 @@
   },
   {
     "id": 15,
-    "name": "BERNADETHA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Bernadetha",
+    "suffix": "FJ05",
     "originalName": "BERNADETHA FJ05",
     "phones": [],
     "status": "missing",
@@ -162,8 +162,8 @@
   },
   {
     "id": 16,
-    "name": "JOSEPH KAIJAGE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Joseph Kaijage",
+    "suffix": "FJ01",
     "originalName": "JOSEPH KAIJAGE FJ01",
     "phones": [],
     "status": "missing",
@@ -171,8 +171,8 @@
   },
   {
     "id": 17,
-    "name": "AFNET MLIMAKIS",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Afnet Mlimakis",
+    "suffix": "FJ02",
     "originalName": "AFNET MLIMAKIS FJ02",
     "phones": [],
     "status": "missing",
@@ -180,8 +180,8 @@
   },
   {
     "id": 18,
-    "name": "JOSEPH WALES",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Joseph Wales",
+    "suffix": "FJ03",
     "originalName": "JOSEPH WALES FJ03",
     "phones": [],
     "status": "missing",
@@ -189,8 +189,8 @@
   },
   {
     "id": 19,
-    "name": "BETHA MSUYA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Betha Msuya",
+    "suffix": "FJ04",
     "originalName": "BETHA MSUYA FJ04",
     "phones": [],
     "status": "missing",
@@ -198,8 +198,8 @@
   },
   {
     "id": 20,
-    "name": "JENIPHA MSUYA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Jenipha Msuya",
+    "suffix": "FJ05",
     "originalName": "JENIPHA MSUYA FJ05",
     "phones": [],
     "status": "missing",
@@ -207,8 +207,8 @@
   },
   {
     "id": 21,
-    "name": "MICHAEL NAKUCHIMA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Michael Nakuchima",
+    "suffix": "FJ01",
     "originalName": "MICHAEL NAKUCHIMA FJ01",
     "phones": [
       "0787531938"
@@ -218,8 +218,8 @@
   },
   {
     "id": 22,
-    "name": "GREYSON MATEMBA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Greyson Matemba",
+    "suffix": "FJ02",
     "originalName": "GREYSON MATEMBA FJ02",
     "phones": [
       "0713633161"
@@ -229,8 +229,8 @@
   },
   {
     "id": 23,
-    "name": "CHRISTINA PAULO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Christina Paulo",
+    "suffix": "FJ03",
     "originalName": "CHRISTINA PAULO FJ03",
     "phones": [
       "0684393487"
@@ -240,8 +240,8 @@
   },
   {
     "id": 24,
-    "name": "DORICE MKAGURU",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Dorice Mkaguru",
+    "suffix": "FJ04",
     "originalName": "DORICE MKAGURU FJ04",
     "phones": [
       "0717000821"
@@ -251,8 +251,8 @@
   },
   {
     "id": 25,
-    "name": "JACKLINE GEORGE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Jackline George",
+    "suffix": "FJ05",
     "originalName": "JACKLINE GEORGE FJ05",
     "phones": [
       "0621276437"
@@ -262,8 +262,8 @@
   },
   {
     "id": 26,
-    "name": "LIVING TEMBA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Living Temba",
+    "suffix": "FJ06",
     "originalName": "LIVING TEMBA FJ06",
     "phones": [
       "0714636588"
@@ -273,8 +273,8 @@
   },
   {
     "id": 27,
-    "name": "GRACE",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Grace",
+    "suffix": "FJ06",
     "originalName": "GRACE FJ06",
     "phones": [],
     "status": "missing",
@@ -282,8 +282,8 @@
   },
   {
     "id": 28,
-    "name": "WITNESS MBISSE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Witness Mbisse",
+    "suffix": "FJ01",
     "originalName": "WITNESS MBISSE FJ01",
     "phones": [
       "0765693306"
@@ -293,8 +293,8 @@
   },
   {
     "id": 29,
-    "name": "NAFTAL LYIMO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Naftal Lyimo",
+    "suffix": "FJ03",
     "originalName": "NAFTAL LYIMO FJ03",
     "phones": [
       "0672958282"
@@ -304,8 +304,8 @@
   },
   {
     "id": 30,
-    "name": "ELVINUS WILBARD",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Elvinus Wilbard",
+    "suffix": "FJ05",
     "originalName": "ELVINUS WILBARD FJ05",
     "phones": [
       "0742801121",
@@ -316,8 +316,8 @@
   },
   {
     "id": 31,
-    "name": "MUSA MATAGILI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Musa Matagili",
+    "suffix": "FJ01",
     "originalName": "MUSA MATAGILI FJ01",
     "phones": [
       "0782264263",
@@ -328,8 +328,8 @@
   },
   {
     "id": 32,
-    "name": "CAROLINE GISANDU",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Caroline Gisandu",
+    "suffix": "FJ02",
     "originalName": "CAROLINE GISANDU FJ02",
     "phones": [
       "0712368820"
@@ -339,8 +339,8 @@
   },
   {
     "id": 33,
-    "name": "FRANK MARTIN",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Frank Martin",
+    "suffix": "FJ03",
     "originalName": "FRANK MARTIN FJ03",
     "phones": [
       "0714720883"
@@ -350,8 +350,8 @@
   },
   {
     "id": 34,
-    "name": "TUMENYE MWAKIBOLA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Tumenye Mwakibola",
+    "suffix": "FJ04",
     "originalName": "TUMENYE MWAKIBOLA FJ04",
     "phones": [
       "0659416465"
@@ -361,8 +361,8 @@
   },
   {
     "id": 35,
-    "name": "HAPPINES KAMKILWA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Happines Kamkilwa",
+    "suffix": "FJ05",
     "originalName": "HAPPINES KAMKILWA FJ05",
     "phones": [
       "0762958766"
@@ -372,8 +372,8 @@
   },
   {
     "id": 36,
-    "name": "UPENDO MALISA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Upendo Malisa",
+    "suffix": "FJ06",
     "originalName": "UPENDO MALISA FJ06",
     "phones": [],
     "status": "missing",
@@ -381,8 +381,8 @@
   },
   {
     "id": 37,
-    "name": "ESTHER MKOGA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Esther Mkoga",
+    "suffix": "FJ01",
     "originalName": "ESTHER MKOGA FJ01",
     "phones": [
       "0754283415"
@@ -392,8 +392,8 @@
   },
   {
     "id": 38,
-    "name": "IRENE SHEKALAGE",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Irene Shekalage",
+    "suffix": "FJ03",
     "originalName": "IRENE SHEKALAGE FJ03",
     "phones": [
       "0746369566"
@@ -403,8 +403,8 @@
   },
   {
     "id": 39,
-    "name": "JANETH MZAVA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Janeth Mzava",
+    "suffix": "FJ05",
     "originalName": "JANETH MZAVA FJ05",
     "phones": [
       "0622720017"
@@ -414,8 +414,8 @@
   },
   {
     "id": 40,
-    "name": "EZEKIEL FUVILE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Ezekiel Fuvile",
+    "suffix": "FJ01",
     "originalName": "EZEKIEL FUVILE FJ01",
     "phones": [
       "0755521944",
@@ -426,8 +426,8 @@
   },
   {
     "id": 41,
-    "name": "FRANCO MWAKATAGE",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Franco Mwakatage",
+    "suffix": "FJ02",
     "originalName": "FRANCO MWAKATAGE FJ02",
     "phones": [
       "0759001802"
@@ -437,8 +437,8 @@
   },
   {
     "id": 42,
-    "name": "CLARA JOSEPH",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Clara Joseph",
+    "suffix": "FJ03",
     "originalName": "CLARA JOSEPH FJ03",
     "phones": [
       "0753990530"
@@ -448,8 +448,8 @@
   },
   {
     "id": 43,
-    "name": "ANNA KIKOTI",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Anna Kikoti",
+    "suffix": "FJ04",
     "originalName": "ANNA KIKOTI FJ04",
     "phones": [
       "0623711659"
@@ -459,8 +459,8 @@
   },
   {
     "id": 44,
-    "name": "JESCA KWALEVELE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Jesca Kwalevele",
+    "suffix": "FJ05",
     "originalName": "JESCA KWALEVELE FJ05",
     "phones": [
       "0746259855",
@@ -471,8 +471,8 @@
   },
   {
     "id": 45,
-    "name": "JESTINA KALAGE",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Jestina Kalage",
+    "suffix": "FJ06",
     "originalName": "JESTINA KALAGE FJ06",
     "phones": [
       "0744888536"
@@ -482,8 +482,8 @@
   },
   {
     "id": 46,
-    "name": "BEATRACE MWIRU",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Beatrace Mwiru",
+    "suffix": "FJ01",
     "originalName": "BEATRACE MWIRU FJ01",
     "phones": [
       "0685721899"
@@ -493,8 +493,8 @@
   },
   {
     "id": 47,
-    "name": "MARY SARIA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Mary Saria",
+    "suffix": "FJ02",
     "originalName": "MARY SARIA FJ02",
     "phones": [
       "0692983409"
@@ -504,8 +504,8 @@
   },
   {
     "id": 48,
-    "name": "VALENTINE KWAYU",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Valentine Kwayu",
+    "suffix": "FJ03",
     "originalName": "VALENTINE KWAYU FJ03",
     "phones": [
       "0788475731"
@@ -515,8 +515,8 @@
   },
   {
     "id": 49,
-    "name": "JACKSON MUNUO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Jackson Munuo",
+    "suffix": "FJ04",
     "originalName": "JACKSON MUNUO FJ04",
     "phones": [
       "0719195931"
@@ -526,8 +526,8 @@
   },
   {
     "id": 50,
-    "name": "SALOME LEONARD",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Salome Leonard",
+    "suffix": "FJ05",
     "originalName": "SALOME LEONARD FJ05",
     "phones": [
       "0788892554"
@@ -537,8 +537,8 @@
   },
   {
     "id": 51,
-    "name": "PATRICIA BEN",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Patricia Ben",
+    "suffix": "FJ06",
     "originalName": "PATRICIA BEN FJ06",
     "phones": [
       "0784487040"
@@ -548,8 +548,8 @@
   },
   {
     "id": 52,
-    "name": "AINENY SHAYO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Aineny Shayo",
+    "suffix": "FJ01",
     "originalName": "AINENY SHAYO FJ01",
     "phones": [
       "0659761665"
@@ -559,8 +559,8 @@
   },
   {
     "id": 53,
-    "name": "PATRICK MATAGILA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Patrick Matagila",
+    "suffix": "FJ02",
     "originalName": "PATRICK MATAGILA FJ02",
     "phones": [
       "0754270941"
@@ -570,8 +570,8 @@
   },
   {
     "id": 54,
-    "name": "JUSTUS CHIWI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Justus Chiwi",
+    "suffix": "FJ03",
     "originalName": "JUSTUS CHIWI FJ03",
     "phones": [
       "0618112344"
@@ -581,8 +581,8 @@
   },
   {
     "id": 55,
-    "name": "SARAFINA SIMON",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Sarafina Simon",
+    "suffix": "FJ04",
     "originalName": "SARAFINA SIMON FJ04",
     "phones": [
       "0741350471"
@@ -592,8 +592,8 @@
   },
   {
     "id": 56,
-    "name": "ESTA GEORGE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Esta George",
+    "suffix": "FJ05",
     "originalName": "ESTA GEORGE FJ05",
     "phones": [
       "0746228773"
@@ -603,8 +603,8 @@
   },
   {
     "id": 57,
-    "name": "MARIA BANGE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Maria Bange",
+    "suffix": "FJ01",
     "originalName": "MARIA BANGE FJ01",
     "phones": [
       "0767383787"
@@ -614,8 +614,8 @@
   },
   {
     "id": 58,
-    "name": "FRIDA LAITON",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Frida Laiton",
+    "suffix": "FJ02",
     "originalName": "FRIDA LAITON FJ02",
     "phones": [
       "783390590"
@@ -625,8 +625,8 @@
   },
   {
     "id": 59,
-    "name": "SESILIA YOHANA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Sesilia Yohana",
+    "suffix": "FJ03",
     "originalName": "SESILIA YOHANA FJ03",
     "phones": [
       "674663540"
@@ -636,8 +636,8 @@
   },
   {
     "id": 60,
-    "name": "NEEMA MALENGE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Neema Malenge",
+    "suffix": "FJ04",
     "originalName": "NEEMA MALENGE FJ04",
     "phones": [
       "711299085"
@@ -647,8 +647,8 @@
   },
   {
     "id": 61,
-    "name": "YASINTA FREDRICK",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Yasinta Fredrick",
+    "suffix": "FJ05",
     "originalName": "YASINTA FREDRICK FJ05",
     "phones": [
       "0786521855"
@@ -658,8 +658,8 @@
   },
   {
     "id": 62,
-    "name": "YOHANA MAKENZA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Yohana Makenza",
+    "suffix": "FJ06",
     "originalName": "YOHANA MAKENZA FJ06",
     "phones": [
       "0786207520"
@@ -669,8 +669,8 @@
   },
   {
     "id": 63,
-    "name": "AYUBU KAAYA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Ayubu Kaaya",
+    "suffix": "FJ01",
     "originalName": "AYUBU KAAYA FJ01",
     "phones": [
       "0745417736"
@@ -680,8 +680,8 @@
   },
   {
     "id": 64,
-    "name": "HELENA KIKOTI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Helena Kikoti",
+    "suffix": "FJ02",
     "originalName": "HELENA KIKOTI FJ02",
     "phones": [
       "0783224550"
@@ -691,8 +691,8 @@
   },
   {
     "id": 65,
-    "name": "DAVID KILANGA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "David Kilanga",
+    "suffix": "FJ03",
     "originalName": "DAVID KILANGA FJ03",
     "phones": [
       "0715694874"
@@ -702,8 +702,8 @@
   },
   {
     "id": 66,
-    "name": "JANET NDOSI",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Janet Ndosi",
+    "suffix": "FJ04",
     "originalName": "JANET NDOSI FJ04",
     "phones": [
       "0769323947"
@@ -713,8 +713,8 @@
   },
   {
     "id": 67,
-    "name": "ANJELA MATHAYO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Anjela Mathayo",
+    "suffix": "FJ05",
     "originalName": "ANJELA MATHAYO FJ05",
     "phones": [],
     "status": "missing",
@@ -722,8 +722,8 @@
   },
   {
     "id": 68,
-    "name": "STELLA LUGUS",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Stella Lugus",
+    "suffix": "FJ06",
     "originalName": "STELLA LUGUS FJ06",
     "phones": [
       "0683660595"
@@ -733,8 +733,8 @@
   },
   {
     "id": 69,
-    "name": "FURAHA MATOGWA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Furaha Matogwa",
+    "suffix": "FJ01",
     "originalName": "FURAHA MATOGWA FJ01",
     "phones": [
       "0743419997"
@@ -744,8 +744,8 @@
   },
   {
     "id": 70,
-    "name": "RUBEN MSENGI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Ruben Msengi",
+    "suffix": "FJ02",
     "originalName": "RUBEN MSENGI FJ02",
     "phones": [
       "0743319064"
@@ -755,8 +755,8 @@
   },
   {
     "id": 71,
-    "name": "ANNAGRACE RUTHA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Annagrace Rutha",
+    "suffix": "FJ03",
     "originalName": "ANNAGRACE RUTHA FJ03",
     "phones": [
       "0767933873"
@@ -766,8 +766,8 @@
   },
   {
     "id": 72,
-    "name": "LEMI NDENDIYA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Lemi Ndendiya",
+    "suffix": "FJ04",
     "originalName": "LEMI NDENDIYA FJ04",
     "phones": [
       "0715661672"
@@ -777,8 +777,8 @@
   },
   {
     "id": 73,
-    "name": "ELIZBETH SINGANO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Elizbeth Singano",
+    "suffix": "FJ05",
     "originalName": "ELIZBETH SINGANO FJ05",
     "phones": [
       "0763809055"
@@ -788,8 +788,8 @@
   },
   {
     "id": 74,
-    "name": "TUKUSUMA NDONDOLE",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Tukusuma Ndondole",
+    "suffix": "FJ06",
     "originalName": "TUKUSUMA NDONDOLE FJ06",
     "phones": [
       "0756990940"
@@ -799,8 +799,8 @@
   },
   {
     "id": 75,
-    "name": "AINENY SHAYO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Aineny Shayo",
+    "suffix": "FJ01",
     "originalName": "AINENY SHAYO FJ01",
     "phones": [
       "0659761665"
@@ -810,8 +810,8 @@
   },
   {
     "id": 76,
-    "name": "PATRICK MATAGILA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Patrick Matagila",
+    "suffix": "FJ02",
     "originalName": "PATRICK MATAGILA FJ02",
     "phones": [
       "0754270941"
@@ -821,8 +821,8 @@
   },
   {
     "id": 77,
-    "name": "JUSTUS CHIWI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Justus Chiwi",
+    "suffix": "FJ03",
     "originalName": "JUSTUS CHIWI FJ03",
     "phones": [
       "0618112344"
@@ -832,8 +832,8 @@
   },
   {
     "id": 78,
-    "name": "SARAFINA SIMON",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Sarafina Simon",
+    "suffix": "FJ04",
     "originalName": "SARAFINA SIMON FJ04",
     "phones": [
       "0741350471"
@@ -843,8 +843,8 @@
   },
   {
     "id": 79,
-    "name": "ESTA GEORGE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Esta George",
+    "suffix": "FJ05",
     "originalName": "ESTA GEORGE FJ05",
     "phones": [
       "0746228773"
@@ -854,8 +854,8 @@
   },
   {
     "id": 80,
-    "name": "BONIFASI MANYANDA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Bonifasi Manyanda",
+    "suffix": "FJ01",
     "originalName": "BONIFASI MANYANDA FJ01",
     "phones": [
       "0683087089"
@@ -865,8 +865,8 @@
   },
   {
     "id": 81,
-    "name": "EMMANUEL KIMAMBO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Emmanuel Kimambo",
+    "suffix": "FJ03",
     "originalName": "EMMANUEL KIMAMBO FJ03",
     "phones": [
       "0659749669"
@@ -876,8 +876,8 @@
   },
   {
     "id": 82,
-    "name": "BARAKA MUNGAI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Baraka Mungai",
+    "suffix": "FJ03",
     "originalName": "BARAKA MUNGAI FJ03",
     "phones": [
       "0623564288"
@@ -887,8 +887,8 @@
   },
   {
     "id": 83,
-    "name": "ANETA NYANGE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Aneta Nyange",
+    "suffix": "FJ04",
     "originalName": "ANETA NYANGE FJ04",
     "phones": [
       "0685457113",
@@ -899,8 +899,8 @@
   },
   {
     "id": 84,
-    "name": "JOSHUA MOLLEL",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Joshua Mollel",
+    "suffix": "FJ05",
     "originalName": "JOSHUA MOLLEL FJ05",
     "phones": [
       "0620783647"
@@ -910,8 +910,8 @@
   },
   {
     "id": 85,
-    "name": "ROSE KIULA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Rose Kiula",
+    "suffix": "FJ06",
     "originalName": "ROSE KIULA FJ06",
     "phones": [
       "0786817352"
@@ -921,8 +921,8 @@
   },
   {
     "id": 86,
-    "name": "ANNA THOMPOSON",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Anna Thomposon",
+    "suffix": "FJ01",
     "originalName": "ANNA THOMPOSON FJ01",
     "phones": [],
     "status": "missing",
@@ -930,8 +930,8 @@
   },
   {
     "id": 87,
-    "name": "ANGEL DHAHABU",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Angel Dhahabu",
+    "suffix": "FJ03",
     "originalName": "ANGEL DHAHABU FJ03",
     "phones": [],
     "status": "missing",
@@ -939,8 +939,8 @@
   },
   {
     "id": 88,
-    "name": "ALICIA DAMIAN",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Alicia Damian",
+    "suffix": "FJ05",
     "originalName": "ALICIA DAMIAN FJ05",
     "phones": [],
     "status": "missing",
@@ -948,8 +948,8 @@
   },
   {
     "id": 89,
-    "name": "MARTHA NGOMUO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Martha Ngomuo",
+    "suffix": "FJ01",
     "originalName": "MARTHA NGOMUO FJ01",
     "phones": [
       "0757678125",
@@ -960,8 +960,8 @@
   },
   {
     "id": 90,
-    "name": "MARIA KIKOTI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Maria Kikoti",
+    "suffix": "FJ02",
     "originalName": "MARIA KIKOTI FJ02",
     "phones": [
       "0745505079"
@@ -971,8 +971,8 @@
   },
   {
     "id": 91,
-    "name": "JULIUS KIMEI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Julius Kimei",
+    "suffix": "FJ03",
     "originalName": "JULIUS KIMEI FJ03",
     "phones": [
       "0656155508",
@@ -983,8 +983,8 @@
   },
   {
     "id": 92,
-    "name": "MARTHA SAKADODO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Martha Sakadodo",
+    "suffix": "FJ04",
     "originalName": "MARTHA SAKADODO FJ04",
     "phones": [
       "0712377427"
@@ -994,8 +994,8 @@
   },
   {
     "id": 93,
-    "name": "MELANIA KANYENYE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Melania Kanyenye",
+    "suffix": "FJ05",
     "originalName": "MELANIA KANYENYE FJ05",
     "phones": [
       "0788549920"
@@ -1005,8 +1005,8 @@
   },
   {
     "id": 94,
-    "name": "TULI MLOWE",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Tuli Mlowe",
+    "suffix": "FJ06",
     "originalName": "TULI MLOWE FJ06",
     "phones": [
       "0752001611",
@@ -1017,8 +1017,8 @@
   },
   {
     "id": 95,
-    "name": "DANIEL MLIGO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Daniel Mligo",
+    "suffix": "FJ01",
     "originalName": "DANIEL MLIGO FJ01",
     "phones": [
       "0784306850"
@@ -1028,8 +1028,8 @@
   },
   {
     "id": 96,
-    "name": "ADVERA FELIX",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Advera Felix",
+    "suffix": "FJ02",
     "originalName": "ADVERA FELIX FJ02",
     "phones": [
       "0687193582"
@@ -1039,8 +1039,8 @@
   },
   {
     "id": 97,
-    "name": "RACHEL SANGA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Rachel Sanga",
+    "suffix": "FJ03",
     "originalName": "RACHEL SANGA FJ03",
     "phones": [
       "0785119837"
@@ -1050,8 +1050,8 @@
   },
   {
     "id": 98,
-    "name": "GRACE GALUGABA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Grace Galugaba",
+    "suffix": "FJ04",
     "originalName": "GRACE GALUGABA FJ04",
     "phones": [
       "0744685424"
@@ -1061,8 +1061,8 @@
   },
   {
     "id": 99,
-    "name": "CEHORA YONA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Cehora Yona",
+    "suffix": "FJ05",
     "originalName": "DEHORA YONA FJ05",
     "phones": [
       "0754981190"
@@ -1072,8 +1072,8 @@
   },
   {
     "id": 100,
-    "name": "TYATAWELU SHAMBULA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Tyatawelu Shambula",
+    "suffix": "FJ06",
     "originalName": "TYATAWELU SHAMBULA FJ06",
     "phones": [
       "0742403509",
@@ -1085,7 +1085,7 @@
   {
     "id": 101,
     "name": "Frida Moses",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "suffix": "FJ01",
     "originalName": "Frida Moses FJ01",
     "phones": [
       "0782679090"
@@ -1096,7 +1096,7 @@
   {
     "id": 102,
     "name": "Flavia George",
-    "suffix": "FJ03 (KATIBU)",
+    "suffix": "FJ03",
     "originalName": "Flavia George FJ03",
     "phones": [
       "0624435400"
@@ -1107,7 +1107,7 @@
   {
     "id": 103,
     "name": "Daniel Kiliot",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "suffix": "FJ04",
     "originalName": "Daniel Kiliot FJ04",
     "phones": [
       "0765905501"
@@ -1117,8 +1117,8 @@
   },
   {
     "id": 104,
-    "name": "GLORIA Swai",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Gloria Swai",
+    "suffix": "FJ05",
     "originalName": "GLORIA Swai FJ05",
     "phones": [
       "0682454576"
@@ -1129,7 +1129,7 @@
   {
     "id": 105,
     "name": "Ruta Moses",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "suffix": "FJ06",
     "originalName": "Ruta Moses FJ06",
     "phones": [
       "0683797229"
@@ -1139,8 +1139,8 @@
   },
   {
     "id": 106,
-    "name": "MARIA MATIAS",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Maria Matias",
+    "suffix": "FJ01",
     "originalName": "MARIA MATIAS FJ01",
     "phones": [
       "0773156312"
@@ -1150,8 +1150,8 @@
   },
   {
     "id": 107,
-    "name": "DIANA KIVAMBE",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Diana Kivambe",
+    "suffix": "FJ02",
     "originalName": "DIANA KIVAMBE FJ02",
     "phones": [
       "0656807809"
@@ -1161,8 +1161,8 @@
   },
   {
     "id": 108,
-    "name": "PENINA HAMIS",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Penina Hamis",
+    "suffix": "FJ03",
     "originalName": "PENINA HAMIS FJ03",
     "phones": [
       "0687390894"
@@ -1172,8 +1172,8 @@
   },
   {
     "id": 109,
-    "name": "VERONIKA MFILINGE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Veronika Mfilinge",
+    "suffix": "FJ04",
     "originalName": "VERONIKA MFILINGE FJ04",
     "phones": [
       "0659828213"
@@ -1183,8 +1183,8 @@
   },
   {
     "id": 110,
-    "name": "ANNA MROSO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Anna Mroso",
+    "suffix": "FJ05",
     "originalName": "ANNA MROSO FJ05",
     "phones": [],
     "status": "missing",
@@ -1192,8 +1192,8 @@
   },
   {
     "id": 111,
-    "name": "WITNESS SANGA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Witness Sanga",
+    "suffix": "FJ06",
     "originalName": "WITNESS SANGA FJ06",
     "phones": [],
     "status": "missing",
@@ -1201,8 +1201,8 @@
   },
   {
     "id": 112,
-    "name": "NEEMA MACHIBYA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Neema Machibya",
+    "suffix": "FJ01",
     "originalName": "NEEMA MACHIBYA FJ01",
     "phones": [
       "0652181467"
@@ -1212,8 +1212,8 @@
   },
   {
     "id": 113,
-    "name": "HAPPY MSINZO",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Happy Msinzo",
+    "suffix": "FJ02",
     "originalName": "HAPPY MSINZO FJ02",
     "phones": [
       "0763324443"
@@ -1223,8 +1223,8 @@
   },
   {
     "id": 114,
-    "name": "NEMMA ELIYA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Nemma Eliya",
+    "suffix": "FJ03",
     "originalName": "NEMMA ELIYA FJ03",
     "phones": [
       "0673199814"
@@ -1234,8 +1234,8 @@
   },
   {
     "id": 115,
-    "name": "RACHEL GAVILE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Rachel Gavile",
+    "suffix": "FJ04",
     "originalName": "RACHEL GAVILE FJ04",
     "phones": [
       "0756117800"
@@ -1245,8 +1245,8 @@
   },
   {
     "id": 116,
-    "name": "HAPPY KONE",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Happy Kone",
+    "suffix": "FJ05",
     "originalName": "HAPPY KONE FJ05",
     "phones": [
       "0680738917"
@@ -1256,8 +1256,8 @@
   },
   {
     "id": 117,
-    "name": "MERCEDES AKARO",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Mercedes Akaro",
+    "suffix": "FJ06",
     "originalName": "MERCEDES AKARO FJ06",
     "phones": [
       "0763770224"
@@ -1267,8 +1267,8 @@
   },
   {
     "id": 118,
-    "name": "LIGHTNESS KAMNDE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Lightness Kamnde",
+    "suffix": "FJ01",
     "originalName": "LIGHTNESS KAMNDE FJ01",
     "phones": [
       "0658763003"
@@ -1278,8 +1278,8 @@
   },
   {
     "id": 119,
-    "name": "ELIUZIMA KIMARO",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Eliuzima Kimaro",
+    "suffix": "FJ02",
     "originalName": "ELIUZIMA KIMARO FJ02",
     "phones": [
       "0765431652"
@@ -1289,8 +1289,8 @@
   },
   {
     "id": 120,
-    "name": "GODWIN RWEKIZA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Godwin Rwekiza",
+    "suffix": "FJ03",
     "originalName": "GODWIN RWEKIZA FJ03",
     "phones": [
       "0713214366"
@@ -1300,8 +1300,8 @@
   },
   {
     "id": 121,
-    "name": "JESCA JOHN",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Jesca John",
+    "suffix": "FJ04",
     "originalName": "JESCA JOHN FJ04",
     "phones": [
       "0782478330",
@@ -1312,8 +1312,8 @@
   },
   {
     "id": 122,
-    "name": "MODESTER MWANYIKA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Modester Mwanyika",
+    "suffix": "FJ05",
     "originalName": "MODESTER MWANYIKA FJ05",
     "phones": [
       "0712902802"
@@ -1323,8 +1323,8 @@
   },
   {
     "id": 123,
-    "name": "VERONICA EMMANUEL",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Veronica Emmanuel",
+    "suffix": "FJ06",
     "originalName": "VERONICA EMMANUEL FJ06",
     "phones": [
       "0715712337",
@@ -1335,8 +1335,8 @@
   },
   {
     "id": 124,
-    "name": "RICHARD MUHOMBO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Richard Muhombo",
+    "suffix": "FJ01",
     "originalName": "RICHARD MUHOMBO FJ01",
     "phones": [
       "0674768332"
@@ -1346,8 +1346,8 @@
   },
   {
     "id": 125,
-    "name": "MARIANA BERNADINI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Mariana Bernadini",
+    "suffix": "FJ02",
     "originalName": "MARIANA BERNADINI FJ02",
     "phones": [
       "0620868820"
@@ -1357,8 +1357,8 @@
   },
   {
     "id": 126,
-    "name": "CHRISTINA BERNABINI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Christina Bernabini",
+    "suffix": "FJ03",
     "originalName": "CHRISTINA BERNABINI FJ03",
     "phones": [
       "0699451085"
@@ -1368,8 +1368,8 @@
   },
   {
     "id": 127,
-    "name": "MUSSA I ELISHA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Mussa I Elisha",
+    "suffix": "FJ04",
     "originalName": "MUSSA I ELISHA FJ04",
     "phones": [
       "0786975615"
@@ -1379,8 +1379,8 @@
   },
   {
     "id": 128,
-    "name": "TULAVELA MFINANGA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Tulavela Mfinanga",
+    "suffix": "FJ05",
     "originalName": "TULAVELA MFINANGA FJ05",
     "phones": [
       "0712188030"
@@ -1390,8 +1390,8 @@
   },
   {
     "id": 129,
-    "name": "MWOMBEKI FERESIANI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Mwombeki Feresiani",
+    "suffix": "FJ01",
     "originalName": "MWOMBEKI FERESIANI FJ01",
     "phones": [
       "0784033944"
@@ -1401,8 +1401,8 @@
   },
   {
     "id": 130,
-    "name": "CATHERINE MPEINETI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Catherine Mpeineti",
+    "suffix": "FJ02",
     "originalName": "CATHERINE MPEINETI FJ02",
     "phones": [
       "0754313114"
@@ -1412,8 +1412,8 @@
   },
   {
     "id": 131,
-    "name": "MUTAGABWA JONES",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Mutagabwa Jones",
+    "suffix": "FJ03",
     "originalName": "MUTAGABWA JONES FJ03",
     "phones": [],
     "status": "missing",
@@ -1421,8 +1421,8 @@
   },
   {
     "id": 132,
-    "name": "HONTKE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Hontke",
+    "suffix": "FJ04",
     "originalName": "HONTKE FJ04",
     "phones": [],
     "status": "missing",
@@ -1430,8 +1430,8 @@
   },
   {
     "id": 133,
-    "name": "BARAKA AMOSI",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Baraka Amosi",
+    "suffix": "FJ05",
     "originalName": "BARAKA AMOSI FJ05",
     "phones": [],
     "status": "missing",
@@ -1439,8 +1439,8 @@
   },
   {
     "id": 134,
-    "name": "JOYCE FOY",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Joyce Foy",
+    "suffix": "FJ01",
     "originalName": "JOYCE FOY FJ01",
     "phones": [
       "0715991278"
@@ -1450,8 +1450,8 @@
   },
   {
     "id": 135,
-    "name": "FANUEL SHAKULA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Fanuel Shakula",
+    "suffix": "FJ02",
     "originalName": "FANUEL SHAKULA FJ02",
     "phones": [
       "0754802616"
@@ -1461,8 +1461,8 @@
   },
   {
     "id": 136,
-    "name": "JUDITH LYATUU",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Judith Lyatuu",
+    "suffix": "FJ03",
     "originalName": "JUDITH LYATUU FJ03",
     "phones": [
       "0762528785"
@@ -1472,8 +1472,8 @@
   },
   {
     "id": 137,
-    "name": "FRED SEKILE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Fred Sekile",
+    "suffix": "FJ04",
     "originalName": "FRED SEKILE FJ04",
     "phones": [
       "0713288522"
@@ -1483,8 +1483,8 @@
   },
   {
     "id": 138,
-    "name": "REGINA ATHANAS",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Regina Athanas",
+    "suffix": "FJ05",
     "originalName": "REGINA ATHANAS FJ05",
     "phones": [
       "0764879399"
@@ -1494,8 +1494,8 @@
   },
   {
     "id": 139,
-    "name": "JEREMIAH NGOWI",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Jeremiah Ngowi",
+    "suffix": "FJ06",
     "originalName": "JEREMIAH NGOWI FJ06",
     "phones": [
       "0757236788"
@@ -1505,8 +1505,8 @@
   },
   {
     "id": 140,
-    "name": "MIKA KAAYA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Mika Kaaya",
+    "suffix": "FJ01",
     "originalName": "MIKA KAAYA FJ01",
     "phones": [
       "0692158296",
@@ -1517,8 +1517,8 @@
   },
   {
     "id": 141,
-    "name": "ROIDA MUHOSOLE",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Roida Muhosole",
+    "suffix": "FJ02",
     "originalName": "ROIDA MUHOSOLE FJ02",
     "phones": [
       "0716880960"
@@ -1528,8 +1528,8 @@
   },
   {
     "id": 142,
-    "name": "DAUDI REUBEN",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Daudi Reuben",
+    "suffix": "FJ03",
     "originalName": "DAUDI REUBEN FJ03",
     "phones": [
       "0678089102"
@@ -1539,8 +1539,8 @@
   },
   {
     "id": 143,
-    "name": "ADELINA LUHIGILO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Adelina Luhigilo",
+    "suffix": "FJ04",
     "originalName": "ADELINA LUHIGILO FJ04",
     "phones": [
       "0718780862"
@@ -1550,8 +1550,8 @@
   },
   {
     "id": 144,
-    "name": "YOHANA SAMWEL",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Yohana Samwel",
+    "suffix": "FJ05",
     "originalName": "YOHANA SAMWEL FJ05",
     "phones": [
       "0658693040"
@@ -1561,8 +1561,8 @@
   },
   {
     "id": 145,
-    "name": "RAHEL MINJA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Rahel Minja",
+    "suffix": "FJ06",
     "originalName": "RAHEL MINJA FJ06",
     "phones": [
       "0710111036"
@@ -1572,8 +1572,8 @@
   },
   {
     "id": 146,
-    "name": "MERCY MKANDAWILE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Mercy Mkandawile",
+    "suffix": "FJ01",
     "originalName": "MERCY MKANDAWILE FJ01",
     "phones": [
       "0712061228",
@@ -1584,8 +1584,8 @@
   },
   {
     "id": 147,
-    "name": "OSWARD SHEDRACK",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Osward Shedrack",
+    "suffix": "FJ02",
     "originalName": "OSWARD SHEDRACK FJ02",
     "phones": [
       "0767965620",
@@ -1596,8 +1596,8 @@
   },
   {
     "id": 148,
-    "name": "IMACULATA OLOMO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Imaculata Olomo",
+    "suffix": "FJ03",
     "originalName": "IMACULATA OLOMO FJ03",
     "phones": [
       "0658202362"
@@ -1607,8 +1607,8 @@
   },
   {
     "id": 149,
-    "name": "STEVE HAONGA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Steve Haonga",
+    "suffix": "FJ04",
     "originalName": "STEVE HAONGA FJ04",
     "phones": [
       "0753364511"
@@ -1618,8 +1618,8 @@
   },
   {
     "id": 150,
-    "name": "SARAH MOOVA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Sarah Moova",
+    "suffix": "FJ05",
     "originalName": "SARAH MOOVA FJ05",
     "phones": [
       "0754508358"
@@ -1629,8 +1629,8 @@
   },
   {
     "id": 151,
-    "name": "ROSE KILAWE",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Rose Kilawe",
+    "suffix": "FJ06",
     "originalName": "ROSE KILAWE FJ06",
     "phones": [
       "0754074301"
@@ -1640,8 +1640,8 @@
   },
   {
     "id": 152,
-    "name": "ELIAH MWAKYOMA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Eliah Mwakyoma",
+    "suffix": "FJ01",
     "originalName": "ELIAH MWAKYOMA FJ01",
     "phones": [
       "0758282861",
@@ -1652,8 +1652,8 @@
   },
   {
     "id": 153,
-    "name": "LUCY MLAGA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Lucy Mlaga",
+    "suffix": "FJ02",
     "originalName": "LUCY MLAGA FJ02",
     "phones": [
       "0682159176"
@@ -1663,8 +1663,8 @@
   },
   {
     "id": 154,
-    "name": "ESIA MLOWE",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Esia Mlowe",
+    "suffix": "FJ03",
     "originalName": "ESIA MLOWE FJ03",
     "phones": [
       "0784433936"
@@ -1674,8 +1674,8 @@
   },
   {
     "id": 155,
-    "name": "OMBEN",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Omben",
+    "suffix": "FJ04",
     "originalName": "OMBEN FJ04",
     "phones": [],
     "status": "missing",
@@ -1683,8 +1683,8 @@
   },
   {
     "id": 156,
-    "name": "EMMA WIHANJI",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Emma Wihanji",
+    "suffix": "FJ05",
     "originalName": "EMMA WIHANJI FJ05",
     "phones": [
       "0752178080"
@@ -1694,8 +1694,8 @@
   },
   {
     "id": 157,
-    "name": "LEONIA PAUL",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Leonia Paul",
+    "suffix": "FJ01",
     "originalName": "LEONIA PAUL FJ01",
     "phones": [
       "0785484115"
@@ -1705,8 +1705,8 @@
   },
   {
     "id": 158,
-    "name": "HURUMA MKUMBO",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Huruma Mkumbo",
+    "suffix": "FJ02",
     "originalName": "HURUMA MKUMBO FJ02",
     "phones": [
       "0744644228"
@@ -1716,8 +1716,8 @@
   },
   {
     "id": 159,
-    "name": "ANNA MATHAYO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Anna Mathayo",
+    "suffix": "FJ03",
     "originalName": "ANNA MATHAYO FJ03",
     "phones": [
       "0687704281"
@@ -1727,8 +1727,8 @@
   },
   {
     "id": 160,
-    "name": "ESTHER ASHERY",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Esther Ashery",
+    "suffix": "FJ04",
     "originalName": "ESTHER ASHERY FJ04",
     "phones": [
       "0711375812"
@@ -1738,8 +1738,8 @@
   },
   {
     "id": 161,
-    "name": "SCOLA SAVERY",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Scola Savery",
+    "suffix": "FJ05",
     "originalName": "SCOLA SAVERY FJ05",
     "phones": [
       "0786724811",
@@ -1750,8 +1750,8 @@
   },
   {
     "id": 162,
-    "name": "UPENDO SANGA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Upendo Sanga",
+    "suffix": "FJ06",
     "originalName": "UPENDO SANGA FJ06",
     "phones": [
       "0744770694"
@@ -1761,8 +1761,8 @@
   },
   {
     "id": 163,
-    "name": "MUSSA KADUMA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Mussa Kaduma",
+    "suffix": "FJ01",
     "originalName": "MUSSA KADUMA FJ01",
     "phones": [
       "0744430303",
@@ -1773,8 +1773,8 @@
   },
   {
     "id": 164,
-    "name": "DAVID MWASAMBILI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "David Mwasambili",
+    "suffix": "FJ02",
     "originalName": "DAVID MWASAMBILI FJ02",
     "phones": [
       "0756431967",
@@ -1785,8 +1785,8 @@
   },
   {
     "id": 165,
-    "name": "LUCY SHEDRACK",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Lucy Shedrack",
+    "suffix": "FJ03",
     "originalName": "LUCY SHEDRACK FJ03",
     "phones": [
       "0626648724"
@@ -1796,8 +1796,8 @@
   },
   {
     "id": 166,
-    "name": "JANETH MASSAWE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Janeth Massawe",
+    "suffix": "FJ04",
     "originalName": "JANETH MASSAWE FJ04",
     "phones": [
       "0756258858"
@@ -1807,8 +1807,8 @@
   },
   {
     "id": 167,
-    "name": "MARIAM MUSSA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Mariam Mussa",
+    "suffix": "FJ05",
     "originalName": "MARIAM MUSSA FJ05",
     "phones": [
       "0688817601"
@@ -1818,8 +1818,8 @@
   },
   {
     "id": 168,
-    "name": "PETER TESHA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Peter Tesha",
+    "suffix": "FJ06",
     "originalName": "PETER TESHA FJ06",
     "phones": [
       "0628046096"
@@ -1829,8 +1829,8 @@
   },
   {
     "id": 169,
-    "name": "EMANUEL NG'UNDA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Emanuel Ng'unda",
+    "suffix": "FJ01",
     "originalName": "EMANUEL NG'UNDA FJ01",
     "phones": [
       "0715151598"
@@ -1840,8 +1840,8 @@
   },
   {
     "id": 170,
-    "name": "JOSEPH MHANGA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Joseph Mhanga",
+    "suffix": "FJ02",
     "originalName": "JOSEPH MHANGA FJ02",
     "phones": [
       "0788721725"
@@ -1851,8 +1851,8 @@
   },
   {
     "id": 171,
-    "name": "INOCENT MTEGWA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Inocent Mtegwa",
+    "suffix": "FJ03",
     "originalName": "INOCENT MTEGWA FJ03",
     "phones": [
       "0716051779"
@@ -1862,8 +1862,8 @@
   },
   {
     "id": 172,
-    "name": "CHARLES MBWAMBWO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Charles Mbwambwo",
+    "suffix": "FJ04",
     "originalName": "CHARLES MBWAMBWO FJ04",
     "phones": [
       "0764319293"
@@ -1873,8 +1873,8 @@
   },
   {
     "id": 173,
-    "name": "ANGELINA LUSAJO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Angelina Lusajo",
+    "suffix": "FJ05",
     "originalName": "ANGELINA LUSAJO FJ05",
     "phones": [
       "0683354491"
@@ -1884,8 +1884,8 @@
   },
   {
     "id": 174,
-    "name": "NOEL JOSEPH",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Noel Joseph",
+    "suffix": "FJ06",
     "originalName": "NOEL JOSEPH FJ06",
     "phones": [
       "0759489584"
@@ -1896,7 +1896,7 @@
   {
     "id": 175,
     "name": "Daudi Faustini",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "suffix": "FJ01",
     "originalName": "Daudi Faustini FJ01",
     "phones": [
       "0684451869"
@@ -1907,7 +1907,7 @@
   {
     "id": 176,
     "name": "Adili Nyaulingo",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "suffix": "FJ02",
     "originalName": "Adili Nyaulingo FJ02",
     "phones": [
       "0703999044"
@@ -1918,7 +1918,7 @@
   {
     "id": 177,
     "name": "Emmanuel Mruma",
-    "suffix": "FJ03 (KATIBU)",
+    "suffix": "FJ03",
     "originalName": "Emmanuel Mruma FJ03",
     "phones": [
       "0717105230"
@@ -1929,7 +1929,7 @@
   {
     "id": 178,
     "name": "Elizabethi Kika",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "suffix": "FJ04",
     "originalName": "Elizabethi Kika FJ04",
     "phones": [
       "0652325566"
@@ -1940,7 +1940,7 @@
   {
     "id": 179,
     "name": "Martha Kweka",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "suffix": "FJ05",
     "originalName": "Martha Kweka FJ05",
     "phones": [],
     "status": "missing",
@@ -1949,7 +1949,7 @@
   {
     "id": 180,
     "name": "Mercy Msuya",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "suffix": "FJ06",
     "originalName": "Mercy Msuya FJ06",
     "phones": [
       "0613983197",
@@ -1960,8 +1960,8 @@
   },
   {
     "id": 181,
-    "name": "JACKSON DAFFA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Jackson Daffa",
+    "suffix": "FJ01",
     "originalName": "JACKSON DAFFA FJ01",
     "phones": [
       "0682270912"
@@ -1971,8 +1971,8 @@
   },
   {
     "id": 182,
-    "name": "YASINTA SAM",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Yasinta Sam",
+    "suffix": "FJ02",
     "originalName": "YASINTA SAM FJ02",
     "phones": [
       "0693276588"
@@ -1982,8 +1982,8 @@
   },
   {
     "id": 183,
-    "name": "GLORIA MREMA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Gloria Mrema",
+    "suffix": "FJ03",
     "originalName": "GLORIA MREMA FJ03",
     "phones": [
       "0676503230"
@@ -1993,8 +1993,8 @@
   },
   {
     "id": 184,
-    "name": "AGNESS MBILINYI",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Agness Mbilinyi",
+    "suffix": "FJ04",
     "originalName": "AGNESS MBILINYI FJ04",
     "phones": [
       "0789345732"
@@ -2004,8 +2004,8 @@
   },
   {
     "id": 185,
-    "name": "AGNESS FARU",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Agness Faru",
+    "suffix": "FJ05",
     "originalName": "AGNESS FARU FJ05",
     "phones": [
       "0658588333",
@@ -2016,8 +2016,8 @@
   },
   {
     "id": 186,
-    "name": "NIKUTUSIA MBENGO",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Nikutusia Mbengo",
+    "suffix": "FJ06",
     "originalName": "NIKUTUSIA MBENGO FJ06",
     "phones": [
       "0762404074",
@@ -2028,8 +2028,8 @@
   },
   {
     "id": 187,
-    "name": "LOYCE MKUMBO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Loyce Mkumbo",
+    "suffix": "FJ01",
     "originalName": "LOYCE MKUMBO FJ01",
     "phones": [
       "0713619528"
@@ -2039,8 +2039,8 @@
   },
   {
     "id": 188,
-    "name": "EMMANUEL GIGGITA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Emmanuel Giggita",
+    "suffix": "FJ02",
     "originalName": "EMMANUEL GIGGITA FJ02",
     "phones": [
       "0765277255"
@@ -2050,8 +2050,8 @@
   },
   {
     "id": 189,
-    "name": "NEEMA GWANDU",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Neema Gwandu",
+    "suffix": "FJ03",
     "originalName": "NEEMA GWANDU FJ03",
     "phones": [
       "0753585602",
@@ -2062,8 +2062,8 @@
   },
   {
     "id": 190,
-    "name": "PROSPER MIHALE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Prosper Mihale",
+    "suffix": "FJ04",
     "originalName": "PROSPER MIHALE FJ04",
     "phones": [
       "0623577657"
@@ -2073,8 +2073,8 @@
   },
   {
     "id": 191,
-    "name": "LWIJISYO SIJENYINGI",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Lwijisyo Sijenyingi",
+    "suffix": "FJ05",
     "originalName": "LWIJISYO SIJENYINGI FJ05",
     "phones": [
       "0687779574",
@@ -2085,8 +2085,8 @@
   },
   {
     "id": 192,
-    "name": "SARIA MAKWEKA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Saria Makweka",
+    "suffix": "FJ06",
     "originalName": "SARIA MAKWEKA FJ06",
     "phones": [
       "0768834100"
@@ -2096,8 +2096,8 @@
   },
   {
     "id": 193,
-    "name": "ASANTERABI TUMAI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Asanterabi Tumai",
+    "suffix": "FJ01",
     "originalName": "ASANTERABI TUMAI FJ01",
     "phones": [
       "0687102525"
@@ -2107,8 +2107,8 @@
   },
   {
     "id": 194,
-    "name": "INOCENSIA TUMAI ?",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Inocensia Tumai ?",
+    "suffix": "FJ02",
     "originalName": "INOCENSIA TUMAI ? FJ02",
     "phones": [
       "0713132065"
@@ -2118,8 +2118,8 @@
   },
   {
     "id": 195,
-    "name": "JACKSON MMARI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Jackson Mmari",
+    "suffix": "FJ03",
     "originalName": "JACKSON MMARI FJ03",
     "phones": [
       "0620499327"
@@ -2129,8 +2129,8 @@
   },
   {
     "id": 196,
-    "name": "VIOLETH MREMA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Violeth Mrema",
+    "suffix": "FJ04",
     "originalName": "VIOLETH MREMA FJ04",
     "phones": [
       "0767382941"
@@ -2140,8 +2140,8 @@
   },
   {
     "id": 197,
-    "name": "EZELENDA MMBAGA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Ezelenda Mmbaga",
+    "suffix": "FJ05",
     "originalName": "EZELENDA MMBAGA FJ05",
     "phones": [
       "0712006251"
@@ -2151,8 +2151,8 @@
   },
   {
     "id": 198,
-    "name": "ESTER MNDEME",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Ester Mndeme",
+    "suffix": "FJ06",
     "originalName": "ESTER MNDEME FJ06",
     "phones": [
       "0712475009"
@@ -2162,8 +2162,8 @@
   },
   {
     "id": 199,
-    "name": "JACKSON NDUBA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Jackson Nduba",
+    "suffix": "FJ01",
     "originalName": "JACKSON NDUBA FJ01",
     "phones": [
       "0762773633"
@@ -2173,8 +2173,8 @@
   },
   {
     "id": 200,
-    "name": "HELLEN KANZA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Hellen Kanza",
+    "suffix": "FJ02",
     "originalName": "HELLEN KANZA FJ02",
     "phones": [
       "0787830089"
@@ -2184,8 +2184,8 @@
   },
   {
     "id": 201,
-    "name": "LOVENESS MMARY",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Loveness Mmary",
+    "suffix": "FJ03",
     "originalName": "LOVENESS MMARY FJ03",
     "phones": [
       "0716180718"
@@ -2195,8 +2195,8 @@
   },
   {
     "id": 202,
-    "name": "FELIX MWAKISININI",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Felix Mwakisinini",
+    "suffix": "FJ04",
     "originalName": "FELIX MWAKISININI FJ04",
     "phones": [
       "0789000067"
@@ -2206,8 +2206,8 @@
   },
   {
     "id": 203,
-    "name": "EDITHA LEMA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Editha Lema",
+    "suffix": "FJ05",
     "originalName": "EDITHA LEMA FJ05",
     "phones": [
       "0713533270",
@@ -2218,8 +2218,8 @@
   },
   {
     "id": 204,
-    "name": "ANJELA CHRISTIAN",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Anjela Christian",
+    "suffix": "FJ06",
     "originalName": "ANJELA CHRISTIAN FJ06",
     "phones": [
       "0719700674",
@@ -2230,8 +2230,8 @@
   },
   {
     "id": 205,
-    "name": "HURUMA MBUGI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Huruma Mbugi",
+    "suffix": "FJ01",
     "originalName": "HURUMA MBUGI FJ01",
     "phones": [
       "0752663230"
@@ -2241,8 +2241,8 @@
   },
   {
     "id": 206,
-    "name": "ACROFINA KATALIWA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Acrofina Kataliwa",
+    "suffix": "FJ02",
     "originalName": "ADROFINA KATALIWA FJ02",
     "phones": [
       "0782257199",
@@ -2253,8 +2253,8 @@
   },
   {
     "id": 207,
-    "name": "BARAKA MOGHA",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Baraka Mogha",
+    "suffix": "FJ03",
     "originalName": "BARAKA MOGHA FJ03",
     "phones": [
       "0759930400",
@@ -2265,8 +2265,8 @@
   },
   {
     "id": 208,
-    "name": "SELINA JUSTINE",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Selina Justine",
+    "suffix": "FJ04",
     "originalName": "SELINA JUSTINE FJ04",
     "phones": [
       "0654029333"
@@ -2276,8 +2276,8 @@
   },
   {
     "id": 209,
-    "name": "VICTORIA KANTABULA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Victoria Kantabula",
+    "suffix": "FJ05",
     "originalName": "VICTORIA KANTABULA FJ05",
     "phones": [
       "0745955400",
@@ -2288,8 +2288,8 @@
   },
   {
     "id": 210,
-    "name": "ROSE MRUTU",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Rose Mrutu",
+    "suffix": "FJ06",
     "originalName": "ROSE MRUTU FJ06",
     "phones": [
       "0783408363",
@@ -2300,8 +2300,8 @@
   },
   {
     "id": 211,
-    "name": "SUBIRA MBUTA",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Subira Mbuta",
+    "suffix": "FJ01",
     "originalName": "SUBIRA MBUTA FJ01",
     "phones": [
       "0688675494"
@@ -2311,8 +2311,8 @@
   },
   {
     "id": 212,
-    "name": "HAPPINESS MASELI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Happiness Maseli",
+    "suffix": "FJ03",
     "originalName": "HAPPINESS MASELI FJ03",
     "phones": [
       "0788191319"
@@ -2322,8 +2322,8 @@
   },
   {
     "id": 213,
-    "name": "SAELY MUSHI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Saely Mushi",
+    "suffix": "FJ01",
     "originalName": "SAELY MUSHI FJ01",
     "phones": [
       "0788954671"
@@ -2333,8 +2333,8 @@
   },
   {
     "id": 214,
-    "name": "LYIDIA SANGA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Lyidia Sanga",
+    "suffix": "FJ02",
     "originalName": "LYIDIA SANGA FJ02",
     "phones": [
       "0715774472"
@@ -2344,8 +2344,8 @@
   },
   {
     "id": 215,
-    "name": "ROBERT MGENI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Robert Mgeni",
+    "suffix": "FJ03",
     "originalName": "ROBERT MGENI FJ03",
     "phones": [
       "0675537870"
@@ -2355,8 +2355,8 @@
   },
   {
     "id": 216,
-    "name": "HOSEA SAGA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Hosea Saga",
+    "suffix": "FJ04",
     "originalName": "HOSEA SAGA FJ04",
     "phones": [
       "0625229788"
@@ -2366,8 +2366,8 @@
   },
   {
     "id": 217,
-    "name": "HILGATA MSANGA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Hilgata Msanga",
+    "suffix": "FJ05",
     "originalName": "HILGATA MSANGA FJ05",
     "phones": [
       "0755755087"
@@ -2377,8 +2377,8 @@
   },
   {
     "id": 218,
-    "name": "AYUBU MASAKI",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Ayubu Masaki",
+    "suffix": "FJ06",
     "originalName": "AYUBU MASAKI FJ06",
     "phones": [
       "0755979363"
@@ -2388,8 +2388,8 @@
   },
   {
     "id": 219,
-    "name": "ABDUEL MBUNGU",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Abduel Mbungu",
+    "suffix": "FJ01",
     "originalName": "ABDUEL MBUNGU FJ01",
     "phones": [
       "0783348921"
@@ -2399,8 +2399,8 @@
   },
   {
     "id": 220,
-    "name": "TELSA KIMARIO",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Telsa Kimario",
+    "suffix": "FJ02",
     "originalName": "TELSA KIMARIO FJ02",
     "phones": [],
     "status": "missing",
@@ -2408,8 +2408,8 @@
   },
   {
     "id": 221,
-    "name": "JOEL KATO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Joel Kato",
+    "suffix": "FJ03",
     "originalName": "JOEL KATO FJ03",
     "phones": [
       "0584367262"
@@ -2419,8 +2419,8 @@
   },
   {
     "id": 222,
-    "name": "WITNES SHELUKINDO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Witnes Shelukindo",
+    "suffix": "FJ04",
     "originalName": "WITNES SHELUKINDO FJ04",
     "phones": [
       "0789043147",
@@ -2431,8 +2431,8 @@
   },
   {
     "id": 223,
-    "name": "AGNESS MCHARO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Agness Mcharo",
+    "suffix": "FJ05",
     "originalName": "AGNESS MCHARO FJ05",
     "phones": [
       "0789735307"
@@ -2442,8 +2442,8 @@
   },
   {
     "id": 224,
-    "name": "HAIKAELI KIKAHO",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Haikaeli Kikaho",
+    "suffix": "FJ06",
     "originalName": "HAIKAELI KIKAHO FJ06",
     "phones": [
       "0766157020",
@@ -2454,8 +2454,8 @@
   },
   {
     "id": 225,
-    "name": "EDNA MBUJI",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Edna Mbuji",
+    "suffix": "FJ01",
     "originalName": "EDNA MBUJI FJ01",
     "phones": [
       "0762162476",
@@ -2466,8 +2466,8 @@
   },
   {
     "id": 226,
-    "name": "SARAPHINA MAHANDE",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Saraphina Mahande",
+    "suffix": "FJ03",
     "originalName": "SARAPHINA MAHANDE FJ03",
     "phones": [
       "0715943753"
@@ -2477,8 +2477,8 @@
   },
   {
     "id": 227,
-    "name": "ZEKARIA ANDERSON",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Zekaria Anderson",
+    "suffix": "FJ01",
     "originalName": "ZEKARIA ANDERSON FJ01",
     "phones": [
       "0677146686"
@@ -2488,8 +2488,8 @@
   },
   {
     "id": 228,
-    "name": "EDWIN MSHIU",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Edwin Mshiu",
+    "suffix": "FJ02",
     "originalName": "EDWIN MSHIU FJ02",
     "phones": [
       "0784228854"
@@ -2500,7 +2500,7 @@
   {
     "id": 229,
     "name": "Alatukela Shem",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "suffix": "FJ05",
     "originalName": "Alatukela Shem FJ05",
     "phones": [
       "0769364276",
@@ -2512,7 +2512,7 @@
   {
     "id": 230,
     "name": "Upendo Mbwilo",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "suffix": "FJ06",
     "originalName": "Upendo Mbwilo FJ06",
     "phones": [
       "0784089050",
@@ -2523,8 +2523,8 @@
   },
   {
     "id": 231,
-    "name": "ELIBARIKI PETRO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Elibariki Petro",
+    "suffix": "FJ01",
     "originalName": "ELIBARIKI PETRO FJ01",
     "phones": [
       "0788300283"
@@ -2534,8 +2534,8 @@
   },
   {
     "id": 232,
-    "name": "STELLA JUMA",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Stella Juma",
+    "suffix": "FJ02",
     "originalName": "STELLA JUMA FJ02",
     "phones": [
       "0754542261"
@@ -2545,8 +2545,8 @@
   },
   {
     "id": 233,
-    "name": "GODLIVING MREMI",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Godliving Mremi",
+    "suffix": "FJ03",
     "originalName": "GODLIVING MREMI FJ03",
     "phones": [
       "0716779078"
@@ -2556,8 +2556,8 @@
   },
   {
     "id": 234,
-    "name": "JOHN ANDREA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "John Andrea",
+    "suffix": "FJ04",
     "originalName": "JOHN ANDREA FJ04",
     "phones": [
       "0624915900"
@@ -2567,8 +2567,8 @@
   },
   {
     "id": 235,
-    "name": "ANNA JOHNSON",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Anna Johnson",
+    "suffix": "FJ05",
     "originalName": "ANNA JOHNSON FJ05",
     "phones": [
       "0713319896"
@@ -2578,8 +2578,8 @@
   },
   {
     "id": 236,
-    "name": "ESTHER SELEMANI",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Esther Selemani",
+    "suffix": "FJ06",
     "originalName": "ESTHER SELEMANI FJ06",
     "phones": [
       "0763425065"
@@ -2589,8 +2589,8 @@
   },
   {
     "id": 237,
-    "name": "SUZANA KANYENYE",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Suzana Kanyenye",
+    "suffix": "FJ01",
     "originalName": "SUZANA KANYENYE FJ01",
     "phones": [
       "0754376175"
@@ -2600,8 +2600,8 @@
   },
   {
     "id": 238,
-    "name": "DEVOTHA IGNAS",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Devotha Ignas",
+    "suffix": "FJ02",
     "originalName": "DEVOTHA IGNAS FJ02",
     "phones": [
       "0655631318"
@@ -2611,8 +2611,8 @@
   },
   {
     "id": 239,
-    "name": "MAGRETH KATTO",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Magreth Katto",
+    "suffix": "FJ03",
     "originalName": "MAGRETH KATTO FJ03",
     "phones": [
       "0752626258"
@@ -2622,8 +2622,8 @@
   },
   {
     "id": 240,
-    "name": "DEBORA FUMBO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Debora Fumbo",
+    "suffix": "FJ04",
     "originalName": "DEBORA FUMBO FJ04",
     "phones": [
       "0656509599"
@@ -2633,8 +2633,8 @@
   },
   {
     "id": 241,
-    "name": "DORICE GAMA",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Dorice Gama",
+    "suffix": "FJ05",
     "originalName": "DORICE GAMA FJ05",
     "phones": [
       "0717683063"
@@ -2644,8 +2644,8 @@
   },
   {
     "id": 242,
-    "name": "JACOB SHILLA",
-    "suffix": "FJ06 (MTUNZA HAZINA MSAIDIZI)",
+    "name": "Jacob Shilla",
+    "suffix": "FJ06",
     "originalName": "JACOB SHILLA FJ06",
     "phones": [
       "0620300700"
@@ -2655,8 +2655,8 @@
   },
   {
     "id": 243,
-    "name": "CECILIA MKONONGO",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Cecilia Mkonongo",
+    "suffix": "FJ01",
     "originalName": "CECILIA MKONONGO FJ01",
     "phones": [
       "0716247817"
@@ -2666,8 +2666,8 @@
   },
   {
     "id": 244,
-    "name": "MADGALENA MUSHI",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Madgalena Mushi",
+    "suffix": "FJ02",
     "originalName": "MADGALENA MUSHI FJ02",
     "phones": [
       "0712701563"
@@ -2677,8 +2677,8 @@
   },
   {
     "id": 245,
-    "name": "ONOLIA YUDA MADEGE",
-    "suffix": "FJ03 (KATIBU)",
+    "name": "Onolia Yuda Madege",
+    "suffix": "FJ03",
     "originalName": "ONOLIA YUDA MADEGE FJ03",
     "phones": [
       "0689637231"
@@ -2688,8 +2688,8 @@
   },
   {
     "id": 246,
-    "name": "ELIZABETH MWALUPODO",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Elizabeth Mwalupodo",
+    "suffix": "FJ04",
     "originalName": "ELIZABETH MWALUPODO FJ04",
     "phones": [],
     "status": "missing",
@@ -2697,8 +2697,8 @@
   },
   {
     "id": 247,
-    "name": "GRACE LOTTO",
-    "suffix": "FJ05 (MTUNZA HAZINA)",
+    "name": "Grace Lotto",
+    "suffix": "FJ05",
     "originalName": "GRACE LOTTO FJ05",
     "phones": [
       "0685935984"
@@ -2708,8 +2708,8 @@
   },
   {
     "id": 248,
-    "name": "SOSPETER KEREFU",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Sospeter Kerefu",
+    "suffix": "FJ01",
     "originalName": "SOSPETER KEREFU FJ01",
     "phones": [
       "0657368063",
@@ -2720,8 +2720,8 @@
   },
   {
     "id": 249,
-    "name": "RAPHAEL JANG'ANDU",
-    "suffix": "FJ02 (MAKAMU MWENYEKITI)",
+    "name": "Raphael Jang'andu",
+    "suffix": "FJ02",
     "originalName": "RAPHAEL JANG'ANDU FJ02",
     "phones": [
       "0715613734",
@@ -2732,8 +2732,8 @@
   },
   {
     "id": 250,
-    "name": "HAPPY FANUEL",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Happy Fanuel",
+    "suffix": "FJ01",
     "originalName": "HAPPY FANUEL FJ01",
     "phones": [
       "0672527442",
@@ -2744,8 +2744,8 @@
   },
   {
     "id": 251,
-    "name": "BARAKA RICHARD",
-    "suffix": "FJ01 (MWENYEKITI)",
+    "name": "Baraka Richard",
+    "suffix": "FJ01",
     "originalName": "BARAKA RICHARD FJ01",
     "phones": [
       "0746721374"
@@ -2755,8 +2755,8 @@
   },
   {
     "id": 252,
-    "name": "FURAHA MAKUPA",
-    "suffix": "FJ04 (KATIBU MSAIDIZI)",
+    "name": "Furaha Makupa",
+    "suffix": "FJ04",
     "originalName": "FURAHA MAKUPA FJ04",
     "phones": [
       "0785495133"
@@ -2766,7 +2766,7 @@
   },
   {
     "id": 253,
-    "name": "ANAJOYCE GASPER",
+    "name": "Anajoyce Gasper",
     "suffix": "",
     "originalName": "ANAJOYCE GASPER ",
     "phones": [
@@ -2777,7 +2777,7 @@
   },
   {
     "id": 254,
-    "name": "MBOKIGWE ISWASU",
+    "name": "Mbokigwe Iswasu",
     "suffix": "",
     "originalName": "MBOKIGWE ISWASU ",
     "phones": [
@@ -2788,7 +2788,7 @@
   },
   {
     "id": 255,
-    "name": "VIVA GODFREY",
+    "name": "Viva Godfrey",
     "suffix": "",
     "originalName": "VIVA GODFREY ",
     "phones": [
@@ -2800,7 +2800,7 @@
   },
   {
     "id": 256,
-    "name": "ELIUPAKO SAMWEL",
+    "name": "Eliupako Samwel",
     "suffix": "",
     "originalName": "ELIUPAKO SAMWEL ",
     "phones": [
@@ -2811,7 +2811,7 @@
   },
   {
     "id": 257,
-    "name": "PAULO AYO",
+    "name": "Paulo Ayo",
     "suffix": "",
     "originalName": "PAULO AYO ",
     "phones": [
@@ -2822,7 +2822,7 @@
   },
   {
     "id": 258,
-    "name": "UPENDO MUNUO",
+    "name": "Upendo Munuo",
     "suffix": "",
     "originalName": "UPENDO MUNUO ",
     "phones": [
@@ -2856,7 +2856,7 @@
   },
   {
     "id": 261,
-    "name": "Atuganile israel",
+    "name": "Atuganile Israel",
     "suffix": "",
     "originalName": "Atuganile israel ",
     "phones": [
