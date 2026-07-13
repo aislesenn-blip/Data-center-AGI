@@ -20,8 +20,10 @@ export function generateVCF(contacts: Contact[]): string {
     vcfLines.push('BEGIN:VCARD');
     vcfLines.push('VERSION:3.0');
 
+    // Add stable UID for automatic replacement of outdated contacts
+    vcfLines.push(`UID:urn:uuid:benmongibot-contact-${contact.id}`);
+
     // Add Name and Title
-    // Now contact.suffix contains exactly the formatted job title requested by the user, e.g., "Mwenyekiti: FJ01"
     const fullName = contact.suffix ? `${contact.name} - ${contact.suffix}` : contact.name;
     vcfLines.push(`FN:${fullName}`);
     vcfLines.push(`N:${contact.name};;;;`);
