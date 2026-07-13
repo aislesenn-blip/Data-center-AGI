@@ -20,17 +20,13 @@ export function generateVCF(contacts: Contact[]): string {
     vcfLines.push('BEGIN:VCARD');
     vcfLines.push('VERSION:3.0');
 
-    // Add Name and Title
-    const fullName = contact.suffix ? `${contact.name} - ${contact.suffix}` : contact.name;
+    // Add Name
+    const fullName = contact.suffix ? `${contact.name} ${contact.suffix}` : contact.name;
     vcfLines.push(`FN:${fullName}`);
 
-    // To ensure maximum visibility on mobile devices (e.g. iOS),
-    // we also inject the job title (suffix) into the N property as a suffix.
-    vcfLines.push(`N:${contact.name};;;;${contact.suffix ? contact.suffix : ''}`);
-
-    if (contact.suffix) {
-        vcfLines.push(`TITLE:${contact.suffix}`);
-    }
+    // Set the Name property to match the FN property, ensuring the code is part of the name
+    // and avoiding metadata fields which may not be preserved.
+    vcfLines.push(`N:${fullName};;;;`);
 
     // Add all available phone numbers with distinct types
     contact.phones.forEach((phone, index) => {
