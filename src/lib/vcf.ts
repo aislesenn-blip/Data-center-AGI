@@ -39,8 +39,13 @@ export function generateVCF(contacts: Contact[]): string {
       vcfLines.push(`TEL;TYPE=${type}:${phone}`);
     });
 
+    // Create a deterministic UUID format based on the contact ID for standard clients
+    const uuidStr = `00000000-0000-0000-0000-${String(contact.id).padStart(12, '0')}`;
+
     // Add UID and REV for reliable update/replacement on mobile OS
-    vcfLines.push(`UID:urn:uuid:benmongibot-contact-${contact.id}`);
+    vcfLines.push(`UID:${uuidStr}`);
+    // Add Apple-specific deduplication tag
+    vcfLines.push(`X-ABUID:${uuidStr}`);
     vcfLines.push(`REV:${new Date().toISOString()}`);
 
     vcfLines.push('END:VCARD');
