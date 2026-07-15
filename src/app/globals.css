@@ -1,15 +1,22 @@
 @import "tailwindcss";
 
-:root {
-  --background: #F9FAFB;
-  --foreground: #111827;
+@theme {
+  --color-feep-bg: #F6F4ED;
+  --color-feep-primary: #71E300;
+  --color-feep-text: #0f1115;
+  --color-feep-text-muted: #52525b;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
+@layer base {
+  body {
+    background-color: var(--color-feep-bg);
+    color: var(--color-feep-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
+/* Hide scrollbar for a cleaner premium look */
 ::-webkit-scrollbar {
   display: none;
 }
