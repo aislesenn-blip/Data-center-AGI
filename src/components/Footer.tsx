@@ -20,38 +20,34 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-sm tracking-wider uppercase text-zinc-500">Company</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">About</Link></li>
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Mission</Link></li>
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Partners</Link></li>
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Careers</Link></li>
+              <li><Link href="#solution" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">About</Link></li>
+              <li><Link href="#vision" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Mission</Link></li>
+              <li><Link href="#contact" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Partners</Link></li>
+              <li><Link href="mailto:careers@feep.africa" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Careers</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4 text-sm tracking-wider uppercase text-zinc-500">Legal</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Terms of Service</Link></li>
+              <li><Link href="mailto:legal@feep.africa?subject=Privacy Policy Request" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Privacy Policy</Link></li>
+              <li><Link href="mailto:legal@feep.africa?subject=Terms of Service Request" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4 text-sm tracking-wider uppercase text-zinc-500">Connect</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">LinkedIn</Link></li>
+              <li><Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">LinkedIn</Link></li>
               <li><Link href="mailto:hello@feep.africa" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Email Us</Link></li>
             </ul>
           </div>
         </FadeIn>
 
-        <FadeIn delay={0.2} className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <FadeIn delay={0.2} className="pt-8 border-t border-white/10 flex justify-center md:justify-start">
           <p className="text-sm text-zinc-500">
             &copy; {currentYear} FEEP. All rights reserved.
           </p>
-          <div className="flex items-center gap-2 text-sm text-zinc-500">
-            <span className="w-2 h-2 rounded-full bg-feep-primary"></span>
-            Operating in Africa
-          </div>
         </FadeIn>
       </div>
     </footer>
