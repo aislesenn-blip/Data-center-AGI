@@ -5,12 +5,12 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#F6F4ED",
 };
 
 export const metadata: Metadata = {
-  title: "BEN MONGI BOT",
-  description: "Generate VCF from contacts list",
+  title: "FEEP Global",
+  description: "FEEP helps families pay school fees through simple, interest-free monthly plans.",
 };
 
 export default function RootLayout({
@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-white text-zinc-900 selection:bg-zinc-200">
-      <body className={`${inter.className} min-h-screen bg-[#F9FAFB] text-zinc-900 antialiased`}>
+    <html lang="en" className="bg-feep-bg text-zinc-900 selection:bg-feep-primary/30">
+      <body className={`${inter.className} min-h-screen bg-feep-bg text-zinc-900 antialiased`}>
         {children}
       </body>
     </html>

@@ -1,0 +1,14 @@
+
+> rikpedia-main@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 556ms
+
+○ Compiling / ...
+Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>.
+ GET / 200 in 7.1s (next.js: 6.4s, application-code: 727ms)
+[browser] Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>.
+✓ Compiled in 30ms
