@@ -5,8 +5,11 @@ import Footer from "@/components/Footer";
 import FadeIn from "@/components/FadeIn";
 import Link from "next/link";
 import { ArrowRight, Wallet, GraduationCap, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export default function Home() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   return (
     <main className="min-h-screen relative overflow-hidden">
       <Navigation />
@@ -15,22 +18,32 @@ export default function Home() {
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto">
         <FadeIn className="max-w-4xl">
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
-            Smarter school fees.<br />
-            <span className="text-feep-text-muted">Stronger schools.</span>
+            Financial infrastructure<br />
+            <span className="text-feep-text-muted">for education.</span>
           </h1>
           <p className="text-xl md:text-2xl text-feep-text-muted max-w-2xl leading-relaxed mb-12">
             We enable schools to receive full fee payments upfront while offering families simple, zero-interest monthly plans.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link href="#contact">
-              <button className="bg-feep-primary text-black px-8 py-4 rounded-full text-lg font-semibold transition-transform hover:scale-105 active:scale-95 flex items-center gap-2">
+              <motion.button
+                whileHover={{ y: -2, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-feep-primary text-black px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 shadow-lg shadow-feep-primary/20 hover:shadow-feep-primary/30"
+              >
                 Talk to Us <ArrowRight size={20} />
-              </button>
+              </motion.button>
             </Link>
             <Link href="#investors">
-              <button className="bg-transparent border border-black/10 text-feep-text hover:bg-black/5 px-8 py-4 rounded-full text-lg font-semibold transition-all">
+              <motion.button
+                whileHover={{ y: -2, backgroundColor: "rgba(0,0,0,0.05)" }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-transparent border border-black/10 text-feep-text px-8 py-4 rounded-full text-lg font-semibold"
+              >
                 For Investors
-              </button>
+              </motion.button>
             </Link>
           </div>
         </FadeIn>
@@ -78,12 +91,18 @@ export default function Home() {
             { icon: CheckCircle2, title: "3. Zero interest", desc: "Parents repay FEEP in simple, manageable monthly installments with no interest." },
             { icon: ArrowRight, title: "4. Better operations", desc: "Schools pay a small partnership fee for guaranteed cash flow and enrollment." }
           ].map((step, i) => (
-            <FadeIn key={i} delay={i * 0.1} className="relative z-10 bg-feep-bg p-8 rounded-2xl border border-black/5 shadow-sm">
-              <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6">
-                <step.icon className="text-feep-text w-6 h-6" />
-              </div>
-              <h4 className="text-xl font-bold mb-3">{step.title}</h4>
-              <p className="text-feep-text-muted leading-relaxed">{step.desc}</p>
+            <FadeIn key={i} delay={i * 0.1} className="relative z-10">
+              <motion.div
+                whileHover={{ y: -6, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.05)" }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-feep-bg p-8 rounded-2xl border border-black/5 shadow-sm h-full"
+              >
+                <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6">
+                  <step.icon className="text-feep-text w-6 h-6" />
+                </div>
+                <h4 className="text-xl font-bold mb-3">{step.title}</h4>
+                <p className="text-feep-text-muted leading-relaxed">{step.desc}</p>
+              </motion.div>
             </FadeIn>
           ))}
         </div>
@@ -168,13 +187,35 @@ export default function Home() {
               { q: "How does FEEP make money?", a: "Schools pay FEEP a small partnership fee (a percentage of the total fees collected) in exchange for receiving their cash upfront and eliminating collection friction." },
               { q: "Who can partner with FEEP?", a: "We partner with registered private and semi-private educational institutions that meet our operational and financial criteria." }
             ].map((faq, i) => (
-              <details key={i} className="group bg-white p-6 rounded-2xl border border-black/5 cursor-pointer [&_summary::-webkit-details-marker]:hidden">
-                <summary className="font-semibold text-lg flex justify-between items-center outline-none">
+              <div key={i} className="bg-white rounded-2xl border border-black/5 overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full text-left font-semibold text-lg flex justify-between items-center p-6 outline-none"
+                >
                   {faq.q}
-                  <span className="text-feep-primary group-open:rotate-45 transition-transform text-2xl leading-none">+</span>
-                </summary>
-                <p className="mt-4 text-feep-text-muted leading-relaxed pr-8">{faq.a}</p>
-              </details>
+                  <motion.span
+                    animate={{ rotate: openFaq === i ? 45 : 0 }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-feep-primary text-2xl leading-none shrink-0 ml-4"
+                  >
+                    +
+                  </motion.span>
+                </button>
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <p className="px-6 pb-6 pt-2 text-feep-text-muted leading-relaxed pr-8">
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </div>
         </FadeIn>
