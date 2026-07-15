@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-feep-bg: #F6F4ED;
+  --color-feep-primary: #71E300;
+}
+
 :root {
-  --background: #F9FAFB;
+  --background: var(--color-feep-bg);
   --foreground: #111827;
 }
 
