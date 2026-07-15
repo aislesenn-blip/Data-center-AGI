@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -70,29 +70,47 @@ export default function Navigation() {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-full left-0 right-0 bg-feep-bg border-b border-black/5 px-6 py-8 flex flex-col gap-6 shadow-xl"
-        >
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-lg font-medium text-feep-text"
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>
-            <button className="bg-feep-primary w-full text-black px-6 py-4 rounded-xl text-base font-semibold mt-2">
-              Partner With FEEP
-            </button>
-          </Link>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden absolute top-full left-0 right-0 bg-feep-bg border-b border-black/5 overflow-hidden shadow-xl"
+          >
+            <div className="px-6 py-8 flex flex-col gap-6">
+              {links.map((link, i) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + (i * 0.05), duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg font-medium text-feep-text block"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>
+                  <button className="bg-feep-primary w-full text-black px-6 py-4 rounded-xl text-base font-semibold mt-2 transition-transform active:scale-95">
+                    Partner With FEEP
+                  </button>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

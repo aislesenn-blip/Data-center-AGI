@@ -20,7 +20,7 @@ export default function FadeIn({ children, delay = 0, className = "", duration =
       transition={{
         duration,
         delay,
-        ease: [0.21, 0.47, 0.32, 0.98], // Custom cubic-bezier for a smooth, premium easing
+        ease: [0.22, 1, 0.36, 1], // Signature fluid spring-like cubic-bezier for premium deceleration
       }}
       className={className}
     >
