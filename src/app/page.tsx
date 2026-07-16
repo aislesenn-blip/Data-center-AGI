@@ -38,12 +38,11 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto">
         <FadeIn className="max-w-4xl">
-          <p className="text-feep-primary font-bold tracking-widest uppercase text-sm mb-6">Flexible payments for essential services.</p>
-          <h1 className="text-5xl md:text-7xl lg:text-[80px] font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
-            We help providers make payments <span className="text-feep-text-muted">accessible for everyone.</span>
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
+            Access <span className="text-feep-text-muted">without</span> compromise.
           </h1>
           <p className="text-xl md:text-2xl text-feep-text-muted max-w-2xl leading-relaxed mb-12">
-            Schools need fees on time. Parents need flexibility. We help schools accept flexible payments without requiring large upfront payments.
+            Providers need full payment on time. People need flexibility. We bridge the gap so everyone wins.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link href="#contact">
@@ -53,7 +52,7 @@ export default function Home() {
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-feep-primary text-black px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 shadow-lg shadow-feep-primary/20 hover:shadow-feep-primary/30"
               >
-                Offer Flexible Payments <ArrowRight size={20} />
+                Become a Partner <ArrowRight size={20} />
               </motion.button>
             </Link>
             <Link href="#investors">

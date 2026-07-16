@@ -55,7 +55,7 @@ export default function Navigation() {
               whileTap={{ scale: 0.98 }}
               className="bg-feep-primary text-black px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:bg-[#65cc00]"
             >
-              Offer Flexible Payments
+              Become a Partner
             </motion.button>
           </Link>
         </div>
