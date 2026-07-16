@@ -20,18 +20,19 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-sm tracking-wider uppercase text-zinc-500">Company</h4>
             <ul className="space-y-3">
-              <li><Link href="#solution" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">About</Link></li>
-              <li><Link href="#vision" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Mission</Link></li>
-              <li><Link href="#contact" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Partners</Link></li>
-              <li><Link href="mailto:careers@feep.africa" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Careers</Link></li>
+              <li><Link href="/#solution" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">About</Link></li>
+              <li><Link href="/#vision" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Mission</Link></li>
+              <li><Link href="/#contact" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Partners</Link></li>
+              <li><Link href="/careers" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Careers</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4 text-sm tracking-wider uppercase text-zinc-500">Legal</h4>
             <ul className="space-y-3">
-              <li><Link href="mailto:legal@feep.africa?subject=Privacy Policy Request" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Privacy Policy</Link></li>
-              <li><Link href="mailto:legal@feep.africa?subject=Terms of Service Request" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Terms of Service</Link></li>
+              <li><Link href="/cookies" className="text-zinc-300 hover:text-feep-primary text-sm transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
 

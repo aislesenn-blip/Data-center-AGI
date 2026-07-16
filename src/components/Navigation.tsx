@@ -55,15 +55,18 @@ export default function Navigation() {
               whileTap={{ scale: 0.98 }}
               className="bg-feep-primary text-black px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:bg-[#65cc00]"
             >
-              Partner With FEEP
+              Offer Flexible Payments
             </motion.button>
           </Link>
         </div>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-feep-text"
+          className="md:hidden text-feep-text outline-none p-2 -mr-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Toggle navigation menu"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -73,6 +76,7 @@ export default function Navigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -103,7 +107,7 @@ export default function Navigation() {
               >
                 <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>
                   <button className="bg-feep-primary w-full text-black px-6 py-4 rounded-xl text-base font-semibold mt-2 transition-transform active:scale-95">
-                    Partner With FEEP
+                    Offer Flexible Payments
                   </button>
                 </Link>
               </motion.div>
