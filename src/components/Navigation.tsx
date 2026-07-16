@@ -62,8 +62,11 @@ export default function Navigation() {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-feep-text"
+          className="md:hidden text-feep-text outline-none p-2 -mr-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Toggle navigation menu"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -73,6 +76,7 @@ export default function Navigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}

@@ -5,8 +5,21 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FEEP | Smarter Education Financing",
-  description: "FEEP helps families pay school fees through simple, interest-free monthly plans while enabling schools to receive their full payment upfront.",
+  title: "FEEP | Financial Infrastructure for Education",
+  description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments. Built for scale in emerging markets.",
+  openGraph: {
+    title: "FEEP | Financial Infrastructure for Education",
+    description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments.",
+    url: "https://feep.africa",
+    siteName: "FEEP",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FEEP | Financial Infrastructure for Education",
+    description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments.",
+  },
 };
 
 export default function RootLayout({

@@ -14,6 +14,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Custom focus states to match brand */
+  *:focus-visible {
+    outline: 2px solid var(--color-feep-primary);
+    outline-offset: 2px;
+  }
 }
 
 /* Hide scrollbar for a cleaner premium look */
