@@ -38,12 +38,13 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto">
         <FadeIn className="max-w-4xl">
+          <p className="text-feep-primary font-bold tracking-widest uppercase text-sm mb-6">Your payments. Your terms.</p>
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
-            Financial infrastructure<br />
-            <span className="text-feep-text-muted">for education.</span>
+            Access life's essentials.<br />
+            <span className="text-feep-text-muted">Pay on your schedule.</span>
           </h1>
           <p className="text-xl md:text-2xl text-feep-text-muted max-w-2xl leading-relaxed mb-12">
-            We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments.
+            We pay your provider upfront so you can access what you need today. You split the exact original cost into manageable installments. Zero extra fees.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link href="#contact">
@@ -53,7 +54,7 @@ export default function Home() {
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-feep-primary text-black px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 shadow-lg shadow-feep-primary/20 hover:shadow-feep-primary/30"
               >
-                Request Integration <ArrowRight size={20} />
+                Offer Flexible Payments <ArrowRight size={20} />
               </motion.button>
             </Link>
             <Link href="#investors">
@@ -90,15 +91,15 @@ export default function Home() {
           </FadeIn>
           <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
             <FadeIn delay={0.1}>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Families struggle with lump-sum payments.</h3>
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">People earn monthly, but life bills annually.</h3>
               <p className="text-lg text-feep-text-muted leading-relaxed">
-                Education is the highest priority for African families, but fee schedules rarely align with income cycles. This timing mismatch forces families into high-interest debt or pulls children out of school entirely.
+                Whether it's tuition, housing, or healthcare, essential services often require large upfront lump sums. This timing mismatch creates unnecessary financial stress and limits access to basic needs.
               </p>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Schools suffer from unpredictable cash flow.</h3>
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Providers suffer from collection friction.</h3>
               <p className="text-lg text-feep-text-muted leading-relaxed">
-                When parents pay late, schools struggle to pay teachers, upgrade facilities, and operate efficiently. Administrators spend more time chasing payments than focusing on education.
+                When customers are forced to delay payments, organizations struggle to cover operational costs. Administrators spend more time chasing payments than delivering their core service.
               </p>
             </FadeIn>
           </div>
@@ -110,7 +111,7 @@ export default function Home() {
         <FadeIn className="text-center max-w-3xl mx-auto mb-20">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">How FEEP Works</h2>
           <p className="text-xl text-feep-text-muted">
-            We are not a lending company. We are infrastructure that bridges the gap between school cash flow needs and parent income cycles.
+            We are the synchronization engine between large expenses and regular income.
           </p>
         </FadeIn>
 
@@ -119,10 +120,10 @@ export default function Home() {
           <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-black/5 -translate-y-1/2 z-0"></div>
 
           {[
-            { icon: Wallet, title: "Instant Liquidity", desc: "FEEP advances full-term tuition directly to the school on day one." },
-            { icon: GraduationCap, title: "Uninterrupted Learning", desc: "Students remain enrolled without the stress or embarrassment of fee-related exclusion." },
-            { icon: CheckCircle2, title: "0% Interest for Families", desc: "Parents repay FEEP in predictable monthly installments with absolutely no hidden fees." },
-            { icon: ArrowRight, title: "Automated Reconciliation", desc: "Schools eliminate collection friction, gaining guaranteed cash flow and operational peace of mind." }
+            { icon: GraduationCap, title: "1. Choose FEEP", desc: "Select FEEP at your school, clinic, or provider when an essential payment is due." },
+            { icon: Wallet, title: "2. We Cover the Bill", desc: "FEEP settles the full amount with the provider on day one, unlocking your immediate access." },
+            { icon: CheckCircle2, title: "3. Split on Your Terms", desc: "You divide the exact original cost into a schedule that matches your natural income cycle." },
+            { icon: ArrowRight, title: "4. Provider Growth", desc: "Partners eliminate collection friction, gaining guaranteed cash flow to invest back into their operations." }
           ].map((step, i) => (
             <FadeIn key={i} delay={i * 0.1} className="relative z-10">
               <motion.div
@@ -138,6 +139,53 @@ export default function Home() {
               </motion.div>
             </FadeIn>
           ))}
+        </div>
+      </section>
+
+      {/* 3.5 Categories (Beachhead & Beyond) */}
+      <section className="py-24 md:py-32 bg-white px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Infrastructure for the things that matter most.</h2>
+            <p className="text-xl text-feep-text-muted">
+              We are starting with education, but building a platform capable of supporting every essential service that requires a large upfront payment.
+            </p>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <FadeIn delay={0.1}>
+              <div className="bg-feep-primary/10 border border-feep-primary/20 p-8 rounded-3xl h-full flex flex-col relative overflow-hidden">
+                <div className="absolute top-4 right-4 bg-feep-primary text-black text-xs font-bold px-3 py-1 rounded-full">Active</div>
+                <GraduationCap className="w-8 h-8 text-feep-primary mb-6" />
+                <h3 className="text-2xl font-bold mb-3">Education</h3>
+                <p className="text-feep-text-muted leading-relaxed">Keep them in class. Split the term's fees without the stress.</p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <div className="bg-feep-bg/50 border border-black/5 p-8 rounded-3xl h-full flex flex-col relative opacity-60">
+                <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
+                <Wallet className="w-8 h-8 text-feep-text-muted mb-6" />
+                <h3 className="text-2xl font-bold mb-3">Housing</h3>
+                <p className="text-feep-text-muted leading-relaxed">Sign the lease. Spread the rent to match your paycheck.</p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.3}>
+              <div className="bg-feep-bg/50 border border-black/5 p-8 rounded-3xl h-full flex flex-col relative opacity-60">
+                <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
+                <CheckCircle2 className="w-8 h-8 text-feep-text-muted mb-6" />
+                <h3 className="text-2xl font-bold mb-3">Healthcare</h3>
+                <p className="text-feep-text-muted leading-relaxed">Get the care you need immediately. Divide the cost later.</p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.4}>
+              <div className="bg-feep-bg/50 border border-black/5 p-8 rounded-3xl h-full flex flex-col relative opacity-60">
+                <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
+                <ArrowRight className="w-8 h-8 text-feep-text-muted mb-6" />
+                <h3 className="text-2xl font-bold mb-3">Utilities</h3>
+                <p className="text-feep-text-muted leading-relaxed">Keep the lights on. Align energy bills with your income.</p>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
@@ -169,10 +217,10 @@ export default function Home() {
       <section id="vision" className="py-32 px-6 md:px-12 max-w-5xl mx-auto text-center">
         <FadeIn>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 leading-tight">
-            Africa&apos;s education sector requires modern financial infrastructure, not just loans.
+            Emerging markets require modern payment infrastructure, not just predatory credit.
           </h2>
           <p className="text-xl text-feep-text-muted leading-relaxed mb-12 max-w-3xl mx-auto">
-            By shifting the cost of capital from the parent to the school, we unlock growth for educational institutions while protecting families from predatory lending.
+            By shifting the upfront cost of capital from the consumer to the provider, we unlock growth for businesses while protecting families from financial anxiety.
           </p>
         </FadeIn>
       </section>
@@ -185,13 +233,13 @@ export default function Home() {
               <h2 className="text-3xl font-bold tracking-tight mb-6">Built with conviction.</h2>
               <div className="space-y-6 text-lg text-feep-text-muted leading-relaxed">
                 <p>
-                  "We are not just solving a localized payment problem. We are architecting a new standard for how education is financed across emerging markets."
+                  "We are not just solving a localized payment problem. We are architecting a new standard for how essential services are accessed across emerging markets."
                 </p>
                 <p>
                   With a deeply analytical background rooted in advanced Physics and Mathematics, combined with a relentless focus on product strategy and go-to-market execution, our leadership understands how to build systems that scale.
                 </p>
                 <p>
-                  FEEP is driven by a singular, long-term vision: eliminating the friction between a child's right to learn and a school's need to operate. We are building technology with global ambition because the problem demands nothing less.
+                  FEEP is driven by a singular, long-term vision: eliminating the friction between a person's basic needs and a provider's need to operate. We are building technology with global ambition because the problem demands nothing less.
                 </p>
                 <div className="pt-4">
                   <div className="font-bold text-feep-text text-xl">Ernest Michael</div>
@@ -217,10 +265,10 @@ export default function Home() {
             <FadeIn>
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Engineered for enterprise scale.</h2>
               <p className="text-lg text-feep-text-muted leading-relaxed mb-8">
-                FEEP operates a B2B2C marketplace with highly predictable recurring revenue, exceptional retention, and negative churn. Once a school integrates FEEP, it becomes core to their operations.
+                FEEP operates a B2B2C marketplace with highly predictable recurring revenue, exceptional retention, and negative churn. Once a provider integrates FEEP, we become core to their operations.
               </p>
               <ul className="space-y-4">
-                {['High LTV/CAC ratio through B2B distribution', 'Proprietary risk assessment algorithms', 'Massive unserved TAM in emerging markets', 'Asset-light technology platform'].map((item, i) => (
+                {['High LTV/CAC ratio through B2B2C distribution', 'Proprietary risk assessment algorithms', 'Massive unserved TAM in emerging markets', 'Asset-light technology platform'].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-6 h-6 text-feep-primary shrink-0" />
                     <span className="text-feep-text font-medium">{item}</span>
@@ -273,10 +321,10 @@ export default function Home() {
           <h2 className="text-3xl font-bold tracking-tight mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "Is FEEP a loan?", a: "No. FEEP does not lend money to parents or charge them interest. We act as a payment facilitator, advancing funds to schools and collecting monthly installments from parents." },
-              { q: "Do parents pay interest?", a: "Parents pay exactly what their school fees cost, divided into equal monthly installments. Zero interest. Zero hidden fees." },
-              { q: "How does FEEP make money?", a: "Schools pay FEEP a small partnership fee (a percentage of the total fees collected) in exchange for receiving their cash upfront and eliminating collection friction." },
-              { q: "Who can partner with FEEP?", a: "We partner with registered private and semi-private educational institutions that meet our operational and financial criteria." }
+              { q: "Are there any extra costs or fees?", a: "No. The customer pays the exact original price of the service, divided into equal installments. There are zero markups and absolutely no hidden fees." },
+              { q: "How does the split payment work?", a: "When a customer chooses FEEP, we immediately pay the full amount directly to the service provider. The customer then pays us back over a flexible schedule that matches their natural income." },
+              { q: "How does FEEP make money?", a: "Service providers pay FEEP a small partnership fee (a percentage of the transaction) in exchange for receiving their cash upfront on day one and eliminating all their collection friction." },
+              { q: "Who can partner with FEEP?", a: "Currently, we partner with registered educational institutions, with plans to expand to housing, healthcare, and utilities. Providers must meet our operational criteria." }
             ].map((faq, i) => (
               <div key={i} className="bg-white rounded-2xl border border-black/5 overflow-hidden">
                 <button
@@ -319,8 +367,8 @@ export default function Home() {
       <section id="contact" className="py-24 md:py-32 bg-white px-6 md:px-12 border-t border-black/5">
         <FadeIn className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold tracking-tight mb-4">Join the network.</h2>
-            <p className="text-lg text-feep-text-muted">Request an integration for your school or explore a strategic partnership. Leave your details below and our team will be in touch.</p>
+            <h2 className="text-4xl font-bold tracking-tight mb-4">Become a partner.</h2>
+            <p className="text-lg text-feep-text-muted">Request an integration for your organization or explore a strategic partnership. Leave your details below and our team will be in touch.</p>
           </div>
 
           {contactFormState === "success" ? (

@@ -5,11 +5,11 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FEEP | Financial Infrastructure for Education",
-  description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments. Built for scale in emerging markets.",
+  title: "FEEP | Your payments. Your terms.",
+  description: "Payment infrastructure for life's essential services. We pay your provider upfront, you split the cost over time with zero extra fees. Built for scale in emerging markets.",
   openGraph: {
-    title: "FEEP | Financial Infrastructure for Education",
-    description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments.",
+    title: "FEEP | Payment Infrastructure for Essential Services",
+    description: "Access life's essentials. Pay on your schedule. We pay the provider upfront so you can split the exact cost over time.",
     url: "https://feep.africa",
     siteName: "FEEP",
     locale: "en_US",
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FEEP | Financial Infrastructure for Education",
-    description: "We guarantee full upfront tuition for schools, while giving families the flexibility to pay in zero-interest monthly installments.",
+    title: "FEEP | Payment Infrastructure for Essential Services",
+    description: "Access life's essentials. Pay on your schedule. We pay the provider upfront so you can split the exact cost over time.",
   },
 };
 
