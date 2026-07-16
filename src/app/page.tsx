@@ -38,13 +38,12 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto">
         <FadeIn className="max-w-4xl">
-          <p className="text-feep-primary font-bold tracking-widest uppercase text-sm mb-6">Your payments. Your terms.</p>
+          <p className="text-feep-primary font-bold tracking-widest uppercase text-sm mb-6">Flexible payments for essential services.</p>
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
-            Access life's essentials.<br />
-            <span className="text-feep-text-muted">Pay on your schedule.</span>
+            We help providers make payments <span className="text-feep-text-muted">accessible for everyone.</span>
           </h1>
           <p className="text-xl md:text-2xl text-feep-text-muted max-w-2xl leading-relaxed mb-12">
-            We pay your provider upfront so you can access what you need today. You split the exact original cost into manageable installments. Zero extra fees.
+            Schools need fees on time. Parents need flexibility. We help schools accept flexible payments without requiring large upfront payments.
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link href="#contact">
@@ -91,15 +90,15 @@ export default function Home() {
           </FadeIn>
           <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
             <FadeIn delay={0.1}>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">People earn monthly, but life bills annually.</h3>
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Providers need reliability.</h3>
               <p className="text-lg text-feep-text-muted leading-relaxed">
-                Whether it's tuition, housing, or healthcare, essential services often require large upfront lump sums. This timing mismatch creates unnecessary financial stress and limits access to basic needs.
+                Organizations like schools, clinics, and property managers rely on timely payments to operate effectively. When payments are delayed or unpredictable, it disrupts their ability to deliver essential services.
               </p>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Providers suffer from collection friction.</h3>
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">People need flexibility.</h3>
               <p className="text-lg text-feep-text-muted leading-relaxed">
-                When customers are forced to delay payments, organizations struggle to cover operational costs. Administrators spend more time chasing payments than delivering their core service.
+                Everyday people earn money on a regular schedule, but life's biggest expenses often demand large lump sums all at once. Forcing people to pay everything upfront creates unnecessary stress and friction.
               </p>
             </FadeIn>
           </div>
@@ -111,7 +110,7 @@ export default function Home() {
         <FadeIn className="text-center max-w-3xl mx-auto mb-20">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">How FEEP Works</h2>
           <p className="text-xl text-feep-text-muted">
-            We are the synchronization engine between large expenses and regular income.
+            We bridge the gap between providers who need full payment and people who need flexible schedules.
           </p>
         </FadeIn>
 
@@ -120,10 +119,10 @@ export default function Home() {
           <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-black/5 -translate-y-1/2 z-0"></div>
 
           {[
-            { icon: GraduationCap, title: "1. Choose FEEP", desc: "Select FEEP at your school, clinic, or provider when an essential payment is due." },
-            { icon: Wallet, title: "2. We Cover the Bill", desc: "FEEP settles the full amount with the provider on day one, unlocking your immediate access." },
-            { icon: CheckCircle2, title: "3. Split on Your Terms", desc: "You divide the exact original cost into a schedule that matches your natural income cycle." },
-            { icon: ArrowRight, title: "4. Provider Growth", desc: "Partners eliminate collection friction, gaining guaranteed cash flow to invest back into their operations." }
+            { icon: GraduationCap, title: "1. The Provider Partner", desc: "A school or clinic partners with FEEP to offer a flexible payment option to their customers." },
+            { icon: Wallet, title: "2. The Customer Chooses", desc: "The customer selects FEEP to pay their bill, choosing a schedule that fits their natural income." },
+            { icon: CheckCircle2, title: "3. The Provider Gets Paid", desc: "FEEP immediately pays the provider the full amount, so they have the funds they need to operate." },
+            { icon: ArrowRight, title: "4. Everyone Wins", desc: "The provider gets their cash upfront, and the customer gets the flexibility they deserve." }
           ].map((step, i) => (
             <FadeIn key={i} delay={i * 0.1} className="relative z-10">
               <motion.div
@@ -148,7 +147,7 @@ export default function Home() {
           <FadeIn className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Infrastructure for the things that matter most.</h2>
             <p className="text-xl text-feep-text-muted">
-              We are starting with education, but building a platform capable of supporting every essential service that requires a large upfront payment.
+              We apply this simple framework to life's most critical sectors, starting with education.
             </p>
           </FadeIn>
 
@@ -158,7 +157,7 @@ export default function Home() {
                 <div className="absolute top-4 right-4 bg-feep-primary text-black text-xs font-bold px-3 py-1 rounded-full">Active</div>
                 <GraduationCap className="w-8 h-8 text-feep-primary mb-6" />
                 <h3 className="text-2xl font-bold mb-3">Education</h3>
-                <p className="text-feep-text-muted leading-relaxed">Keep them in class. Split the term's fees without the stress.</p>
+                <p className="text-feep-text-muted leading-relaxed">Schools need fees on time. Parents need flexibility. We bridge the gap.</p>
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
@@ -166,7 +165,7 @@ export default function Home() {
                 <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
                 <Wallet className="w-8 h-8 text-feep-text-muted mb-6" />
                 <h3 className="text-2xl font-bold mb-3">Housing</h3>
-                <p className="text-feep-text-muted leading-relaxed">Sign the lease. Spread the rent to match your paycheck.</p>
+                <p className="text-feep-text-muted leading-relaxed">Landlords need rent on time. Tenants need flexibility. We bridge the gap.</p>
               </div>
             </FadeIn>
             <FadeIn delay={0.3}>
@@ -174,7 +173,7 @@ export default function Home() {
                 <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
                 <CheckCircle2 className="w-8 h-8 text-feep-text-muted mb-6" />
                 <h3 className="text-2xl font-bold mb-3">Healthcare</h3>
-                <p className="text-feep-text-muted leading-relaxed">Get the care you need immediately. Divide the cost later.</p>
+                <p className="text-feep-text-muted leading-relaxed">Clinics need payment on time. Patients need flexibility. We bridge the gap.</p>
               </div>
             </FadeIn>
             <FadeIn delay={0.4}>
@@ -182,7 +181,7 @@ export default function Home() {
                 <div className="absolute top-4 right-4 bg-black/5 text-feep-text-muted text-xs font-bold px-3 py-1 rounded-full">Future</div>
                 <ArrowRight className="w-8 h-8 text-feep-text-muted mb-6" />
                 <h3 className="text-2xl font-bold mb-3">Utilities</h3>
-                <p className="text-feep-text-muted leading-relaxed">Keep the lights on. Align energy bills with your income.</p>
+                <p className="text-feep-text-muted leading-relaxed">Utility providers need payment immediately. People need flexibility. We bridge the gap.</p>
               </div>
             </FadeIn>
           </div>
@@ -321,9 +320,9 @@ export default function Home() {
           <h2 className="text-3xl font-bold tracking-tight mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "Are there any extra costs or fees?", a: "No. The customer pays the exact original price of the service, divided into equal installments. There are zero markups and absolutely no hidden fees." },
-              { q: "How does the split payment work?", a: "When a customer chooses FEEP, we immediately pay the full amount directly to the service provider. The customer then pays us back over a flexible schedule that matches their natural income." },
-              { q: "How does FEEP make money?", a: "Service providers pay FEEP a small partnership fee (a percentage of the transaction) in exchange for receiving their cash upfront on day one and eliminating all their collection friction." },
+              { q: "Is this a loan?", a: "No. We simply help providers accept flexible payments. We don't charge interest, we don't ask people to understand complicated financial models, and we don't charge hidden fees." },
+              { q: "How does it work for the customer?", a: "If your school or provider uses FEEP, you can select us as your payment method. You choose a payment schedule that works for you, and we handle the rest with the provider." },
+              { q: "What's the benefit for the provider?", a: "We pay the provider the full amount immediately. This gives them the reliable cash flow they need to operate, without having to chase late payments." },
               { q: "Who can partner with FEEP?", a: "Currently, we partner with registered educational institutions, with plans to expand to housing, healthcare, and utilities. Providers must meet our operational criteria." }
             ].map((faq, i) => (
               <div key={i} className="bg-white rounded-2xl border border-black/5 overflow-hidden">
