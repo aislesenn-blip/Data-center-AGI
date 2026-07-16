@@ -133,7 +133,7 @@ export default function Home() {
       </section>
 
       {/* 5. Why Now & Vision */}
-      <section className="py-32 px-6 md:px-12 max-w-5xl mx-auto text-center">
+      <section id="vision" className="py-32 px-6 md:px-12 max-w-5xl mx-auto text-center">
         <FadeIn>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 leading-tight">
             Africa&apos;s education sector requires modern financial infrastructure, not just loans.
