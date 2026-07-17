@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-space-grotesk);
   --color-feep-bg: #F6F4ED;
   --color-feep-primary: #71E300;
   --color-feep-text: #0f1115;
@@ -19,6 +21,10 @@
   *:focus-visible {
     outline: 2px solid var(--color-feep-primary);
     outline-offset: 2px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
 }
 
