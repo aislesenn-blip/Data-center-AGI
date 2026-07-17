@@ -4,7 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FadeIn from "@/components/FadeIn";
 import Link from "next/link";
-import { ArrowRight, Wallet, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Wallet, GraduationCap, CheckCircle2, Building } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
@@ -39,7 +39,7 @@ export default function Home() {
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto">
         <FadeIn className="max-w-4xl">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.05] text-feep-text mb-8">
-            Access <span className="text-feep-text-muted">without</span> compromise.
+            With FEEP, <span className="text-feep-text-muted">access comes first.</span>
           </h1>
           <p className="text-xl md:text-2xl text-feep-text-muted max-w-2xl leading-relaxed mb-12">
             Providers need full payment on time. People need flexibility. We bridge the gap so everyone wins.
@@ -70,7 +70,7 @@ export default function Home() {
 
         {/* Social Proof */}
         <FadeIn delay={0.2} className="mt-24 md:mt-32 max-w-4xl">
-          <p className="text-sm font-semibold tracking-wider text-zinc-400 uppercase mb-8">Trusted by innovative schools</p>
+          <p className="text-sm font-semibold tracking-wider text-zinc-400 uppercase mb-8">Trusted by innovative service providers</p>
           <div className="flex flex-wrap gap-12 items-center opacity-40 grayscale pointer-events-none">
             {/* These are placeholder abstract shapes to represent partner school logos */}
             <div className="h-8 w-32 bg-zinc-400 rounded-sm"></div>
@@ -118,7 +118,7 @@ export default function Home() {
           <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-black/5 -translate-y-1/2 z-0"></div>
 
           {[
-            { icon: GraduationCap, title: "1. The Provider Partner", desc: "A school or clinic partners with FEEP to offer a flexible payment option to their customers." },
+            { icon: Building, title: "1. The Provider Partner", desc: "An essential service provider partners with FEEP to offer flexible payment options to their customers." },
             { icon: Wallet, title: "2. The Customer Chooses", desc: "The customer selects FEEP to pay their bill, choosing a schedule that fits their natural income." },
             { icon: CheckCircle2, title: "3. The Provider Gets Paid", desc: "FEEP immediately pays the provider the full amount, so they have the funds they need to operate." },
             { icon: ArrowRight, title: "4. Everyone Wins", desc: "The provider gets their cash upfront, and the customer gets the flexibility they deserve." }
@@ -197,7 +197,7 @@ export default function Home() {
             </div>
             <div className="md:px-8">
               <div className="text-5xl md:text-6xl font-bold tracking-tighter mb-2 text-feep-primary">200+</div>
-              <div className="text-zinc-400 font-medium">Schools Partnered</div>
+              <div className="text-zinc-400 font-medium">Providers Partnered</div>
             </div>
             <div className="md:px-8">
               <div className="text-5xl md:text-6xl font-bold tracking-tighter mb-2 text-feep-primary">99%</div>
@@ -205,7 +205,7 @@ export default function Home() {
             </div>
             <div className="md:px-8">
               <div className="text-5xl md:text-6xl font-bold tracking-tighter mb-2 text-feep-primary">$10M+</div>
-              <div className="text-zinc-400 font-medium">Fees Enabled</div>
+              <div className="text-zinc-400 font-medium">Payments Enabled</div>
             </div>
           </FadeIn>
         </div>
@@ -320,9 +320,9 @@ export default function Home() {
           <div className="space-y-4">
             {[
               { q: "Is this a loan?", a: "No. We simply help providers accept flexible payments. We don't charge interest, we don't ask people to understand complicated financial models, and we don't charge hidden fees." },
-              { q: "How does it work for the customer?", a: "If your school or provider uses FEEP, you can select us as your payment method. You choose a payment schedule that works for you, and we handle the rest with the provider." },
+              { q: "How does it work for the customer?", a: "If your service provider uses FEEP, you can select us as your payment method. You choose a payment schedule that works for you, and we handle the rest with the provider." },
               { q: "What's the benefit for the provider?", a: "We pay the provider the full amount immediately. This gives them the reliable cash flow they need to operate, without having to chase late payments." },
-              { q: "Who can partner with FEEP?", a: "Currently, we partner with registered educational institutions, with plans to expand to housing, healthcare, and utilities. Providers must meet our operational criteria." }
+              { q: "Who can partner with FEEP?", a: "Our beachhead market is education, with rapid expansion planned for housing, healthcare, and utilities. Providers must meet our operational criteria." }
             ].map((faq, i) => (
               <div key={i} className="bg-white rounded-2xl border border-black/5 overflow-hidden">
                 <button
@@ -412,7 +412,10 @@ export default function Home() {
                   <label className="text-sm font-medium">Purpose</label>
                   <select required disabled={contactFormState === "loading"} defaultValue="" className="w-full bg-feep-bg px-4 py-3 rounded-xl border border-transparent focus:border-feep-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer disabled:opacity-50">
                     <option value="" disabled>Select an option...</option>
-                    <option value="school">School</option>
+                    <option value="provider_education">Service Provider (Education)</option>
+                    <option value="provider_housing">Service Provider (Housing)</option>
+                    <option value="provider_healthcare">Service Provider (Healthcare)</option>
+                    <option value="provider_utilities">Service Provider (Utilities)</option>
                     <option value="investor">Investor</option>
                     <option value="partner">Strategic Partner</option>
                     <option value="government">Government / NGO</option>
