@@ -8,16 +8,19 @@ export default function FounderSection() {
       <div className="max-w-5xl mx-auto">
         <FadeIn className="grid md:grid-cols-[1fr_2fr] gap-12 md:gap-24 items-center">
           <div className="order-2 md:order-1">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">The story behind FEEP.</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Meet the Founder</h2>
             <div className="space-y-6 text-lg text-feep-text-muted leading-relaxed">
               <p>
-                Most people earn their money on a regular schedule—weekly or monthly. But life’s most critical expenses, like education and housing, demand large upfront payments.
+                <strong className="text-feep-text font-semibold">Ernest</strong> founded FEEP with a simple belief: access to essential services shouldn't depend on whether someone can afford a large upfront payment today.
               </p>
               <p>
-                This mismatch creates impossible choices. Providers are forced to act as debt collectors or turn people away, while individuals face intense financial anxiety trying to come up with lump sums. The problem isn't a lack of money; it's a structural failure in how payments are timed.
+                After observing how millions of people earn income gradually while many essential services require full payment upfront, he set out to build a different kind of payment infrastructure—one that aligns payments with how people actually earn.
               </p>
               <p>
-                We built FEEP to fix this. By building the infrastructure that sits between a provider's need to operate and a person's natural income flow, we remove the friction entirely. We ensure essential services stay accessible, and the organizations providing them remain secure.
+                Under his leadership, FEEP is building technology that enables service providers to offer flexible payment experiences without sacrificing predictable cash flow, starting with education and expanding to other essential services over time.
+              </p>
+              <p>
+                His vision is to make access easier, more inclusive, and more sustainable for millions of people across Africa and beyond.
               </p>
               <div className="pt-4">
                 <div className="font-bold text-feep-text text-xl">Ernest Michael</div>
