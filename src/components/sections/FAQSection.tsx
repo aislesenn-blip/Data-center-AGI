@@ -8,8 +8,25 @@ import { FAQS } from "@/lib/constants";
 export default function FAQSection() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQS.map((faq) => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a
+      }
+    }))
+  };
+
   return (
     <section id="faq" className="py-24 md:py-32 px-6 md:px-12 max-w-4xl mx-auto">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <FadeIn>
         <h2 className="text-3xl font-bold tracking-tight mb-12">Frequently Asked Questions</h2>
         <div className="space-y-4">

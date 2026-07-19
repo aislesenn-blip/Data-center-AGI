@@ -28,7 +28,7 @@ export default function SolutionSection() {
               <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6">
                 <step.icon className="text-feep-text w-6 h-6" aria-hidden="true" />
               </div>
-              <h4 className="text-xl font-bold mb-3">{step.title}</h4>
+              <h3 className="text-xl font-bold mb-3">{step.title}</h3>
               <p className="text-feep-text-muted leading-relaxed">{step.desc}</p>
             </motion.div>
           </FadeIn>

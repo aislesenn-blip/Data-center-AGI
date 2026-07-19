@@ -8,20 +8,20 @@ export default function FounderSection() {
       <div className="max-w-5xl mx-auto">
         <FadeIn className="grid md:grid-cols-[1fr_2fr] gap-12 md:gap-24 items-center">
           <div className="order-2 md:order-1">
-            <h2 className="text-3xl font-bold tracking-tight mb-6">Built with conviction.</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">The story behind FEEP.</h2>
             <div className="space-y-6 text-lg text-feep-text-muted leading-relaxed">
               <p>
-                "We are not just solving a localized payment problem. We are architecting a new standard for how essential services are accessed across emerging markets."
+                Most people earn their money on a regular schedule—weekly or monthly. But life’s most critical expenses, like education and housing, demand large upfront payments.
               </p>
               <p>
-                With a deeply analytical background rooted in advanced Physics and Mathematics, combined with a relentless focus on product strategy and go-to-market execution, our leadership understands how to build systems that scale.
+                This mismatch creates impossible choices. Providers are forced to act as debt collectors or turn people away, while individuals face intense financial anxiety trying to come up with lump sums. The problem isn't a lack of money; it's a structural failure in how payments are timed.
               </p>
               <p>
-                FEEP is driven by a singular, long-term vision: eliminating the friction between a person's basic needs and a provider's need to operate. We are building technology with global ambition because the problem demands nothing less.
+                We built FEEP to fix this. By building the infrastructure that sits between a provider's need to operate and a person's natural income flow, we remove the friction entirely. We ensure essential services stay accessible, and the organizations providing them remain secure.
               </p>
               <div className="pt-4">
                 <div className="font-bold text-feep-text text-xl">Ernest Michael</div>
-                <div className="text-sm font-semibold tracking-wider text-zinc-400 uppercase mt-1">Founder & CEO</div>
+                <div className="text-sm font-semibold tracking-wider text-zinc-400 uppercase mt-1">Founder, FEEP</div>
               </div>
             </div>
           </div>

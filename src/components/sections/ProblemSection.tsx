@@ -7,7 +7,8 @@ export default function ProblemSection() {
     <section className="py-24 md:py-32 bg-white px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         <FadeIn>
-          <h2 className="text-sm font-semibold tracking-widest uppercase text-feep-text-muted mb-8">The Challenge</h2>
+          <h2 className="sr-only">The Challenge</h2>
+          <div className="text-sm font-semibold tracking-widest uppercase text-feep-text-muted mb-8" aria-hidden="true">The Challenge</div>
         </FadeIn>
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
           <FadeIn delay={0.1}>
