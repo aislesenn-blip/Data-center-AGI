@@ -27,6 +27,7 @@ export interface ShippingItem {
   name: string;
   category: string;
   weight: number; // in kg
+  quantity?: number; // optional quantity, defaults to 1
 }
 
 export interface JoinedOrder {
