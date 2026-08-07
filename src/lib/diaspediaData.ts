@@ -1,3 +1,12 @@
+export interface CuratedProduct {
+  id: string;
+  name: string;
+  category: string;
+  weight: number; // in kg
+  price: number; // total combined price including shipment
+  standardSoloPrice: number; // solo standard price for comparison
+}
+
 export interface Route {
   id: string;
   from: string;
@@ -10,7 +19,8 @@ export interface Route {
   soloPricePerKg: number; // standard individual DHL/FedEx shipping cost for comparison
   status: "open" | "closing" | "completed";
   progressPercent: number;
-  peopleJoining: number; // New field indicating the number of participants on this route
+  peopleJoining: number; // number of participants on this route
+  products: CuratedProduct[]; // available products for this route
 }
 
 export interface ShippingItem {
@@ -49,7 +59,13 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 16.0,
     status: "open",
     progressPercent: 35,
-    peopleJoining: 42
+    peopleJoining: 42,
+    products: [
+      { id: "tz-tea", name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 12.50, standardSoloPrice: 28.50 },
+      { id: "tz-spices", name: "Zanzibar Organic Spices Set", category: "Local Spices & Dry Foods", weight: 0.8, price: 9.80, standardSoloPrice: 22.60 },
+      { id: "tz-fish", name: "Dried Lake Victoria Tilapia (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 18.00, standardSoloPrice: 42.00 },
+      { id: "tz-flour", name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, price: 29.50, standardSoloPrice: 85.00 }
+    ]
   },
   {
     id: "uk-ke",
@@ -63,7 +79,13 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 18.5,
     status: "open",
     progressPercent: 42,
-    peopleJoining: 28
+    peopleJoining: 28,
+    products: [
+      { id: "ke-coffee", name: "Premium AA Kenyan Coffee Beans (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 14.20, standardSoloPrice: 32.70 },
+      { id: "ke-macadamia", name: "Raw Kenyan Macadamia Nuts (2kg)", category: "Local Spices & Dry Foods", weight: 2.0, price: 21.60, standardSoloPrice: 58.60 },
+      { id: "ke-herbal", name: "Nairobi Purple Herbal Infusions", category: "Cosmetics & Health Products", weight: 0.5, price: 8.50, standardSoloPrice: 17.75 },
+      { id: "ke-honey", name: "Pure Acacia Wild Honey (1.2kg)", category: "Local Spices & Dry Foods", weight: 1.2, price: 13.80, standardSoloPrice: 36.00 }
+    ]
   },
   {
     id: "ca-gh",
@@ -77,7 +99,13 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 21.0,
     status: "open",
     progressPercent: 18,
-    peopleJoining: 15
+    peopleJoining: 15,
+    products: [
+      { id: "gh-shito", name: "Homemade Spicy Shito Pepper Sauce", category: "Local Spices & Dry Foods", weight: 0.8, price: 11.50, standardSoloPrice: 28.30 },
+      { id: "gh-butter", name: "Raw Unrefined Shea Butter (2kg)", category: "Cosmetics & Health Products", weight: 2.0, price: 19.80, standardSoloPrice: 61.80 },
+      { id: "gh-chips", name: "Sweet Plantain Crisps Bulk Box (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 14.50, standardSoloPrice: 46.00 },
+      { id: "gh-gari", name: "Premium Sifted Gari (4kg)", category: "Local Spices & Dry Foods", weight: 4.0, price: 25.80, standardSoloPrice: 90.00 }
+    ]
   },
   {
     id: "us-ng",
@@ -91,7 +119,13 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 19.5,
     status: "open",
     progressPercent: 55,
-    peopleJoining: 63
+    peopleJoining: 63,
+    products: [
+      { id: "ng-chin", name: "Crunchy Sweet Chin Chin (2.5kg)", category: "Local Spices & Dry Foods", weight: 2.5, price: 18.50, standardSoloPrice: 67.25 },
+      { id: "ng-kilishi", name: "Traditional Spicy Kilishi Jerky (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 22.00, standardSoloPrice: 41.50 },
+      { id: "ng-egusi", name: "Handpeeled Ground Egusi Seeds (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 15.60, standardSoloPrice: 44.85 },
+      { id: "ng-yam", name: "Pounded Yam Flour Bulk (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, price: 30.00, standardSoloPrice: 105.00 }
+    ]
   }
 ];
 
@@ -111,15 +145,15 @@ export const INITIAL_ORDERS: JoinedOrder[] = [
     from: "Germany",
     to: "Tanzania",
     items: [
-      { name: "Physics & Chemistry Reference Textbooks", category: "Books & Study Materials", weight: 3.5 },
-      { name: "Winter Jackets for Family", category: "Clothing & Apparel", weight: 2.5 }
+      { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0 },
+      { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0 }
     ],
     receiverName: "Mariam Ernest",
     receiverPhone: "+255 712 345 678",
     deliveryMethod: "pickup",
     totalWeight: 6,
-    calculatedPrice: 27.0, // 6 * 4.5
-    calculatedSavings: 69.0, // (6 * 16) - 27
+    calculatedPrice: 42.0, // Pre-calculated total
+    calculatedSavings: 113.5, // Standard comparison standardSoloPrice minus diaspedia price
     status: "joined",
     joinDate: "28 August",
     estimatedDelivery: "25 September",
@@ -129,15 +163,15 @@ export const INITIAL_ORDERS: JoinedOrder[] = [
 export const FAQS = [
   {
     q: "Is diaspedia an online store?",
-    a: "No, diaspedia is not an online shop, a marketplace, or a cargo freight company. We are a team bringing people together living abroad to coordinate shipping schedules and share transport costs."
+    a: "No, diaspedia is not an online shop, a marketplace, or a cargo freight company. We are a platform bringing people together living abroad to coordinate shipping schedules and share transport costs."
   },
   {
     q: "How does the pricing work?",
-    a: "Individually shipping a small box from Germany to Tanzania can cost up to €16 per kg. By scheduling together and sharing space, our cost drops to as low as €4.50 per kg. We pass these savings directly to you."
+    a: "Individually shipping products across continents is extremely expensive. By scheduling together and sharing space, we divide container rates. We coordinate with local producers to select high-demand products and pre-calculate their direct shipping prices so you save up to 70%."
   },
   {
-    q: "Where do I send my items?",
-    a: "Once you join a route, you will receive simple instructions on where to drop off or mail your items in the origin country. We handle the international journey, customs clearances, and delivery together."
+    q: "How do I choose products?",
+    a: "For each route, we've already curated and pre-priced the available products for that specific shipping window. Simply browse what's available for your selected route, tap to add them to your shipment, and join the schedule."
   },
   {
     q: "What is the future vision?",

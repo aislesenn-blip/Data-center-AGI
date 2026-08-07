@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Globe,
@@ -20,13 +20,17 @@ import {
   Package,
   X,
   Info,
-  Users
+  Users,
+  Check,
+  Sparkles,
+  ShieldCheck
 } from "lucide-react";
 
 import {
   Route,
   ShippingItem,
   JoinedOrder,
+  CuratedProduct,
   ROUTES,
   ITEM_CATEGORIES,
   INITIAL_ORDERS,
@@ -43,14 +47,20 @@ export default function Home() {
   // State management for current mock orders
   const [orders, setOrders] = useState<JoinedOrder[]>(INITIAL_ORDERS);
 
-  // Route selection & interactive pricing calculator state
+  // Route selection & curated products state
   const [selectedRoute, setSelectedRoute] = useState<Route>(ROUTES[0]);
+
+  // Items currently added by the user to their join package
   const [calcItems, setCalcItems] = useState<ShippingItem[]>([
-    { name: "Family study textbooks", category: "Books & Study Materials", weight: 3.0 }
+    { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0 },
+    { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0 }
   ]);
-  const [newItemName, setNewItemName] = useState("");
-  const [newItemCategory, setNewItemCategory] = useState(ITEM_CATEGORIES[0].name);
-  const [newItemWeight, setNewItemWeight] = useState<number>(1.0);
+
+  // Secondary Custom package input state
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [customWeight, setCustomWeight] = useState<number>(2.0);
+  const [customCategory, setCustomCategory] = useState("Clothing & Apparel");
 
   // FAQ interactive state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -63,12 +73,86 @@ export default function Home() {
   const [modalStep, setModalStep] = useState<"form" | "loading" | "success">("form");
   const [justJoinedOrder, setJustJoinedOrder] = useState<JoinedOrder | null>(null);
 
-  // Calculate pricing based on items and selected route
+  // Scroll ref for smooth focus transitions
+  const productsSectionRef = useRef<HTMLDivElement>(null);
+
+  // When changing route, auto-select its primary curated items to showcase instant savings value
+  const handleRouteChange = (route: Route) => {
+    setSelectedRoute(route);
+    // Automatically pre-populate user's selected package with the first 2 products of this route
+    if (route.products && route.products.length >= 2) {
+      setCalcItems([
+        { name: route.products[0].name, category: route.products[0].category, weight: route.products[0].weight },
+        { name: route.products[1].name, category: route.products[1].category, weight: route.products[1].weight }
+      ]);
+    } else {
+      setCalcItems([]);
+    }
+    setShowCustomForm(false);
+  };
+
+  // Check if a curated product is currently added to the selected shipment
+  const isProductSelected = (prod: CuratedProduct) => {
+    return calcItems.some(item => item.name === prod.name);
+  };
+
+  // Toggle Curated Product in user's shipment
+  const toggleCuratedProduct = (prod: CuratedProduct) => {
+    if (isProductSelected(prod)) {
+      setCalcItems(calcItems.filter(item => item.name !== prod.name));
+    } else {
+      const item: ShippingItem = {
+        name: prod.name,
+        category: prod.category,
+        weight: prod.weight
+      };
+      setCalcItems([...calcItems, item]);
+    }
+  };
+
+  // Add Custom Item manually
+  const handleAddCustomItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customName.trim() || customWeight <= 0) return;
+
+    const item: ShippingItem = {
+      name: customName.trim(),
+      category: customCategory,
+      weight: Number(customWeight)
+    };
+
+    setCalcItems([...calcItems, item]);
+    setCustomName("");
+    setCustomWeight(2.0);
+    setShowCustomForm(false);
+  };
+
+  // Remove Item
+  const handleRemoveItem = (index: number) => {
+    const updated = [...calcItems];
+    updated.splice(index, 1);
+    setCalcItems(updated);
+  };
+
+  // Smooth scroll to curated products list
+  const scrollToProducts = (route: Route) => {
+    handleRouteChange(route);
+    setTimeout(() => {
+      productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  // Calculate prices based on items
   const totalWeight = calcItems.reduce((acc, item) => acc + item.weight, 0);
 
-  // Calculate price based on item category multipliers
   const calculateTotalPrice = () => {
     return calcItems.reduce((acc, item) => {
+      // Check if it's a curated product
+      const curated = selectedRoute.products.find(p => p.name === item.name);
+      if (curated) {
+        return acc + curated.price;
+      }
+      // Otherwise, calculate based on custom category multiplier and route base price
       const cat = ITEM_CATEGORIES.find(c => c.name === item.category);
       const mult = cat ? cat.weightMultiplier : 1.0;
       return acc + (item.weight * selectedRoute.basePricePerKg * mult);
@@ -77,6 +161,10 @@ export default function Home() {
 
   const calculateSoloPrice = () => {
     return calcItems.reduce((acc, item) => {
+      const curated = selectedRoute.products.find(p => p.name === item.name);
+      if (curated) {
+        return acc + curated.standardSoloPrice;
+      }
       return acc + (item.weight * selectedRoute.soloPricePerKg);
     }, 0);
   };
@@ -85,44 +173,18 @@ export default function Home() {
   const soloPrice = calculateSoloPrice();
   const totalSavings = soloPrice - currentPrice;
 
-  // Add Item to Calculator
-  const handleAddItem = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newItemName.trim() || newItemWeight <= 0) return;
-
-    const item: ShippingItem = {
-      name: newItemName.trim(),
-      category: newItemCategory,
-      weight: Number(newItemWeight)
-    };
-
-    setCalcItems([...calcItems, item]);
-    setNewItemName("");
-    setNewItemWeight(1.0);
-  };
-
-  // Remove Item from Calculator
-  const handleRemoveItem = (index: number) => {
-    const updated = [...calcItems];
-    updated.splice(index, 1);
-    setCalcItems(updated);
-  };
-
-  // Open the join shipment modal
+  // Modal actions
   const openJoinModal = () => {
     setModalStep("form");
     setIsJoinModalOpen(true);
   };
 
-  // Handle the elegant multi-step modal submission
   const handleJoinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!receiverName.trim() || !receiverPhone.trim()) return;
 
-    // Transition to loading animation
     setModalStep("loading");
 
-    // Simulate reliable state progression with elegant timer
     setTimeout(() => {
       const newOrder: JoinedOrder = {
         id: `DP-${Math.floor(10000 + Math.random() * 90000)}`,
@@ -147,17 +209,13 @@ export default function Home() {
     }, 1800);
   };
 
-  // Cancel order handler
   const handleCancelOrder = (orderId: string) => {
     setOrders(orders.filter(o => o.id !== orderId));
   };
 
-  // Reset demo state helper
   const handleResetDemoState = () => {
     setOrders(INITIAL_ORDERS);
-    setCalcItems([
-      { name: "Family study textbooks", category: "Books & Study Materials", weight: 3.0 }
-    ]);
+    handleRouteChange(ROUTES[0]);
     setActiveTab("home");
   };
 
@@ -190,7 +248,6 @@ export default function Home() {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute inset-0 bg-[#F6F4ED] z-50 flex flex-col justify-between p-8 text-center"
               >
-                {/* Spacer to push content down */}
                 <div className="h-6"></div>
 
                 {/* Main branding & Tagline */}
@@ -225,7 +282,6 @@ export default function Home() {
                     &ldquo;Join others who are shipping across borders and save money by sharing the cost.&rdquo;
                   </motion.p>
 
-                  {/* Bolt-style premium action CTA */}
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowSplash(false)}
@@ -252,19 +308,25 @@ export default function Home() {
                 className="flex-1 flex flex-col h-full overflow-hidden"
               >
 
-                {/* Clean, focused brand header (without Active word as requested) */}
-                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-center shrink-0">
-                  <span className="font-extrabold text-2xl tracking-tighter text-brand-text text-center">
+                {/* 2. INTENTIONAL, PREMIUM HEADER DESIGN (WORDMARK ALIGNED LEFT) */}
+                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-between shrink-0">
+                  <span className="font-extrabold text-2xl tracking-tighter text-brand-text">
                     diaspedia
                   </span>
+
+                  {/* Clean Minimalist Badge */}
+                  <div className="flex items-center gap-1.5 bg-black/[0.04] px-2.5 py-1 rounded-full text-[10px] font-black text-brand-text-muted uppercase tracking-wider">
+                    <Globe size={11} className="text-brand-text" />
+                    Global
+                  </div>
                 </header>
 
                 {/*
                   SCROLLABLE MAIN WRAPPER
-                  - Ensures the content scroll bar is self-contained.
-                  - Fixed bottom tab navigation never gets covered or scrolled out.
+                  - Content scrolls independently.
+                  - Navigation stays absolutely locked at the bottom viewport and is never hidden!
                 */}
-                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-20">
+                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-28">
 
                   {/* HOME TAB */}
                   {activeTab === "home" && (
@@ -273,140 +335,220 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
-                      {/* Bold Tagline */}
+                      {/* Human-focused Introduction */}
                       <div className="space-y-1">
                         <span className="text-xs font-extrabold tracking-wider text-brand-text-muted uppercase">TOGETHER, WE SAVE</span>
                         <h2 className="text-3xl font-black tracking-tight text-brand-text leading-tight">Send or receive packages cheaper.</h2>
                       </div>
 
-                      {/* Informational Widget - Simplified Human Messaging */}
                       <div className="bg-[#71E300]/10 border border-[#71E300]/20 rounded-2xl p-4 flex gap-3 items-center shadow-sm">
                         <Info size={20} className="text-brand-text shrink-0" />
                         <p className="text-xs text-brand-text leading-relaxed font-semibold">
-                          Choose a shipping date, tell us what you want to send or receive, and join others to make cross-border shipping cheaper.
+                          Choose an active shipping schedule. We pre-calculate costs and curate high-demand products so you save up to 70% by shipping together.
                         </p>
                       </div>
 
-                      {/* Route Selection */}
+                      {/* Route Opportunities (NOT A SHOP OR GENERAL CARGO HUB) */}
                       <div className="space-y-3">
-                        <h3 className="text-sm font-extrabold tracking-wider text-brand-text-muted uppercase px-1">1. Choose a Route</h3>
+                        <h3 className="text-sm font-extrabold tracking-wider text-brand-text-muted uppercase px-1">1. Active Shipping Routes</h3>
 
                         <div className="grid grid-cols-1 gap-3">
                           {ROUTES.map((route) => {
                             const isSelected = selectedRoute.id === route.id;
                             return (
-                              <button
+                              <div
                                 key={route.id}
-                                onClick={() => setSelectedRoute(route)}
-                                type="button"
-                                className={`text-left p-4.5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
+                                onClick={() => handleRouteChange(route)}
+                                className={`p-4 rounded-2xl border transition-all flex flex-col gap-3 cursor-pointer ${
                                   isSelected
-                                    ? "bg-white border-brand-primary shadow-md scale-[1.02]"
+                                    ? "bg-white border-brand-primary shadow-md scale-[1.01]"
                                     : "bg-white/55 border-black/5 hover:border-black/10 hover:bg-white"
                                 }`}
                               >
-                                <div className="space-y-2">
-                                  {/* Route Header */}
+                                {/* Top info layout */}
+                                <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2">
                                     <span className="font-extrabold text-base text-brand-text">{route.from}</span>
                                     <span className="text-xs text-brand-text-muted">➔</span>
                                     <span className="font-extrabold text-base text-brand-text">{route.to}</span>
                                   </div>
 
-                                  {/* Route details with people joining indicator */}
-                                  <div className="flex flex-col gap-1">
-                                    <span className="text-xs text-zinc-400 mt-0.5 font-medium">{route.nextShipment} shipment</span>
-                                    <div className="flex items-center gap-2 text-xs text-brand-text font-bold">
-                                      <span className="inline-flex items-center gap-1 text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full text-[10px]">
-                                        <Users size={12} className="text-brand-text" />
-                                        {route.peopleJoining} people joining
-                                      </span>
-                                      <span className="text-[#5ec700]">Save up to 70%</span>
+                                  <div className="text-right">
+                                    <div className="text-xs font-bold text-brand-text-muted">Combined rate</div>
+                                    <div className="text-sm font-black text-brand-text">€{route.basePricePerKg}/kg</div>
+                                  </div>
+                                </div>
+
+                                {/* Clean Schedule & simple participants indicator */}
+                                <div className="flex items-center justify-between border-t border-black/[0.02] pt-2.5">
+                                  <div className="space-y-0.5">
+                                    <div className="text-[10px] text-zinc-400 font-medium">Leaves: <strong className="text-brand-text">{route.nextShipment}</strong></div>
+                                    <div className="text-[10px] text-zinc-400 font-medium">Join by: <strong className="text-brand-text">{route.joinBefore}</strong></div>
+                                  </div>
+
+                                  <div className="flex items-center gap-2">
+                                    {/* EXTREMELY SIMPLE PARTICIPANT INDICATOR [Users icon] 42 */}
+                                    <div className="flex items-center gap-1.5 text-xs text-brand-text font-black bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
+                                      <Users size={12} className="text-brand-text" />
+                                      <span>{route.peopleJoining}</span>
                                     </div>
                                   </div>
                                 </div>
 
-                                <div className="text-right shrink-0">
-                                  <div className="text-sm font-black text-brand-text">€{route.basePricePerKg}/kg</div>
-                                  <div className="text-[10px] text-zinc-400 mt-1">Join by: {route.joinBefore}</div>
-                                </div>
-                              </button>
+                                {/* Premium FlixBus-style Action */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    scrollToProducts(route);
+                                  }}
+                                  className="w-full bg-black/[0.03] hover:bg-brand-primary text-brand-text font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all"
+                                >
+                                  See what&apos;s available <ChevronDown size={14} />
+                                </button>
+                              </div>
                             );
                           })}
                         </div>
                       </div>
 
-                      {/* Calculator Card */}
+                      {/*
+                        WHAT'S AVAILABLE ON THIS ROUTE SECTION
+                        - Clean structured cards matching diaspedia's curated logistic model.
+                        - Excludes general shop listings; shows only pre-calculated approved products.
+                      */}
+                      <div ref={productsSectionRef} className="space-y-4 pt-2">
+                        <div className="space-y-1">
+                          <h3 className="text-sm font-extrabold tracking-wider text-brand-text-muted uppercase px-1">2. Available for {selectedRoute.from} ➔ {selectedRoute.to}</h3>
+                          <p className="text-xs text-brand-text-muted leading-relaxed px-1">
+                            These essential goods have pre-calculated bulk shipping costs and customs cleared. Simply select what you need to receive or send:
+                          </p>
+                        </div>
+
+                        {/* List of pre-calculated curated goods */}
+                        <div className="grid grid-cols-1 gap-2.5">
+                          {selectedRoute.products.map((prod) => {
+                            const isAdded = isProductSelected(prod);
+                            return (
+                              <div
+                                key={prod.id}
+                                onClick={() => toggleCuratedProduct(prod)}
+                                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                                  isAdded
+                                    ? "bg-brand-primary/10 border-brand-primary/40 shadow-sm"
+                                    : "bg-white border-black/5 hover:border-black/10"
+                                }`}
+                              >
+                                <div className="space-y-1 truncate pr-2">
+                                  <div className="font-extrabold text-xs text-brand-text truncate">{prod.name}</div>
+                                  <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-bold">
+                                    <span>Weight: {prod.weight}kg</span>
+                                    <span>&bull;</span>
+                                    <span>Standard Solo Rate: <span className="line-through text-red-500">€{prod.standardSoloPrice}</span></span>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2.5 shrink-0">
+                                  <div className="text-right">
+                                    {/* Final diaspedia pricing combining ship space */}
+                                    <div className="text-xs font-black text-brand-text">€{prod.price.toFixed(2)}</div>
+                                    <span className="text-[9px] text-[#5ec700] font-bold">Save €{(prod.standardSoloPrice - prod.price).toFixed(0)}</span>
+                                  </div>
+
+                                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
+                                    isAdded
+                                      ? "bg-brand-primary border-brand-primary text-black"
+                                      : "bg-black/[0.02] border-black/5 text-zinc-400"
+                                  }`}>
+                                    {isAdded ? <Check size={16} strokeWidth={3} /> : <Plus size={16} />}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Custom package option - Elegant & secondary */}
+                        <div className="bg-white rounded-2xl border border-black/5 p-4 space-y-3 shadow-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-brand-text-muted">Need to ship a custom package?</span>
+                            <button
+                              type="button"
+                              onClick={() => setShowCustomForm(!showCustomForm)}
+                              className="text-xs font-black text-brand-text bg-black/[0.04] px-3 py-1.5 rounded-xl transition-all"
+                            >
+                              {showCustomForm ? "Cancel" : "Add custom package"}
+                            </button>
+                          </div>
+
+                          {showCustomForm && (
+                            <form onSubmit={handleAddCustomItem} className="space-y-3 pt-2 border-t border-black/[0.03]">
+                              <div className="grid grid-cols-2 gap-2.5">
+                                <div className="space-y-1">
+                                  <label className="text-[9px] font-bold text-brand-text-muted uppercase">Package Name</label>
+                                  <input
+                                    type="text"
+                                    required
+                                    value={customName}
+                                    onChange={(e) => setCustomName(e.target.value)}
+                                    placeholder="e.g. Personal books, clothes"
+                                    className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-primary font-semibold"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[9px] font-bold text-brand-text-muted uppercase">Weight (kg)</label>
+                                  <input
+                                    type="number"
+                                    step="0.1"
+                                    min="0.1"
+                                    required
+                                    value={customWeight}
+                                    onChange={(e) => setCustomWeight(Math.max(0.1, parseFloat(e.target.value) || 0))}
+                                    className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-primary font-bold"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <div className="flex-1">
+                                  <select
+                                    value={customCategory}
+                                    onChange={(e) => setCustomCategory(e.target.value)}
+                                    className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-primary font-semibold"
+                                  >
+                                    {ITEM_CATEGORIES.map(cat => (
+                                      <option key={cat.name} value={cat.name}>{cat.name}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <button
+                                  type="submit"
+                                  className="bg-brand-primary text-black font-extrabold text-xs px-4 py-2 rounded-xl hover:bg-brand-primary-hover active:scale-95 transition-all"
+                                >
+                                  Add Package
+                                </button>
+                              </div>
+                            </form>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Realtime summary and Order builder */}
                       <div className="bg-white rounded-[24px] border border-black/5 p-5 space-y-4 shadow-sm">
                         <div className="flex items-center justify-between border-b border-black/[0.04] pb-3">
-                          <h3 className="text-xs font-black tracking-wider text-brand-text-muted uppercase">2. Add package details</h3>
-                          <span className="text-[10px] bg-brand-primary/15 text-brand-text font-black px-2 py-0.5 rounded">
-                            {selectedRoute.fromCode}➔{selectedRoute.toCode}
+                          <h3 className="text-xs font-black tracking-wider text-brand-text-muted uppercase">My Shipment Summary</h3>
+                          <span className="text-[10px] bg-black/[0.04] text-brand-text font-black px-2.5 py-0.5 rounded-full">
+                            Route: {selectedRoute.fromCode} ➔ {selectedRoute.toCode}
                           </span>
                         </div>
 
-                        {/* Calculator Add Form */}
-                        <form onSubmit={handleAddItem} className="space-y-3">
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-extrabold text-brand-text-muted uppercase">What are you sending or receiving?</label>
-                              <input
-                                type="text"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
-                                placeholder="e.g. Spices, Books, Clothes"
-                                className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary"
-                              />
-                            </div>
-
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-extrabold text-brand-text-muted uppercase">Weight (kg)</label>
-                              <input
-                                type="number"
-                                step="0.1"
-                                min="0.1"
-                                value={newItemWeight}
-                                onChange={(e) => setNewItemWeight(Math.max(0.1, parseFloat(e.target.value) || 0))}
-                                className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-bold"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-12 gap-3">
-                            <div className="col-span-9 space-y-1">
-                              <label className="text-[10px] font-extrabold text-brand-text-muted uppercase">Category</label>
-                              <select
-                                value={newItemCategory}
-                                onChange={(e) => setNewItemCategory(e.target.value)}
-                                className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-semibold"
-                              >
-                                {ITEM_CATEGORIES.map((cat) => (
-                                  <option key={cat.name} value={cat.name}>
-                                    {cat.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <div className="col-span-3 flex items-end">
-                              <button
-                                type="submit"
-                                className="w-full bg-brand-primary text-black font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center hover:bg-brand-primary-hover active:scale-95 transition-all h-[36px]"
-                              >
-                                <Plus size={16} /> Add
-                              </button>
-                            </div>
-                          </div>
-                        </form>
-
-                        {/* List items added */}
                         {calcItems.length > 0 ? (
-                          <div className="space-y-2 max-h-[160px] overflow-y-auto pt-2 border-t border-black/[0.02]">
+                          <div className="space-y-2 max-h-[140px] overflow-y-auto">
                             {calcItems.map((item, index) => (
-                              <div key={index} className="flex items-center justify-between bg-black/[0.02] p-3 rounded-xl text-xs">
+                              <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
                                 <div className="truncate pr-3 space-y-0.5">
                                   <div className="font-bold text-brand-text truncate">{item.name}</div>
-                                  <div className="text-[10px] text-brand-text-muted truncate">{item.category}</div>
+                                  <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
                                 </div>
                                 <div className="flex items-center gap-3 shrink-0">
                                   <span className="font-extrabold text-xs text-brand-text">{item.weight} kg</span>
@@ -415,34 +557,33 @@ export default function Home() {
                                     type="button"
                                     className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm"
                                   >
-                                    <Trash2 size={14} />
+                                    <Trash2 size={13} />
                                   </button>
                                 </div>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <div className="text-center py-5 text-xs text-brand-text-muted bg-black/[0.01] rounded-2xl border border-dashed border-black/5">
-                            No items added yet. Add details to see price & savings.
+                          <div className="text-center py-6 text-xs text-brand-text-muted bg-black/[0.01] rounded-2xl border border-dashed border-black/5">
+                            Select products above to add them to your shipment.
                           </div>
                         )}
 
-                        {/* Price summary outputs */}
                         {calcItems.length > 0 && (
-                          <div className="pt-3 border-t border-black/5 space-y-3">
+                          <div className="pt-2.5 border-t border-black/5 space-y-3">
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-brand-text-muted font-bold">Total Weight:</span>
                               <span className="font-black text-sm">{totalWeight.toFixed(1)} kg</span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-2.5">
-                              <div className="bg-black/[0.03] p-3 rounded-2xl">
-                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Standard Price</span>
+                              <div className="bg-black/[0.02] p-3 rounded-2xl">
+                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">DHL/FedEx rate</span>
                                 <span className="text-xs font-black line-through text-red-500">€{soloPrice.toFixed(2)}</span>
                               </div>
 
                               <div className="bg-brand-primary/10 p-3 rounded-2xl border border-brand-primary/20">
-                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Combined Price</span>
+                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Combined rate</span>
                                 <span className="text-sm font-black text-brand-text">€{currentPrice.toFixed(2)}</span>
                               </div>
                             </div>
@@ -458,11 +599,10 @@ export default function Home() {
                               type="button"
                               className="w-full bg-brand-primary text-black font-extrabold text-sm py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-brand-primary-hover transition-colors cursor-pointer mt-1"
                             >
-                              Join Group Route & Save €{totalSavings.toFixed(0)} <ArrowRight size={16} />
+                              Join Route & Save €{totalSavings.toFixed(0)} <ArrowRight size={16} />
                             </motion.button>
                           </div>
                         )}
-
                       </div>
 
                     </motion.div>
@@ -497,9 +637,10 @@ export default function Home() {
                                 <span className="text-[10px] text-brand-text-muted block mt-0.5 uppercase font-extrabold tracking-wider">Route Code: {route.fromCode}-{route.toCode}</span>
                               </div>
 
-                              <span className="text-[10px] bg-brand-primary/10 text-brand-text font-black px-2.5 py-1 rounded-full">
-                                {route.peopleJoining} people joining
-                              </span>
+                              <div className="flex items-center gap-1 text-xs text-brand-text font-black bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
+                                <Users size={12} className="text-brand-text" />
+                                <span>{route.peopleJoining}</span>
+                              </div>
                             </div>
 
                             {/* Timeline Slider */}
@@ -640,7 +781,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
-                      {/* Profile identification details */}
+                      {/* Profile details */}
                       <div className="bg-white border border-black/5 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
                         <div className="w-14 h-14 bg-zinc-400 rounded-full flex items-center justify-center font-bold text-white text-xl">
                           ME
@@ -654,7 +795,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Performance Indicators */}
+                      {/* Performance indicators */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white border border-black/5 rounded-2xl p-4 text-center shadow-sm">
                           <span className="text-[10px] font-extrabold text-brand-text-muted uppercase block mb-0.5">Active Orders</span>
@@ -668,7 +809,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Simple Fintech Expansion Statement */}
+                      {/* Fintech expansion statements */}
                       <div className="bg-zinc-900 text-white rounded-[24px] p-5 space-y-3 relative overflow-hidden shadow-sm">
                         <div className="absolute -top-12 -right-12 w-28 h-28 bg-brand-primary/10 rounded-full blur-xl"></div>
 
@@ -711,7 +852,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Footer links inside the App */}
+                      {/* Footer links */}
                       <div className="pt-4 border-t border-black/5 text-center space-y-3">
                         <div className="flex justify-center gap-4 text-[11px] text-brand-text-muted font-black">
                           <Link href="/privacy" className="hover:text-brand-text transition-colors">Privacy</Link>
@@ -737,11 +878,11 @@ export default function Home() {
                 </div>
 
                 {/*
-                  ABSOLUTE PINNED iOS/Android Tab Bar Navigation
-                  - Never scrollable, always anchored safely at the bottom viewport coordinate.
-                  - Designed with ample tap target sizes, beautiful visual contrast.
+                  1. ABSOLUTE PINNED TAB BAR NAVIGATION (STAYS FIXED ON THE SCREEN AT ALL TIMES)
+                  - Guaranteed persistent. Anchored relative to the screen shell, never scrollable!
+                  - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
                 */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
+                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
                   <button
                     onClick={() => setActiveTab("home")}
                     className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
@@ -795,7 +936,7 @@ export default function Home() {
               {/* Close Button */}
               <button
                 onClick={() => setIsJoinModalOpen(false)}
-                className="absolute top-4 right-4 text-brand-text-muted hover:text-brand-text p-2 bg-black/[0.04] rounded-full"
+                className="absolute top-4 right-4 text-brand-text-muted hover:text-brand-text p-2 bg-black/[0.04] rounded-full animate-none"
               >
                 <X size={16} />
               </button>
@@ -813,8 +954,9 @@ export default function Home() {
 
                   <div className="space-y-3 pt-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Full Name</label>
+                        <label htmlFor="receiverName" className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Full Name</label>
                       <input
+                          id="receiverName"
                         type="text"
                         required
                         value={receiverName}
@@ -825,9 +967,10 @@ export default function Home() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Phone Number</label>
+                        <label htmlFor="receiverPhone" className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Phone Number</label>
                       <input
-                        type="tel"
+                          id="receiverPhone"
+                          type="text"
                         required
                         value={receiverPhone}
                         onChange={(e) => setReceiverPhone(e.target.value)}
