@@ -52,8 +52,8 @@ export default function Home() {
 
   // Items currently added by the user to their join package
   const [calcItems, setCalcItems] = useState<ShippingItem[]>([
-    { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0 },
-    { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0 }
+    { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, quantity: 1 },
+    { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, quantity: 1 }
   ]);
 
   // Secondary Custom package input state
@@ -82,8 +82,8 @@ export default function Home() {
     // Automatically pre-populate user's selected package with the first 2 products of this route
     if (route.products && route.products.length >= 2) {
       setCalcItems([
-        { name: route.products[0].name, category: route.products[0].category, weight: route.products[0].weight },
-        { name: route.products[1].name, category: route.products[1].category, weight: route.products[1].weight }
+        { name: route.products[0].name, category: route.products[0].category, weight: route.products[0].weight, quantity: 1 },
+        { name: route.products[1].name, category: route.products[1].category, weight: route.products[1].weight, quantity: 1 }
       ]);
     } else {
       setCalcItems([]);
@@ -96,6 +96,12 @@ export default function Home() {
     return calcItems.some(item => item.name === prod.name);
   };
 
+  // Get current quantity of an item if selected
+  const getItemQuantity = (itemName: string) => {
+    const found = calcItems.find(item => item.name === itemName);
+    return found ? (found.quantity || 1) : 0;
+  };
+
   // Toggle Curated Product in user's shipment
   const toggleCuratedProduct = (prod: CuratedProduct) => {
     if (isProductSelected(prod)) {
@@ -104,10 +110,25 @@ export default function Home() {
       const item: ShippingItem = {
         name: prod.name,
         category: prod.category,
-        weight: prod.weight
+        weight: prod.weight,
+        quantity: 1
       };
       setCalcItems([...calcItems, item]);
     }
+  };
+
+  // Update item quantity safely
+  const handleUpdateItemQuantity = (itemName: string, delta: number) => {
+    setCalcItems(prev =>
+      prev.map(item => {
+        if (item.name === itemName) {
+          const currentQty = item.quantity || 1;
+          const newQty = Math.max(1, currentQty + delta);
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      })
+    );
   };
 
   // Add Custom Item manually
@@ -118,7 +139,8 @@ export default function Home() {
     const item: ShippingItem = {
       name: customName.trim(),
       category: customCategory,
-      weight: Number(customWeight)
+      weight: Number(customWeight),
+      quantity: 1
     };
 
     setCalcItems([...calcItems, item]);
@@ -143,29 +165,31 @@ export default function Home() {
   };
 
   // Calculate prices based on items
-  const totalWeight = calcItems.reduce((acc, item) => acc + item.weight, 0);
+  const totalWeight = calcItems.reduce((acc, item) => acc + (item.weight * (item.quantity || 1)), 0);
 
   const calculateTotalPrice = () => {
     return calcItems.reduce((acc, item) => {
+      const qty = item.quantity || 1;
       // Check if it's a curated product
       const curated = selectedRoute.products.find(p => p.name === item.name);
       if (curated) {
-        return acc + curated.price;
+        return acc + (curated.price * qty);
       }
       // Otherwise, calculate based on custom category multiplier and route base price
       const cat = ITEM_CATEGORIES.find(c => c.name === item.category);
       const mult = cat ? cat.weightMultiplier : 1.0;
-      return acc + (item.weight * selectedRoute.basePricePerKg * mult);
+      return acc + (item.weight * selectedRoute.basePricePerKg * mult * qty);
     }, 0);
   };
 
   const calculateSoloPrice = () => {
     return calcItems.reduce((acc, item) => {
+      const qty = item.quantity || 1;
       const curated = selectedRoute.products.find(p => p.name === item.name);
       if (curated) {
-        return acc + curated.standardSoloPrice;
+        return acc + (curated.standardSoloPrice * qty);
       }
-      return acc + (item.weight * selectedRoute.soloPricePerKg);
+      return acc + (item.weight * selectedRoute.soloPricePerKg * qty);
     }, 0);
   };
 
@@ -313,12 +337,6 @@ export default function Home() {
                   <span className="font-extrabold text-2xl tracking-tighter text-brand-text">
                     diaspedia
                   </span>
-
-                  {/* Clean Minimalist Badge */}
-                  <div className="flex items-center gap-1.5 bg-black/[0.04] px-2.5 py-1 rounded-full text-[10px] font-black text-brand-text-muted uppercase tracking-wider">
-                    <Globe size={11} className="text-brand-text" />
-                    Global
-                  </div>
                 </header>
 
                 {/*
@@ -326,7 +344,7 @@ export default function Home() {
                   - Content scrolls independently.
                   - Navigation stays absolutely locked at the bottom viewport and is never hidden!
                 */}
-                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-28">
+                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-32">
 
                   {/* HOME TAB */}
                   {activeTab === "home" && (
@@ -429,6 +447,7 @@ export default function Home() {
                         <div className="grid grid-cols-1 gap-2.5">
                           {selectedRoute.products.map((prod) => {
                             const isAdded = isProductSelected(prod);
+                            const quantity = getItemQuantity(prod.name);
                             return (
                               <div
                                 key={prod.id}
@@ -439,7 +458,7 @@ export default function Home() {
                                     : "bg-white border-black/5 hover:border-black/10"
                                 }`}
                               >
-                                <div className="space-y-1 truncate pr-2">
+                                <div className="space-y-1 truncate pr-2 flex-1">
                                   <div className="font-extrabold text-xs text-brand-text truncate">{prod.name}</div>
                                   <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-bold">
                                     <span>Weight: {prod.weight}kg</span>
@@ -448,18 +467,45 @@ export default function Home() {
                                   </div>
                                 </div>
 
-                                <div className="flex items-center gap-2.5 shrink-0">
+                                <div className="flex items-center gap-2.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                  {isAdded && (
+                                    <div className="flex items-center gap-1.5 bg-black/[0.04] p-1 rounded-lg">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleUpdateItemQuantity(prod.name, -1)}
+                                        className="w-5 h-5 flex items-center justify-center bg-white rounded-md shadow-sm text-xs font-bold text-brand-text active:scale-90"
+                                      >
+                                        -
+                                      </button>
+                                      <span className="text-xs font-black w-4 text-center">{quantity}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleUpdateItemQuantity(prod.name, 1)}
+                                        className="w-5 h-5 flex items-center justify-center bg-white rounded-md shadow-sm text-xs font-bold text-brand-text active:scale-90"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                  )}
+
                                   <div className="text-right">
                                     {/* Final diaspedia pricing combining ship space */}
-                                    <div className="text-xs font-black text-brand-text">€{prod.price.toFixed(2)}</div>
-                                    <span className="text-[9px] text-[#5ec700] font-bold">Save €{(prod.standardSoloPrice - prod.price).toFixed(0)}</span>
+                                    <div className="text-xs font-black text-brand-text">
+                                      €{(prod.price * (quantity || 1)).toFixed(2)}
+                                    </div>
+                                    <span className="text-[9px] text-[#5ec700] font-bold">
+                                      Save €{((prod.standardSoloPrice - prod.price) * (quantity || 1)).toFixed(0)}
+                                    </span>
                                   </div>
 
-                                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
-                                    isAdded
-                                      ? "bg-brand-primary border-brand-primary text-black"
-                                      : "bg-black/[0.02] border-black/5 text-zinc-400"
-                                  }`}>
+                                  <div
+                                    onClick={() => toggleCuratedProduct(prod)}
+                                    className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all cursor-pointer ${
+                                      isAdded
+                                        ? "bg-brand-primary border-brand-primary text-black"
+                                        : "bg-black/[0.02] border-black/5 text-zinc-400"
+                                    }`}
+                                  >
                                     {isAdded ? <Check size={16} strokeWidth={3} /> : <Plus size={16} />}
                                   </div>
                                 </div>
@@ -543,25 +589,46 @@ export default function Home() {
                         </div>
 
                         {calcItems.length > 0 ? (
-                          <div className="space-y-2 max-h-[140px] overflow-y-auto">
-                            {calcItems.map((item, index) => (
-                              <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
-                                <div className="truncate pr-3 space-y-0.5">
-                                  <div className="font-bold text-brand-text truncate">{item.name}</div>
-                                  <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
+                          <div className="space-y-2 max-h-[180px] overflow-y-auto">
+                            {calcItems.map((item, index) => {
+                              const qty = item.quantity || 1;
+                              return (
+                                <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
+                                  <div className="truncate pr-3 space-y-0.5 flex-1">
+                                    <div className="font-bold text-brand-text truncate">{item.name}</div>
+                                    <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
+                                  </div>
+                                  <div className="flex items-center gap-3 shrink-0">
+                                    {/* Quantity controls in summary */}
+                                    <div className="flex items-center gap-1.5 bg-white p-0.5 rounded-lg border border-black/5">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleUpdateItemQuantity(item.name, -1)}
+                                        className="w-4 h-4 flex items-center justify-center bg-black/[0.03] rounded text-[10px] font-bold text-brand-text active:scale-90"
+                                      >
+                                        -
+                                      </button>
+                                      <span className="text-[10px] font-black w-3 text-center">{qty}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleUpdateItemQuantity(item.name, 1)}
+                                        className="w-4 h-4 flex items-center justify-center bg-black/[0.03] rounded text-[10px] font-bold text-brand-text active:scale-90"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                    <span className="font-extrabold text-xs text-brand-text">{(item.weight * qty).toFixed(1)} kg</span>
+                                    <button
+                                      onClick={() => handleRemoveItem(index)}
+                                      type="button"
+                                      className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                  <span className="font-extrabold text-xs text-brand-text">{item.weight} kg</span>
-                                  <button
-                                    onClick={() => handleRemoveItem(index)}
-                                    type="button"
-                                    className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm"
-                                  >
-                                    <Trash2 size={13} />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         ) : (
                           <div className="text-center py-6 text-xs text-brand-text-muted bg-black/[0.01] rounded-2xl border border-dashed border-black/5">
@@ -716,12 +783,15 @@ export default function Home() {
                               {/* Items pooled */}
                               <div className="bg-black/[0.02] rounded-xl p-3 space-y-2">
                                 <span className="text-[10px] font-black text-brand-text-muted uppercase block">My packages</span>
-                                {order.items.map((item, i) => (
-                                  <div key={i} className="flex justify-between text-xs">
-                                    <span className="text-brand-text font-bold truncate max-w-[200px]">{item.name}</span>
-                                    <span className="text-brand-text-muted shrink-0 font-extrabold">{item.weight} kg</span>
-                                  </div>
-                                ))}
+                                {order.items.map((item, i) => {
+                                  const qty = item.quantity || 1;
+                                  return (
+                                    <div key={i} className="flex justify-between text-xs">
+                                      <span className="text-brand-text font-bold truncate max-w-[200px]">{item.name} {qty > 1 ? `(x${qty})` : ""}</span>
+                                      <span className="text-brand-text-muted shrink-0 font-extrabold">{(item.weight * qty).toFixed(1)} kg</span>
+                                    </div>
+                                  );
+                                })}
                               </div>
 
                               {/* Receiver details */}
@@ -882,7 +952,7 @@ export default function Home() {
                   - Guaranteed persistent. Anchored relative to the screen shell, never scrollable!
                   - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
                 */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
+                <div className="fixed sm:absolute bottom-0 left-0 right-0 max-w-[430px] sm:max-w-none mx-auto bg-white/95 backdrop-blur-md border-t border-black/5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-4 px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
                   <button
                     onClick={() => setActiveTab("home")}
                     className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
@@ -1065,6 +1135,18 @@ export default function Home() {
                     <div className="flex justify-between text-xs">
                       <span className="text-brand-text-muted">Est. Arrival:</span>
                       <span className="font-bold">{justJoinedOrder.estimatedDelivery}</span>
+                    </div>
+                    {/* List item details in success screen */}
+                    <div className="border-t border-black/[0.04] pt-1.5 space-y-1">
+                      {justJoinedOrder.items.map((it, idx) => {
+                        const qty = it.quantity || 1;
+                        return (
+                          <div key={idx} className="flex justify-between text-[11px] text-brand-text-muted">
+                            <span className="truncate max-w-[180px]">{it.name} {qty > 1 ? `(x${qty})` : ""}</span>
+                            <span>{(it.weight * qty).toFixed(1)} kg</span>
+                          </div>
+                        );
+                      })}
                     </div>
                     <div className="border-t border-black/[0.04] pt-2 flex justify-between text-xs font-black">
                       <span>Total Savings:</span>
