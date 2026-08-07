@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Globe,
@@ -20,9 +20,7 @@ import {
   Package,
   X,
   Info,
-  MapPin,
-  Sparkles,
-  RefreshCw
+  Users
 } from "lucide-react";
 
 import {
@@ -36,7 +34,7 @@ import {
 } from "@/lib/diaspediaData";
 
 export default function Home() {
-  // Splash Screen State
+  // Onboarding Screen State
   const [showSplash, setShowSplash] = useState(true);
 
   // Mobile navigation tabs
@@ -64,14 +62,6 @@ export default function Home() {
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "doorstep">("pickup");
   const [modalStep, setModalStep] = useState<"form" | "loading" | "success">("form");
   const [justJoinedOrder, setJustJoinedOrder] = useState<JoinedOrder | null>(null);
-
-  // Handle splash screen timeout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2200); // Elegant 2.2 second splash display
-    return () => clearTimeout(timer);
-  }, []);
 
   // Calculate pricing based on items and selected route
   const totalWeight = calcItems.reduce((acc, item) => acc + item.weight, 0);
@@ -187,47 +177,69 @@ export default function Home() {
         </div>
 
         {/* Real App Screen Frame */}
-        <div className="flex-1 bg-brand-bg rounded-none sm:rounded-[40px] overflow-hidden flex flex-col relative">
+        <div className="flex-1 bg-[#F6F4ED] rounded-none sm:rounded-[40px] overflow-hidden flex flex-col relative">
 
           <AnimatePresence mode="wait">
 
-            {/* 1. BRAND OPENING EXPERIENCE (SPLASH SCREEN) */}
+            {/* 1. BRAND OPENING EXPERIENCE (ONBOARDING WELCOME SCREEN) */}
             {showSplash ? (
               <motion.div
                 key="splash"
                 initial={{ opacity: 1 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 bg-[#F6F4ED] z-50 flex flex-col items-center justify-center p-8"
+                exit={{ opacity: 0, y: -24 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 bg-[#F6F4ED] z-50 flex flex-col justify-between p-8 text-center"
               >
-                <div className="flex flex-col items-center gap-4 text-center">
-                  {/* Premium Brand Wordmark */}
+                {/* Spacer to push content down */}
+                <div className="h-6"></div>
+
+                {/* Main branding & Tagline */}
+                <div className="space-y-6">
                   <motion.h1
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     className="text-5xl font-black tracking-tight text-brand-text"
                   >
                     diaspedia
                   </motion.h1>
 
-                  {/* Clean, minimalist tagline */}
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-sm font-semibold tracking-wide text-brand-text-muted uppercase"
+                    transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-lg font-bold text-brand-text-muted leading-snug max-w-[280px] mx-auto"
                   >
                     Together, we make cross-border cheaper.
                   </motion.p>
                 </div>
 
-                {/* Micro-loading loader indicator */}
-                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-brand-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-brand-primary animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-brand-primary animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                {/* Explanatory introduction */}
+                <div className="space-y-8">
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6, duration: 0.8 }}
+                    className="text-sm font-semibold text-brand-text-muted leading-relaxed max-w-[290px] mx-auto bg-white/60 p-5 rounded-[20px] border border-black/[0.03]"
+                  >
+                    &ldquo;Join others who are shipping across borders and save money by sharing the cost.&rdquo;
+                  </motion.p>
+
+                  {/* Bolt-style premium action CTA */}
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowSplash(false)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    type="button"
+                    className="w-full bg-brand-primary text-black font-extrabold text-sm py-4 rounded-2xl shadow-lg shadow-brand-primary/15 hover:bg-brand-primary-hover active:scale-95 transition-all cursor-pointer"
+                  >
+                    Get Started
+                  </motion.button>
                 </div>
+
+                <div className="h-4"></div>
               </motion.div>
             ) : (
 
@@ -236,29 +248,28 @@ export default function Home() {
                 key="app"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.4 }}
                 className="flex-1 flex flex-col h-full overflow-hidden"
               >
 
-                {/* Clean navigation bar */}
-                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-between shrink-0">
-                  <span className="font-extrabold text-2xl tracking-tighter text-brand-text">
+                {/* Clean, focused brand header (without Active word as requested) */}
+                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-center shrink-0">
+                  <span className="font-extrabold text-2xl tracking-tighter text-brand-text text-center">
                     diaspedia
                   </span>
-
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
-                    <span className="text-xs font-bold text-brand-text">Active</span>
-                  </div>
                 </header>
 
-                {/* Tab scroll container with generous spacing & Bolt-inspired bold hierarchy */}
-                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
+                {/*
+                  SCROLLABLE MAIN WRAPPER
+                  - Ensures the content scroll bar is self-contained.
+                  - Fixed bottom tab navigation never gets covered or scrolled out.
+                */}
+                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-20">
 
                   {/* HOME TAB */}
                   {activeTab === "home" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
@@ -268,11 +279,11 @@ export default function Home() {
                         <h2 className="text-3xl font-black tracking-tight text-brand-text leading-tight">Send or receive packages cheaper.</h2>
                       </div>
 
-                      {/* Informational Widget */}
+                      {/* Informational Widget - Simplified Human Messaging */}
                       <div className="bg-[#71E300]/10 border border-[#71E300]/20 rounded-2xl p-4 flex gap-3 items-center shadow-sm">
                         <Info size={20} className="text-brand-text shrink-0" />
                         <p className="text-xs text-brand-text leading-relaxed font-semibold">
-                          Choose an active date, write what you are sending, and join the group route to split bulk shipping rates.
+                          Choose a shipping date, tell us what you want to send or receive, and join others to make cross-border shipping cheaper.
                         </p>
                       </div>
 
@@ -288,27 +299,36 @@ export default function Home() {
                                 key={route.id}
                                 onClick={() => setSelectedRoute(route)}
                                 type="button"
-                                className={`text-left p-4 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
+                                className={`text-left p-4.5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
                                   isSelected
                                     ? "bg-white border-brand-primary shadow-md scale-[1.02]"
                                     : "bg-white/55 border-black/5 hover:border-black/10 hover:bg-white"
                                 }`}
                               >
-                                <div className="space-y-1.5">
+                                <div className="space-y-2">
+                                  {/* Route Header */}
                                   <div className="flex items-center gap-2">
                                     <span className="font-extrabold text-base text-brand-text">{route.from}</span>
-                                    <span className="text-sm text-brand-text-muted">➔</span>
+                                    <span className="text-xs text-brand-text-muted">➔</span>
                                     <span className="font-extrabold text-base text-brand-text">{route.to}</span>
                                   </div>
-                                  <div className="flex items-center gap-2 text-xs text-brand-text-muted font-medium">
-                                    <span>Route price: €{route.basePricePerKg}/kg</span>
-                                    <span>•</span>
-                                    <span className="text-[#5ec700] font-bold">Save ~70%</span>
+
+                                  {/* Route details with people joining indicator */}
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-xs text-zinc-400 mt-0.5 font-medium">{route.nextShipment} shipment</span>
+                                    <div className="flex items-center gap-2 text-xs text-brand-text font-bold">
+                                      <span className="inline-flex items-center gap-1 text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full text-[10px]">
+                                        <Users size={12} className="text-brand-text" />
+                                        {route.peopleJoining} people joining
+                                      </span>
+                                      <span className="text-[#5ec700]">Save up to 70%</span>
+                                    </div>
                                   </div>
                                 </div>
+
                                 <div className="text-right shrink-0">
-                                  <div className="text-xs font-extrabold text-brand-text">Arrives: {route.nextShipment}</div>
-                                  <div className="text-[10px] text-zinc-400 mt-0.5">Join by: {route.joinBefore}</div>
+                                  <div className="text-sm font-black text-brand-text">€{route.basePricePerKg}/kg</div>
+                                  <div className="text-[10px] text-zinc-400 mt-1">Join by: {route.joinBefore}</div>
                                 </div>
                               </button>
                             );
@@ -329,7 +349,7 @@ export default function Home() {
                         <form onSubmit={handleAddItem} className="space-y-3">
                           <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1">
-                              <label className="text-[10px] font-extrabold text-brand-text-muted uppercase">What are you sending?</label>
+                              <label className="text-[10px] font-extrabold text-brand-text-muted uppercase">What are you sending or receiving?</label>
                               <input
                                 type="text"
                                 value={newItemName}
@@ -411,13 +431,13 @@ export default function Home() {
                         {calcItems.length > 0 && (
                           <div className="pt-3 border-t border-black/5 space-y-3">
                             <div className="flex items-center justify-between text-xs">
-                              <span className="text-brand-text-muted font-bold">Total Combined Weight:</span>
+                              <span className="text-brand-text-muted font-bold">Total Weight:</span>
                               <span className="font-black text-sm">{totalWeight.toFixed(1)} kg</span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-2.5">
                               <div className="bg-black/[0.03] p-3 rounded-2xl">
-                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Standard Solo Price</span>
+                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Standard Price</span>
                                 <span className="text-xs font-black line-through text-red-500">€{soloPrice.toFixed(2)}</span>
                               </div>
 
@@ -428,7 +448,7 @@ export default function Home() {
                             </div>
 
                             <div className="bg-[#71E300]/10 border border-[#71E300]/30 rounded-2xl p-3 flex items-center justify-between text-xs">
-                              <span className="font-bold text-brand-text">Your Saved Savings:</span>
+                              <span className="font-bold text-brand-text">Your Savings:</span>
                               <span className="font-black text-[#5ec700] text-sm">€{totalSavings.toFixed(2)} saved</span>
                             </div>
 
@@ -451,7 +471,7 @@ export default function Home() {
                   {/* DATES / TIMELINES TAB */}
                   {activeTab === "shipments" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
@@ -478,7 +498,7 @@ export default function Home() {
                               </div>
 
                               <span className="text-[10px] bg-brand-primary/10 text-brand-text font-black px-2.5 py-1 rounded-full">
-                                Next Arriving: {route.nextShipment}
+                                {route.peopleJoining} people joining
                               </span>
                             </div>
 
@@ -508,7 +528,7 @@ export default function Home() {
                               </div>
                               <div className="p-2 rounded-xl bg-brand-primary/10 border border-brand-primary/20">
                                 <span className="text-[9px] font-black text-brand-text-muted uppercase block">Combined Price</span>
-                                <span className="text-xs font-black text-brand-text">€{route.basePricePerKg}/kg</span>
+                                <span className="text-xs font-black text-brand-text font-mono">€{route.basePricePerKg}/kg</span>
                               </div>
                             </div>
                           </div>
@@ -521,7 +541,7 @@ export default function Home() {
                   {/* MY ORDERS TAB */}
                   {activeTab === "orders" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
@@ -547,7 +567,7 @@ export default function Home() {
                                   </div>
                                 </div>
 
-                                <span className="text-[10px] bg-brand-primary/20 text-brand-text font-black px-2.5 py-1 rounded-full">
+                                <span className="text-[10px] bg-brand-primary/20 text-brand-text font-black px-2.5 py-1 rounded-full font-sans">
                                   {order.status === "joined" ? "Route Joined" : order.status}
                                 </span>
                               </div>
@@ -616,7 +636,7 @@ export default function Home() {
                   {/* PROFILE & FINTECH VISION TAB */}
                   {activeTab === "profile" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="space-y-6"
                     >
@@ -716,32 +736,36 @@ export default function Home() {
 
                 </div>
 
-                {/* Simulated Taller, Highly Readable iOS/Android Tab Bar Navigation */}
-                <div className="bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+                {/*
+                  ABSOLUTE PINNED iOS/Android Tab Bar Navigation
+                  - Never scrollable, always anchored safely at the bottom viewport coordinate.
+                  - Designed with ample tap target sizes, beautiful visual contrast.
+                */}
+                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
                   <button
                     onClick={() => setActiveTab("home")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-colors ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
                     <HomeIcon size={22} className={activeTab === "home" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-[10px] font-black uppercase tracking-wider">Home</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("shipments")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-colors ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
                     <Calendar size={22} className={activeTab === "shipments" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-[10px] font-black uppercase tracking-wider">Dates</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("orders")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-colors ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
                     <Layers size={22} className={activeTab === "orders" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-[10px] font-black uppercase tracking-wider">My orders</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("profile")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-colors ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
                     <User size={22} className={activeTab === "profile" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-[10px] font-black uppercase tracking-wider">Profile</span>
@@ -765,7 +789,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-brand-bg rounded-3xl border border-black/5 shadow-2xl p-6 max-w-sm w-full relative overflow-hidden animate-none"
+              className="bg-brand-bg rounded-3xl border border-black/5 shadow-2xl p-6 max-w-sm w-full relative overflow-hidden"
             >
 
               {/* Close Button */}
@@ -843,7 +867,7 @@ export default function Home() {
 
                   <div className="pt-3 border-t border-black/5">
                     <div className="flex justify-between text-xs font-bold mb-3">
-                      <span>Together savings:</span>
+                      <span>Combined savings:</span>
                       <span className="text-[#5ec700]">Save €{totalSavings.toFixed(2)}</span>
                     </div>
 
