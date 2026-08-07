@@ -10,6 +10,7 @@ export interface Route {
   soloPricePerKg: number; // standard individual DHL/FedEx shipping cost for comparison
   status: "open" | "closing" | "completed";
   progressPercent: number;
+  peopleJoining: number; // New field indicating the number of participants on this route
 }
 
 export interface ShippingItem {
@@ -48,6 +49,7 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 16.0,
     status: "open",
     progressPercent: 35,
+    peopleJoining: 42
   },
   {
     id: "uk-ke",
@@ -61,6 +63,7 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 18.5,
     status: "open",
     progressPercent: 42,
+    peopleJoining: 28
   },
   {
     id: "ca-gh",
@@ -74,6 +77,7 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 21.0,
     status: "open",
     progressPercent: 18,
+    peopleJoining: 15
   },
   {
     id: "us-ng",
@@ -87,6 +91,7 @@ export const ROUTES: Route[] = [
     soloPricePerKg: 19.5,
     status: "open",
     progressPercent: 55,
+    peopleJoining: 63
   }
 ];
 
