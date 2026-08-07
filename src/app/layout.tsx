@@ -13,37 +13,37 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://feep.africa"),
+  metadataBase: new URL("https://diaspedia.com"),
   title: {
-    default: "FEEP | Payment Infrastructure for Essential Services",
-    template: "%s | FEEP"
+    default: "diaspedia | Together, we make cross-border cheaper",
+    template: "%s | diaspedia"
   },
-  description: "FEEP bridges the gap between essential service providers who need timely payments and people who need flexible schedules, starting with education and housing.",
-  keywords: ["payment infrastructure", "flexible payments", "essential services", "education financing", "emerging markets", "fintech africa", "B2B2C payments"],
-  authors: [{ name: "FEEP" }],
-  creator: "FEEP",
-  publisher: "FEEP",
+  description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
+  keywords: ["cross-border", "shared shipping", "international shipping", "fintech", "group shipping", "savings", "diaspora", "africa to europe", "global payments"],
+  authors: [{ name: "diaspedia" }],
+  creator: "diaspedia",
+  publisher: "diaspedia",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://feep.africa",
-    siteName: "FEEP",
-    title: "FEEP | Payment Infrastructure for Essential Services",
-    description: "FEEP bridges the gap between essential service providers who need timely payments and people who need flexible schedules, starting with education and housing.",
+    url: "https://diaspedia.com",
+    siteName: "diaspedia",
+    title: "diaspedia | Together, we make cross-border cheaper",
+    description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
     images: [
       {
-        url: "/og-image.jpg", // You'll need to add this to public/ later
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "FEEP - Payment Infrastructure for Essential Services",
+        alt: "diaspedia - Together, we make cross-border cheaper",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FEEP | Payment Infrastructure for Essential Services",
-    description: "FEEP bridges the gap between essential service providers who need timely payments and people who need flexible schedules, starting with education and housing.",
-    images: ["/og-image.jpg"], // Ensure this matches OG image
+    title: "diaspedia | Together, we make cross-border cheaper",
+    description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -63,28 +63,28 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://feep.africa/#organization",
-      "name": "FEEP",
-      "url": "https://feep.africa",
-      "logo": "https://feep.africa/logo-school.png",
-      "description": "Payment infrastructure for essential services in emerging markets.",
+      "@id": "https://diaspedia.com/#organization",
+      "name": "diaspedia",
+      "url": "https://diaspedia.com",
+      "logo": "https://diaspedia.com/logo.png",
+      "description": "A future cross-border financial company starting with shipping, making international shipping and movement of goods affordable for diaspora communities.",
       "founder": {
         "@type": "Person",
         "name": "Ernest Michael"
       },
       "contactPoint": {
         "@type": "ContactPoint",
-        "email": "hello@feep.africa",
+        "email": "hello@diaspedia.com",
         "contactType": "customer service"
       }
     },
     {
       "@type": "WebSite",
-      "@id": "https://feep.africa/#website",
-      "url": "https://feep.africa",
-      "name": "FEEP",
+      "@id": "https://diaspedia.com/#website",
+      "url": "https://diaspedia.com",
+      "name": "diaspedia",
       "publisher": {
-        "@id": "https://feep.africa/#organization"
+        "@id": "https://diaspedia.com/#organization"
       }
     }
   ]
@@ -103,7 +103,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-sans antialiased text-feep-text bg-feep-bg">{children}</body>
+      <body className="font-sans antialiased text-brand-text bg-brand-bg">{children}</body>
     </html>
   );
 }

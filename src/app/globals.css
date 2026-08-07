@@ -3,23 +3,24 @@
 @theme {
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
-  --color-feep-bg: #F6F4ED;
-  --color-feep-primary: #71E300;
-  --color-feep-text: #0f1115;
-  --color-feep-text-muted: #52525b;
+  --color-brand-bg: #F6F4ED;
+  --color-brand-primary: #71E300;
+  --color-brand-primary-hover: #5ec700;
+  --color-brand-text: #0f1115;
+  --color-brand-text-muted: #52525b;
 }
 
 @layer base {
   body {
-    background-color: var(--color-feep-bg);
-    color: var(--color-feep-text);
+    background-color: var(--color-brand-bg);
+    color: var(--color-brand-text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   /* Custom focus states to match brand */
   *:focus-visible {
-    outline: 2px solid var(--color-feep-primary);
+    outline: 2px solid var(--color-brand-primary);
     outline-offset: 2px;
   }
 
@@ -28,10 +29,10 @@
   }
 }
 
-/* Hide scrollbar for a cleaner premium look */
+/* Hide scrollbar globally across the application for premium feel */
 ::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 * {
-  scrollbar-width: none;
+  scrollbar-width: none !important;
 }
