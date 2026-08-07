@@ -121,7 +121,7 @@ export default function Careers() {
 
         {/* Contact/Talent community block */}
         <FadeIn delay={0.3} className="pt-8 border-t border-black/5 text-center space-y-3">
-          <h3 className="font-bold text-base text-brand-text">Don't see your role?</h3>
+          <h3 className="font-bold text-base text-brand-text">Don&apos;t see your role?</h3>
           <p className="text-xs text-brand-text-muted max-w-sm mx-auto">
             We are always looking for passionate builders. Send your resume and portfolio to our open talent pool.
           </p>
