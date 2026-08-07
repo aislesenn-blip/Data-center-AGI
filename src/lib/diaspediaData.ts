@@ -91,12 +91,12 @@ export const ROUTES: Route[] = [
 ];
 
 export const ITEM_CATEGORIES = [
-  { name: "Electronics & Accessories", weightMultiplier: 1.2, icon: "Cpu" },
-  { name: "Books & Study Materials", weightMultiplier: 0.9, icon: "BookOpen" },
-  { name: "Clothing & Apparel", weightMultiplier: 1.0, icon: "Shirt" },
-  { name: "Local Spices & Dry Foods", weightMultiplier: 0.95, icon: "Apple" },
-  { name: "Cosmetics & Health Products", weightMultiplier: 1.1, icon: "Sparkles" },
-  { name: "Other Household Items", weightMultiplier: 1.0, icon: "Package" }
+  { name: "Electronics & Accessories", weightMultiplier: 1.2 },
+  { name: "Books & Study Materials", weightMultiplier: 0.9 },
+  { name: "Clothing & Apparel", weightMultiplier: 1.0 },
+  { name: "Local Spices & Dry Foods", weightMultiplier: 0.95 },
+  { name: "Cosmetics & Health Products", weightMultiplier: 1.1 },
+  { name: "Other Household Items", weightMultiplier: 1.0 }
 ];
 
 export const INITIAL_ORDERS: JoinedOrder[] = [
@@ -123,23 +123,23 @@ export const INITIAL_ORDERS: JoinedOrder[] = [
 
 export const FAQS = [
   {
-    q: "Is diaspedia an online store or shopping marketplace?",
-    a: "No, diaspedia is not an online shop, a marketplace, or a cargo freight company. We are building the future of cross-border financial services, starting by bringing diaspora communities together to coordinate logistics schedules and dramatically lower shipping costs."
+    q: "Is diaspedia an online store?",
+    a: "No, diaspedia is not an online shop, a marketplace, or a cargo freight company. We are a team bringing people together living abroad to coordinate shipping schedules and share transport costs."
   },
   {
-    q: "How does the pricing system work?",
-    a: "Individually shipping a small box from Germany to Tanzania can cost up to €16 per kg. By organizing set dates and consolidating demand from hundreds of people onto the same route, diaspedia secures bulk transport rates. We pass 100% of these savings directly to you, bringing your cost down to as low as €4.50 per kg."
+    q: "How does the pricing work?",
+    a: "Individually shipping a small box from Germany to Tanzania can cost up to €16 per kg. By scheduling together and sharing space, our cost drops to as low as €4.50 per kg. We pass these savings directly to you."
   },
   {
     q: "Where do I send my items?",
-    a: "Once you join a shipment route, you will receive clear drop-off or domestic postage instructions to send your items to our partner collection point in the origin country (e.g., in Germany). We handle the international movement, customs clearing, and safe arrival in the destination country together."
+    a: "Once you join a route, you will receive simple instructions on where to drop off or mail your items in the origin country. We handle the international journey, customs clearances, and delivery together."
   },
   {
-    q: "How does diaspedia expand into finance and payments?",
-    a: "By solving the physical movement of goods—the hardest part of cross-border trust—we establish secure channels and deep relationships with our users. Our future vision is to expand into low-cost cross-border payments, money services, and financial infrastructure for diaspora families."
+    q: "What is the future vision?",
+    a: "By solving the hard physical challenge of moving items together across borders, we build trust. Our long-term path is to expand into low-cost cross-border payments, transfers, and helpful money services for families."
   },
   {
-    q: "Can I create my own shipping group?",
-    a: "To maintain world-class reliability, predictable customs clearing, and premium organization, all shipment routes and schedules are managed directly by diaspedia. You can browse, select, and join any of our active scheduled routes."
+    q: "Can I create my own group?",
+    a: "To keep shipping reliable and prices as low as possible, all routes are scheduled and coordinated directly by diaspedia. You can browse, select, and join any of our active scheduled routes."
   }
 ];
