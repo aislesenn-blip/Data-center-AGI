@@ -52,8 +52,8 @@ export default function Home() {
 
   // Items currently added by the user to their join package
   const [calcItems, setCalcItems] = useState<ShippingItem[]>([
-    { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0 },
-    { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0 }
+    { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, quantity: 1 },
+    { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, quantity: 1 }
   ]);
 
   // Secondary Custom package input state
@@ -82,8 +82,8 @@ export default function Home() {
     // Automatically pre-populate user's selected package with the first 2 products of this route
     if (route.products && route.products.length >= 2) {
       setCalcItems([
-        { name: route.products[0].name, category: route.products[0].category, weight: route.products[0].weight },
-        { name: route.products[1].name, category: route.products[1].category, weight: route.products[1].weight }
+        { name: route.products[0].name, category: route.products[0].category, weight: route.products[0].weight, quantity: 1 },
+        { name: route.products[1].name, category: route.products[1].category, weight: route.products[1].weight, quantity: 1 }
       ]);
     } else {
       setCalcItems([]);
@@ -104,10 +104,23 @@ export default function Home() {
       const item: ShippingItem = {
         name: prod.name,
         category: prod.category,
-        weight: prod.weight
+        weight: prod.weight,
+        quantity: 1
       };
       setCalcItems([...calcItems, item]);
     }
+  };
+
+  // Update Item Quantity helper
+  const updateItemQuantity = (itemName: string, delta: number) => {
+    setCalcItems(calcItems.map(item => {
+      if (item.name === itemName) {
+        const currentQty = item.quantity || 1;
+        const newQty = Math.max(1, currentQty + delta);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    }));
   };
 
   // Add Custom Item manually
@@ -118,7 +131,8 @@ export default function Home() {
     const item: ShippingItem = {
       name: customName.trim(),
       category: customCategory,
-      weight: Number(customWeight)
+      weight: Number(customWeight),
+      quantity: 1
     };
 
     setCalcItems([...calcItems, item]);
@@ -142,30 +156,30 @@ export default function Home() {
     }, 100);
   };
 
-  // Calculate prices based on items
-  const totalWeight = calcItems.reduce((acc, item) => acc + item.weight, 0);
+  // Calculate prices based on items and their quantities
+  const totalWeight = calcItems.reduce((acc, item) => acc + (item.weight * (item.quantity || 1)), 0);
 
   const calculateTotalPrice = () => {
     return calcItems.reduce((acc, item) => {
-      // Check if it's a curated product
       const curated = selectedRoute.products.find(p => p.name === item.name);
+      const qty = item.quantity || 1;
       if (curated) {
-        return acc + curated.price;
+        return acc + (curated.price * qty);
       }
-      // Otherwise, calculate based on custom category multiplier and route base price
       const cat = ITEM_CATEGORIES.find(c => c.name === item.category);
       const mult = cat ? cat.weightMultiplier : 1.0;
-      return acc + (item.weight * selectedRoute.basePricePerKg * mult);
+      return acc + (item.weight * qty * selectedRoute.basePricePerKg * mult);
     }, 0);
   };
 
   const calculateSoloPrice = () => {
     return calcItems.reduce((acc, item) => {
       const curated = selectedRoute.products.find(p => p.name === item.name);
+      const qty = item.quantity || 1;
       if (curated) {
-        return acc + curated.standardSoloPrice;
+        return acc + (curated.standardSoloPrice * qty);
       }
-      return acc + (item.weight * selectedRoute.soloPricePerKg);
+      return acc + (item.weight * qty * selectedRoute.soloPricePerKg);
     }, 0);
   };
 
@@ -227,7 +241,7 @@ export default function Home() {
         - Centered beautifully on desktop inside a phone container.
         - Fluid edge-to-edge full screen on true mobile sizes.
       */}
-      <div className="w-full max-w-[430px] h-screen sm:h-[900px] sm:max-h-[95vh] bg-zinc-950 rounded-none sm:rounded-[56px] p-0 sm:p-4 shadow-none sm:shadow-[0_28px_70px_-14px_rgba(0,0,0,0.3)] border-0 sm:border-[8px] border-zinc-800 relative flex flex-col overflow-hidden">
+      <div className="w-full max-w-[430px] h-[100dvh] sm:h-[900px] sm:max-h-[95vh] bg-zinc-950 rounded-none sm:rounded-[56px] p-0 sm:p-4 shadow-none sm:shadow-[0_28px_70px_-14px_rgba(0,0,0,0.3)] border-0 sm:border-[8px] border-zinc-800 relative flex flex-col overflow-hidden">
 
         {/* Phone Notch/Speaker */}
         <div className="hidden sm:flex absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-zinc-950 rounded-b-2xl z-50 items-center justify-center">
@@ -309,16 +323,10 @@ export default function Home() {
               >
 
                 {/* 2. INTENTIONAL, PREMIUM HEADER DESIGN (WORDMARK ALIGNED LEFT) */}
-                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-between shrink-0">
+                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-start shrink-0">
                   <span className="font-extrabold text-2xl tracking-tighter text-brand-text">
                     diaspedia
                   </span>
-
-                  {/* Clean Minimalist Badge */}
-                  <div className="flex items-center gap-1.5 bg-black/[0.04] px-2.5 py-1 rounded-full text-[10px] font-black text-brand-text-muted uppercase tracking-wider">
-                    <Globe size={11} className="text-brand-text" />
-                    Global
-                  </div>
                 </header>
 
                 {/*
@@ -326,7 +334,7 @@ export default function Home() {
                   - Content scrolls independently.
                   - Navigation stays absolutely locked at the bottom viewport and is never hidden!
                 */}
-                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-28">
+                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-32 scroll-smooth">
 
                   {/* HOME TAB */}
                   {activeTab === "home" && (
@@ -429,17 +437,24 @@ export default function Home() {
                         <div className="grid grid-cols-1 gap-2.5">
                           {selectedRoute.products.map((prod) => {
                             const isAdded = isProductSelected(prod);
+                            const matchedItem = calcItems.find(i => i.name === prod.name);
+                            const currentQty = matchedItem?.quantity || 1;
+
                             return (
                               <div
                                 key={prod.id}
-                                onClick={() => toggleCuratedProduct(prod)}
-                                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                                onClick={() => {
+                                  if (!isAdded) {
+                                    toggleCuratedProduct(prod);
+                                  }
+                                }}
+                                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
                                   isAdded
                                     ? "bg-brand-primary/10 border-brand-primary/40 shadow-sm"
-                                    : "bg-white border-black/5 hover:border-black/10"
+                                    : "bg-white border-black/5 hover:border-black/10 cursor-pointer"
                                 }`}
                               >
-                                <div className="space-y-1 truncate pr-2">
+                                <div className="space-y-1 truncate pr-2 flex-1">
                                   <div className="font-extrabold text-xs text-brand-text truncate">{prod.name}</div>
                                   <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-bold">
                                     <span>Weight: {prod.weight}kg</span>
@@ -448,20 +463,48 @@ export default function Home() {
                                   </div>
                                 </div>
 
-                                <div className="flex items-center gap-2.5 shrink-0">
+                                <div className="flex items-center gap-2.5 shrink-0" onClick={(e) => e.stopPropagation()}>
                                   <div className="text-right">
                                     {/* Final diaspedia pricing combining ship space */}
-                                    <div className="text-xs font-black text-brand-text">€{prod.price.toFixed(2)}</div>
-                                    <span className="text-[9px] text-[#5ec700] font-bold">Save €{(prod.standardSoloPrice - prod.price).toFixed(0)}</span>
+                                    <div className="text-xs font-black text-brand-text">€{(prod.price * currentQty).toFixed(2)}</div>
+                                    <span className="text-[9px] text-[#5ec700] font-bold">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
                                   </div>
 
-                                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
-                                    isAdded
-                                      ? "bg-brand-primary border-brand-primary text-black"
-                                      : "bg-black/[0.02] border-black/5 text-zinc-400"
-                                  }`}>
-                                    {isAdded ? <Check size={16} strokeWidth={3} /> : <Plus size={16} />}
-                                  </div>
+                                  {isAdded ? (
+                                    <div className="flex items-center bg-white border border-brand-primary/40 rounded-xl p-1 gap-2.5 shadow-sm">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (currentQty === 1) {
+                                            setCalcItems(calcItems.filter(item => item.name !== prod.name));
+                                          } else {
+                                            updateItemQuantity(prod.name, -1);
+                                          }
+                                        }}
+                                        className="w-6 h-6 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-sm"
+                                      >
+                                        -
+                                      </button>
+                                      <span className="text-xs font-extrabold text-brand-text min-w-[12px] text-center">
+                                        {currentQty}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => updateItemQuantity(prod.name, 1)}
+                                        className="w-6 h-6 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-sm"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleCuratedProduct(prod)}
+                                      className="w-8 h-8 rounded-xl flex items-center justify-center border bg-black/[0.02] border-black/5 text-zinc-400 hover:border-black/20 hover:bg-white active:scale-95 transition-all"
+                                    >
+                                      <Plus size={16} />
+                                    </button>
+                                  )}
                                 </div>
                               </div>
                             );
@@ -544,24 +587,56 @@ export default function Home() {
 
                         {calcItems.length > 0 ? (
                           <div className="space-y-2 max-h-[140px] overflow-y-auto">
-                            {calcItems.map((item, index) => (
-                              <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
-                                <div className="truncate pr-3 space-y-0.5">
-                                  <div className="font-bold text-brand-text truncate">{item.name}</div>
-                                  <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
+                            {calcItems.map((item, index) => {
+                              const qty = item.quantity || 1;
+                              return (
+                                <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
+                                  <div className="truncate pr-3 space-y-0.5 flex-1">
+                                    <div className="font-bold text-brand-text truncate">{item.name}</div>
+                                    <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
+                                  </div>
+
+                                  <div className="flex items-center gap-3 shrink-0">
+                                    {/* Dual quantity selector inside list */}
+                                    <div className="flex items-center bg-white border border-black/5 rounded-lg p-0.5 gap-1.5 shadow-sm">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (qty === 1) {
+                                            handleRemoveItem(index);
+                                          } else {
+                                            updateItemQuantity(item.name, -1);
+                                          }
+                                        }}
+                                        className="w-5 h-5 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs"
+                                      >
+                                        -
+                                      </button>
+                                      <span className="text-[10px] font-black text-brand-text min-w-[10px] text-center">
+                                        {qty}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => updateItemQuantity(item.name, 1)}
+                                        className="w-5 h-5 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+
+                                    <span className="font-extrabold text-xs text-brand-text min-w-[42px] text-right">{(item.weight * qty).toFixed(1)} kg</span>
+
+                                    <button
+                                      onClick={() => handleRemoveItem(index)}
+                                      type="button"
+                                      className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm active:scale-90 transition-transform"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                  <span className="font-extrabold text-xs text-brand-text">{item.weight} kg</span>
-                                  <button
-                                    onClick={() => handleRemoveItem(index)}
-                                    type="button"
-                                    className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm"
-                                  >
-                                    <Trash2 size={13} />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         ) : (
                           <div className="text-center py-6 text-xs text-brand-text-muted bg-black/[0.01] rounded-2xl border border-dashed border-black/5">
@@ -882,7 +957,7 @@ export default function Home() {
                   - Guaranteed persistent. Anchored relative to the screen shell, never scrollable!
                   - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
                 */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 py-4 px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
+                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
                   <button
                     onClick={() => setActiveTab("home")}
                     className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
