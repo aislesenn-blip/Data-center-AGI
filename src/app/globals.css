@@ -3,23 +3,24 @@
 @theme {
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
-  --color-feep-bg: #F6F4ED;
-  --color-feep-primary: #71E300;
-  --color-feep-text: #0f1115;
-  --color-feep-text-muted: #52525b;
+  --color-diaspedia-bg: #F9F9F6;
+  --color-diaspedia-primary: #34D399; /* Emerald/Teal blend for friendly fintech vibes */
+  --color-diaspedia-accent: #10B981;  /* Darker emerald for buttons/hovers */
+  --color-diaspedia-text: #0E1111;
+  --color-diaspedia-text-muted: #5E6366;
+  --color-diaspedia-card: #FFFFFF;
 }
 
 @layer base {
   body {
-    background-color: var(--color-feep-bg);
-    color: var(--color-feep-text);
+    background-color: var(--color-diaspedia-bg);
+    color: var(--color-diaspedia-text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom focus states to match brand */
   *:focus-visible {
-    outline: 2px solid var(--color-feep-primary);
+    outline: 2px solid var(--color-diaspedia-primary);
     outline-offset: 2px;
   }
 
@@ -28,7 +29,7 @@
   }
 }
 
-/* Hide scrollbar for a cleaner premium look */
+/* Hide scrollbar globally for a premium, clean scrolling experience */
 ::-webkit-scrollbar {
   display: none;
 }
