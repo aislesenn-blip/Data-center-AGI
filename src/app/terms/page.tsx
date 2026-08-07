@@ -7,41 +7,46 @@ export default function TermsOfService() {
     <main className="min-h-screen relative bg-white">
       <Navigation />
 
-      <div className="pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto">
+      <div className="pt-36 pb-24 px-6 md:px-12 max-w-4xl mx-auto">
         <FadeIn>
           <div className="mb-12 border-b border-black/5 pb-12">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Terms of Service</h1>
             <p className="text-zinc-500">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
 
-          <div className="prose prose-zinc max-w-none text-feep-text-muted space-y-8">
-            <p className="text-lg leading-relaxed">
-              These Terms of Service constitute a legally binding agreement made between you and FEEP concerning your access to and use of the feep.africa website as well as any other media form, media channel, or mobile website related, linked, or otherwise connected thereto.
+          <div className="prose prose-zinc max-w-none text-diaspedia-text-muted space-y-8 text-sm md:text-base leading-relaxed">
+            <p>
+              These Terms of Service constitute a legally binding agreement made between you and Diaspedia concerning your access to and use of our cross-border logistics coordination platform and website.
             </p>
 
             <div>
-              <h2 className="text-2xl font-bold text-feep-text mb-4">1. Agreement to Terms</h2>
-              <p className="leading-relaxed">
-                By accessing the Site, you agree that you have read, understood, and agree to be bound by all of these Terms of Service. If you do not agree with all of these Terms of Service, then you are expressly prohibited from using the Site and you must discontinue use immediately.
+              <h2 className="text-2xl font-bold text-diaspedia-text mb-4">1. Acceptance of Terms</h2>
+              <p>
+                By accessing this website, choosing route schedules, and reserving cargo space, you represent and warrant that you have read, understood, and agree to be bound by all of these Terms of Service. If you do not agree, you are prohibited from using our coordination services and must discontinue use immediately.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-feep-text mb-4">2. Intellectual Property Rights</h2>
-              <p className="leading-relaxed">
-                Unless otherwise indicated, the Site is our proprietary property and all source code, databases, functionality, software, website designs, audio, video, text, photographs, and graphics on the Site are owned or controlled by us or licensed to us.
+              <h2 className="text-2xl font-bold text-diaspedia-text mb-4">2. Combined Cargo & Prohibited Items</h2>
+              <p className="mb-4">
+                To maintain standard safety and regulatory clearance, all users joining collective shipping schedules must strictly agree to our packaging guidelines:
               </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>You must declare the complete, honest contents of any packaging.</li>
+                <li>You are strictly prohibited from sending illegal drugs, counterfeit materials, inflammable goods, hazardous materials, or contraband.</li>
+                <li>All packages are subject to physical inspection at our designated local drop-off collection hubs prior to airport cargo clearance.</li>
+              </ul>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-feep-text mb-4">3. User Representations</h2>
-              <p className="leading-relaxed">
-                By using the Site, you represent and warrant that all registration information you submit will be true, accurate, current, and complete; you will maintain the accuracy of such information and promptly update such registration information as necessary.
+              <h2 className="text-2xl font-bold text-diaspedia-text mb-4">3. Limit of Liability</h2>
+              <p>
+                Diaspedia is a B2C platform facilitating bulk group cargo rates. While we make every effort to ensure packages arrive on schedule, we are not liable for customs delays, airline rescheduling, or force majeure events. Standard insurance coverage options are provided upon package inspection at our drop-off centers.
               </p>
             </div>
 
             <div className="pt-8 border-t border-black/5 mt-12">
-              <p>For any legal inquiries regarding these terms, please contact us at <a href="mailto:legal@feep.africa" className="text-feep-text font-semibold hover:underline">legal@feep.africa</a>.</p>
+              <p>For any legal or regulatory inquiries regarding these terms, please contact us at <a href="mailto:legal@diaspedia.com" className="text-diaspedia-text font-semibold hover:underline">legal@diaspedia.com</a>.</p>
             </div>
           </div>
         </FadeIn>

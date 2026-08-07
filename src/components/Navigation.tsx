@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,10 +18,10 @@ export default function Navigation() {
   }, []);
 
   const links = [
-    { name: "The Solution", href: "#solution" },
-    { name: "Impact", href: "#impact" },
-    { name: "For Investors", href: "#investors" },
-    { name: "FAQ", href: "#faq" },
+    { name: "Home", href: "/" },
+    { name: "Shipments", href: "#shipments" },
+    { name: "How it works", href: "#how-it-works" },
+    { name: "Careers", href: "/careers" },
   ];
 
   return (
@@ -30,12 +30,15 @@ export default function Navigation() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-feep-bg/80 backdrop-blur-md border-b border-black/5 py-4" : "bg-transparent py-6"
+        scrolled ? "bg-diaspedia-bg/90 backdrop-blur-md border-b border-black/5 py-4" : "bg-transparent py-6"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold tracking-tighter text-feep-text">
-          FEEP
+        <Link href="/" className="text-2xl font-bold tracking-tighter text-diaspedia-text flex items-center gap-1.5">
+          <span className="w-6 h-6 rounded-md bg-diaspedia-primary flex items-center justify-center text-xs font-black text-diaspedia-text">
+            d
+          </span>
+          diaspedia
         </Link>
 
         {/* Desktop Links */}
@@ -44,25 +47,25 @@ export default function Navigation() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-feep-text-muted hover:text-feep-text transition-colors"
+              className="text-sm font-medium text-diaspedia-text-muted hover:text-diaspedia-text transition-colors"
             >
               {link.name}
             </Link>
           ))}
-          <Link href="#contact">
+          <Link href="#join-form">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-feep-primary text-black px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:bg-[#65cc00]"
+              className="bg-diaspedia-primary text-diaspedia-text px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:bg-diaspedia-accent shadow-sm"
             >
-              Become a Partner
+              Join Shipment
             </motion.button>
           </Link>
         </div>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-feep-text outline-none p-2 -mr-2"
+          className="md:hidden text-diaspedia-text outline-none p-2 -mr-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"
@@ -81,7 +84,7 @@ export default function Navigation() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden absolute top-full left-0 right-0 bg-feep-bg border-b border-black/5 overflow-hidden shadow-xl"
+            className="md:hidden absolute top-full left-0 right-0 bg-diaspedia-bg border-b border-black/5 overflow-hidden shadow-xl"
           >
             <div className="px-6 py-8 flex flex-col gap-6">
               {links.map((link, i) => (
@@ -94,7 +97,7 @@ export default function Navigation() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-lg font-medium text-feep-text block"
+                    className="text-lg font-medium text-diaspedia-text block"
                   >
                     {link.name}
                   </Link>
@@ -105,9 +108,9 @@ export default function Navigation() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
-                <Link href="#contact" onClick={() => setMobileMenuOpen(false)}>
-                  <button className="bg-feep-primary w-full text-black px-6 py-4 rounded-xl text-base font-semibold mt-2 transition-transform active:scale-95">
-                    Offer Flexible Payments
+                <Link href="#join-form" onClick={() => setMobileMenuOpen(false)}>
+                  <button className="bg-diaspedia-primary w-full text-diaspedia-text px-6 py-4 rounded-xl text-base font-semibold mt-2 transition-transform active:scale-95">
+                    Join Active Shipment
                   </button>
                 </Link>
               </motion.div>
