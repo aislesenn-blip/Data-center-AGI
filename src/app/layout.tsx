@@ -15,11 +15,11 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL("https://diaspedia.com"),
   title: {
-    default: "diaspedia | Together, we make cross-border cheaper",
+    default: "diaspedia | Premium Social Travel Utility",
     template: "%s | diaspedia"
   },
-  description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
-  keywords: ["cross-border", "shared shipping", "international shipping", "fintech", "group shipping", "savings", "diaspora", "africa to europe", "global payments"],
+  description: "diaspedia helps travelers organize trips, coordinate passenger bookings, and discover friends traveling on active rail and bus routes.",
+  keywords: ["travel utility", "social travel", "passenger tickets", "deutsche bahn", "flixbus", "eurostar", "group routes", "diaspedia"],
   authors: [{ name: "diaspedia" }],
   creator: "diaspedia",
   publisher: "diaspedia",
@@ -28,21 +28,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://diaspedia.com",
     siteName: "diaspedia",
-    title: "diaspedia | Together, we make cross-border cheaper",
-    description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
+    title: "diaspedia | Premium Social Travel Utility",
+    description: "diaspedia helps travelers organize trips, coordinate passenger bookings, and discover friends traveling on active rail and bus routes.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "diaspedia - Together, we make cross-border cheaper",
+        alt: "diaspedia - Premium Social Travel Utility",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "diaspedia | Together, we make cross-border cheaper",
-    description: "diaspedia helps people living abroad get products from other continents more easily and cheaply. We organize schedules and combine demand to make shipping cheaper for everyone.",
+    title: "diaspedia | Premium Social Travel Utility",
+    description: "diaspedia helps travelers organize trips, coordinate passenger bookings, and discover friends traveling on active rail and bus routes.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -67,7 +67,7 @@ const jsonLd = {
       "name": "diaspedia",
       "url": "https://diaspedia.com",
       "logo": "https://diaspedia.com/logo.png",
-      "description": "A future cross-border financial company starting with shipping, making international shipping and movement of goods affordable for diaspora communities.",
+      "description": "A premium social travel utility organizing discoverable trips, active traveler routes, and direct passenger ticket bookings.",
       "founder": {
         "@type": "Person",
         "name": "Ernest Michael"

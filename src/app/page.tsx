@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -22,7 +22,6 @@ import {
   X,
   Globe,
   Activity,
-  Sparkles,
   Compass,
   Briefcase,
   ExternalLink
@@ -48,7 +47,7 @@ export default function Home() {
   // Onboarding Splash
   const [showSplash, setShowSplash] = useState<boolean>(true);
 
-  // App States (connected to localStorage for hydration)
+  // App States
   const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER);
   const [trips, setTrips] = useState<Trip[]>(MOCK_TRIPS);
   const [activities, setActivities] = useState<FriendActivity[]>(MOCK_ACTIVITIES);
@@ -73,7 +72,7 @@ export default function Home() {
   const [notifications, setNotifications] = useState<Array<{ id: string; text: string; time: string; read: boolean }>>([
     { id: "n1", text: "Maria Schmidt booked Berlin ➔ Hamburg for Friday!", time: "2h ago", read: false },
     { id: "n2", text: "Alex Dubois joined Saturday's Berlin ➔ Munich trip.", time: "4h ago", read: false },
-    { id: "n3", text: "3 friends are traveling this weekend. Join them to save!", time: "1d ago", read: true }
+    { id: "n3", text: "3 friends are traveling this weekend. Explore their active routes!", time: "1d ago", read: true }
   ]);
 
   useEffect(() => {
@@ -205,63 +204,65 @@ export default function Home() {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
   };
 
+  const handleQuickDest = (city: string) => {
+    setSearchTo(city);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F6F4ED] text-[#0f1115] font-sans antialiased flex justify-center">
+    <div className="min-h-screen bg-[#F6F4ED] text-[#0f1115] font-sans antialiased flex justify-center overflow-hidden">
 
       {/*
         SOPHISTICATED MOBILE SHELL CONSTRAINER
-        - Emulates an edge-to-edge premium mobile device (such as iPhone 15 Pro Max / Google Pixel)
-        - Constrains desktop layouts elegantly to remain completely mobile-first as requested.
+        - Emulates an edge-to-edge premium mobile device
+        - h-[100dvh] constraint enforces that the bottom nav is permanently pinned.
       */}
-      <div className="w-full max-w-md bg-[#F6F4ED] min-h-screen relative flex flex-col shadow-[0_0_50px_rgba(15,17,21,0.06)] overflow-hidden border-x border-black/[0.03]">
+      <div className="w-full max-w-md bg-[#F6F4ED] h-[100dvh] relative flex flex-col shadow-[0_0_50px_rgba(15,17,21,0.06)] overflow-hidden border-x border-black/[0.03]">
 
-        {/* SPLASH / ONBOARDING SCREEN */}
+        {/* ONBOARDING SCREEN (FITS EXACTLY ONE SCREEN, ZERO SCROLLING) */}
         <AnimatePresence>
           {showSplash && (
             <motion.div
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 bg-[#F6F4ED] z-50 flex flex-col justify-between p-6"
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 bg-[#F6F4ED] z-[60] flex flex-col justify-between p-6 h-[100dvh] overflow-hidden"
             >
-              <div className="flex flex-col items-center pt-24 text-center space-y-6">
-                <div className="w-16 h-16 rounded-3xl bg-black flex items-center justify-center shadow-lg">
-                  <span className="text-white font-black text-3xl font-heading tracking-tighter">d</span>
-                </div>
-
-                <div className="space-y-2">
-                  <h1 className="text-4xl font-black font-heading tracking-tight">diaspedia</h1>
-                  <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Together, we make cross-border cheaper.</p>
-                </div>
-
-                <div className="max-w-xs px-2 text-sm text-[#0f1115]/75 leading-relaxed font-medium">
-                  The travel app for people who actually travel. Find friends going to the same places, join trips, and book group tickets to split the cost.
-                </div>
+              {/* Header Branding */}
+              <div className="flex flex-col items-center pt-8 text-center space-y-4">
+                <span className="font-heading font-black text-4xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#71E300] bg-black px-3 py-1 rounded-full">
+                  WEEKEND TRAVEL COORDINATOR
+                </p>
+                <p className="max-w-xs text-xs font-semibold text-zinc-600 leading-relaxed">
+                  The travel app for travelers. Coordinate schedules, see friends going, and book passenger tickets on active rail and bus routes.
+                </p>
               </div>
 
               {/* Onboarding Features Summary */}
-              <div className="space-y-4 max-w-sm mx-auto w-full">
-                <div className="space-y-3 bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#71E300]/20 flex items-center justify-center text-black shrink-0">
-                      <Users size={16} />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-xs font-bold text-black">See Who is Going</h4>
-                      <p className="text-[11px] text-zinc-500 font-medium">Instantly discover friends & peers headed to the same city.</p>
-                    </div>
+              <div className="space-y-3 max-w-sm mx-auto w-full">
+                <div className="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
+                    <Users size={16} />
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#71E300]/20 flex items-center justify-center text-black shrink-0">
-                      <Ticket size={16} />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-xs font-bold text-black">Split the Cost Directly</h4>
-                      <p className="text-[11px] text-zinc-500 font-medium">Book tickets directly through diaspedia and save up to 70% together.</p>
-                    </div>
+                  <div className="text-left">
+                    <h4 className="text-xs font-bold text-black">See Who is Going</h4>
+                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Instantly see friends & peers headed to the same cities.</p>
                   </div>
                 </div>
 
+                <div className="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
+                    <Ticket size={16} />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-xs font-bold text-black">Direct Booking</h4>
+                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Secure standard tickets directly on active schedules.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Get Started Button */}
+              <div className="w-full max-w-sm mx-auto pb-4">
                 <button
                   type="button"
                   onClick={handleDismissSplash}
@@ -275,14 +276,9 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* PERSISTENT TRANSLUCENT HEADER BAR */}
-        <header className="sticky top-0 left-0 right-0 bg-[#F6F4ED]/85 backdrop-blur-md border-b border-black/[0.04] py-4 px-5 flex items-center justify-between z-30 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
-              <span className="text-white font-black text-base font-heading">d</span>
-            </div>
-            <span className="font-heading font-black text-xl tracking-tight text-[#0f1115]">diaspedia</span>
-          </div>
+        {/* HEADER BAR */}
+        <header className="sticky top-0 left-0 right-0 bg-[#F6F4ED]/85 backdrop-blur-md border-b border-black/[0.04] py-3 px-4 flex items-center justify-between z-30 shrink-0">
+          <span className="font-heading font-black text-2xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
 
           <div className="flex items-center gap-2">
             {/* Notification Button */}
@@ -303,7 +299,7 @@ export default function Home() {
           </div>
         </header>
 
-        {/* NOTIFICATIONS DRAWER OVERLAY */}
+        {/* NOTIFICATIONS DROPDOWN OVERLAY (SMOOTH INTERACTION) */}
         <AnimatePresence>
           {showNotifications && (
             <>
@@ -311,6 +307,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.4 }}
                 exit={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute inset-0 bg-black z-40"
                 onClick={() => setShowNotifications(false)}
               />
@@ -318,8 +315,8 @@ export default function Home() {
                 initial={{ y: "-100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "-100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 220 }}
-                className="absolute top-16 left-0 right-0 bg-white border-b border-black/10 shadow-lg z-40 max-h-[80%] overflow-y-auto rounded-b-3xl p-5 space-y-4"
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute top-[52px] left-0 right-0 bg-white border-b border-black/10 shadow-lg z-40 max-h-[80%] overflow-y-auto rounded-b-3xl p-5 space-y-4"
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-black font-heading tracking-tight">Travel Alerts</h3>
@@ -358,50 +355,71 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* MAIN SCROLLABLE CONTENT BODY */}
-        <main className="flex-1 overflow-y-auto px-5 pt-4 pb-32 space-y-6 scroll-smooth">
+        {/* MAIN INDEPENDENTLY SCROLLABLE CONTENT */}
+        <main className="flex-1 overflow-y-auto px-4 pt-3 pb-32 space-y-5 scroll-smooth">
 
           {/* 1. HOME / DISCOVER TAB */}
           {activeTab === "home" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              {/* Premium Heading */}
-              <div className="space-y-1">
-                <span className="text-xs font-extrabold tracking-wider text-zinc-500 uppercase">TOGETHER, WE SAVE</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-tight">Where are we going?</h2>
+              {/* Confident Headings */}
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">COORDINATE TRAVEL</span>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-none pt-2">Where are we going?</h2>
               </div>
 
-              {/* Minimal Search Bar (Venmo/Flixbus styled inputs) */}
-              <div className="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+              {/* DENSE SEARCH BAR SECTION (Uber Visual Density Inspiration) */}
+              <div className="bg-white p-4 rounded-3xl border border-black/5 shadow-[0_4px_20px_rgba(15,17,21,0.02)] space-y-3.5">
+                <div className="space-y-2">
                   <div className="relative">
-                    <MapPin size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
                       type="text"
                       placeholder="From city"
                       value={searchFrom}
                       onChange={(e) => setSearchFrom(e.target.value)}
-                      className="w-full bg-[#F6F4ED]/50 border border-black/5 rounded-xl py-2.5 pl-9 pr-3 text-xs font-bold text-zinc-800 focus:outline-none focus:border-[#71E300] placeholder:text-zinc-400"
+                      className="w-full bg-[#F6F4ED]/60 border border-black/5 rounded-2xl py-3 pl-10 pr-3 text-xs font-bold text-zinc-800 focus:outline-none focus:border-[#71E300] placeholder:text-zinc-400"
                     />
                   </div>
                   <div className="relative">
-                    <MapPin size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#71E300]" />
+                    <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-800" />
                     <input
                       type="text"
-                      placeholder="To city"
+                      placeholder="Where to?"
                       value={searchTo}
                       onChange={(e) => setSearchTo(e.target.value)}
-                      className="w-full bg-[#F6F4ED]/50 border border-black/5 rounded-xl py-2.5 pl-9 pr-3 text-xs font-bold text-zinc-800 focus:outline-none focus:border-[#71E300] placeholder:text-zinc-400"
+                      className="w-full bg-[#F6F4ED]/60 border border-black/5 rounded-2xl py-3 pl-10 pr-3 text-xs font-bold text-zinc-800 focus:outline-none focus:border-[#71E300] placeholder:text-zinc-400"
                     />
                   </div>
                 </div>
+
+                {/* Quick Shortcuts (Uber style circular quick destinations) */}
+                <div className="pt-1.5">
+                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Popular destinations</p>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    {["Munich", "Hamburg", "Amsterdam", "Paris"].map((city) => (
+                      <button
+                        key={city}
+                        onClick={() => handleQuickDest(city)}
+                        className={`text-xs font-bold px-3 py-2 rounded-xl border transition-all shrink-0 cursor-pointer ${
+                          searchTo.toLowerCase() === city.toLowerCase()
+                            ? "bg-black text-[#71E300] border-black"
+                            : "bg-zinc-50 text-zinc-700 border-black/[0.04] hover:bg-zinc-100"
+                        }`}
+                      >
+                        {city}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {(searchFrom || searchTo) && (
                   <button
                     onClick={() => { setSearchFrom(""); setSearchTo(""); }}
-                    className="text-xs text-zinc-400 hover:text-black font-bold flex items-center gap-1 mx-auto"
+                    className="text-xs text-zinc-500 hover:text-black font-bold flex items-center gap-1 mx-auto pt-1"
                   >
                     Clear filters <X size={12} />
                   </button>
@@ -411,11 +429,11 @@ export default function Home() {
               {/* Active Group Booking Routes */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between px-1">
-                  <h3 className="text-xs font-black tracking-wider text-zinc-500 uppercase">Active Group Trips</h3>
-                  <span className="text-[11px] font-bold text-[#71E300] bg-black px-2 py-0.5 rounded-full uppercase tracking-wider">Save up to 70%</span>
+                  <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase">Active Routes</h3>
+                  <span className="text-[10px] font-bold text-[#71E300] bg-black px-2.5 py-1 rounded-full uppercase tracking-wider">CONFIRMED ROUTES</span>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   {filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => {
                       const isJoined = isUserJoined(trip.id);
@@ -427,11 +445,11 @@ export default function Home() {
                         >
                           {/* Route & Pricing Header */}
                           <div className="flex justify-between items-start">
-                            <div className="space-y-1">
+                            <div className="space-y-0.5">
                               <div className="flex items-center gap-2">
-                                <span className="font-heading font-black text-xl text-black">{trip.from}</span>
+                                <span className="font-heading font-black text-xl text-black leading-tight">{trip.from}</span>
                                 <span className="text-zinc-400 font-bold">➔</span>
-                                <span className="font-heading font-black text-xl text-black">{trip.to}</span>
+                                <span className="font-heading font-black text-xl text-black leading-tight">{trip.to}</span>
                               </div>
                               <div className="flex items-center gap-2 text-xs text-zinc-400 font-bold">
                                 <span>{trip.date}</span>
@@ -442,39 +460,28 @@ export default function Home() {
 
                             <div className="text-right">
                               <div className="text-lg font-black text-black">€{trip.price.toFixed(2)}</div>
-                              <span className="text-[10px] bg-[#71E300]/20 text-[#5ec700] px-2 py-0.5 rounded-md font-black shrink-0">
-                                Save €{trip.savingsAmount.toFixed(0)}
+                              <span className="text-[9px] bg-zinc-100 border border-black/5 text-zinc-500 px-1.5 py-0.5 rounded-md font-bold">
+                                Group Ticket
                               </span>
                             </div>
                           </div>
 
-                          {/* Social Layer: Who is going? */}
-                          <div className="bg-[#F6F4ED]/60 rounded-2xl p-3 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              {/* Overlay Avatars */}
-                              <div className="flex -space-x-2.5">
-                                {trip.peopleGoingList.slice(0, 3).map((person, idx) => (
-                                  <div
-                                    key={idx}
-                                    className={`w-7 h-7 rounded-full border-2 border-white ${person.avatarBg} flex items-center justify-center text-[10px] font-black text-white`}
-                                  >
-                                    {person.username[0].toUpperCase()}
+                          {/* SIMPLIFIED FRIENDS GOING (Item 7) */}
+                          {trip.peopleGoingList.some(p => p.isFriend) && (
+                            <div className="bg-[#F6F4ED]/40 border border-black/[0.02] rounded-2xl p-3 space-y-2">
+                              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block">Friends Going</span>
+                              <div className="flex flex-wrap gap-2">
+                                {trip.peopleGoingList.filter(p => p.isFriend).map((friend) => (
+                                  <div key={friend.username} className="flex items-center gap-1.5 bg-white border border-black/5 px-2 py-1 rounded-xl">
+                                    <div className={`w-5 h-5 rounded-full ${friend.avatarBg} flex items-center justify-center text-[9px] font-bold text-white shrink-0`}>
+                                      {friend.username[0].toUpperCase()}
+                                    </div>
+                                    <span className="text-xs font-bold text-zinc-800">{friend.name}</span>
                                   </div>
                                 ))}
                               </div>
-                              <span className="text-xs text-zinc-700 font-bold">
-                                {trip.peopleGoingCount} travelers going
-                              </span>
                             </div>
-
-                            {/* Friend status check */}
-                            {trip.peopleGoingList.some(p => p.isFriend) && (
-                              <div className="flex items-center gap-1 bg-[#71E300]/20 px-2 py-0.5 rounded-full border border-[#71E300]/30">
-                                <Sparkles size={10} className="text-[#5ec700]" />
-                                <span className="text-[10px] font-black text-zinc-800">Friends going</span>
-                              </div>
-                            )}
-                          </div>
+                          )}
 
                           {/* Bottom Action Indicator */}
                           <div className="flex items-center justify-between text-xs font-bold pt-1 border-t border-black/[0.02]">
@@ -502,21 +509,6 @@ export default function Home() {
                   )}
                 </div>
               </div>
-
-              {/* Informative Value Proposition */}
-              <div className="bg-black text-white rounded-3xl p-5 space-y-3 shadow-lg relative overflow-hidden">
-                <div className="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-10">
-                  <Ticket size={120} className="text-white" />
-                </div>
-                <h3 className="text-sm font-black font-heading text-white">How diaspedia splits costs:</h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  We consolidate bookings on regular bus and train lines. When we reach group size, the operator grants us bulk discounts. You lock in a cheap ticket, see who is joining, and coordinate travel details easily.
-                </p>
-                <div className="text-[11px] font-extrabold text-[#71E300] flex items-center gap-1.5">
-                  <CheckCircle2 size={12} />
-                  <span>Real travel utility with zero social noise.</span>
-                </div>
-              </div>
             </motion.div>
           )}
 
@@ -525,16 +517,16 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              <div className="space-y-1">
-                <span className="text-xs font-extrabold tracking-wider text-zinc-500 uppercase font-bold">My Schedules</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">My Trips</h2>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">MY SCHEDULES</span>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Trips</h2>
               </div>
 
               {/* Upcoming Joined Trips */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black tracking-wider text-zinc-500 uppercase px-1">Upcoming Travel</h3>
+                <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase px-1">Upcoming Travel</h3>
                 {tickets.length > 0 ? (
                   tickets.map((t) => {
                     const matchedTrip = trips.find(tr => tr.id === t.tripId);
@@ -542,16 +534,16 @@ export default function Home() {
                       <div key={t.id} className="bg-white border border-black/[0.04] rounded-3xl p-5 shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] bg-zinc-900 text-[#71E300] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
-                            Booked Space
+                            Booked Pass
                           </span>
                           <span className="text-xs font-bold text-zinc-400">{t.seat}</span>
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
-                            <span className="font-heading font-black text-xl text-black">{t.from.split(" ")[0]}</span>
+                            <span className="font-heading font-black text-xl text-black leading-tight">{t.from.split(" ")[0]}</span>
                             <span className="text-zinc-400 font-bold">➔</span>
-                            <span className="font-heading font-black text-xl text-black">{t.to.split(" ")[0]}</span>
+                            <span className="font-heading font-black text-xl text-black leading-tight">{t.to.split(" ")[0]}</span>
                           </div>
                           <div className="flex items-center gap-2 text-xs text-zinc-500 font-bold">
                             <span>{t.date}</span>
@@ -584,7 +576,7 @@ export default function Home() {
                   })
                 ) : (
                   <div className="bg-white rounded-3xl border border-black/5 p-8 text-center space-y-3">
-                    <Calendar size={24} className="mx-auto text-zinc-400 animate-pulse" />
+                    <Calendar size={24} className="mx-auto text-zinc-400" />
                     <h4 className="text-xs font-bold text-zinc-800">No upcoming trips joined</h4>
                     <p className="text-xs text-zinc-400">Discover active trips on the Home feed and secure your ticket today.</p>
                   </div>
@@ -593,7 +585,7 @@ export default function Home() {
 
               {/* Past Travel History */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black tracking-wider text-zinc-500 uppercase px-1">Past History</h3>
+                <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase px-1">Past History</h3>
                 <div className="space-y-2">
                   {userProfile.pastTrips.map((city, idx) => (
                     <div
@@ -609,7 +601,7 @@ export default function Home() {
                           <div className="text-[10px] text-zinc-400 font-bold">Travel completed</div>
                         </div>
                       </div>
-                      <span className="text-xs font-extrabold text-zinc-500">Completed</span>
+                      <span className="text-xs font-extrabold text-zinc-400">Completed</span>
                     </div>
                   ))}
                 </div>
@@ -622,16 +614,16 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              <div className="space-y-1">
-                <span className="text-xs font-extrabold tracking-wider text-zinc-500 uppercase">VENMO-STYLE DISCOVERY</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">Friend Activity</h2>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">ACTIVE DISCOVERY</span>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">Friend Activity</h2>
               </div>
 
               {/* Real-time Activity Feed */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black tracking-wider text-zinc-500 uppercase px-1">Friend trips this week</h3>
+                <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase px-1">Friend trips this week</h3>
                 <div className="space-y-4">
                   {activities.map((act) => {
                     const matchedTrip = trips.find(t => t.id === act.tripId);
@@ -655,7 +647,7 @@ export default function Home() {
 
                         {/* Travel Card Preview */}
                         <div className="bg-[#F6F4ED]/50 border border-black/[0.02] rounded-2xl p-4 flex justify-between items-center">
-                          <div className="space-y-1">
+                          <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-xs text-black">{act.from}</span>
                               <span className="text-zinc-400 text-xs">➔</span>
@@ -671,9 +663,9 @@ export default function Home() {
                               onClick={() => {
                                 setSelectedTrip(matchedTrip);
                               }}
-                              className="bg-black hover:bg-zinc-900 active:scale-95 text-white text-[10px] font-black px-3.5 py-2 rounded-xl transition-all"
+                              className="bg-[#71E300] hover:bg-[#5ec700] active:scale-95 text-black text-xs font-bold px-4 py-2 rounded-xl transition-all"
                             >
-                              Join Trip
+                              Join
                             </button>
                           )}
                         </div>
@@ -683,13 +675,13 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Value Indicator */}
-              <div className="bg-[#71E300]/10 border border-[#71E300]/30 rounded-3xl p-5 flex gap-3.5 items-start shadow-sm">
-                <Info size={20} className="text-black shrink-0 mt-0.5" />
+              {/* Information Notice */}
+              <div className="bg-white border border-black/[0.04] rounded-3xl p-5 flex gap-3.5 items-start shadow-sm">
+                <Info size={20} className="text-zinc-600 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-black">Zero clutter, pure utility</h4>
-                  <p className="text-xs text-zinc-700 leading-relaxed font-semibold">
-                    No likes, comments, or endless feeds. Just real-world travel schedules. If your friend Schmidt travels, you know when, where, and can secure your space immediately.
+                  <h4 className="text-xs font-bold text-black">Active Travel Schedules</h4>
+                  <p className="text-xs text-zinc-500 leading-relaxed font-medium">
+                    Stay updated on where your friends are heading. When a friend posts a trip, you can coordinate routes, view departure times, and join directly.
                   </p>
                 </div>
               </div>
@@ -701,11 +693,11 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              <div className="space-y-1">
-                <span className="text-xs font-extrabold tracking-wider text-zinc-500 uppercase">MY BOARDING PASSES</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">My Tickets</h2>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase font-bold">MY BOARDING PASSES</span>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Tickets</h2>
               </div>
 
               <div className="space-y-5">
@@ -718,14 +710,11 @@ export default function Home() {
                       {/* Ticket Carrier top styling */}
                       <div className="bg-black text-white px-5 py-4 flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 bg-[#71E300] rounded-md flex items-center justify-center text-black font-bold text-xs shrink-0">
-                            d
-                          </div>
                           <span className="text-xs font-black uppercase tracking-widest text-[#71E300]">
                             {t.carrier} PASS
                           </span>
                         </div>
-                        <span className="text-xs font-extrabold text-zinc-400">{t.id}</span>
+                        <span className="text-xs font-bold text-zinc-400">{t.id}</span>
                       </div>
 
                       {/* Ticket main detail block */}
@@ -792,7 +781,7 @@ export default function Home() {
                               <div className="w-16 h-1 bg-black rounded" />
                             </div>
                           </div>
-                          <span className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">
+                          <span className="text-[10px] font-black tracking-widest text-zinc-400 uppercase text-center">
                             Scan on Deutsche Bahn / Flixbus reader
                           </span>
                         </div>
@@ -801,7 +790,7 @@ export default function Home() {
                   ))
                 ) : (
                   <div className="bg-white rounded-3xl border border-black/5 p-8 text-center space-y-3">
-                    <Ticket size={24} className="mx-auto text-zinc-400 animate-bounce" />
+                    <Ticket size={24} className="mx-auto text-zinc-400" />
                     <h4 className="text-xs font-bold text-zinc-800">No active travel passes</h4>
                     <p className="text-xs text-zinc-400">Your booked tickets will appear here with dynamic QR codes for immediate boarding.</p>
                   </div>
@@ -815,7 +804,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-5"
             >
               {/* Profile Card Summary */}
               <div className="bg-white border border-black/[0.04] rounded-3xl p-6 shadow-sm text-center space-y-4">
@@ -823,12 +812,9 @@ export default function Home() {
                   <div className="w-20 h-20 rounded-full bg-zinc-950 flex items-center justify-center border-4 border-[#71E300]">
                     <span className="text-white text-3xl font-black font-heading">J</span>
                   </div>
-                  <div className="absolute bottom-0 right-0 bg-[#71E300] text-black w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
-                    <Sparkles size={11} />
-                  </div>
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   <h3 className="text-lg font-black font-heading text-black leading-tight">@{userProfile.username}</h3>
                   <p className="text-xs text-zinc-500 font-bold">Based in {userProfile.homeCity}</p>
                 </div>
@@ -852,7 +838,7 @@ export default function Home() {
 
               {/* Travel Identity Details */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black tracking-wider text-zinc-500 uppercase px-1">Upcoming routes</h3>
+                <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase px-1">Upcoming routes</h3>
                 <div className="space-y-2">
                   {userProfile.upcomingTrips.map((city, idx) => (
                     <div
@@ -860,7 +846,7 @@ export default function Home() {
                       className="bg-white border border-black/[0.03] rounded-2xl p-4 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#71E300]/10 flex items-center justify-center text-[#71E300]">
+                        <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-black">
                           <Calendar size={14} className="text-black" />
                         </div>
                         <div>
@@ -868,13 +854,13 @@ export default function Home() {
                           <div className="text-[10px] text-zinc-400 font-bold">Upcoming schedule</div>
                         </div>
                       </div>
-                      <span className="text-xs font-bold text-zinc-800 bg-[#71E300]/20 px-2 py-0.5 rounded">Active</span>
+                      <span className="text-xs font-bold text-zinc-800 bg-[#71E300]/25 px-2.5 py-1 rounded-xl">Active</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Developer / Company Footer Section (No Dead Ends) */}
+              {/* Corporate Footer Section (No Dead Ends) */}
               <div className="bg-zinc-100/50 border border-black/[0.02] rounded-3xl p-5 text-center space-y-4">
                 <div className="text-xs font-extrabold text-zinc-500 tracking-wider uppercase">
                   diaspedia Corporation
@@ -894,7 +880,7 @@ export default function Home() {
 
         </main>
 
-        {/* DETAILS DRAWER / BOOKING OVERLAY */}
+        {/* DETAILS DRAWER / BOOKING OVERLAY (Layered z-50 over navigation) */}
         <AnimatePresence>
           {selectedTrip && (
             <>
@@ -903,7 +889,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.5 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black z-40"
+                className="absolute inset-0 bg-black z-50"
                 onClick={() => {
                   if (!simulatedLoading) {
                     setSelectedTrip(null);
@@ -912,13 +898,13 @@ export default function Home() {
                 }}
               />
 
-              {/* Drawer Container */}
+              {/* Drawer Container (Z-50 Layered Sheet) */}
               <motion.div
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 220 }}
-                className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] shadow-[0_-12px_32px_rgba(15,17,21,0.15)] z-40 max-h-[92%] overflow-y-auto p-6 space-y-5 flex flex-col pb-safe-bottom"
+                className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] shadow-[0_-12px_32px_rgba(15,17,21,0.15)] z-50 max-h-[92%] overflow-y-auto p-6 space-y-5 flex flex-col pb-safe-bottom"
               >
 
                 {/* Drag / Pull handle */}
@@ -950,7 +936,7 @@ export default function Home() {
 
                 {/* TRIP OVERVIEW / ATTENDEE BOOKING TOGGLE */}
                 {!isBooking ? (
-                  <div className="space-y-5 flex-1">
+                  <div className="space-y-5 flex-1 pb-4">
 
                     {/* Carrier & Price highlight */}
                     <div className="grid grid-cols-2 gap-3">
@@ -964,37 +950,42 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Who is going list detailed */}
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-                        Who is going ({selectedTrip.peopleGoingCount} travelers)
-                      </h4>
+                    {/* SIMPLIFIED FRIENDS GOING (Item 7) */}
+                    {selectedTrip.peopleGoingList.some(p => p.isFriend) && (
+                      <div className="space-y-2.5">
+                        <h4 className="text-xs font-black tracking-wider text-zinc-400 uppercase">
+                          Friends Going
+                        </h4>
+                        <div className="flex flex-col gap-2">
+                          {selectedTrip.peopleGoingList.filter(p => p.isFriend).map((friend) => (
+                            <div key={friend.username} className="bg-[#F6F4ED]/50 border border-black/[0.02] rounded-xl p-2.5 flex items-center gap-2.5">
+                              <div className={`w-6 h-6 rounded-full ${friend.avatarBg} flex items-center justify-center text-[10px] font-bold text-white shrink-0`}>
+                                {friend.username[0].toUpperCase()}
+                              </div>
+                              <span className="text-xs font-bold text-zinc-800">{friend.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                        {selectedTrip.peopleGoingList.map((person, idx) => (
+                    {/* Other travelers going block */}
+                    <div className="space-y-2.5 pt-1">
+                      <h4 className="text-xs font-black tracking-wider text-zinc-400 uppercase">
+                        Other Travelers ({selectedTrip.peopleGoingCount - selectedTrip.peopleGoingList.filter(p => p.isFriend).length} peers)
+                      </h4>
+                      <div className="flex -space-x-2.5 items-center pl-1.5 py-1.5">
+                        {selectedTrip.peopleGoingList.filter(p => !p.isFriend).map((person, idx) => (
                           <div
                             key={idx}
-                            className="bg-zinc-50 border border-black/[0.01] rounded-2xl p-3 flex items-center justify-between"
+                            className={`w-7 h-7 rounded-full border-2 border-white ${person.avatarBg} flex items-center justify-center text-[10px] font-black text-white`}
                           >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full ${person.avatarBg} flex items-center justify-center font-black text-white text-xs`}>
-                                {person.username[0].toUpperCase()}
-                              </div>
-                              <div>
-                                <div className="text-xs font-bold text-black">@{person.username}</div>
-                                <div className="text-[10px] text-zinc-400 font-bold">{person.role || "diaspedia traveler"}</div>
-                              </div>
-                            </div>
-
-                            {person.isFriend ? (
-                              <span className="text-[10px] bg-black text-[#71E300] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                Friend
-                              </span>
-                            ) : (
-                              <span className="text-[10px] text-zinc-400 font-bold">Peer</span>
-                            )}
+                            {person.username[0].toUpperCase()}
                           </div>
                         ))}
+                        <span className="text-xs font-bold text-zinc-500 pl-4">
+                          +{selectedTrip.peopleGoingCount - selectedTrip.peopleGoingList.filter(p => p.isFriend).length} travelers on route
+                        </span>
                       </div>
                     </div>
 
@@ -1009,10 +1000,10 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => handleStartBooking(selectedTrip)}
-                          className="w-full bg-black hover:bg-zinc-900 active:scale-95 text-white font-bold text-sm py-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+                          className="w-full bg-[#71E300] hover:bg-[#5ec700] active:scale-95 text-black font-bold text-sm py-4 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <span>Join Trip & Book Ticket</span>
-                          <ArrowRight size={16} className="text-[#71E300]" />
+                          <ArrowRight size={16} />
                         </button>
                       )}
                     </div>
@@ -1020,18 +1011,14 @@ export default function Home() {
                   </div>
                 ) : (
                   // HIGH FIDELITY BOOKING FORM STEP
-                  <form onSubmit={handleConfirmBooking} className="space-y-5 flex-1">
+                  <form onSubmit={handleConfirmBooking} className="space-y-5 flex-1 pb-4">
                     <div className="space-y-4">
 
                       {/* Ticket Pricing breakdown */}
-                      <div className="bg-[#71E300]/10 border border-[#71E300]/20 rounded-2xl p-4 space-y-2">
+                      <div className="bg-zinc-50 border border-black/[0.04] rounded-2xl p-4 space-y-2">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="font-semibold text-zinc-700">Group Ticket base:</span>
+                          <span className="font-semibold text-zinc-700">Passenger ticket:</span>
                           <span className="font-bold text-black">€{selectedTrip.price.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="font-semibold text-zinc-700">Standard Solo pricing:</span>
-                          <span className="font-bold text-zinc-400 line-through">€{(selectedTrip.price + selectedTrip.savingsAmount).toFixed(2)}</span>
                         </div>
                         <div className="border-t border-black/5 pt-2 flex justify-between items-center text-xs">
                           <span className="font-bold text-black">Total to pay:</span>
@@ -1084,10 +1071,10 @@ export default function Home() {
                         <button
                           type="submit"
                           disabled={simulatedLoading}
-                          className="w-full bg-[#71E300] hover:bg-[#5ec700] disabled:bg-zinc-100 active:scale-95 text-black font-bold text-sm py-4 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full bg-black hover:bg-zinc-900 disabled:bg-zinc-100 active:scale-95 text-white font-bold text-sm py-4 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                         >
                           {simulatedLoading ? (
-                            <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
                             <>
                               <span>Pay & Book Passenger Ticket</span>
@@ -1107,13 +1094,11 @@ export default function Home() {
         </AnimatePresence>
 
         {/*
-          1. PERSISTENT PINNED TAB BAR NAVIGATION (STAYS FIXED ON THE SCREEN AT ALL TIMES)
-          - Guaranteed persistent. Anchored relative to the screen shell, never scrollable!
-          - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
-          - Uses exact simple human terminology: Home, Trips, Friends, Tickets, Profile.
-          - Incorporates dynamic pb-safe-bottom for notches.
+          1. PERSISTENT PINNED TAB BAR NAVIGATION
+          - Always remains fixed at the absolute bottom of the shell.
+          - Never scrolls away.
         */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/[0.04] pt-4.5 pb-8 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.03)] pb-safe-bottom">
+        <nav className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/[0.04] pt-4 pb-8 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.03)] pb-safe-bottom">
           <button
             onClick={() => { setActiveTab("home"); setSelectedTrip(null); }}
             className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}

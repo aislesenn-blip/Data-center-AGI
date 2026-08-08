@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, Briefcase, MapPin, Sparkles } from "lucide-react";
+import { ArrowLeft, Briefcase, MapPin, Globe } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
 export default function Careers() {
@@ -12,7 +12,7 @@ export default function Careers() {
       department: "Operations & Routing",
       location: "Berlin, Germany (Hybrid)",
       type: "Full-Time",
-      desc: "Architect the routing consolidation algorithms and coordinate schedules between premium bus and rail operators to maximize bulk passenger ticket discounts."
+      desc: "Architect the routing consolidation algorithms and coordinate schedules between premium bus and rail operators."
     },
     {
       title: "Staff Software Engineer, Social Graph & Discovery",
@@ -47,9 +47,8 @@ export default function Careers() {
             <ArrowLeft size={16} />
             <span className="text-xs font-bold uppercase tracking-wider">Back to diaspedia</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#71E300] text-black flex items-center justify-center text-[10px] font-black rounded-md">d</div>
-            <span className="font-bold text-xs tracking-tight text-brand-text">diaspedia</span>
+          <div className="flex items-center gap-2 text-brand-text">
+            <span className="font-heading font-black text-xl tracking-tight text-[#0f1115]">diaspedia</span>
           </div>
         </div>
       </header>
@@ -65,14 +64,14 @@ export default function Careers() {
             <span className="text-zinc-500">social travel booking.</span>
           </h1>
           <p className="text-sm md:text-base text-zinc-500 leading-relaxed max-w-2xl">
-            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer social travel booking future, starting by grouping and splitting train/bus ticket prices.
+            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer social travel booking future, starting by coordinating and booking train/bus ticket routes.
           </p>
         </FadeIn>
 
         {/* Culture statement */}
         <FadeIn delay={0.1} className="bg-white rounded-3xl p-6 md:p-8 border border-black/5 space-y-4">
           <h2 className="text-xl font-bold text-brand-text flex items-center gap-2">
-            <Sparkles size={18} className="text-[#71E300]" /> Our Core Philosophy
+            <Globe size={18} className="text-[#71E300]" /> Our Core Philosophy
           </h2>
           <p className="text-sm text-zinc-500 leading-relaxed">
             We operate at the convergence of real-world transit utility and fluid social architecture. We prioritize real-world usability and community connection over buzzwords. If you want to build systems that everyday people use to travel and see their friends, you will find your home at diaspedia.
@@ -125,7 +124,7 @@ export default function Careers() {
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
             We are always looking for passionate builders. Send your resume and portfolio to our open talent pool.
           </p>
-          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-extrabold text-brand-text bg-[#71E300] py-2.5 px-6 rounded-xl hover:bg-[#5ec700] active:scale-95 transition-all">
+          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-extrabold text-[#71E300] bg-black py-2.5 px-6 rounded-xl hover:bg-zinc-900 active:scale-95 transition-all">
             Join Our Talent Pool
           </a>
         </FadeIn>

@@ -31,7 +31,6 @@ export interface Trip {
   price: number;
   peopleGoingCount: number;
   peopleGoingList: Traveler[];
-  savingsAmount: number; // e.g. group booking discount or pool savings
 }
 
 export interface FriendActivity {
@@ -100,8 +99,7 @@ export const MOCK_TRIPS: Trip[] = [
       { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
       { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false },
       { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false }
-    ],
-    savingsAmount: 18.00
+    ]
   },
   {
     id: "trip-ber-ham",
@@ -119,8 +117,7 @@ export const MOCK_TRIPS: Trip[] = [
       { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
       { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false },
       { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
-    ],
-    savingsAmount: 9.50
+    ]
   },
   {
     id: "trip-par-ams",
@@ -137,8 +134,7 @@ export const MOCK_TRIPS: Trip[] = [
     peopleGoingList: [
       { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
       { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false }
-    ],
-    savingsAmount: 25.00
+    ]
   }
 ];
 
@@ -178,19 +174,4 @@ export const MOCK_ACTIVITIES: FriendActivity[] = [
   }
 ];
 
-export const INITIAL_TICKETS: Ticket[] = [
-  {
-    id: "TCK-48201",
-    tripId: "trip-ber-mun",
-    passengerName: "John Carter",
-    from: "Berlin Hbf",
-    to: "Munich Hbf",
-    date: "Saturday, 12 Oct",
-    time: "08:15",
-    carrier: "Deutsche Bahn",
-    seat: "Car 4, Seat 62",
-    platform: "Platform 11",
-    qrCodeValue: "DIASPEDIA-TCK-48201-BER-MUN-OK",
-    price: 34.90
-  }
-];
+export const INITIAL_TICKETS: Ticket[] = [];
