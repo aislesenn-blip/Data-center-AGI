@@ -38,8 +38,28 @@ import {
 } from "@/lib/diaspediaData";
 
 export default function Home() {
-  // Onboarding Screen State
-  const [showSplash, setShowSplash] = useState(true);
+  // Onboarding Screen State (persisted locally so users aren't trapped on refresh)
+  const [showSplash, setShowSplash] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const onboarded = localStorage.getItem("diaspedia_onboarded_v1");
+      if (onboarded === "true") {
+        setShowSplash(false);
+      }
+    }
+  }, []);
+
+  const handleDismissSplash = () => {
+    setShowSplash(false);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("diaspedia_onboarded_v1", "true");
+      } catch (e) {
+        console.error("Failed to write to localStorage:", e);
+      }
+    }
+  };
 
   // Mobile navigation tabs
   const [activeTab, setActiveTab] = useState<"home" | "shipments" | "orders" | "profile">("home");
@@ -75,6 +95,16 @@ export default function Home() {
 
   // Scroll ref for smooth focus transitions
   const productsSectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll ref for main viewport
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Reset scroll position on tab change to provide an independent native-feeling tab experience
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [activeTab]);
 
   // When changing route, auto-select its primary curated items to showcase instant savings value
   const handleRouteChange = (route: Route) => {
@@ -298,7 +328,7 @@ export default function Home() {
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowSplash(false)}
+                    onClick={handleDismissSplash}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -319,11 +349,11 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className="flex-1 flex flex-col h-full overflow-hidden"
+                className="flex-1 flex flex-col h-full overflow-hidden relative"
               >
 
-                {/* 2. INTENTIONAL, PREMIUM HEADER DESIGN (WORDMARK ALIGNED LEFT) */}
-                <header className="bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-start shrink-0">
+                {/* 2. INTENTIONAL, PREMIUM HEADER DESIGN (WORDMARK ALIGNED LEFT & TRANSLUCENT) */}
+                <header className="absolute top-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md pt-7 pb-4 px-6 border-b border-black/5 flex items-center justify-start shrink-0 z-30 sm:rounded-t-[40px]">
                   <span className="font-extrabold text-2xl tracking-tighter text-brand-text">
                     diaspedia
                   </span>
@@ -331,10 +361,12 @@ export default function Home() {
 
                 {/*
                   SCROLLABLE MAIN WRAPPER
-                  - Content scrolls independently.
-                  - Navigation stays absolutely locked at the bottom viewport and is never hidden!
+                  - Content scrolls independently and bleeds beautifully under the translucent header.
                 */}
-                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 pb-32 scroll-smooth">
+                <div
+                  ref={scrollContainerRef}
+                  className="flex-1 overflow-y-auto px-5 pt-24 pb-36 space-y-6 scroll-smooth"
+                >
 
                   {/* HOME TAB */}
                   {activeTab === "home" && (
@@ -357,48 +389,48 @@ export default function Home() {
                       </div>
 
                       {/* Route Opportunities (NOT A SHOP OR GENERAL CARGO HUB) */}
-                      <div className="space-y-3">
-                        <h3 className="text-sm font-extrabold tracking-wider text-brand-text-muted uppercase px-1">1. Active Shipping Routes</h3>
+                      <div className="space-y-4">
+                        <h3 className="text-xs font-bold tracking-wider text-brand-text-muted uppercase px-1">1. Active Shipping Routes</h3>
 
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-1 gap-4">
                           {ROUTES.map((route) => {
                             const isSelected = selectedRoute.id === route.id;
                             return (
                               <div
                                 key={route.id}
                                 onClick={() => handleRouteChange(route)}
-                                className={`p-4 rounded-2xl border transition-all flex flex-col gap-3 cursor-pointer ${
+                                className={`p-5 rounded-2xl border transition-all flex flex-col gap-4 cursor-pointer ${
                                   isSelected
-                                    ? "bg-white border-brand-primary shadow-md scale-[1.01]"
+                                    ? "bg-white border-brand-primary shadow-sm scale-[1.01]"
                                     : "bg-white/55 border-black/5 hover:border-black/10 hover:bg-white"
                                 }`}
                               >
                                 {/* Top info layout */}
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2">
-                                    <span className="font-extrabold text-base text-brand-text">{route.from}</span>
+                                    <span className="font-bold text-lg text-brand-text">{route.from}</span>
                                     <span className="text-xs text-brand-text-muted">➔</span>
-                                    <span className="font-extrabold text-base text-brand-text">{route.to}</span>
+                                    <span className="font-bold text-lg text-brand-text">{route.to}</span>
                                   </div>
 
                                   <div className="text-right">
-                                    <div className="text-xs font-bold text-brand-text-muted">Combined rate</div>
-                                    <div className="text-sm font-black text-brand-text">€{route.basePricePerKg}/kg</div>
+                                    <div className="text-xs font-medium text-brand-text-muted">Combined rate</div>
+                                    <div className="text-base font-bold text-brand-text">€{route.basePricePerKg}/kg</div>
                                   </div>
                                 </div>
 
                                 {/* Clean Schedule & simple participants indicator */}
-                                <div className="flex items-center justify-between border-t border-black/[0.02] pt-2.5">
-                                  <div className="space-y-0.5">
-                                    <div className="text-[10px] text-zinc-400 font-medium">Leaves: <strong className="text-brand-text">{route.nextShipment}</strong></div>
-                                    <div className="text-[10px] text-zinc-400 font-medium">Join by: <strong className="text-brand-text">{route.joinBefore}</strong></div>
+                                <div className="flex items-center justify-between border-t border-black/[0.03] pt-3.5">
+                                  <div className="space-y-1">
+                                    <div className="text-xs text-brand-text-muted font-medium">Leaves: <strong className="text-brand-text">{route.nextShipment}</strong></div>
+                                    <div className="text-xs text-brand-text-muted font-medium">Join by: <strong className="text-brand-text">{route.joinBefore}</strong></div>
                                   </div>
 
                                   <div className="flex items-center gap-2">
                                     {/* EXTREMELY SIMPLE PARTICIPANT INDICATOR [Users icon] 42 */}
-                                    <div className="flex items-center gap-1.5 text-xs text-brand-text font-black bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
+                                    <div className="flex items-center gap-1.5 text-xs text-brand-text font-bold bg-[#71E300]/10 border border-[#71E300]/20 px-3 py-1.5 rounded-full">
                                       <Users size={12} className="text-brand-text" />
-                                      <span>{route.peopleJoining}</span>
+                                      <span>{route.peopleJoining} joining</span>
                                     </div>
                                   </div>
                                 </div>
@@ -410,7 +442,7 @@ export default function Home() {
                                     e.stopPropagation();
                                     scrollToProducts(route);
                                   }}
-                                  className="w-full bg-black/[0.03] hover:bg-brand-primary text-brand-text font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1 transition-all"
+                                  className="w-full bg-black/[0.03] hover:bg-brand-primary text-brand-text font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all"
                                 >
                                   See what&apos;s available <ChevronDown size={14} />
                                 </button>
@@ -427,14 +459,14 @@ export default function Home() {
                       */}
                       <div ref={productsSectionRef} className="space-y-4 pt-2">
                         <div className="space-y-1">
-                          <h3 className="text-sm font-extrabold tracking-wider text-brand-text-muted uppercase px-1">2. Available for {selectedRoute.from} ➔ {selectedRoute.to}</h3>
+                          <h3 className="text-xs font-bold tracking-wider text-brand-text-muted uppercase px-1">2. Available for {selectedRoute.from} ➔ {selectedRoute.to}</h3>
                           <p className="text-xs text-brand-text-muted leading-relaxed px-1">
                             These essential goods have pre-calculated bulk shipping costs and customs cleared. Simply select what you need to receive or send:
                           </p>
                         </div>
 
                         {/* List of pre-calculated curated goods */}
-                        <div className="grid grid-cols-1 gap-2.5">
+                        <div className="grid grid-cols-1 gap-3">
                           {selectedRoute.products.map((prod) => {
                             const isAdded = isProductSelected(prod);
                             const matchedItem = calcItems.find(i => i.name === prod.name);
@@ -448,30 +480,30 @@ export default function Home() {
                                     toggleCuratedProduct(prod);
                                   }
                                 }}
-                                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
+                                className={`p-4 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
                                   isAdded
                                     ? "bg-brand-primary/10 border-brand-primary/40 shadow-sm"
                                     : "bg-white border-black/5 hover:border-black/10 cursor-pointer"
                                 }`}
                               >
                                 <div className="space-y-1 truncate pr-2 flex-1">
-                                  <div className="font-extrabold text-xs text-brand-text truncate">{prod.name}</div>
-                                  <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-bold">
+                                  <div className="font-bold text-xs text-brand-text truncate">{prod.name}</div>
+                                  <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
                                     <span>Weight: {prod.weight}kg</span>
                                     <span>&bull;</span>
                                     <span>Standard Solo Rate: <span className="line-through text-red-500">€{prod.standardSoloPrice}</span></span>
                                   </div>
                                 </div>
 
-                                <div className="flex items-center gap-2.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
                                   <div className="text-right">
                                     {/* Final diaspedia pricing combining ship space */}
-                                    <div className="text-xs font-black text-brand-text">€{(prod.price * currentQty).toFixed(2)}</div>
-                                    <span className="text-[9px] text-[#5ec700] font-bold">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
+                                    <div className="text-xs font-bold text-brand-text">€{(prod.price * currentQty).toFixed(2)}</div>
+                                    <span className="text-xs text-[#5ec700] font-bold">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
                                   </div>
 
                                   {isAdded ? (
-                                    <div className="flex items-center bg-white border border-brand-primary/40 rounded-xl p-1 gap-2.5 shadow-sm">
+                                    <div className="flex items-center bg-white border border-brand-primary/40 rounded-xl p-1 gap-2 shadow-sm">
                                       <button
                                         type="button"
                                         onClick={() => {
@@ -481,17 +513,17 @@ export default function Home() {
                                             updateItemQuantity(prod.name, -1);
                                           }
                                         }}
-                                        className="w-6 h-6 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-sm"
+                                        className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-bold text-sm"
                                       >
                                         -
                                       </button>
-                                      <span className="text-xs font-extrabold text-brand-text min-w-[12px] text-center">
+                                      <span className="text-xs font-bold text-brand-text min-w-[14px] text-center">
                                         {currentQty}
                                       </span>
                                       <button
                                         type="button"
                                         onClick={() => updateItemQuantity(prod.name, 1)}
-                                        className="w-6 h-6 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-sm"
+                                        className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-bold text-sm"
                                       >
                                         +
                                       </button>
@@ -500,7 +532,7 @@ export default function Home() {
                                     <button
                                       type="button"
                                       onClick={() => toggleCuratedProduct(prod)}
-                                      className="w-8 h-8 rounded-xl flex items-center justify-center border bg-black/[0.02] border-black/5 text-zinc-400 hover:border-black/20 hover:bg-white active:scale-95 transition-all"
+                                      className="w-10 h-10 rounded-xl flex items-center justify-center border bg-black/[0.02] border-black/5 text-zinc-400 hover:border-black/20 hover:bg-white active:scale-95 transition-all"
                                     >
                                       <Plus size={16} />
                                     </button>
@@ -528,18 +560,18 @@ export default function Home() {
                             <form onSubmit={handleAddCustomItem} className="space-y-3 pt-2 border-t border-black/[0.03]">
                               <div className="grid grid-cols-2 gap-2.5">
                                 <div className="space-y-1">
-                                  <label className="text-[9px] font-bold text-brand-text-muted uppercase">Package Name</label>
+                                      <label className="text-xs font-bold text-brand-text-muted uppercase">Package Name</label>
                                   <input
                                     type="text"
                                     required
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     placeholder="e.g. Personal books, clothes"
-                                    className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-primary font-semibold"
+                                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-semibold"
                                   />
                                 </div>
                                 <div className="space-y-1">
-                                  <label className="text-[9px] font-bold text-brand-text-muted uppercase">Weight (kg)</label>
+                                      <label className="text-xs font-bold text-brand-text-muted uppercase">Weight (kg)</label>
                                   <input
                                     type="number"
                                     step="0.1"
@@ -547,7 +579,7 @@ export default function Home() {
                                     required
                                     value={customWeight}
                                     onChange={(e) => setCustomWeight(Math.max(0.1, parseFloat(e.target.value) || 0))}
-                                    className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-primary font-bold"
+                                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-bold"
                                   />
                                 </div>
                               </div>
@@ -580,25 +612,25 @@ export default function Home() {
                       <div className="bg-white rounded-[24px] border border-black/5 p-5 space-y-4 shadow-sm">
                         <div className="flex items-center justify-between border-b border-black/[0.04] pb-3">
                           <h3 className="text-xs font-black tracking-wider text-brand-text-muted uppercase">My Shipment Summary</h3>
-                          <span className="text-[10px] bg-black/[0.04] text-brand-text font-black px-2.5 py-0.5 rounded-full">
+                          <span className="text-xs bg-black/[0.04] text-brand-text font-bold px-2.5 py-0.5 rounded-full">
                             Route: {selectedRoute.fromCode} ➔ {selectedRoute.toCode}
                           </span>
                         </div>
 
                         {calcItems.length > 0 ? (
-                          <div className="space-y-2 max-h-[140px] overflow-y-auto">
+                          <div className="space-y-2">
                             {calcItems.map((item, index) => {
                               const qty = item.quantity || 1;
                               return (
                                 <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
                                   <div className="truncate pr-3 space-y-0.5 flex-1">
                                     <div className="font-bold text-brand-text truncate">{item.name}</div>
-                                    <div className="text-[9px] text-brand-text-muted truncate">{item.category}</div>
+                                    <div className="text-xs text-brand-text-muted truncate">{item.category}</div>
                                   </div>
 
                                   <div className="flex items-center gap-3 shrink-0">
                                     {/* Dual quantity selector inside list */}
-                                    <div className="flex items-center bg-white border border-black/5 rounded-lg p-0.5 gap-1.5 shadow-sm">
+                                    <div className="flex items-center bg-white border border-black/5 rounded-lg p-1 gap-2 shadow-sm">
                                       <button
                                         type="button"
                                         onClick={() => {
@@ -608,17 +640,19 @@ export default function Home() {
                                             updateItemQuantity(item.name, -1);
                                           }
                                         }}
-                                        className="w-5 h-5 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs"
+                                        className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
+                                        style={{ touchAction: "manipulation" }}
                                       >
                                         -
                                       </button>
-                                      <span className="text-[10px] font-black text-brand-text min-w-[10px] text-center">
+                                      <span className="text-xs font-black text-brand-text min-w-[12px] text-center">
                                         {qty}
                                       </span>
                                       <button
                                         type="button"
                                         onClick={() => updateItemQuantity(item.name, 1)}
-                                        className="w-5 h-5 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs"
+                                        className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
+                                        style={{ touchAction: "manipulation" }}
                                       >
                                         +
                                       </button>
@@ -629,9 +663,9 @@ export default function Home() {
                                     <button
                                       onClick={() => handleRemoveItem(index)}
                                       type="button"
-                                      className="text-red-500 hover:text-red-600 p-1 bg-white rounded-lg shadow-sm active:scale-90 transition-transform"
+                                      className="text-red-500 hover:text-red-600 p-2 bg-white rounded-lg border border-black/5 shadow-sm active:scale-90 transition-transform cursor-pointer"
                                     >
-                                      <Trash2 size={13} />
+                                      <Trash2 size={14} />
                                     </button>
                                   </div>
                                 </div>
@@ -653,12 +687,12 @@ export default function Home() {
 
                             <div className="grid grid-cols-2 gap-2.5">
                               <div className="bg-black/[0.02] p-3 rounded-2xl">
-                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">DHL/FedEx rate</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block mb-1">DHL/FedEx rate</span>
                                 <span className="text-xs font-black line-through text-red-500">€{soloPrice.toFixed(2)}</span>
                               </div>
 
                               <div className="bg-brand-primary/10 p-3 rounded-2xl border border-brand-primary/20">
-                                <span className="text-[9px] font-bold text-brand-text-muted uppercase block mb-1">Combined rate</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block mb-1">Combined rate</span>
                                 <span className="text-sm font-black text-brand-text">€{currentPrice.toFixed(2)}</span>
                               </div>
                             </div>
@@ -709,7 +743,7 @@ export default function Home() {
                                   <span className="text-xs text-brand-text-muted">➔</span>
                                   <span className="font-black text-base text-brand-text">{route.to}</span>
                                 </div>
-                                <span className="text-[10px] text-brand-text-muted block mt-0.5 uppercase font-extrabold tracking-wider">Route Code: {route.fromCode}-{route.toCode}</span>
+                                <span className="text-xs text-brand-text-muted block mt-0.5 uppercase font-bold tracking-wider">Route Code: {route.fromCode}-{route.toCode}</span>
                               </div>
 
                               <div className="flex items-center gap-1 text-xs text-brand-text font-black bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
@@ -720,7 +754,7 @@ export default function Home() {
 
                             {/* Timeline Slider */}
                             <div className="space-y-1.5">
-                              <div className="flex justify-between text-[11px] font-bold text-brand-text-muted">
+                              <div className="flex justify-between text-xs font-bold text-brand-text-muted">
                                 <span>Demand shared pool</span>
                                 <span>{route.progressPercent}% Filled</span>
                               </div>
@@ -735,15 +769,15 @@ export default function Home() {
                             {/* Trip particulars */}
                             <div className="pt-3 border-t border-black/[0.03] grid grid-cols-3 gap-2 text-center">
                               <div className="p-2 rounded-xl bg-black/[0.02]">
-                                <span className="text-[9px] font-black text-brand-text-muted uppercase block">Join Before</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Join Before</span>
                                 <span className="text-xs font-extrabold text-brand-text">{route.joinBefore}</span>
                               </div>
                               <div className="p-2 rounded-xl bg-black/[0.02]">
-                                <span className="text-[9px] font-black text-brand-text-muted uppercase block">Leaves</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Leaves</span>
                                 <span className="text-xs font-extrabold text-brand-text">{route.nextShipment}</span>
                               </div>
                               <div className="p-2 rounded-xl bg-brand-primary/10 border border-brand-primary/20">
-                                <span className="text-[9px] font-black text-brand-text-muted uppercase block">Combined Price</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Combined Price</span>
                                 <span className="text-xs font-black text-brand-text font-mono">€{route.basePricePerKg}/kg</span>
                               </div>
                             </div>
@@ -775,7 +809,7 @@ export default function Home() {
 
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <span className="text-[10px] font-extrabold text-brand-text-muted uppercase tracking-wider block">{order.id}</span>
+                                  <span className="text-xs font-bold text-brand-text-muted uppercase tracking-wider block">{order.id}</span>
                                   <div className="flex items-center gap-1.5 font-black text-sm mt-0.5">
                                     <span>{order.from}</span>
                                     <span className="text-brand-text-muted font-normal">➔</span>
@@ -783,14 +817,14 @@ export default function Home() {
                                   </div>
                                 </div>
 
-                                <span className="text-[10px] bg-brand-primary/20 text-brand-text font-black px-2.5 py-1 rounded-full font-sans">
+                                <span className="text-xs bg-brand-primary/20 text-brand-text font-black px-2.5 py-1 rounded-full font-sans">
                                   {order.status === "joined" ? "Route Joined" : order.status}
                                 </span>
                               </div>
 
                               {/* Items pooled */}
                               <div className="bg-black/[0.02] rounded-xl p-3 space-y-2">
-                                <span className="text-[10px] font-black text-brand-text-muted uppercase block">My packages</span>
+                                <span className="text-xs font-bold text-brand-text-muted uppercase block">My packages</span>
                                 {order.items.map((item, i) => (
                                   <div key={i} className="flex justify-between text-xs">
                                     <span className="text-brand-text font-bold truncate max-w-[200px]">{item.name}</span>
@@ -802,12 +836,12 @@ export default function Home() {
                               {/* Receiver details */}
                               <div className="grid grid-cols-2 gap-3 text-xs pt-1">
                                 <div>
-                                  <span className="text-brand-text-muted block uppercase font-black text-[9px] mb-0.5">Receiver</span>
+                                  <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Receiver</span>
                                   <span className="font-extrabold text-brand-text truncate block">{order.receiverName}</span>
                                   <span className="text-zinc-400 font-mono truncate block">{order.receiverPhone}</span>
                                 </div>
                                 <div>
-                                  <span className="text-brand-text-muted block uppercase font-black text-[9px] mb-0.5">Pickup point</span>
+                                  <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Pickup point</span>
                                   <span className="font-extrabold text-brand-text capitalize block">{order.deliveryMethod}</span>
                                   <span className="text-zinc-400 truncate block">Arrives: {order.estimatedDelivery}</span>
                                 </div>
@@ -815,9 +849,9 @@ export default function Home() {
 
                               <div className="pt-3 border-t border-black/[0.03] flex items-center justify-between text-xs">
                                 <div>
-                                  <span className="text-[9px] text-brand-text-muted block font-semibold">Total Price:</span>
+                                  <span className="text-xs text-brand-text-muted block font-semibold">Total Price:</span>
                                   <span className="font-black text-sm text-brand-text">€{order.calculatedPrice.toFixed(2)}</span>
-                                  <span className="text-[10px] text-[#5ec700] ml-1.5 font-bold bg-brand-primary/15 px-2 py-0.5 rounded-full">Saved €{order.calculatedSavings.toFixed(0)}</span>
+                                  <span className="text-xs text-[#5ec700] ml-1.5 font-bold bg-brand-primary/15 px-2 py-0.5 rounded-full">Saved €{order.calculatedSavings.toFixed(0)}</span>
                                 </div>
 
                                 <button
@@ -864,7 +898,7 @@ export default function Home() {
                         <div className="space-y-1">
                           <h4 className="font-black text-base text-brand-text">Mariam Ernest</h4>
                           <p className="text-xs text-brand-text-muted">Joined: August 2024</p>
-                          <div className="inline-flex items-center gap-1 bg-[#71E300]/15 text-[#5ec700] text-[10px] font-black px-2.5 py-0.5 rounded-full mt-1">
+                          <div className="inline-flex items-center gap-1 bg-[#71E300]/15 text-[#5ec700] text-xs font-bold px-2.5 py-1 rounded-full mt-1">
                             <Coins size={12} /> Saved €69.00 this month
                           </div>
                         </div>
@@ -873,11 +907,11 @@ export default function Home() {
                       {/* Performance indicators */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white border border-black/5 rounded-2xl p-4 text-center shadow-sm">
-                          <span className="text-[10px] font-extrabold text-brand-text-muted uppercase block mb-0.5">Active Orders</span>
+                          <span className="text-xs font-bold text-brand-text-muted uppercase block mb-0.5">Active Orders</span>
                           <span className="text-2xl font-black text-brand-text">{orders.length}</span>
                         </div>
                         <div className="bg-white border border-black/5 rounded-2xl p-4 text-center shadow-sm">
-                          <span className="text-[10px] font-extrabold text-brand-text-muted uppercase block mb-0.5">Total Savings</span>
+                          <span className="text-xs font-bold text-brand-text-muted uppercase block mb-0.5">Total Savings</span>
                           <span className="text-2xl font-black text-brand-text">
                             €{orders.reduce((acc, o) => acc + o.calculatedSavings, 0).toFixed(0)}
                           </span>
@@ -897,7 +931,7 @@ export default function Home() {
                           diaspedia is building the future of cross-border financial services, starting with shared logistics. By coordinating schedules and routing items together, we establish secure channels to deliver low-cost digital transfers and payments.
                         </p>
 
-                        <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px]">
+                        <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs">
                           <span className="font-bold text-zinc-500">PHASE 2 CORRIDORS</span>
                           <span className="bg-brand-primary text-black font-black px-2 py-0.5 rounded">COMING 2025</span>
                         </div>
@@ -918,7 +952,7 @@ export default function Home() {
                                 {openFaqIndex === idx ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                               </button>
                               {openFaqIndex === idx && (
-                                <div className="px-4 pb-4 pt-1 text-[11px] text-brand-text-muted leading-relaxed border-t border-black/[0.03]">
+                                <div className="px-4 pb-4 pt-1 text-xs text-brand-text-muted leading-relaxed border-t border-black/[0.03]">
                                   {faq.a}
                                 </div>
                               )}
@@ -929,7 +963,7 @@ export default function Home() {
 
                       {/* Footer links */}
                       <div className="pt-4 border-t border-black/5 text-center space-y-3">
-                        <div className="flex justify-center gap-4 text-[11px] text-brand-text-muted font-black">
+                        <div className="flex justify-center gap-4 text-xs text-brand-text-muted font-bold">
                           <Link href="/privacy" className="hover:text-brand-text transition-colors">Privacy</Link>
                           <span>&bull;</span>
                           <Link href="/terms" className="hover:text-brand-text transition-colors">Terms</Link>
@@ -956,35 +990,36 @@ export default function Home() {
                   1. ABSOLUTE PINNED TAB BAR NAVIGATION (STAYS FIXED ON THE SCREEN AT ALL TIMES)
                   - Guaranteed persistent. Anchored relative to the screen shell, never scrollable!
                   - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
+                  - Incorporates a bottom gradient fade overlay and adapts to safe areas dynamically.
                 */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-black/5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] px-4 flex justify-around shrink-0 z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] sm:rounded-b-[40px]">
+                <div className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/5 pt-3.5 pb-6 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.04)] sm:rounded-b-[40px] pb-safe-bottom">
                   <button
                     onClick={() => setActiveTab("home")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
-                    <HomeIcon size={22} className={activeTab === "home" ? "text-brand-text" : "text-brand-text-muted"} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Home</span>
+                    <HomeIcon size={20} className={activeTab === "home" ? "text-brand-text" : "text-brand-text-muted"} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Home</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("shipments")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
-                    <Calendar size={22} className={activeTab === "shipments" ? "text-brand-text" : "text-brand-text-muted"} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Dates</span>
+                    <Calendar size={20} className={activeTab === "shipments" ? "text-brand-text" : "text-brand-text-muted"} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Dates</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("orders")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
-                    <Layers size={22} className={activeTab === "orders" ? "text-brand-text" : "text-brand-text-muted"} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">My orders</span>
+                    <Layers size={20} className={activeTab === "orders" ? "text-brand-text" : "text-brand-text-muted"} />
+                    <span className="text-xs font-bold uppercase tracking-wider">My orders</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("profile")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
-                    <User size={22} className={activeTab === "profile" ? "text-brand-text" : "text-brand-text-muted"} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Profile</span>
+                    <User size={20} className={activeTab === "profile" ? "text-brand-text" : "text-brand-text-muted"} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Profile</span>
                   </button>
                 </div>
 
@@ -1005,7 +1040,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-brand-bg rounded-3xl border border-black/5 shadow-2xl p-6 max-w-sm w-full relative overflow-hidden"
+              className="bg-white rounded-3xl border border-black/5 shadow-2xl p-6 max-w-sm w-full relative overflow-hidden"
             >
 
               {/* Close Button */}
@@ -1018,51 +1053,51 @@ export default function Home() {
 
               {/* Step 1: Input details */}
               {modalStep === "form" && (
-                <form onSubmit={handleJoinSubmit} className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-brand-text-muted uppercase">JOIN ROUTE</span>
-                    <h3 className="text-xl font-black text-brand-text">Recipient details</h3>
+                <form onSubmit={handleJoinSubmit} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-bold tracking-wider text-brand-text-muted uppercase">JOIN ROUTE</span>
+                    <h3 className="text-xl font-bold text-brand-text">Recipient details</h3>
                     <p className="text-xs text-brand-text-muted">
                       Items ship from <strong>{selectedRoute.from}</strong> to <strong>{selectedRoute.to}</strong>.
                     </p>
                   </div>
 
-                  <div className="space-y-3 pt-2">
-                    <div className="space-y-1">
-                        <label htmlFor="receiverName" className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Full Name</label>
+                  <div className="space-y-4 pt-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor="receiverName" className="text-xs font-bold text-brand-text-muted uppercase block">Receiver Full Name</label>
                       <input
-                          id="receiverName"
+                        id="receiverName"
                         type="text"
                         required
                         value={receiverName}
                         onChange={(e) => setReceiverName(e.target.value)}
                         placeholder="e.g. Mariam Ernest"
-                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-semibold"
+                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-3 focus:outline-none focus:border-brand-primary font-medium"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="receiverPhone" className="text-[10px] font-bold text-brand-text-muted uppercase block">Receiver Phone Number</label>
+                    <div className="space-y-1.5">
+                      <label htmlFor="receiverPhone" className="text-xs font-bold text-brand-text-muted uppercase block">Receiver Phone Number</label>
                       <input
-                          id="receiverPhone"
-                          type="text"
+                        id="receiverPhone"
+                        type="text"
                         required
                         value={receiverPhone}
                         onChange={(e) => setReceiverPhone(e.target.value)}
                         placeholder="e.g. +255 712 345 678"
-                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-primary font-semibold"
+                        className="w-full text-xs bg-black/[0.03] border border-black/5 rounded-xl px-3 py-3 focus:outline-none focus:border-brand-primary font-medium"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-brand-text-muted uppercase block">Collection option</label>
-                      <div className="grid grid-cols-2 gap-2 pt-0.5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-brand-text-muted uppercase block">Collection option</label>
+                      <div className="grid grid-cols-2 gap-3 pt-0.5">
                         <button
                           type="button"
                           onClick={() => setDeliveryMethod("pickup")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer ${
+                          className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer ${
                             deliveryMethod === "pickup"
-                              ? "bg-white border-brand-primary"
+                              ? "bg-[#71E300]/10 border-brand-primary text-brand-text"
                               : "bg-black/[0.02] border-black/5 hover:border-black/10"
                           }`}
                         >
@@ -1071,9 +1106,9 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => setDeliveryMethod("doorstep")}
-                          className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer ${
+                          className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer ${
                             deliveryMethod === "doorstep"
-                              ? "bg-white border-brand-primary"
+                              ? "bg-[#71E300]/10 border-brand-primary text-brand-text"
                               : "bg-black/[0.02] border-black/5 hover:border-black/10"
                           }`}
                         >
@@ -1083,15 +1118,15 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-black/5">
-                    <div className="flex justify-between text-xs font-bold mb-3">
-                      <span>Combined savings:</span>
+                  <div className="pt-4 border-t border-black/5">
+                    <div className="flex justify-between text-xs font-bold mb-4">
+                      <span className="text-brand-text-muted">Combined savings:</span>
                       <span className="text-[#5ec700]">Save €{totalSavings.toFixed(2)}</span>
                     </div>
 
                     <button
                       type="submit"
-                      className="w-full bg-brand-primary text-black font-extrabold text-xs py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand-primary-hover active:scale-95 transition-all cursor-pointer"
+                      className="w-full bg-brand-primary text-black font-bold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-brand-primary-hover active:scale-95 transition-all cursor-pointer"
                     >
                       Book Group Spot &bull; €{currentPrice.toFixed(2)}
                     </button>
@@ -1109,7 +1144,7 @@ export default function Home() {
                   ></motion.div>
                   <div>
                     <h4 className="font-bold text-sm text-brand-text">Booking your group spot</h4>
-                    <p className="text-[11px] text-brand-text-muted mt-1">Combining your items with the upcoming schedule...</p>
+                    <p className="text-xs text-brand-text-muted mt-1">Combining your items with the upcoming schedule...</p>
                   </div>
                 </div>
               )}
@@ -1123,7 +1158,7 @@ export default function Home() {
 
                   <div className="space-y-1">
                     <h4 className="font-bold text-base text-brand-text">Joined successfully!</h4>
-                    <p className="text-[11px] text-brand-text-muted">
+                    <p className="text-xs text-brand-text-muted">
                       Order ID <strong>{justJoinedOrder.id}</strong> is locked into the upcoming schedule.
                     </p>
                   </div>

@@ -29,6 +29,11 @@
   }
 }
 
+/* Support iOS notch/bezel-less screens natively with dynamic safe-area-inset */
+.pb-safe-bottom {
+  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+}
+
 /* Hide scrollbar globally across the application for premium feel */
 ::-webkit-scrollbar {
   display: none !important;
