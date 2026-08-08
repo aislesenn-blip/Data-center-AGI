@@ -1,196 +1,149 @@
+export interface ShippingRoute {
+  id: string;
+  from: string;
+  fromFlag: string;
+  to: string;
+  toFlag: string;
+  nextShipment: string;
+  joinBefore: string;
+  basePricePerKg: number;
+  currentPricePerKg: number;
+  pooledParticipants: number;
+  savingsPercentage: number;
+  status: "open" | "consolidating" | "shipped" | "arrived";
+}
+
+export interface CargoItem {
+  id: string;
+  name: string;
+  weightKg: number;
+  category: string;
+}
+
+export interface CargoOrder {
+  id: string;
+  routeId: string;
+  from: string;
+  to: string;
+  items: CargoItem[];
+  totalWeight: number;
+  totalPrice: number;
+  totalSaved: number;
+  status: "joined" | "received" | "in-transit" | "customs" | "ready-for-pickup" | "delivered";
+  orderDate: string;
+  trackingNumber: string;
+  nextShipmentDate: string;
+}
+
 export interface UserProfile {
-  username: string;
   name: string;
-  avatar?: string;
-  homeCity: string;
-  friendCount: number;
-  countryCount: number;
-  tripCount: number;
-  upcomingTrips: string[];
-  pastTrips: string[];
-}
-
-export interface Traveler {
-  username: string;
-  name: string;
-  avatarBg: string;
-  isFriend: boolean;
-  role?: string;
-}
-
-export interface Trip {
-  id: string;
-  from: string;
-  fromCode: string;
-  to: string;
-  toCode: string;
-  date: string;
-  departureTime: string;
-  arrivalTime: string;
-  carrier: "FlixBus" | "Deutsche Bahn" | "Eurostar";
-  price: number;
-  peopleGoingCount: number;
-  peopleGoingList: Traveler[];
-  savingsAmount: number; // e.g. group booking discount or pool savings
-}
-
-export interface FriendActivity {
-  id: string;
-  username: string;
-  name: string;
-  avatarBg: string;
-  actionText: string; // e.g., "booked a ticket to"
-  from: string;
-  to: string;
-  timeAgo: string;
-  tripId: string;
-}
-
-export interface Ticket {
-  id: string;
-  tripId: string;
-  passengerName: string;
-  from: string;
-  to: string;
-  date: string;
-  time: string;
-  carrier: string;
-  seat: string;
-  platform: string;
-  qrCodeValue: string;
-  price: number;
+  email: string;
+  phone: string;
+  country: string;
+  joinedCount: number;
+  totalSavedAmount: number;
 }
 
 export const MOCK_USER: UserProfile = {
-  username: "john",
-  name: "John Carter",
-  homeCity: "Berlin",
-  friendCount: 24,
-  countryCount: 7,
-  tripCount: 14,
-  upcomingTrips: ["Munich", "Hamburg"],
-  pastTrips: ["Prague", "Paris", "Amsterdam", "Vienna", "Rome", "Barcelona"]
+  name: "Ernest Michael",
+  email: "ernest@diaspedia.io",
+  phone: "+49 176 12345678",
+  country: "Germany",
+  joinedCount: 2,
+  totalSavedAmount: 184.50
 };
 
-export const TRAVELERS: Traveler[] = [
-  { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-  { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
-  { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false, role: "Tech designer" },
-  { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false },
-  { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
-  { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false, role: "Photographer" },
-  { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
-];
-
-export const MOCK_TRIPS: Trip[] = [
+export const MOCK_ROUTES: ShippingRoute[] = [
   {
-    id: "trip-ber-mun",
-    from: "Berlin",
-    fromCode: "BER",
-    to: "Munich",
-    toCode: "MUN",
-    date: "This Saturday",
-    departureTime: "08:15",
-    arrivalTime: "12:30",
-    carrier: "Deutsche Bahn",
-    price: 34.90,
-    peopleGoingCount: 12,
-    peopleGoingList: [
-      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-      { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
-      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false },
-      { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false }
-    ],
-    savingsAmount: 18.00
+    id: "route-ger-tz",
+    from: "Germany",
+    fromFlag: "🇩🇪",
+    to: "Tanzania",
+    toFlag: "🇹🇿",
+    nextShipment: "20 September",
+    joinBefore: "5 September",
+    basePricePerKg: 15.00,
+    currentPricePerKg: 7.50, // 50% discount due to pool size
+    pooledParticipants: 142,
+    savingsPercentage: 50,
+    status: "open"
   },
   {
-    id: "trip-ber-ham",
-    from: "Berlin",
-    fromCode: "BER",
-    to: "Hamburg",
-    toCode: "HAM",
-    date: "Friday",
-    departureTime: "18:40",
-    arrivalTime: "20:50",
-    carrier: "FlixBus",
-    price: 14.90,
-    peopleGoingCount: 8,
-    peopleGoingList: [
-      { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
-      { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false },
-      { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
-    ],
-    savingsAmount: 9.50
+    id: "route-uk-ke",
+    from: "United Kingdom",
+    fromFlag: "🇬🇧",
+    to: "Kenya",
+    toFlag: "🇰🇪",
+    nextShipment: "24 September",
+    joinBefore: "10 September",
+    basePricePerKg: 14.00,
+    currentPricePerKg: 8.40, // 40% discount
+    pooledParticipants: 98,
+    savingsPercentage: 40,
+    status: "open"
   },
   {
-    id: "trip-par-ams",
-    from: "Paris",
-    fromCode: "PAR",
-    to: "Amsterdam",
-    toCode: "AMS",
-    date: "Next Friday",
-    departureTime: "09:30",
-    arrivalTime: "13:15",
-    carrier: "Eurostar",
-    price: 49.00,
-    peopleGoingCount: 15,
-    peopleGoingList: [
-      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false }
-    ],
-    savingsAmount: 25.00
+    id: "route-usa-ng",
+    from: "United States",
+    fromFlag: "🇺🇸",
+    to: "Nigeria",
+    toFlag: "🇳🇬",
+    nextShipment: "18 September",
+    joinBefore: "2 September",
+    basePricePerKg: 18.00,
+    currentPricePerKg: 9.00, // 50% discount
+    pooledParticipants: 215,
+    savingsPercentage: 50,
+    status: "open"
+  },
+  {
+    id: "route-ca-gh",
+    from: "Canada",
+    fromFlag: "🇨🇦",
+    to: "Ghana",
+    toFlag: "🇬🇭",
+    nextShipment: "30 September",
+    joinBefore: "15 September",
+    basePricePerKg: 16.50,
+    currentPricePerKg: 11.55, // 30% discount
+    pooledParticipants: 45,
+    savingsPercentage: 30,
+    status: "open"
   }
 ];
 
-export const MOCK_ACTIVITIES: FriendActivity[] = [
+export const MOCK_ORDERS: CargoOrder[] = [
   {
-    id: "act-1",
-    username: "maria",
-    name: "Maria Schmidt",
-    avatarBg: "bg-blue-500",
-    actionText: "booked a ticket to",
-    from: "Berlin",
-    to: "Hamburg",
-    timeAgo: "2 hours ago",
-    tripId: "trip-ber-ham"
+    id: "ORD-9821",
+    routeId: "route-ger-tz",
+    from: "Germany",
+    to: "Tanzania",
+    items: [
+      { id: "item-1", name: "Laptop & Accessories", weightKg: 3.5, category: "Electronics" },
+      { id: "item-2", name: "Textbooks & Learning materials", weightKg: 8.0, category: "Education" }
+    ],
+    totalWeight: 11.5,
+    totalPrice: 86.25, // 11.5 * 7.5
+    totalSaved: 86.25, // saved 50% (base was 15.00/kg, i.e., 172.50)
+    status: "in-transit",
+    orderDate: "24 August",
+    trackingNumber: "DP-GERTZ-9821-X",
+    nextShipmentDate: "20 September"
   },
   {
-    id: "act-2",
-    username: "alex",
-    name: "Alex Dubois",
-    avatarBg: "bg-purple-500",
-    actionText: "joined the trip to",
-    from: "Berlin",
-    to: "Munich",
-    timeAgo: "4 hours ago",
-    tripId: "trip-ber-mun"
-  },
-  {
-    id: "act-3",
-    username: "emma",
-    name: "Emma Jones",
-    avatarBg: "bg-indigo-500",
-    actionText: "is traveling to",
-    from: "Berlin",
-    to: "Hamburg",
-    timeAgo: "1 day ago",
-    tripId: "trip-ber-ham"
-  }
-];
-
-export const INITIAL_TICKETS: Ticket[] = [
-  {
-    id: "TCK-48201",
-    tripId: "trip-ber-mun",
-    passengerName: "John Carter",
-    from: "Berlin Hbf",
-    to: "Munich Hbf",
-    date: "Saturday, 12 Oct",
-    time: "08:15",
-    carrier: "Deutsche Bahn",
-    seat: "Car 4, Seat 62",
-    platform: "Platform 11",
-    qrCodeValue: "DIASPEDIA-TCK-48201-BER-MUN-OK",
-    price: 34.90
+    id: "ORD-7612",
+    routeId: "route-uk-ke",
+    from: "United Kingdom",
+    to: "Kenya",
+    items: [
+      { id: "item-3", name: "Medical supplies & Supplements", weightKg: 4.0, category: "Healthcare" }
+    ],
+    totalWeight: 4.0,
+    totalPrice: 33.60, // 4 * 8.40
+    totalSaved: 22.40, // base was 14.00/kg (56.00 total)
+    status: "received",
+    orderDate: "28 August",
+    trackingNumber: "DP-UKKE-7612-Y",
+    nextShipmentDate: "24 September"
   }
 ];
