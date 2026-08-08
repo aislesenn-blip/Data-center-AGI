@@ -8,47 +8,47 @@ import FadeIn from "@/components/FadeIn";
 export default function Careers() {
   const openPositions = [
     {
-      title: "Cross-border Logistics Coordinator",
+      title: "Group Scheduling Architect",
       department: "Operations & Routing",
-      location: "Frankfurt, Germany (Hybrid)",
+      location: "Berlin, Germany (Hybrid)",
       type: "Full-Time",
-      desc: "Architect the consolidation algorithms and coordinate schedules between European collection hubs and African customs clearances."
+      desc: "Architect the routing consolidation algorithms and coordinate schedules between premium bus and rail operators to maximize bulk passenger ticket discounts."
     },
     {
-      title: "Staff Software Engineer, Fintech Infrastructure",
+      title: "Staff Software Engineer, Social Graph & Discovery",
       department: "Engineering",
-      location: "Nairobi, Kenya / Remote",
+      location: "Munich, Germany / Remote",
       type: "Full-Time",
-      desc: "Pioneer our Next.js/Tailwind platform, integrate multi-currency collections, and develop the foundations of our future payment corridor systems."
+      desc: "Pioneer our Next.js/Tailwind platform, integrate real-time friend mapping, feed notification dispatching, and build scalable travel discovery features."
     },
     {
-      title: "Senior Product Designer (Mobile First)",
+      title: "Senior Product Designer (Mobile First Mobile App)",
       department: "Product Design",
       location: "London, UK (Hybrid)",
       type: "Full-Time",
-      desc: "Iterate on the simple, premium, Bolt/Flixbus-inspired interface, designing the cleanest cross-border shipping and wallet experiences."
+      desc: "Iterate on the simple, premium, Flixbus/Venmo-inspired mobile interface, designing clean travel passes, interactive cards, and smooth sheets."
     },
     {
-      title: "Compliance & Regulatory Counsel",
-      department: "Legal & Regulatory",
-      location: "Dar es Salaam, Tanzania (Hybrid)",
+      title: "Growth & Community Lead",
+      department: "Growth & Marketing",
+      location: "Amsterdam, Netherlands (Hybrid)",
       type: "Full-Time",
-      desc: "Establish secure compliance frameworks with global import regulations, banking policies, and cross-border payment compliance standards."
+      desc: "Drive viral user acquisition amongst university students and frequent weekend travelers across Western and Central Europe."
     }
   ];
 
   return (
-    <main className="min-h-screen bg-brand-bg text-brand-text flex flex-col font-sans">
+    <main className="min-h-screen bg-[#F6F4ED] text-[#0f1115] flex flex-col font-sans">
 
       {/* Mini header */}
-      <header className="border-b border-black/5 bg-brand-bg/80 backdrop-blur-md sticky top-0 z-40 py-4 px-6 md:px-12">
+      <header className="border-b border-black/5 bg-[#F6F4ED]/80 backdrop-blur-md sticky top-0 z-40 py-4 px-6 md:px-12">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-brand-text hover:opacity-85 transition-opacity">
             <ArrowLeft size={16} />
             <span className="text-xs font-bold uppercase tracking-wider">Back to diaspedia</span>
           </Link>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-brand-primary text-black flex items-center justify-center text-[10px] font-black rounded-md">d</div>
+            <div className="w-5 h-5 bg-[#71E300] text-black flex items-center justify-center text-[10px] font-black rounded-md">d</div>
             <span className="font-bold text-xs tracking-tight text-brand-text">diaspedia</span>
           </div>
         </div>
@@ -56,26 +56,26 @@ export default function Careers() {
 
       <div className="flex-1 max-w-4xl mx-auto w-full px-6 py-12 md:py-16 space-y-12">
         <FadeIn className="space-y-4">
-          <div className="inline-flex items-center gap-2 bg-brand-primary/10 text-brand-text px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 bg-[#71E300]/10 text-brand-text px-3 py-1 rounded-full text-xs font-semibold">
             <Briefcase size={14} className="text-brand-text" />
             Careers at diaspedia
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-brand-text">
             Build the future of <br/>
-            <span className="text-brand-text-muted">cross-border trust.</span>
+            <span className="text-zinc-500">social travel booking.</span>
           </h1>
-          <p className="text-sm md:text-base text-brand-text-muted leading-relaxed max-w-2xl">
-            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer cross-border payments future starting by grouping cargo demand across continents.
+          <p className="text-sm md:text-base text-zinc-500 leading-relaxed max-w-2xl">
+            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer social travel booking future, starting by grouping and splitting train/bus ticket prices.
           </p>
         </FadeIn>
 
         {/* Culture statement */}
         <FadeIn delay={0.1} className="bg-white rounded-3xl p-6 md:p-8 border border-black/5 space-y-4">
           <h2 className="text-xl font-bold text-brand-text flex items-center gap-2">
-            <Sparkles size={18} className="text-brand-primary" /> Our Core Philosophy
+            <Sparkles size={18} className="text-[#71E300]" /> Our Core Philosophy
           </h2>
-          <p className="text-sm text-brand-text-muted leading-relaxed">
-            We operate at the convergence of heavy logistics and fluid software architecture. We prioritize real-world usability and trust over buzzwords. If you want to build systems that everyday people use to support their families across thousands of miles, you will find your home at diaspedia.
+          <p className="text-sm text-zinc-500 leading-relaxed">
+            We operate at the convergence of real-world transit utility and fluid social architecture. We prioritize real-world usability and community connection over buzzwords. If you want to build systems that everyday people use to travel and see their friends, you will find your home at diaspedia.
           </p>
         </FadeIn>
 
@@ -89,20 +89,20 @@ export default function Careers() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="space-y-0.5">
                     <h3 className="font-bold text-base text-brand-text">{role.title}</h3>
-                    <span className="text-xs text-brand-text-muted font-medium">{role.department}</span>
+                    <span className="text-xs text-zinc-500 font-medium">{role.department}</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-xs shrink-0">
-                    <span className="flex items-center gap-1 text-brand-text-muted bg-black/[0.04] px-2.5 py-1 rounded-full">
+                    <span className="flex items-center gap-1 text-zinc-500 bg-black/[0.04] px-2.5 py-1 rounded-full">
                       <MapPin size={12} /> {role.location}
                     </span>
-                    <span className="text-brand-text bg-brand-primary/15 font-semibold px-2.5 py-1 rounded-full text-[10px]">
+                    <span className="text-brand-text bg-[#71E300]/15 font-semibold px-2.5 py-1 rounded-full text-[10px]">
                       {role.type}
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs md:text-sm text-brand-text-muted leading-relaxed">
+                <p className="text-xs md:text-sm text-zinc-500 leading-relaxed">
                   {role.desc}
                 </p>
 
@@ -122,17 +122,17 @@ export default function Careers() {
         {/* Contact/Talent community block */}
         <FadeIn delay={0.3} className="pt-8 border-t border-black/5 text-center space-y-3">
           <h3 className="font-bold text-base text-brand-text">Don&apos;t see your role?</h3>
-          <p className="text-xs text-brand-text-muted max-w-sm mx-auto">
+          <p className="text-xs text-zinc-500 max-w-sm mx-auto">
             We are always looking for passionate builders. Send your resume and portfolio to our open talent pool.
           </p>
-          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-extrabold text-brand-text bg-brand-primary py-2.5 px-6 rounded-xl hover:bg-brand-primary-hover active:scale-95 transition-all">
+          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-extrabold text-brand-text bg-[#71E300] py-2.5 px-6 rounded-xl hover:bg-[#5ec700] active:scale-95 transition-all">
             Join Our Talent Pool
           </a>
         </FadeIn>
 
       </div>
 
-      <footer className="bg-brand-text text-white py-12 px-6 text-center text-xs mt-auto">
+      <footer className="bg-black text-white py-12 px-6 text-center text-xs mt-auto">
         <p>&copy; {new Date().getFullYear()} diaspedia. All rights reserved.</p>
       </footer>
 

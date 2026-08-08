@@ -1,185 +1,196 @@
-export interface CuratedProduct {
-  id: string;
+export interface UserProfile {
+  username: string;
   name: string;
-  category: string;
-  weight: number; // in kg
-  price: number; // total combined price including shipment
-  standardSoloPrice: number; // solo standard price for comparison
+  avatar?: string;
+  homeCity: string;
+  friendCount: number;
+  countryCount: number;
+  tripCount: number;
+  upcomingTrips: string[];
+  pastTrips: string[];
 }
 
-export interface Route {
+export interface Traveler {
+  username: string;
+  name: string;
+  avatarBg: string;
+  isFriend: boolean;
+  role?: string;
+}
+
+export interface Trip {
   id: string;
   from: string;
   fromCode: string;
   to: string;
   toCode: string;
-  nextShipment: string;
-  joinBefore: string;
-  basePricePerKg: number; // in EUR
-  soloPricePerKg: number; // standard individual DHL/FedEx shipping cost for comparison
-  status: "open" | "closing" | "completed";
-  progressPercent: number;
-  peopleJoining: number; // number of participants on this route
-  products: CuratedProduct[]; // available products for this route
+  date: string;
+  departureTime: string;
+  arrivalTime: string;
+  carrier: "FlixBus" | "Deutsche Bahn" | "Eurostar";
+  price: number;
+  peopleGoingCount: number;
+  peopleGoingList: Traveler[];
+  savingsAmount: number; // e.g. group booking discount or pool savings
 }
 
-export interface ShippingItem {
-  name: string;
-  category: string;
-  weight: number; // in kg
-  quantity?: number; // optional quantity, defaults to 1
-}
-
-export interface JoinedOrder {
+export interface FriendActivity {
   id: string;
-  routeId: string;
+  username: string;
+  name: string;
+  avatarBg: string;
+  actionText: string; // e.g., "booked a ticket to"
   from: string;
   to: string;
-  items: ShippingItem[];
-  receiverName: string;
-  receiverPhone: string;
-  deliveryMethod: "pickup" | "doorstep";
-  totalWeight: number;
-  calculatedPrice: number;
-  calculatedSavings: number;
-  status: "joined" | "shipping" | "arrived" | "completed";
-  joinDate: string;
-  estimatedDelivery: string;
+  timeAgo: string;
+  tripId: string;
 }
 
-export const ROUTES: Route[] = [
-  {
-    id: "de-tz",
-    from: "Germany",
-    fromCode: "DE",
-    to: "Tanzania",
-    toCode: "TZ",
-    nextShipment: "20 September",
-    joinBefore: "5 September",
-    basePricePerKg: 4.5,
-    soloPricePerKg: 16.0,
-    status: "open",
-    progressPercent: 35,
-    peopleJoining: 42,
-    products: [
-      { id: "tz-tea", name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 12.50, standardSoloPrice: 28.50 },
-      { id: "tz-spices", name: "Zanzibar Organic Spices Set", category: "Local Spices & Dry Foods", weight: 0.8, price: 9.80, standardSoloPrice: 22.60 },
-      { id: "tz-fish", name: "Dried Lake Victoria Tilapia (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 18.00, standardSoloPrice: 42.00 },
-      { id: "tz-flour", name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, price: 29.50, standardSoloPrice: 85.00 }
-    ]
-  },
-  {
-    id: "uk-ke",
-    from: "United Kingdom",
-    fromCode: "UK",
-    to: "Kenya",
-    toCode: "KE",
-    nextShipment: "22 September",
-    joinBefore: "7 September",
-    basePricePerKg: 4.8,
-    soloPricePerKg: 18.5,
-    status: "open",
-    progressPercent: 42,
-    peopleJoining: 28,
-    products: [
-      { id: "ke-coffee", name: "Premium AA Kenyan Coffee Beans (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 14.20, standardSoloPrice: 32.70 },
-      { id: "ke-macadamia", name: "Raw Kenyan Macadamia Nuts (2kg)", category: "Local Spices & Dry Foods", weight: 2.0, price: 21.60, standardSoloPrice: 58.60 },
-      { id: "ke-herbal", name: "Nairobi Purple Herbal Infusions", category: "Cosmetics & Health Products", weight: 0.5, price: 8.50, standardSoloPrice: 17.75 },
-      { id: "ke-honey", name: "Pure Acacia Wild Honey (1.2kg)", category: "Local Spices & Dry Foods", weight: 1.2, price: 13.80, standardSoloPrice: 36.00 }
-    ]
-  },
-  {
-    id: "ca-gh",
-    from: "Canada",
-    fromCode: "CA",
-    to: "Ghana",
-    toCode: "GH",
-    nextShipment: "28 September",
-    joinBefore: "12 September",
-    basePricePerKg: 5.2,
-    soloPricePerKg: 21.0,
-    status: "open",
-    progressPercent: 18,
-    peopleJoining: 15,
-    products: [
-      { id: "gh-shito", name: "Homemade Spicy Shito Pepper Sauce", category: "Local Spices & Dry Foods", weight: 0.8, price: 11.50, standardSoloPrice: 28.30 },
-      { id: "gh-butter", name: "Raw Unrefined Shea Butter (2kg)", category: "Cosmetics & Health Products", weight: 2.0, price: 19.80, standardSoloPrice: 61.80 },
-      { id: "gh-chips", name: "Sweet Plantain Crisps Bulk Box (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 14.50, standardSoloPrice: 46.00 },
-      { id: "gh-gari", name: "Premium Sifted Gari (4kg)", category: "Local Spices & Dry Foods", weight: 4.0, price: 25.80, standardSoloPrice: 90.00 }
-    ]
-  },
-  {
-    id: "us-ng",
-    from: "United States",
-    fromCode: "US",
-    to: "Nigeria",
-    toCode: "NG",
-    nextShipment: "25 September",
-    joinBefore: "9 September",
-    basePricePerKg: 5.0,
-    soloPricePerKg: 19.5,
-    status: "open",
-    progressPercent: 55,
-    peopleJoining: 63,
-    products: [
-      { id: "ng-chin", name: "Crunchy Sweet Chin Chin (2.5kg)", category: "Local Spices & Dry Foods", weight: 2.5, price: 18.50, standardSoloPrice: 67.25 },
-      { id: "ng-kilishi", name: "Traditional Spicy Kilishi Jerky (1kg)", category: "Local Spices & Dry Foods", weight: 1.0, price: 22.00, standardSoloPrice: 41.50 },
-      { id: "ng-egusi", name: "Handpeeled Ground Egusi Seeds (1.5kg)", category: "Local Spices & Dry Foods", weight: 1.5, price: 15.60, standardSoloPrice: 44.85 },
-      { id: "ng-yam", name: "Pounded Yam Flour Bulk (5kg)", category: "Local Spices & Dry Foods", weight: 5.0, price: 30.00, standardSoloPrice: 105.00 }
-    ]
-  }
+export interface Ticket {
+  id: string;
+  tripId: string;
+  passengerName: string;
+  from: string;
+  to: string;
+  date: string;
+  time: string;
+  carrier: string;
+  seat: string;
+  platform: string;
+  qrCodeValue: string;
+  price: number;
+}
+
+export const MOCK_USER: UserProfile = {
+  username: "john",
+  name: "John Carter",
+  homeCity: "Berlin",
+  friendCount: 24,
+  countryCount: 7,
+  tripCount: 14,
+  upcomingTrips: ["Munich", "Hamburg"],
+  pastTrips: ["Prague", "Paris", "Amsterdam", "Vienna", "Rome", "Barcelona"]
+};
+
+export const TRAVELERS: Traveler[] = [
+  { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
+  { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
+  { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false, role: "Tech designer" },
+  { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false },
+  { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
+  { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false, role: "Photographer" },
+  { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
 ];
 
-export const ITEM_CATEGORIES = [
-  { name: "Electronics & Accessories", weightMultiplier: 1.2 },
-  { name: "Books & Study Materials", weightMultiplier: 0.9 },
-  { name: "Clothing & Apparel", weightMultiplier: 1.0 },
-  { name: "Local Spices & Dry Foods", weightMultiplier: 0.95 },
-  { name: "Cosmetics & Health Products", weightMultiplier: 1.1 },
-  { name: "Other Household Items", weightMultiplier: 1.0 }
-];
-
-export const INITIAL_ORDERS: JoinedOrder[] = [
+export const MOCK_TRIPS: Trip[] = [
   {
-    id: "DP-84920",
-    routeId: "de-tz",
-    from: "Germany",
-    to: "Tanzania",
-    items: [
-      { name: "Tanzanian Highland Tea (1kg)", category: "Local Spices & Dry Foods", weight: 1.0 },
-      { name: "Premium Sembe Maize Flour (5kg)", category: "Local Spices & Dry Foods", weight: 5.0 }
+    id: "trip-ber-mun",
+    from: "Berlin",
+    fromCode: "BER",
+    to: "Munich",
+    toCode: "MUN",
+    date: "This Saturday",
+    departureTime: "08:15",
+    arrivalTime: "12:30",
+    carrier: "Deutsche Bahn",
+    price: 34.90,
+    peopleGoingCount: 12,
+    peopleGoingList: [
+      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
+      { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
+      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false },
+      { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false }
     ],
-    receiverName: "Mariam Ernest",
-    receiverPhone: "+255 712 345 678",
-    deliveryMethod: "pickup",
-    totalWeight: 6,
-    calculatedPrice: 42.0, // Pre-calculated total
-    calculatedSavings: 113.5, // Standard comparison standardSoloPrice minus diaspedia price
-    status: "joined",
-    joinDate: "28 August",
-    estimatedDelivery: "25 September",
+    savingsAmount: 18.00
+  },
+  {
+    id: "trip-ber-ham",
+    from: "Berlin",
+    fromCode: "BER",
+    to: "Hamburg",
+    toCode: "HAM",
+    date: "Friday",
+    departureTime: "18:40",
+    arrivalTime: "20:50",
+    carrier: "FlixBus",
+    price: 14.90,
+    peopleGoingCount: 8,
+    peopleGoingList: [
+      { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
+      { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false },
+      { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
+    ],
+    savingsAmount: 9.50
+  },
+  {
+    id: "trip-par-ams",
+    from: "Paris",
+    fromCode: "PAR",
+    to: "Amsterdam",
+    toCode: "AMS",
+    date: "Next Friday",
+    departureTime: "09:30",
+    arrivalTime: "13:15",
+    carrier: "Eurostar",
+    price: 49.00,
+    peopleGoingCount: 15,
+    peopleGoingList: [
+      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
+      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false }
+    ],
+    savingsAmount: 25.00
   }
 ];
 
-export const FAQS = [
+export const MOCK_ACTIVITIES: FriendActivity[] = [
   {
-    q: "Is diaspedia an online store?",
-    a: "No, diaspedia is not an online shop, a marketplace, or a cargo freight company. We are a platform bringing people together living abroad to coordinate shipping schedules and share transport costs."
+    id: "act-1",
+    username: "maria",
+    name: "Maria Schmidt",
+    avatarBg: "bg-blue-500",
+    actionText: "booked a ticket to",
+    from: "Berlin",
+    to: "Hamburg",
+    timeAgo: "2 hours ago",
+    tripId: "trip-ber-ham"
   },
   {
-    q: "How does the pricing work?",
-    a: "Individually shipping products across continents is extremely expensive. By scheduling together and sharing space, we divide container rates. We coordinate with local producers to select high-demand products and pre-calculate their direct shipping prices so you save up to 70%."
+    id: "act-2",
+    username: "alex",
+    name: "Alex Dubois",
+    avatarBg: "bg-purple-500",
+    actionText: "joined the trip to",
+    from: "Berlin",
+    to: "Munich",
+    timeAgo: "4 hours ago",
+    tripId: "trip-ber-mun"
   },
   {
-    q: "How do I choose products?",
-    a: "For each route, we've already curated and pre-priced the available products for that specific shipping window. Simply browse what's available for your selected route, tap to add them to your shipment, and join the schedule."
-  },
+    id: "act-3",
+    username: "emma",
+    name: "Emma Jones",
+    avatarBg: "bg-indigo-500",
+    actionText: "is traveling to",
+    from: "Berlin",
+    to: "Hamburg",
+    timeAgo: "1 day ago",
+    tripId: "trip-ber-ham"
+  }
+];
+
+export const INITIAL_TICKETS: Ticket[] = [
   {
-    q: "What is the future vision?",
-    a: "By solving the hard physical challenge of moving items together across borders, we build trust. Our long-term path is to expand into low-cost cross-border payments, transfers, and helpful money services for families."
-  },
-  {
-    q: "Can I create my own group?",
-    a: "To keep shipping reliable and prices as low as possible, all routes are scheduled and coordinated directly by diaspedia. You can browse, select, and join any of our active scheduled routes."
+    id: "TCK-48201",
+    tripId: "trip-ber-mun",
+    passengerName: "John Carter",
+    from: "Berlin Hbf",
+    to: "Munich Hbf",
+    date: "Saturday, 12 Oct",
+    time: "08:15",
+    carrier: "Deutsche Bahn",
+    seat: "Car 4, Seat 62",
+    platform: "Platform 11",
+    qrCodeValue: "DIASPEDIA-TCK-48201-BER-MUN-OK",
+    price: 34.90
   }
 ];
