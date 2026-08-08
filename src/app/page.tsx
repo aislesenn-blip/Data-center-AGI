@@ -230,9 +230,10 @@ export default function Home() {
               {/* Header Branding */}
               <div className="flex flex-col items-center pt-8 text-center space-y-4">
                 <span className="font-heading font-black text-4xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#71E300] bg-black px-3 py-1 rounded-full">
-                  WEEKEND TRAVEL COORDINATOR
-                </p>
+                <div className="text-xs font-bold uppercase tracking-widest text-zinc-800 border border-black/10 px-3 py-1 rounded-full bg-white flex items-center gap-1.5 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-[#71E300] shrink-0 animate-pulse" />
+                  <span>WEEKEND TRAVEL COORDINATOR</span>
+                </div>
                 <p className="max-w-xs text-xs font-semibold text-zinc-600 leading-relaxed">
                   The travel app for travelers. Coordinate schedules, see friends going, and book passenger tickets on active rail and bus routes.
                 </p>
@@ -246,7 +247,7 @@ export default function Home() {
                   </div>
                   <div className="text-left">
                     <h4 className="text-xs font-bold text-black">See Who is Going</h4>
-                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Instantly see friends & peers headed to the same cities.</p>
+                    <p className="text-xs text-zinc-400 font-medium leading-snug">Instantly see friends & peers headed to the same cities.</p>
                   </div>
                 </div>
 
@@ -256,7 +257,7 @@ export default function Home() {
                   </div>
                   <div className="text-left">
                     <h4 className="text-xs font-bold text-black">Direct Booking</h4>
-                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Secure standard tickets directly on active schedules.</p>
+                    <p className="text-xs text-zinc-400 font-medium leading-snug">Secure standard tickets directly on active schedules.</p>
                   </div>
                 </div>
               </div>
@@ -291,7 +292,7 @@ export default function Home() {
             >
               <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#71E300] text-black text-[10px] font-black w-5 h-5 rounded-full border-2 border-[#F6F4ED] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-[#71E300] text-black text-xs font-black w-5 h-5 rounded-full border-2 border-[#F6F4ED] flex items-center justify-center">
                   {unreadCount}
                 </span>
               )}
@@ -338,7 +339,7 @@ export default function Home() {
                     >
                       <div className="flex justify-between items-start gap-2">
                         <p className="font-semibold text-zinc-800 leading-relaxed">{n.text}</p>
-                        <span className="text-[10px] text-zinc-400 font-bold shrink-0">{n.time}</span>
+                        <span className="text-xs text-zinc-400 font-bold shrink-0">{n.time}</span>
                       </div>
                     </div>
                   ))}
@@ -367,7 +368,10 @@ export default function Home() {
             >
               {/* Confident Headings */}
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">COORDINATE TRAVEL</span>
+                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                  <span>COORDINATE TRAVEL</span>
+                </div>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-none pt-2">Where are we going?</h2>
               </div>
 
@@ -398,19 +402,26 @@ export default function Home() {
 
                 {/* Quick Shortcuts (Uber style circular quick destinations) */}
                 <div className="pt-1.5">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Popular destinations</p>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">Popular destinations</p>
+                  <div className="flex items-center gap-5 overflow-x-auto pb-2 scrollbar-none border-b border-black/[0.04]">
                     {["Munich", "Hamburg", "Amsterdam", "Paris"].map((city) => (
                       <button
                         key={city}
                         onClick={() => handleQuickDest(city)}
-                        className={`text-xs font-bold px-3 py-2 rounded-xl border transition-all shrink-0 cursor-pointer ${
+                        className={`text-xs font-bold transition-all shrink-0 cursor-pointer relative pb-1 ${
                           searchTo.toLowerCase() === city.toLowerCase()
-                            ? "bg-black text-[#71E300] border-black"
-                            : "bg-zinc-50 text-zinc-700 border-black/[0.04] hover:bg-zinc-100"
+                            ? "text-black font-black"
+                            : "text-zinc-500 hover:text-black font-semibold"
                         }`}
                       >
-                        {city}
+                        <span>{city}</span>
+                        {searchTo.toLowerCase() === city.toLowerCase() && (
+                          <motion.span
+                            layoutId="activeIndicator"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#71E300] rounded-full"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                          />
+                        )}
                       </button>
                     ))}
                   </div>
@@ -430,7 +441,10 @@ export default function Home() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between px-1">
                   <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase">Active Routes</h3>
-                  <span className="text-[10px] font-bold text-[#71E300] bg-black px-2.5 py-1 rounded-full uppercase tracking-wider">CONFIRMED ROUTES</span>
+                  <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                    <span>CONFIRMED ROUTES</span>
+                  </div>
                 </div>
 
                 <div className="space-y-3.5">
@@ -460,7 +474,7 @@ export default function Home() {
 
                             <div className="text-right">
                               <div className="text-lg font-black text-black">€{trip.price.toFixed(2)}</div>
-                              <span className="text-[9px] bg-zinc-100 border border-black/5 text-zinc-500 px-1.5 py-0.5 rounded-md font-bold">
+                              <span className="text-xs bg-zinc-100 border border-black/5 text-zinc-500 px-1.5 py-0.5 rounded-md font-bold">
                                 Group Ticket
                               </span>
                             </div>
@@ -468,17 +482,25 @@ export default function Home() {
 
                           {/* SIMPLIFIED FRIENDS GOING (Item 7) */}
                           {trip.peopleGoingList.some(p => p.isFriend) && (
-                            <div className="bg-[#F6F4ED]/40 border border-black/[0.02] rounded-2xl p-3 space-y-2">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block">Friends Going</span>
-                              <div className="flex flex-wrap gap-2">
-                                {trip.peopleGoingList.filter(p => p.isFriend).map((friend) => (
-                                  <div key={friend.username} className="flex items-center gap-1.5 bg-white border border-black/5 px-2 py-1 rounded-xl">
-                                    <div className={`w-5 h-5 rounded-full ${friend.avatarBg} flex items-center justify-center text-[9px] font-bold text-white shrink-0`}>
-                                      {friend.username[0].toUpperCase()}
-                                    </div>
-                                    <span className="text-xs font-bold text-zinc-800">{friend.name}</span>
+                            <div className="bg-[#F6F4ED]/40 border border-black/[0.02] rounded-2xl p-3 flex items-center justify-between gap-2">
+                              <div className="flex flex-col gap-0.5">
+                                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Friends Going</span>
+                                <span className="text-xs text-zinc-500 font-semibold">Friends are going on this trip</span>
+                              </div>
+                              <div className="flex -space-x-2.5 items-center pl-1.5">
+                                {trip.peopleGoingList.filter(p => p.isFriend).slice(0, 3).map((friend) => (
+                                  <div
+                                    key={friend.username}
+                                    className={`w-7 h-7 rounded-full border-2 border-white ${friend.avatarBg} flex items-center justify-center text-xs font-bold text-white shadow-sm shrink-0`}
+                                  >
+                                    {friend.username[0].toUpperCase()}
                                   </div>
                                 ))}
+                                {trip.peopleGoingList.filter(p => p.isFriend).length > 3 && (
+                                  <span className="text-xs font-bold text-zinc-500 pl-3">
+                                    +{trip.peopleGoingList.filter(p => p.isFriend).length - 3}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           )}
@@ -520,7 +542,10 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">MY SCHEDULES</span>
+                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                  <span>MY SCHEDULES</span>
+                </div>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Trips</h2>
               </div>
 
@@ -533,7 +558,7 @@ export default function Home() {
                     return (
                       <div key={t.id} className="bg-white border border-black/[0.04] rounded-3xl p-5 shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] bg-zinc-900 text-[#71E300] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                          <span className="text-xs bg-zinc-100 text-zinc-700 border border-black/5 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                             Booked Pass
                           </span>
                           <span className="text-xs font-bold text-zinc-400">{t.seat}</span>
@@ -598,7 +623,7 @@ export default function Home() {
                         </div>
                         <div>
                           <div className="font-bold text-xs text-black">Berlin ➔ {city}</div>
-                          <div className="text-[10px] text-zinc-400 font-bold">Travel completed</div>
+                          <div className="text-xs text-zinc-400 font-bold">Travel completed</div>
                         </div>
                       </div>
                       <span className="text-xs font-extrabold text-zinc-400">Completed</span>
@@ -617,7 +642,10 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">ACTIVE DISCOVERY</span>
+                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                  <span>ACTIVE DISCOVERY</span>
+                </div>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">Friend Activity</h2>
               </div>
 
@@ -641,7 +669,7 @@ export default function Home() {
                             <p className="text-xs font-bold text-black">
                               @{act.username} <span className="text-zinc-500 font-medium">{act.actionText}</span>
                             </p>
-                            <span className="text-[10px] text-zinc-400 font-bold">{act.timeAgo}</span>
+                            <span className="text-xs text-zinc-400 font-bold">{act.timeAgo}</span>
                           </div>
                         </div>
 
@@ -653,7 +681,7 @@ export default function Home() {
                               <span className="text-zinc-400 text-xs">➔</span>
                               <span className="font-bold text-xs text-black">{act.to}</span>
                             </div>
-                            <span className="text-[10px] text-zinc-400 font-bold block">
+                            <span className="text-xs text-zinc-400 font-bold block">
                               {matchedTrip?.date || "This weekend"} &bull; {matchedTrip?.departureTime || "08:15"}
                             </span>
                           </div>
@@ -696,7 +724,10 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase font-bold">MY BOARDING PASSES</span>
+                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5 font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                  <span>MY BOARDING PASSES</span>
+                </div>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Tickets</h2>
               </div>
 
@@ -710,7 +741,8 @@ export default function Home() {
                       {/* Ticket Carrier top styling */}
                       <div className="bg-black text-white px-5 py-4 flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black uppercase tracking-widest text-[#71E300]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                          <span className="text-xs font-bold uppercase tracking-widest text-white">
                             {t.carrier} PASS
                           </span>
                         </div>
@@ -722,12 +754,12 @@ export default function Home() {
                         {/* From / To Stations */}
                         <div className="flex justify-between items-center gap-2">
                           <div className="space-y-0.5">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">DEPARTURE</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">DEPARTURE</span>
                             <div className="text-lg font-black text-black leading-tight">{t.from}</div>
                           </div>
                           <div className="text-zinc-300">➔</div>
                           <div className="space-y-0.5 text-right">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">ARRIVAL</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">ARRIVAL</span>
                             <div className="text-lg font-black text-black leading-tight">{t.to}</div>
                           </div>
                         </div>
@@ -741,19 +773,19 @@ export default function Home() {
                         {/* Seat details */}
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-0.5">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">PASSENGER</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">PASSENGER</span>
                             <div className="text-xs font-bold text-black">{t.passengerName}</div>
                           </div>
                           <div className="space-y-0.5 text-right">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">SEAT / CAR</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">SEAT / CAR</span>
                             <div className="text-xs font-bold text-black">{t.seat}</div>
                           </div>
                           <div className="space-y-0.5">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">DATE & TIME</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">DATE & TIME</span>
                             <div className="text-xs font-bold text-black">{t.date} &bull; {t.time}</div>
                           </div>
                           <div className="space-y-0.5 text-right">
-                            <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">PLATFORM</span>
+                            <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">PLATFORM</span>
                             <div className="text-xs font-bold text-black">{t.platform}</div>
                           </div>
                         </div>
@@ -781,7 +813,7 @@ export default function Home() {
                               <div className="w-16 h-1 bg-black rounded" />
                             </div>
                           </div>
-                          <span className="text-[10px] font-black tracking-widest text-zinc-400 uppercase text-center">
+                          <span className="text-xs font-black tracking-widest text-zinc-400 uppercase text-center">
                             Scan on Deutsche Bahn / Flixbus reader
                           </span>
                         </div>
@@ -823,15 +855,15 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-2 pt-2 border-t border-black/[0.03]">
                   <div className="space-y-0.5">
                     <div className="text-lg font-black text-black">{userProfile.tripCount}</div>
-                    <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">Trips</span>
+                    <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">Trips</span>
                   </div>
                   <div className="space-y-0.5 border-x border-black/[0.03]">
                     <div className="text-lg font-black text-black">{userProfile.friendCount}</div>
-                    <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">Friends</span>
+                    <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">Friends</span>
                   </div>
                   <div className="space-y-0.5">
                     <div className="text-lg font-black text-black">{userProfile.countryCount}</div>
-                    <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider">Countries</span>
+                    <span className="text-xs text-zinc-400 font-black uppercase tracking-wider">Countries</span>
                   </div>
                 </div>
               </div>
@@ -851,7 +883,7 @@ export default function Home() {
                         </div>
                         <div>
                           <div className="font-bold text-xs text-black">Berlin ➔ {city}</div>
-                          <div className="text-[10px] text-zinc-400 font-bold">Upcoming schedule</div>
+                          <div className="text-xs text-zinc-400 font-bold">Upcoming schedule</div>
                         </div>
                       </div>
                       <span className="text-xs font-bold text-zinc-800 bg-[#71E300]/25 px-2.5 py-1 rounded-xl">Active</span>
@@ -871,7 +903,7 @@ export default function Home() {
                   <Link href="/terms" className="hover:text-black hover:underline">Terms of Service</Link>
                   <Link href="/cookies" className="hover:text-black hover:underline">Cookie Policy</Link>
                 </div>
-                <p className="text-[10px] text-zinc-400 font-bold">
+                <p className="text-xs text-zinc-400 font-bold">
                   diaspedia &copy; {new Date().getFullYear()}. All passenger space reservations and joint-billing schedules represent actual merchant group tickets.
                 </p>
               </div>
@@ -913,9 +945,10 @@ export default function Home() {
                 {/* Header info */}
                 <div className="flex justify-between items-start gap-4 shrink-0">
                   <div className="space-y-1">
-                    <span className="text-[10px] bg-black text-[#71E300] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
-                      Trip Details
-                    </span>
+                    <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#71E300]" />
+                      <span>Trip Details</span>
+                    </div>
                     <h3 className="text-2xl font-black font-heading text-black pt-1">
                       {selectedTrip.from} ➔ {selectedTrip.to}
                     </h3>
@@ -941,11 +974,11 @@ export default function Home() {
                     {/* Carrier & Price highlight */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="bg-[#F6F4ED] rounded-2xl p-4 border border-black/[0.02]">
-                        <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider block">CARRIER</span>
+                        <span className="text-xs text-zinc-400 font-black uppercase tracking-wider block">CARRIER</span>
                         <div className="text-sm font-bold text-black mt-0.5">{selectedTrip.carrier}</div>
                       </div>
                       <div className="bg-[#F6F4ED] rounded-2xl p-4 border border-black/[0.02]">
-                        <span className="text-[10px] text-zinc-400 font-black uppercase tracking-wider block">TICKET PRICE</span>
+                        <span className="text-xs text-zinc-400 font-black uppercase tracking-wider block">TICKET PRICE</span>
                         <div className="text-sm font-bold text-black mt-0.5">€{selectedTrip.price.toFixed(2)}</div>
                       </div>
                     </div>
@@ -959,7 +992,7 @@ export default function Home() {
                         <div className="flex flex-col gap-2">
                           {selectedTrip.peopleGoingList.filter(p => p.isFriend).map((friend) => (
                             <div key={friend.username} className="bg-[#F6F4ED]/50 border border-black/[0.02] rounded-xl p-2.5 flex items-center gap-2.5">
-                              <div className={`w-6 h-6 rounded-full ${friend.avatarBg} flex items-center justify-center text-[10px] font-bold text-white shrink-0`}>
+                              <div className={`w-6 h-6 rounded-full ${friend.avatarBg} flex items-center justify-center text-xs font-bold text-white shrink-0`}>
                                 {friend.username[0].toUpperCase()}
                               </div>
                               <span className="text-xs font-bold text-zinc-800">{friend.name}</span>
@@ -978,7 +1011,7 @@ export default function Home() {
                         {selectedTrip.peopleGoingList.filter(p => !p.isFriend).map((person, idx) => (
                           <div
                             key={idx}
-                            className={`w-7 h-7 rounded-full border-2 border-white ${person.avatarBg} flex items-center justify-center text-[10px] font-black text-white`}
+                            className={`w-7 h-7 rounded-full border-2 border-white ${person.avatarBg} flex items-center justify-center text-xs font-black text-white`}
                           >
                             {person.username[0].toUpperCase()}
                           </div>
@@ -1028,7 +1061,7 @@ export default function Home() {
 
                       {/* Name input */}
                       <div className="space-y-1">
-                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                        <label className="text-xs font-black text-zinc-500 uppercase tracking-wider">
                           Passenger Name
                         </label>
                         <input
@@ -1043,7 +1076,7 @@ export default function Home() {
 
                       {/* Luggage Select */}
                       <div className="space-y-1">
-                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                        <label className="text-xs font-black text-zinc-500 uppercase tracking-wider">
                           Allowed Baggage Option
                         </label>
                         <select
@@ -1065,7 +1098,7 @@ export default function Home() {
                         <div className="space-y-2 text-center py-4">
                           <CheckCircle2 size={32} className="mx-auto text-[#5ec700]" />
                           <h4 className="text-xs font-bold text-zinc-800">Booking confirmed successfully!</h4>
-                          <p className="text-[11px] text-zinc-400">Loading your travel pass...</p>
+                          <p className="text-xs text-zinc-400">Loading your travel pass...</p>
                         </div>
                       ) : (
                         <button
@@ -1094,47 +1127,60 @@ export default function Home() {
         </AnimatePresence>
 
         {/*
-          1. PERSISTENT PINNED TAB BAR NAVIGATION
-          - Always remains fixed at the absolute bottom of the shell.
-          - Never scrolls away.
+          1. PERSISTENT PINNED TAB BAR NAVIGATION (Uber inspired treatment)
+          - Centered floating capsule sitting over content
+          - Side margins, capsule structure, black/zinc aesthetics
+          - Active states use white text & capsule background, inactive states are muted icons only.
         */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/[0.04] pt-4 pb-8 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.03)] pb-safe-bottom">
-          <button
-            onClick={() => { setActiveTab("home"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
-          >
-            <Compass size={20} className={activeTab === "home" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Home</span>
-          </button>
-          <button
-            onClick={() => { setActiveTab("trips"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "trips" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
-          >
-            <Calendar size={20} className={activeTab === "trips" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Trips</span>
-          </button>
-          <button
-            onClick={() => { setActiveTab("friends"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "friends" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
-          >
-            <Activity size={20} className={activeTab === "friends" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Friends</span>
-          </button>
-          <button
-            onClick={() => { setActiveTab("tickets"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "tickets" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
-          >
-            <Ticket size={20} className={activeTab === "tickets" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Tickets</span>
-          </button>
-          <button
-            onClick={() => { setActiveTab("profile"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "profile" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
-          >
-            <User size={20} className={activeTab === "profile" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Profile</span>
-          </button>
-        </nav>
+        <div className="absolute bottom-5 left-4 right-4 z-40">
+          <nav className="bg-zinc-950/95 backdrop-blur-md rounded-[28px] py-2 px-3 flex justify-between items-center shadow-[0_12px_36px_rgba(0,0,0,0.25)] border border-white/[0.08] h-16">
+            <button
+              onClick={() => { setActiveTab("home"); setSelectedTrip(null); }}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${activeTab === "home" ? "bg-white/10 text-[#71E300] font-bold" : "text-zinc-400 hover:text-white"}`}
+            >
+              <Compass size={18} className={activeTab === "home" ? "text-[#71E300]" : "text-zinc-400"} />
+              {activeTab === "home" && (
+                <span className="text-xs font-bold uppercase tracking-wider text-white">Home</span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab("trips"); setSelectedTrip(null); }}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${activeTab === "trips" ? "bg-white/10 text-[#71E300] font-bold" : "text-zinc-400 hover:text-white"}`}
+            >
+              <Calendar size={18} className={activeTab === "trips" ? "text-[#71E300]" : "text-zinc-400"} />
+              {activeTab === "trips" && (
+                <span className="text-xs font-bold uppercase tracking-wider text-white">Trips</span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab("friends"); setSelectedTrip(null); }}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${activeTab === "friends" ? "bg-white/10 text-[#71E300] font-bold" : "text-zinc-400 hover:text-white"}`}
+            >
+              <Activity size={18} className={activeTab === "friends" ? "text-[#71E300]" : "text-zinc-400"} />
+              {activeTab === "friends" && (
+                <span className="text-xs font-bold uppercase tracking-wider text-white">Friends</span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab("tickets"); setSelectedTrip(null); }}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${activeTab === "tickets" ? "bg-white/10 text-[#71E300] font-bold" : "text-zinc-400 hover:text-white"}`}
+            >
+              <Ticket size={18} className={activeTab === "tickets" ? "bg-white/10 text-[#71E300]" : "text-zinc-400"} />
+              {activeTab === "tickets" && (
+                <span className="text-xs font-bold uppercase tracking-wider text-white">Tickets</span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab("profile"); setSelectedTrip(null); }}
+              className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer ${activeTab === "profile" ? "bg-white/10 text-[#71E300] font-bold" : "text-zinc-400 hover:text-white"}`}
+            >
+              <User size={18} className={activeTab === "profile" ? "text-[#71E300]" : "text-zinc-400"} />
+              {activeTab === "profile" && (
+                <span className="text-xs font-bold uppercase tracking-wider text-white">Profile</span>
+              )}
+            </button>
+          </nav>
+        </div>
 
       </div>
     </div>
