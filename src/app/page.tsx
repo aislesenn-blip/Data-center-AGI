@@ -440,16 +440,20 @@ export default function Home() {
                                       </div>
                                     </div>
 
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        scrollToProducts(route);
-                                      }}
-                                      className="w-full bg-brand-primary text-black font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                                    >
-                                      Choose Items to Receive &bull; Save €71.50 <ChevronDown size={14} />
-                                    </button>
+                                    <div className="flex items-center justify-between pt-1">
+                                      <span className="text-[11px] text-brand-text-muted uppercase font-black tracking-wider">Available Catalog</span>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          scrollToProducts(route);
+                                        }}
+                                        className="w-8 h-8 rounded-full bg-black text-white hover:bg-zinc-900 active:scale-90 flex items-center justify-center transition-all cursor-pointer shadow-sm"
+                                        title="Explore available items"
+                                      >
+                                        <ChevronDown size={14} />
+                                      </button>
+                                    </div>
                                   </motion.div>
                                 ) : (
                                   <div className="flex justify-between items-center text-xs text-brand-text-muted pt-1">
@@ -505,18 +509,33 @@ export default function Home() {
                                       -{discountPercent}%
                                     </span>
                                   </div>
-                                  <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
-                                    <span>{prod.weight}kg</span>
-                                    <span>&bull;</span>
-                                    <span>Solo: €{prod.standardSoloPrice}</span>
-                                  </div>
+                                  {isAdded && (
+                                    <motion.div
+                                      initial={{ opacity: 0, height: 0 }}
+                                      animate={{ opacity: 1, height: "auto" }}
+                                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                      className="flex items-center gap-2 text-xs text-zinc-500 font-medium pt-0.5 overflow-hidden"
+                                    >
+                                      <span>{prod.weight}kg</span>
+                                      <span>&bull;</span>
+                                      <span>Solo: €{prod.standardSoloPrice}</span>
+                                    </motion.div>
+                                  )}
                                 </div>
 
                                 <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
                                   <div className="text-right">
                                     {/* Final diaspedia pricing combining ship space */}
                                     <div className="text-xs font-bold text-brand-text">€{(prod.price * currentQty).toFixed(2)}</div>
-                                    <span className="text-xs text-brand-text-muted font-medium">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
+                                    {isAdded && (
+                                      <motion.span
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="text-[11px] text-brand-text-muted font-semibold block"
+                                      >
+                                        Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}
+                                      </motion.span>
+                                    )}
                                   </div>
 
                                   {isAdded ? (
