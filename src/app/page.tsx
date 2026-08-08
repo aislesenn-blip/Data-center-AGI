@@ -225,51 +225,51 @@ export default function Home() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 bg-[#F6F4ED] z-[60] flex flex-col justify-between p-6 h-[100dvh] overflow-hidden"
+              className="absolute inset-0 bg-[#F6F4ED] z-[60] flex flex-col justify-between p-5 h-[100dvh] overflow-hidden"
             >
               {/* Header Branding */}
-              <div className="flex flex-col items-center pt-8 text-center space-y-4">
-                <span className="font-heading font-black text-4xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#71E300] bg-black px-3 py-1 rounded-full">
+              <div className="flex flex-col items-center pt-4 text-center space-y-2">
+                <span className="font-heading font-black text-3xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-3 py-0.5 rounded-full">
                   WEEKEND TRAVEL COORDINATOR
                 </p>
-                <p className="max-w-xs text-xs font-semibold text-zinc-600 leading-relaxed">
-                  The travel app for travelers. Coordinate schedules, see friends going, and book passenger tickets on active rail and bus routes.
+                <p className="max-w-xs text-xs font-medium text-zinc-600 leading-normal pt-1">
+                  The travel app for actual travelers. Coordinate schedules, see friends going, and book passenger tickets on active rail and bus routes.
                 </p>
               </div>
 
               {/* Onboarding Features Summary */}
-              <div className="space-y-3 max-w-sm mx-auto w-full">
-                <div className="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
-                    <Users size={16} />
+              <div className="space-y-2.5 max-w-sm mx-auto w-full py-2">
+                <div className="bg-white p-3.5 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3">
+                  <div className="w-8.5 h-8.5 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
+                    <Users size={15} />
                   </div>
                   <div className="text-left">
                     <h4 className="text-xs font-bold text-black">See Who is Going</h4>
-                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Instantly see friends & peers headed to the same cities.</p>
+                    <p className="text-[11px] text-zinc-400 font-medium leading-tight">Instantly see friends & peers headed to the same cities.</p>
                   </div>
                 </div>
 
-                <div className="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
-                    <Ticket size={16} />
+                <div className="bg-white p-3.5 rounded-2xl border border-black/[0.04] shadow-sm flex items-center gap-3">
+                  <div className="w-8.5 h-8.5 rounded-xl bg-[#71E300]/10 flex items-center justify-center text-black shrink-0">
+                    <Ticket size={15} />
                   </div>
                   <div className="text-left">
                     <h4 className="text-xs font-bold text-black">Direct Booking</h4>
-                    <p className="text-[11px] text-zinc-400 font-medium leading-snug">Secure standard tickets directly on active schedules.</p>
+                    <p className="text-[11px] text-zinc-400 font-medium leading-tight">Secure standard tickets directly on active schedules.</p>
                   </div>
                 </div>
               </div>
 
               {/* Get Started Button */}
-              <div className="w-full max-w-sm mx-auto pb-4">
+              <div className="w-full max-w-sm mx-auto pb-2">
                 <button
                   type="button"
                   onClick={handleDismissSplash}
-                  className="w-full bg-black hover:bg-zinc-900 active:scale-95 text-white font-bold text-sm py-4 rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-black hover:bg-zinc-900 active:scale-95 text-white font-bold text-xs py-3.5 rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <span>Get Started</span>
-                  <ArrowRight size={16} className="text-[#71E300]" />
+                  <ArrowRight size={14} className="text-[#71E300]" />
                 </button>
               </div>
             </motion.div>
@@ -307,22 +307,22 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.4 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 bg-black z-40"
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 bg-black z-[45]"
                 onClick={() => setShowNotifications(false)}
               />
               <motion.div
-                initial={{ y: "-100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "-100%" }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute top-[52px] left-0 right-0 bg-white border-b border-black/10 shadow-lg z-40 max-h-[80%] overflow-y-auto rounded-b-3xl p-5 space-y-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute top-[56px] left-4 right-4 bg-white border border-black/10 shadow-xl z-50 max-h-[75%] overflow-y-auto rounded-3xl p-5 space-y-4"
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-black font-heading tracking-tight">Travel Alerts</h3>
                   <button
                     onClick={() => setShowNotifications(false)}
-                    className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
+                    className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 cursor-pointer"
                   >
                     <X size={16} />
                   </button>
@@ -367,7 +367,7 @@ export default function Home() {
             >
               {/* Confident Headings */}
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">COORDINATE TRAVEL</span>
+                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">COORDINATE TRAVEL</span>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-none pt-2">Where are we going?</h2>
               </div>
 
@@ -398,7 +398,7 @@ export default function Home() {
 
                 {/* Quick Shortcuts (Uber style circular quick destinations) */}
                 <div className="pt-1.5">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Popular destinations</p>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Popular destinations</p>
                   <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                     {["Munich", "Hamburg", "Amsterdam", "Paris"].map((city) => (
                       <button
@@ -406,7 +406,7 @@ export default function Home() {
                         onClick={() => handleQuickDest(city)}
                         className={`text-xs font-bold px-3 py-2 rounded-xl border transition-all shrink-0 cursor-pointer ${
                           searchTo.toLowerCase() === city.toLowerCase()
-                            ? "bg-black text-[#71E300] border-black"
+                            ? "bg-zinc-950 text-white border-zinc-950 shadow-sm"
                             : "bg-zinc-50 text-zinc-700 border-black/[0.04] hover:bg-zinc-100"
                         }`}
                       >
@@ -430,7 +430,7 @@ export default function Home() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between px-1">
                   <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase">Active Routes</h3>
-                  <span className="text-[10px] font-bold text-[#71E300] bg-black px-2.5 py-1 rounded-full uppercase tracking-wider">CONFIRMED ROUTES</span>
+                  <span className="text-[10px] font-bold text-zinc-600 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-1 rounded-full uppercase tracking-wider">CONFIRMED ROUTES</span>
                 </div>
 
                 <div className="space-y-3.5">
@@ -466,17 +466,17 @@ export default function Home() {
                             </div>
                           </div>
 
-                          {/* SIMPLIFIED FRIENDS GOING (Item 7) */}
+                          {/* FRIENDS GOING - OVERLAPPING AVATAR STACK WITHOUT NAMES (Item 2) */}
                           {trip.peopleGoingList.some(p => p.isFriend) && (
-                            <div className="bg-[#F6F4ED]/40 border border-black/[0.02] rounded-2xl p-3 space-y-2">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block">Friends Going</span>
-                              <div className="flex flex-wrap gap-2">
-                                {trip.peopleGoingList.filter(p => p.isFriend).map((friend) => (
-                                  <div key={friend.username} className="flex items-center gap-1.5 bg-white border border-black/5 px-2 py-1 rounded-xl">
-                                    <div className={`w-5 h-5 rounded-full ${friend.avatarBg} flex items-center justify-center text-[9px] font-bold text-white shrink-0`}>
-                                      {friend.username[0].toUpperCase()}
-                                    </div>
-                                    <span className="text-xs font-bold text-zinc-800">{friend.name}</span>
+                            <div className="flex items-center justify-between bg-[#F6F4ED]/40 border border-black/[0.02] rounded-2xl p-3">
+                              <span className="text-xs font-bold text-zinc-500">Friends going</span>
+                              <div className="flex -space-x-2 items-center pl-1">
+                                {trip.peopleGoingList.filter(p => p.isFriend).map((friend, idx) => (
+                                  <div
+                                    key={idx}
+                                    className={`w-6.5 h-6.5 rounded-full border border-white ${friend.avatarBg} flex items-center justify-center text-[9px] font-black text-white shadow-sm`}
+                                  >
+                                    {friend.username[0].toUpperCase()}
                                   </div>
                                 ))}
                               </div>
@@ -520,7 +520,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">MY SCHEDULES</span>
+                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">MY SCHEDULES</span>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Trips</h2>
               </div>
 
@@ -533,7 +533,7 @@ export default function Home() {
                     return (
                       <div key={t.id} className="bg-white border border-black/[0.04] rounded-3xl p-5 shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] bg-zinc-900 text-[#71E300] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                          <span className="text-[10px] bg-zinc-100 border border-black/5 text-zinc-800 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                             Booked Pass
                           </span>
                           <span className="text-xs font-bold text-zinc-400">{t.seat}</span>
@@ -617,7 +617,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase">ACTIVE DISCOVERY</span>
+                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">ACTIVE DISCOVERY</span>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">Friend Activity</h2>
               </div>
 
@@ -696,7 +696,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-black tracking-widest text-[#71E300] bg-black px-2.5 py-0.5 rounded-full uppercase font-bold">MY BOARDING PASSES</span>
+                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase font-bold">MY BOARDING PASSES</span>
                 <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Tickets</h2>
               </div>
 
@@ -710,7 +710,7 @@ export default function Home() {
                       {/* Ticket Carrier top styling */}
                       <div className="bg-black text-white px-5 py-4 flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black uppercase tracking-widest text-[#71E300]">
+                          <span className="text-xs font-bold uppercase tracking-widest text-white">
                             {t.carrier} PASS
                           </span>
                         </div>
@@ -913,7 +913,7 @@ export default function Home() {
                 {/* Header info */}
                 <div className="flex justify-between items-start gap-4 shrink-0">
                   <div className="space-y-1">
-                    <span className="text-[10px] bg-black text-[#71E300] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    <span className="text-[10px] bg-zinc-100 border border-black/5 text-zinc-800 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                       Trip Details
                     </span>
                     <h3 className="text-2xl font-black font-heading text-black pt-1">
