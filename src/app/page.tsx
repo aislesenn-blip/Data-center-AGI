@@ -230,9 +230,6 @@ export default function Home() {
               {/* Header Branding */}
               <div className="flex flex-col items-center pt-4 text-center space-y-2">
                 <span className="font-heading font-black text-3xl tracking-tighter text-[#0f1115] select-none">diaspedia</span>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-3 py-0.5 rounded-full">
-                  WEEKEND TRAVEL COORDINATOR
-                </p>
                 <p className="max-w-xs text-xs font-medium text-zinc-600 leading-normal pt-1">
                   The travel app for actual travelers. Coordinate schedules, see friends going, and book passenger tickets on active rail and bus routes.
                 </p>
@@ -367,8 +364,7 @@ export default function Home() {
             >
               {/* Confident Headings */}
               <div className="space-y-0.5">
-                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">COORDINATE TRAVEL</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-none pt-2">Where are we going?</h2>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] leading-none">Where are we going?</h2>
               </div>
 
               {/* DENSE SEARCH BAR SECTION (Uber Visual Density Inspiration) */}
@@ -427,10 +423,9 @@ export default function Home() {
               </div>
 
               {/* Active Group Booking Routes */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
+              <div className="space-y-3 pt-8">
+                <div className="flex items-center justify-between px-1 mb-2">
                   <h3 className="text-xs font-black tracking-wider text-zinc-400 uppercase">Active Routes</h3>
-                  <span className="text-[10px] font-bold text-zinc-600 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-1 rounded-full uppercase tracking-wider">CONFIRMED ROUTES</span>
                 </div>
 
                 <div className="space-y-3.5">
@@ -445,24 +440,23 @@ export default function Home() {
                         >
                           {/* Route & Pricing Header */}
                           <div className="flex justify-between items-start">
-                            <div className="space-y-0.5">
+                            <div className="space-y-1">
                               <div className="flex items-center gap-2">
                                 <span className="font-heading font-black text-xl text-black leading-tight">{trip.from}</span>
                                 <span className="text-zinc-400 font-bold">➔</span>
                                 <span className="font-heading font-black text-xl text-black leading-tight">{trip.to}</span>
                               </div>
-                              <div className="flex items-center gap-2 text-xs text-zinc-400 font-bold">
-                                <span>{trip.date}</span>
-                                <span>&bull;</span>
-                                <span>{trip.departureTime}</span>
+                              <div className="flex items-center gap-2.5 pt-0.5">
+                                <div className="flex items-center gap-1 bg-[#71E300]/15 text-black font-extrabold text-[11px] px-2 py-0.5 rounded-md">
+                                  <Clock size={11} className="text-[#5ec700]" />
+                                  <span>{trip.departureTime}</span>
+                                </div>
+                                <span className="text-xs text-zinc-500 font-semibold">{trip.date}</span>
                               </div>
                             </div>
 
                             <div className="text-right">
                               <div className="text-lg font-black text-black">€{trip.price.toFixed(2)}</div>
-                              <span className="text-[9px] bg-zinc-100 border border-black/5 text-zinc-500 px-1.5 py-0.5 rounded-md font-bold">
-                                Group Ticket
-                              </span>
                             </div>
                           </div>
 
@@ -520,8 +514,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">MY SCHEDULES</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Trips</h2>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">My Trips</h2>
               </div>
 
               {/* Upcoming Joined Trips */}
@@ -539,16 +532,18 @@ export default function Home() {
                           <span className="text-xs font-bold text-zinc-400">{t.seat}</span>
                         </div>
 
-                        <div className="space-y-0.5">
+                        <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="font-heading font-black text-xl text-black leading-tight">{t.from.split(" ")[0]}</span>
                             <span className="text-zinc-400 font-bold">➔</span>
                             <span className="font-heading font-black text-xl text-black leading-tight">{t.to.split(" ")[0]}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-zinc-500 font-bold">
-                            <span>{t.date}</span>
-                            <span>&bull;</span>
-                            <span>{t.time}</span>
+                          <div className="flex items-center gap-2.5 pt-0.5">
+                            <div className="flex items-center gap-1 bg-[#71E300]/15 text-black font-extrabold text-[11px] px-2 py-0.5 rounded-md">
+                              <Clock size={11} className="text-[#5ec700]" />
+                              <span>{t.time}</span>
+                            </div>
+                            <span className="text-xs text-zinc-500 font-semibold">{t.date}</span>
                           </div>
                         </div>
 
@@ -617,8 +612,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase">ACTIVE DISCOVERY</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">Friend Activity</h2>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">Friend Activity</h2>
               </div>
 
               {/* Real-time Activity Feed */}
@@ -647,15 +641,19 @@ export default function Home() {
 
                         {/* Travel Card Preview */}
                         <div className="bg-[#F6F4ED]/50 border border-black/[0.02] rounded-2xl p-4 flex justify-between items-center">
-                          <div className="space-y-0.5">
+                          <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-xs text-black">{act.from}</span>
                               <span className="text-zinc-400 text-xs">➔</span>
                               <span className="font-bold text-xs text-black">{act.to}</span>
                             </div>
-                            <span className="text-[10px] text-zinc-400 font-bold block">
-                              {matchedTrip?.date || "This weekend"} &bull; {matchedTrip?.departureTime || "08:15"}
-                            </span>
+                            <div className="flex items-center gap-2 pt-0.5">
+                              <div className="flex items-center gap-1 bg-[#71E300]/15 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded-md">
+                                <Clock size={10} className="text-[#5ec700]" />
+                                <span>{matchedTrip?.departureTime || "08:15"}</span>
+                              </div>
+                              <span className="text-[11px] text-zinc-500 font-semibold">{matchedTrip?.date || "This weekend"}</span>
+                            </div>
                           </div>
 
                           {matchedTrip && (
@@ -696,8 +694,7 @@ export default function Home() {
               className="space-y-5"
             >
               <div className="space-y-0.5">
-                <span className="text-[10px] font-bold tracking-widest text-zinc-500 bg-zinc-200/50 border border-zinc-300/30 px-2.5 py-0.5 rounded-full uppercase font-bold">MY BOARDING PASSES</span>
-                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115] pt-2">My Tickets</h2>
+                <h2 className="text-3xl font-black font-heading tracking-tight text-[#0f1115]">My Tickets</h2>
               </div>
 
               <div className="space-y-5">
@@ -1097,42 +1094,67 @@ export default function Home() {
           1. PERSISTENT PINNED TAB BAR NAVIGATION
           - Always remains fixed at the absolute bottom of the shell.
           - Never scrolls away.
+          - Styled as a premium floating dark capsule with high rounded corners (Uber reference).
         */}
-        <nav className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/[0.04] pt-4 pb-8 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.03)] pb-safe-bottom">
+        <nav className="absolute bottom-5 left-4 right-4 bg-[#0f1115]/95 backdrop-blur-md rounded-full px-2.5 py-2 flex justify-between items-center z-40 shadow-[0_12px_36px_rgba(0,0,0,0.22)] border border-white/10 shrink-0">
           <button
             onClick={() => { setActiveTab("home"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
+            className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full transition-all duration-200 cursor-pointer ${
+              activeTab === "home"
+                ? "bg-white/15 text-white font-bold"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            <Compass size={20} className={activeTab === "home" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Home</span>
+            <Compass size={18} className={activeTab === "home" ? "text-[#71E300]" : "text-zinc-500"} />
+            {activeTab === "home" && <span className="text-xs tracking-tight">Home</span>}
           </button>
+
           <button
             onClick={() => { setActiveTab("trips"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "trips" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
+            className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full transition-all duration-200 cursor-pointer ${
+              activeTab === "trips"
+                ? "bg-white/15 text-white font-bold"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            <Calendar size={20} className={activeTab === "trips" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Trips</span>
+            <Calendar size={18} className={activeTab === "trips" ? "text-[#71E300]" : "text-zinc-500"} />
+            {activeTab === "trips" && <span className="text-xs tracking-tight">Trips</span>}
           </button>
+
           <button
             onClick={() => { setActiveTab("friends"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "friends" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
+            className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full transition-all duration-200 cursor-pointer ${
+              activeTab === "friends"
+                ? "bg-white/15 text-white font-bold"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            <Activity size={20} className={activeTab === "friends" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Friends</span>
+            <Activity size={18} className={activeTab === "friends" ? "text-[#71E300]" : "text-zinc-500"} />
+            {activeTab === "friends" && <span className="text-xs tracking-tight">Friends</span>}
           </button>
+
           <button
             onClick={() => { setActiveTab("tickets"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "tickets" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
+            className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full transition-all duration-200 cursor-pointer ${
+              activeTab === "tickets"
+                ? "bg-white/15 text-white font-bold"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            <Ticket size={20} className={activeTab === "tickets" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Tickets</span>
+            <Ticket size={18} className={activeTab === "tickets" ? "text-[#71E300]" : "text-zinc-500"} />
+            {activeTab === "tickets" && <span className="text-xs tracking-tight">Tickets</span>}
           </button>
+
           <button
             onClick={() => { setActiveTab("profile"); setSelectedTrip(null); }}
-            className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "profile" ? "text-black scale-105 font-bold" : "text-zinc-400 hover:text-black"}`}
+            className={`flex items-center gap-1.5 py-1.5 px-3.5 rounded-full transition-all duration-200 cursor-pointer ${
+              activeTab === "profile"
+                ? "bg-white/15 text-white font-bold"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            <User size={20} className={activeTab === "profile" ? "text-black" : "text-zinc-400"} />
-            <span className="text-[10px] font-black uppercase tracking-wider">Profile</span>
+            <User size={18} className={activeTab === "profile" ? "text-[#71E300]" : "text-zinc-500"} />
+            {activeTab === "profile" && <span className="text-xs tracking-tight">Profile</span>}
           </button>
         </nav>
 
