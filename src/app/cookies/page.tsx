@@ -18,9 +18,8 @@ export default function CookiePolicy() {
             <ArrowLeft size={16} />
             <span className="text-xs font-bold uppercase tracking-wider">Back to diaspedia</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#71E300] text-black flex items-center justify-center text-[10px] font-black rounded-md">d</div>
-            <span className="font-bold text-xs tracking-tight text-brand-text">diaspedia</span>
+          <div className="flex items-center gap-2 text-brand-text">
+            <span className="font-heading font-black text-xl tracking-tight text-[#0f1115]">diaspedia</span>
           </div>
         </div>
       </header>
@@ -39,7 +38,7 @@ export default function CookiePolicy() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            This Cookie Policy explains how <strong>diaspedia</strong> uses cookies and similar tracking technologies to recognize you when you visit our website, calculate route savings, and maintain active travel pass session parameters.
+            This Cookie Policy explains how <strong>diaspedia</strong> uses cookies and similar tracking technologies to recognize you when you visit our website, coordinate travel routes, and maintain active travel pass session parameters.
           </p>
 
           <div className="space-y-3">
@@ -54,7 +53,7 @@ export default function CookiePolicy() {
             <div className="space-y-3">
               <div>
                 <h3 className="font-bold text-brand-text">A. Essential Cookies</h3>
-                <p className="text-xs md:text-sm">These are strictly necessary to let you move around the app, calculate group savings offsets, and load pages cleanly. Disabling them will break core routing capabilities.</p>
+                <p className="text-xs md:text-sm">These are strictly necessary to let you move around the app, facilitate booking options, and load pages cleanly. Disabling them will break core routing capabilities.</p>
               </div>
               <div>
                 <h3 className="font-bold text-brand-text">B. Preference and State Cookies</h3>
@@ -73,7 +72,7 @@ export default function CookiePolicy() {
           <div className="pt-8 border-t border-black/5 flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
             <div>
               <p className="text-xs text-zinc-500 font-medium">Questions about Cookie policies?</p>
-              <a href="mailto:privacy@diaspedia.com" className="text-xs font-bold text-brand-text hover:underline">privacy@privacy@diaspedia.com</a>
+              <a href="mailto:privacy@diaspedia.com" className="text-xs font-bold text-brand-text hover:underline">privacy@diaspedia.com</a>
             </div>
             <Link href="/">
               <motion.button

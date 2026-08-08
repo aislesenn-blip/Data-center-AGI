@@ -18,9 +18,8 @@ export default function TermsOfService() {
             <ArrowLeft size={16} />
             <span className="text-xs font-bold uppercase tracking-wider">Back to diaspedia</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#71E300] text-black flex items-center justify-center text-[10px] font-black rounded-md">d</div>
-            <span className="font-bold text-xs tracking-tight text-brand-text">diaspedia</span>
+          <div className="flex items-center gap-2 text-brand-text">
+            <span className="font-heading font-black text-xl tracking-tight text-[#0f1115]">diaspedia</span>
           </div>
         </div>
       </header>
@@ -39,7 +38,7 @@ export default function TermsOfService() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our collective travel pass consolidation platform, scheduling services, and related mobile applications.
+            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our collective travel pass coordination platform, scheduling services, and related mobile applications.
           </p>
 
           <div className="space-y-3">
@@ -50,28 +49,28 @@ export default function TermsOfService() {
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">2. Ticket Booking & Group Pooling</h2>
+            <h2 className="text-xl font-bold text-brand-text">2. Ticket Booking & Group pooling</h2>
             <p>
-              diaspedia coordinates passenger groups on commercial transit lines to unlock group volume discounts. In doing so:
+              diaspedia coordinates passenger groups on commercial transit lines. In doing so:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
               <li>Users must submit their correct legal passenger names matching their identification cards or passports.</li>
               <li>Users must complete payment prior to ticket issuance and follow carrier-specific baggage rules.</li>
-              <li>diaspedia acts as an intermediary coordinating bulk booking passes, but carrier terms of service (such as Deutsche Bahn or FlixBus) apply to actual transport carriage.</li>
+              <li>diaspedia acts as an intermediary coordinating passenger passes, but carrier terms of service (such as Deutsche Bahn or FlixBus) apply to actual transport carriage.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">3. Safety and Rules of Conduct</h2>
             <p>
-              Consolidated trips are shared with fellow peer travelers and friends. You agree to treat all travelers with respect, comply with local transit authority guidelines, and ensure that your conduct is compliant with standard public safety regulations.
+              Trips are shared with fellow peer travelers and friends. You agree to treat all travelers with respect, comply with local transit authority guidelines, and ensure that your conduct is compliant with standard public safety regulations.
             </p>
           </div>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">4. Payment and Calculations</h2>
             <p>
-              All listed ticket prices on diaspedia are calculated as group-split rates. Individual carrier solo-ticket prices are shown purely for comparison of community-wide group discount savings.
+              All listed ticket prices on diaspedia are calculated as coordinate rates, providing travel booking coordinate utility.
             </p>
           </div>
 
