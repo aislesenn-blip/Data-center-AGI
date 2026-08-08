@@ -26,7 +26,7 @@ export default function Careers() {
       department: "Product Design",
       location: "London, UK (Hybrid)",
       type: "Full-Time",
-      desc: "Iterate on the simple, premium, Flixbus/Venmo-inspired mobile interface, designing clean travel passes, interactive cards, and smooth sheets."
+      desc: "Iterate on the simple, premium mobile interface, designing clean travel passes, interactive cards, and smooth sheets."
     },
     {
       title: "Growth & Community Lead",
@@ -124,7 +124,7 @@ export default function Careers() {
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
             We are always looking for passionate builders. Send your resume and portfolio to our open talent pool.
           </p>
-          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-extrabold text-[#71E300] bg-black py-2.5 px-6 rounded-xl hover:bg-zinc-900 active:scale-95 transition-all">
+          <a href="mailto:careers@diaspedia.com" className="inline-block text-xs font-bold text-white bg-zinc-950 py-2.5 px-6 rounded-xl hover:bg-zinc-800 active:scale-95 transition-all">
             Join Our Talent Pool
           </a>
         </FadeIn>
