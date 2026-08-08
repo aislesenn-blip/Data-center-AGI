@@ -67,6 +67,9 @@ export default function Home() {
   // State management for current mock orders
   const [orders, setOrders] = useState<JoinedOrder[]>(INITIAL_ORDERS);
 
+  // Track which order card is expanded on the Orders Tab (Progressive Disclosure)
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+
   // Route selection & curated products state
   const [selectedRoute, setSelectedRoute] = useState<Route>(ROUTES[0]);
 
@@ -399,9 +402,9 @@ export default function Home() {
                               <div
                                 key={route.id}
                                 onClick={() => handleRouteChange(route)}
-                                className={`p-5 rounded-2xl border transition-all flex flex-col gap-4 cursor-pointer ${
+                                className={`p-5 rounded-2xl border transition-all flex flex-col gap-3 cursor-pointer ${
                                   isSelected
-                                    ? "bg-white border-brand-primary shadow-sm scale-[1.01]"
+                                    ? "bg-white border-brand-primary/40 shadow-sm"
                                     : "bg-white/55 border-black/5 hover:border-black/10 hover:bg-white"
                                 }`}
                               >
@@ -414,38 +417,46 @@ export default function Home() {
                                   </div>
 
                                   <div className="text-right">
-                                    <div className="text-xs font-medium text-brand-text-muted">Combined rate</div>
-                                    <div className="text-base font-bold text-brand-text">€{route.basePricePerKg}/kg</div>
+                                    <div className="text-xs font-bold text-brand-text">€{route.basePricePerKg}/kg</div>
                                   </div>
                                 </div>
 
-                                {/* Clean Schedule & simple participants indicator */}
-                                <div className="flex items-center justify-between border-t border-black/[0.03] pt-3.5">
-                                  <div className="space-y-1">
-                                    <div className="text-xs text-brand-text-muted font-medium">Leaves: <strong className="text-brand-text">{route.nextShipment}</strong></div>
-                                    <div className="text-xs text-brand-text-muted font-medium">Join by: <strong className="text-brand-text">{route.joinBefore}</strong></div>
-                                  </div>
-
-                                  <div className="flex items-center gap-2">
-                                    {/* EXTREMELY SIMPLE PARTICIPANT INDICATOR [Users icon] 42 */}
-                                    <div className="flex items-center gap-1.5 text-xs text-brand-text font-bold bg-[#71E300]/10 border border-[#71E300]/20 px-3 py-1.5 rounded-full">
-                                      <Users size={12} className="text-brand-text" />
-                                      <span>{route.peopleJoining} joining</span>
+                                {/* Progressive Disclosure: Show detailed timelines and actions only for the selected route */}
+                                {isSelected ? (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                    className="space-y-3 pt-3 border-t border-black/[0.03] overflow-hidden"
+                                  >
+                                    <div className="flex justify-between items-center text-xs">
+                                      <div className="space-y-0.5">
+                                        <div className="text-brand-text-muted">Leaves: <strong className="text-brand-text">{route.nextShipment}</strong></div>
+                                        <div className="text-brand-text-muted">Join before: <strong className="text-brand-text">{route.joinBefore}</strong></div>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 text-brand-text font-bold bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
+                                        <Users size={12} />
+                                        <span>{route.peopleJoining} sharing</span>
+                                      </div>
                                     </div>
-                                  </div>
-                                </div>
 
-                                {/* Premium FlixBus-style Action */}
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    scrollToProducts(route);
-                                  }}
-                                  className="w-full bg-black/[0.03] hover:bg-brand-primary text-brand-text font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all"
-                                >
-                                  See what&apos;s available <ChevronDown size={14} />
-                                </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        scrollToProducts(route);
+                                      }}
+                                      className="w-full bg-brand-primary text-black font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                                    >
+                                      Choose Items to Receive &bull; Save €71.50 <ChevronDown size={14} />
+                                    </button>
+                                  </motion.div>
+                                ) : (
+                                  <div className="flex justify-between items-center text-xs text-brand-text-muted pt-1">
+                                    <span>Leaves {route.nextShipment}</span>
+                                    <span className="font-semibold text-brand-primary hover:underline">Select Route ➔</span>
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
@@ -472,6 +483,7 @@ export default function Home() {
                             const matchedItem = calcItems.find(i => i.name === prod.name);
                             const currentQty = matchedItem?.quantity || 1;
 
+                            const discountPercent = Math.round(((prod.standardSoloPrice - prod.price) / prod.standardSoloPrice) * 100);
                             return (
                               <div
                                 key={prod.id}
@@ -487,11 +499,16 @@ export default function Home() {
                                 }`}
                               >
                                 <div className="space-y-1 truncate pr-2 flex-1">
-                                  <div className="font-bold text-xs text-brand-text truncate">{prod.name}</div>
+                                  <div className="flex items-center gap-2">
+                                    <div className="font-bold text-xs text-brand-text truncate">{prod.name}</div>
+                                    <span className="bg-[#71E300]/15 text-[#5ec700] text-[10px] px-1.5 py-0.5 rounded-md font-bold shrink-0">
+                                      -{discountPercent}%
+                                    </span>
+                                  </div>
                                   <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
-                                    <span>Weight: {prod.weight}kg</span>
+                                    <span>{prod.weight}kg</span>
                                     <span>&bull;</span>
-                                    <span>Standard Solo Rate: <span className="line-through text-red-500">€{prod.standardSoloPrice}</span></span>
+                                    <span>Solo: €{prod.standardSoloPrice}</span>
                                   </div>
                                 </div>
 
@@ -499,7 +516,7 @@ export default function Home() {
                                   <div className="text-right">
                                     {/* Final diaspedia pricing combining ship space */}
                                     <div className="text-xs font-bold text-brand-text">€{(prod.price * currentQty).toFixed(2)}</div>
-                                    <span className="text-xs text-[#5ec700] font-bold">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
+                                    <span className="text-xs text-brand-text-muted font-medium">Save €{((prod.standardSoloPrice - prod.price) * currentQty).toFixed(0)}</span>
                                   </div>
 
                                   {isAdded ? (
@@ -608,111 +625,112 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Realtime summary and Order builder */}
-                      <div className="bg-white rounded-[24px] border border-black/5 p-5 space-y-4 shadow-sm">
-                        <div className="flex items-center justify-between border-b border-black/[0.04] pb-3">
-                          <h3 className="text-xs font-black tracking-wider text-brand-text-muted uppercase">My Shipment Summary</h3>
-                          <span className="text-xs bg-black/[0.04] text-brand-text font-bold px-2.5 py-0.5 rounded-full">
-                            Route: {selectedRoute.fromCode} ➔ {selectedRoute.toCode}
-                          </span>
-                        </div>
+                      {/* Realtime summary and Order builder - Disclosed progressively only when items are selected */}
+                      <AnimatePresence>
+                        {calcItems.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 12 }}
+                            className="bg-white rounded-[24px] border border-black/5 p-5 space-y-4 shadow-sm"
+                          >
+                            <div className="flex items-center justify-between border-b border-black/[0.04] pb-3">
+                              <h3 className="text-xs font-black tracking-wider text-brand-text-muted uppercase">My Shipment Summary</h3>
+                              <span className="text-xs bg-[#71E300]/10 text-brand-text font-bold px-2.5 py-0.5 rounded-full">
+                                {selectedRoute.fromCode} ➔ {selectedRoute.toCode}
+                              </span>
+                            </div>
 
-                        {calcItems.length > 0 ? (
-                          <div className="space-y-2">
-                            {calcItems.map((item, index) => {
-                              const qty = item.quantity || 1;
-                              return (
-                                <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
-                                  <div className="truncate pr-3 space-y-0.5 flex-1">
-                                    <div className="font-bold text-brand-text truncate">{item.name}</div>
-                                    <div className="text-xs text-brand-text-muted truncate">{item.category}</div>
-                                  </div>
-
-                                  <div className="flex items-center gap-3 shrink-0">
-                                    {/* Dual quantity selector inside list */}
-                                    <div className="flex items-center bg-white border border-black/5 rounded-lg p-1 gap-2 shadow-sm">
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          if (qty === 1) {
-                                            handleRemoveItem(index);
-                                          } else {
-                                            updateItemQuantity(item.name, -1);
-                                          }
-                                        }}
-                                        className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
-                                        style={{ touchAction: "manipulation" }}
-                                      >
-                                        -
-                                      </button>
-                                      <span className="text-xs font-black text-brand-text min-w-[12px] text-center">
-                                        {qty}
-                                      </span>
-                                      <button
-                                        type="button"
-                                        onClick={() => updateItemQuantity(item.name, 1)}
-                                        className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
-                                        style={{ touchAction: "manipulation" }}
-                                      >
-                                        +
-                                      </button>
+                            <div className="space-y-2">
+                              {calcItems.map((item, index) => {
+                                const qty = item.quantity || 1;
+                                return (
+                                  <div key={index} className="flex items-center justify-between bg-black/[0.02] p-2.5 rounded-xl text-xs">
+                                    <div className="truncate pr-3 space-y-0.5 flex-1">
+                                      <div className="font-bold text-brand-text truncate">{item.name}</div>
+                                      <div className="text-xs text-brand-text-muted truncate">{item.category}</div>
                                     </div>
 
-                                    <span className="font-extrabold text-xs text-brand-text min-w-[42px] text-right">{(item.weight * qty).toFixed(1)} kg</span>
+                                    <div className="flex items-center gap-3 shrink-0">
+                                      {/* Dual quantity selector inside list */}
+                                      <div className="flex items-center bg-white border border-black/5 rounded-lg p-1 gap-2 shadow-sm">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            if (qty === 1) {
+                                              handleRemoveItem(index);
+                                            } else {
+                                              updateItemQuantity(item.name, -1);
+                                            }
+                                          }}
+                                          className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
+                                          style={{ touchAction: "manipulation" }}
+                                        >
+                                          -
+                                        </button>
+                                        <span className="text-xs font-black text-brand-text min-w-[12px] text-center">
+                                          {qty}
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() => updateItemQuantity(item.name, 1)}
+                                          className="w-8 h-8 rounded bg-black/[0.02] flex items-center justify-center text-brand-text hover:bg-black/[0.08] active:scale-90 transition-all font-black text-xs cursor-pointer"
+                                          style={{ touchAction: "manipulation" }}
+                                        >
+                                          +
+                                        </button>
+                                      </div>
 
-                                    <button
-                                      onClick={() => handleRemoveItem(index)}
-                                      type="button"
-                                      className="text-red-500 hover:text-red-600 p-2 bg-white rounded-lg border border-black/5 shadow-sm active:scale-90 transition-transform cursor-pointer"
-                                    >
-                                      <Trash2 size={14} />
-                                    </button>
+                                      <span className="font-extrabold text-xs text-brand-text min-w-[42px] text-right">{(item.weight * qty).toFixed(1)} kg</span>
+
+                                      <button
+                                        onClick={() => handleRemoveItem(index)}
+                                        type="button"
+                                        className="text-red-500 hover:text-red-600 p-2 bg-white rounded-lg border border-black/5 shadow-sm active:scale-90 transition-transform cursor-pointer"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                    </div>
                                   </div>
+                                );
+                              })}
+                            </div>
+
+                            <div className="pt-2.5 border-t border-black/5 space-y-3">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-brand-text-muted font-bold">Total Weight:</span>
+                                <span className="font-black text-sm">{totalWeight.toFixed(1)} kg</span>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2.5">
+                                <div className="bg-black/[0.02] p-3 rounded-2xl flex flex-col justify-center">
+                                  <span className="text-xs text-brand-text-muted uppercase block mb-0.5">Solo carrier rate</span>
+                                  <span className="text-xs font-bold line-through text-red-500">€{soloPrice.toFixed(2)}</span>
                                 </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <div className="text-center py-6 text-xs text-brand-text-muted bg-black/[0.01] rounded-2xl border border-dashed border-black/5">
-                            Select products above to add them to your shipment.
-                          </div>
-                        )}
 
-                        {calcItems.length > 0 && (
-                          <div className="pt-2.5 border-t border-black/5 space-y-3">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-brand-text-muted font-bold">Total Weight:</span>
-                              <span className="font-black text-sm">{totalWeight.toFixed(1)} kg</span>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-2.5">
-                              <div className="bg-black/[0.02] p-3 rounded-2xl">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block mb-1">DHL/FedEx rate</span>
-                                <span className="text-xs font-black line-through text-red-500">€{soloPrice.toFixed(2)}</span>
+                                <div className="bg-brand-primary/10 p-3 rounded-2xl border border-brand-primary/20 flex flex-col justify-center">
+                                  <span className="text-xs text-brand-text-muted uppercase block mb-0.5">Combined rate</span>
+                                  <span className="text-sm font-black text-brand-text">€{currentPrice.toFixed(2)}</span>
+                                </div>
                               </div>
 
-                              <div className="bg-brand-primary/10 p-3 rounded-2xl border border-brand-primary/20">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block mb-1">Combined rate</span>
-                                <span className="text-sm font-black text-brand-text">€{currentPrice.toFixed(2)}</span>
+                              <div className="bg-[#71E300]/10 border border-[#71E300]/30 rounded-2xl p-3 flex items-center justify-between text-xs">
+                                <span className="font-bold text-brand-text">Shared logistics savings:</span>
+                                <span className="font-black text-[#5ec700] text-sm">Save €{totalSavings.toFixed(2)}</span>
                               </div>
-                            </div>
 
-                            <div className="bg-[#71E300]/10 border border-[#71E300]/30 rounded-2xl p-3 flex items-center justify-between text-xs">
-                              <span className="font-bold text-brand-text">Your Savings:</span>
-                              <span className="font-black text-[#5ec700] text-sm">€{totalSavings.toFixed(2)} saved</span>
+                              <motion.button
+                                whileTap={{ scale: 0.95 }}
+                                onClick={openJoinModal}
+                                type="button"
+                                className="w-full bg-brand-primary text-black font-extrabold text-sm py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-brand-primary-hover transition-colors cursor-pointer mt-1"
+                              >
+                                Join Group & Save €{totalSavings.toFixed(0)} <ArrowRight size={16} />
+                              </motion.button>
                             </div>
-
-                            <motion.button
-                              whileTap={{ scale: 0.95 }}
-                              onClick={openJoinModal}
-                              type="button"
-                              className="w-full bg-brand-primary text-black font-extrabold text-sm py-4 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-brand-primary-hover transition-colors cursor-pointer mt-1"
-                            >
-                              Join Route & Save €{totalSavings.toFixed(0)} <ArrowRight size={16} />
-                            </motion.button>
-                          </div>
+                          </motion.div>
                         )}
-                      </div>
+                      </AnimatePresence>
 
                     </motion.div>
                   )}
@@ -730,59 +748,46 @@ export default function Home() {
                       </div>
 
                       <p className="text-xs text-brand-text-muted leading-relaxed">
-                        We organize shipping departures regularly. Once enough demand is pooled, we pack items inside shared space to divide bulk container rates.
+                        We aggregate individual shipments on fixed schedules to unlock container-rate savings.
                       </p>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {ROUTES.map((route) => (
-                          <div key={route.id} className="bg-white border border-black/5 rounded-2xl p-5 space-y-4 shadow-sm">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-black text-base text-brand-text">{route.from}</span>
-                                  <span className="text-xs text-brand-text-muted">➔</span>
-                                  <span className="font-black text-base text-brand-text">{route.to}</span>
-                                </div>
-                                <span className="text-xs text-brand-text-muted block mt-0.5 uppercase font-bold tracking-wider">Route Code: {route.fromCode}-{route.toCode}</span>
+                          <div
+                            key={route.id}
+                            onClick={() => {
+                              handleRouteChange(route);
+                              setActiveTab("home");
+                            }}
+                            className="bg-white border border-black/5 rounded-2xl p-4 flex items-center justify-between shadow-sm cursor-pointer hover:border-brand-primary/30 transition-all"
+                          >
+                            <div className="space-y-1.5 flex-1 min-w-0 pr-4">
+                              <div className="flex items-center gap-1.5 font-bold text-xs text-brand-text">
+                                <span>{route.from}</span>
+                                <span className="text-brand-text-muted">➔</span>
+                                <span>{route.to}</span>
                               </div>
-
-                              <div className="flex items-center gap-1 text-xs text-brand-text font-black bg-[#71E300]/10 border border-[#71E300]/20 px-2.5 py-1 rounded-full">
-                                <Users size={12} className="text-brand-text" />
-                                <span>{route.peopleJoining}</span>
-                              </div>
-                            </div>
-
-                            {/* Timeline Slider */}
-                            <div className="space-y-1.5">
-                              <div className="flex justify-between text-xs font-bold text-brand-text-muted">
-                                <span>Demand shared pool</span>
-                                <span>{route.progressPercent}% Filled</span>
-                              </div>
-                              <div className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-brand-primary rounded-full transition-all duration-500"
-                                  style={{ width: `${route.progressPercent}%` }}
-                                ></div>
+                              <div className="flex items-center gap-3 text-xs text-brand-text-muted">
+                                <span>Leaves {route.nextShipment}</span>
+                                <span>&bull;</span>
+                                <span>€{route.basePricePerKg}/kg</span>
                               </div>
                             </div>
 
-                            {/* Trip particulars */}
-                            <div className="pt-3 border-t border-black/[0.03] grid grid-cols-3 gap-2 text-center">
-                              <div className="p-2 rounded-xl bg-black/[0.02]">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Join Before</span>
-                                <span className="text-xs font-extrabold text-brand-text">{route.joinBefore}</span>
-                              </div>
-                              <div className="p-2 rounded-xl bg-black/[0.02]">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Leaves</span>
-                                <span className="text-xs font-extrabold text-brand-text">{route.nextShipment}</span>
-                              </div>
-                              <div className="p-2 rounded-xl bg-brand-primary/10 border border-brand-primary/20">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block">Combined Price</span>
-                                <span className="text-xs font-black text-brand-text font-mono">€{route.basePricePerKg}/kg</span>
-                              </div>
+                            <div className="text-right shrink-0">
+                              <span className="text-xs font-bold bg-[#71E300]/10 text-brand-text px-2.5 py-1.5 rounded-xl block">
+                                Join by {route.joinBefore.split(" ")[0]}
+                              </span>
                             </div>
                           </div>
                         ))}
+                      </div>
+
+                      {/* Quiet Capacity Note */}
+                      <div className="bg-black/[0.02] rounded-2xl p-4 text-center">
+                        <p className="text-xs text-brand-text-muted leading-relaxed">
+                          All departure dates are guaranteed. Need custom arrangements? Select a route above to specify your exact items.
+                        </p>
                       </div>
 
                     </motion.div>
@@ -801,68 +806,93 @@ export default function Home() {
                       </div>
 
                       {orders.length > 0 ? (
-                        <div className="space-y-4">
-                          {orders.map((order) => (
-                            <div key={order.id} className="bg-white border border-brand-secondary rounded-2xl p-5 space-y-4 shadow-sm relative overflow-hidden">
-
-                              <div className="absolute top-0 left-0 right-0 h-[4px] bg-brand-primary"></div>
-
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <span className="text-xs font-bold text-brand-text-muted uppercase tracking-wider block">{order.id}</span>
-                                  <div className="flex items-center gap-1.5 font-black text-sm mt-0.5">
-                                    <span>{order.from}</span>
-                                    <span className="text-brand-text-muted font-normal">➔</span>
-                                    <span>{order.to}</span>
-                                  </div>
-                                </div>
-
-                                <span className="text-xs bg-brand-primary/20 text-brand-text font-black px-2.5 py-1 rounded-full font-sans">
-                                  {order.status === "joined" ? "Route Joined" : order.status}
-                                </span>
-                              </div>
-
-                              {/* Items pooled */}
-                              <div className="bg-black/[0.02] rounded-xl p-3 space-y-2">
-                                <span className="text-xs font-bold text-brand-text-muted uppercase block">My packages</span>
-                                {order.items.map((item, i) => (
-                                  <div key={i} className="flex justify-between text-xs">
-                                    <span className="text-brand-text font-bold truncate max-w-[200px]">{item.name}</span>
-                                    <span className="text-brand-text-muted shrink-0 font-extrabold">{item.weight} kg</span>
-                                  </div>
-                                ))}
-                              </div>
-
-                              {/* Receiver details */}
-                              <div className="grid grid-cols-2 gap-3 text-xs pt-1">
-                                <div>
-                                  <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Receiver</span>
-                                  <span className="font-extrabold text-brand-text truncate block">{order.receiverName}</span>
-                                  <span className="text-zinc-400 font-mono truncate block">{order.receiverPhone}</span>
-                                </div>
-                                <div>
-                                  <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Pickup point</span>
-                                  <span className="font-extrabold text-brand-text capitalize block">{order.deliveryMethod}</span>
-                                  <span className="text-zinc-400 truncate block">Arrives: {order.estimatedDelivery}</span>
-                                </div>
-                              </div>
-
-                              <div className="pt-3 border-t border-black/[0.03] flex items-center justify-between text-xs">
-                                <div>
-                                  <span className="text-xs text-brand-text-muted block font-semibold">Total Price:</span>
-                                  <span className="font-black text-sm text-brand-text">€{order.calculatedPrice.toFixed(2)}</span>
-                                  <span className="text-xs text-[#5ec700] ml-1.5 font-bold bg-brand-primary/15 px-2 py-0.5 rounded-full">Saved €{order.calculatedSavings.toFixed(0)}</span>
-                                </div>
-
-                                <button
-                                  onClick={() => handleCancelOrder(order.id)}
-                                  className="text-xs font-extrabold text-red-500 hover:text-red-600 bg-red-55 px-3 py-2 rounded-xl active:scale-95 transition-all cursor-pointer"
+                        <div className="space-y-3">
+                          {orders.map((order) => {
+                            const isExpanded = expandedOrderId === order.id;
+                            return (
+                              <div
+                                key={order.id}
+                                className="bg-white border border-black/5 rounded-2xl shadow-sm overflow-hidden transition-all"
+                              >
+                                {/* Primary view - Very quiet and clean */}
+                                <div
+                                  onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
+                                  className="p-4 flex items-center justify-between cursor-pointer hover:bg-black/[0.01] transition-colors"
                                 >
-                                  Cancel Spot
-                                </button>
+                                  <div className="space-y-1">
+                                    <div className="flex items-center gap-1.5 font-bold text-xs text-brand-text">
+                                      <span>{order.from}</span>
+                                      <span className="text-brand-text-muted font-normal">➔</span>
+                                      <span>{order.to}</span>
+                                    </div>
+                                    <div className="text-xs text-brand-text-muted">
+                                      Est: {order.estimatedDelivery} &bull; Save €{order.calculatedSavings.toFixed(0)}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-xs font-bold text-brand-text">
+                                      €{order.calculatedPrice.toFixed(2)}
+                                    </span>
+                                    <div className="text-zinc-400">
+                                      {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Progressive Disclosure details */}
+                                {isExpanded && (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    className="border-t border-black/[0.03] bg-black/[0.01] p-4 space-y-4"
+                                  >
+                                    <div className="flex justify-between items-center text-xs text-brand-text-muted">
+                                      <span>ID: <strong>{order.id}</strong></span>
+                                      <span className="bg-brand-primary/20 text-brand-text font-bold px-2 py-0.5 rounded-md text-[11px]">
+                                        Route Joined
+                                      </span>
+                                    </div>
+
+                                    {/* Items pooled */}
+                                    <div className="space-y-1.5">
+                                      <span className="text-xs font-bold text-brand-text-muted uppercase block">My packages</span>
+                                      {order.items.map((item, i) => (
+                                        <div key={i} className="flex justify-between text-xs">
+                                          <span className="text-brand-text font-medium truncate max-w-[200px]">{item.name}</span>
+                                          <span className="text-brand-text-muted shrink-0">{item.weight} kg</span>
+                                        </div>
+                                      ))}
+                                    </div>
+
+                                    {/* Receiver details */}
+                                    <div className="grid grid-cols-2 gap-3 text-xs pt-1 border-t border-black/[0.03]">
+                                      <div>
+                                        <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Receiver</span>
+                                        <span className="font-extrabold text-brand-text truncate block">{order.receiverName}</span>
+                                        <span className="text-zinc-400 font-mono truncate block">{order.receiverPhone}</span>
+                                      </div>
+                                      <div>
+                                        <span className="text-brand-text-muted block uppercase font-bold text-xs mb-0.5">Pickup point</span>
+                                        <span className="font-extrabold text-brand-text capitalize block">{order.deliveryMethod}</span>
+                                        <span className="text-zinc-400 truncate block">Collection Point</span>
+                                      </div>
+                                    </div>
+
+                                    {/* Cancel button */}
+                                    <div className="pt-2 flex justify-end">
+                                      <button
+                                        onClick={() => handleCancelOrder(order.id)}
+                                        className="text-xs font-bold text-red-500 hover:text-red-600 bg-red-50 px-3 py-2 rounded-xl active:scale-95 transition-all cursor-pointer"
+                                      >
+                                        Cancel Spot
+                                      </button>
+                                    </div>
+                                  </motion.div>
+                                )}
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       ) : (
                         <div className="text-center py-16 px-6 bg-white/40 border border-dashed border-black/10 rounded-2xl space-y-4">
@@ -992,31 +1022,31 @@ export default function Home() {
                   - Uses backdrop blurring with subtle dropshadow styling for an elite mobile feel.
                   - Incorporates a bottom gradient fade overlay and adapts to safe areas dynamically.
                 */}
-                <div className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/5 pt-3.5 pb-6 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.04)] sm:rounded-b-[40px] pb-safe-bottom">
+                <div className="absolute bottom-0 left-0 right-0 bg-[#F6F4ED]/95 backdrop-blur-md border-t border-black/5 pt-4 pb-8 px-4 flex justify-around shrink-0 z-40 shadow-[0_-8px_24px_rgba(15,17,21,0.04)] sm:rounded-b-[40px] pb-safe-bottom">
                   <button
                     onClick={() => setActiveTab("home")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
+                    className={`flex flex-col items-center gap-1 p-1 transition-all cursor-pointer ${activeTab === "home" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
                     <HomeIcon size={20} className={activeTab === "home" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-xs font-bold uppercase tracking-wider">Home</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("shipments")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
+                    className={`flex flex-col items-center gap-1 p-1 transition-all cursor-pointer ${activeTab === "shipments" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted hover:text-brand-text"}`}
                   >
                     <Calendar size={20} className={activeTab === "shipments" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-xs font-bold uppercase tracking-wider">Dates</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("orders")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1 p-1 transition-all cursor-pointer ${activeTab === "orders" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
                     <Layers size={20} className={activeTab === "orders" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-xs font-bold uppercase tracking-wider">My orders</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("profile")}
-                    className={`flex flex-col items-center gap-1.5 p-1 transition-all cursor-pointer ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
+                    className={`flex flex-col items-center gap-1 p-1 transition-all cursor-pointer ${activeTab === "profile" ? "text-brand-text scale-105 font-bold" : "text-brand-text-muted"}`}
                   >
                     <User size={20} className={activeTab === "profile" ? "text-brand-text" : "text-brand-text-muted"} />
                     <span className="text-xs font-bold uppercase tracking-wider">Profile</span>
