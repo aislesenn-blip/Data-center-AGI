@@ -8,32 +8,32 @@ import FadeIn from "@/components/FadeIn";
 export default function Careers() {
   const openPositions = [
     {
-      title: "Group Scheduling Architect",
-      department: "Operations & Routing",
+      title: "Tax Integration & API Architect",
+      department: "Engineering & Compliance",
       location: "Berlin, Germany (Hybrid)",
       type: "Full-Time",
-      desc: "Architect the routing consolidation algorithms and coordinate schedules between premium bus and rail operators."
+      desc: "Architect our card-linked VAT tracking algorithms and secure secure endpoints to licensed European bank and credit providers."
     },
     {
-      title: "Staff Software Engineer, Social Graph & Discovery",
+      title: "Staff Software Engineer, Financial Ledger",
       department: "Engineering",
       location: "Munich, Germany / Remote",
       type: "Full-Time",
-      desc: "Pioneer our Next.js/Tailwind platform, integrate real-time friend mapping, feed notification dispatching, and build scalable travel discovery features."
+      desc: "Pioneer our Next.js/Tailwind neobank interface, integrate real-time Visa card hooks, SEPA transfer handlers, and manage secure balance tracking systems."
     },
     {
-      title: "Senior Product Designer (Mobile First Mobile App)",
+      title: "Senior Product Designer (Mobile First Fintech)",
       department: "Product Design",
       location: "London, UK (Hybrid)",
       type: "Full-Time",
-      desc: "Iterate on the simple, premium mobile interface, designing clean travel passes, interactive cards, and smooth sheets."
+      desc: "Iterate on the simple, premium mobile interface, designing clean credit card panels, active tax-refund claims feeds, and smooth sheet animations."
     },
     {
       title: "Growth & Community Lead",
       department: "Growth & Marketing",
       location: "Amsterdam, Netherlands (Hybrid)",
       type: "Full-Time",
-      desc: "Drive viral user acquisition amongst university students and frequent weekend travelers across Western and Central Europe."
+      desc: "Drive viral user acquisition amongst international students, volunteers, expats, and non-EU citizens residing in major European hubs."
     }
   ];
 
@@ -61,10 +61,10 @@ export default function Careers() {
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-brand-text">
             Build the future of <br/>
-            <span className="text-zinc-500">social travel booking.</span>
+            <span className="text-zinc-500">cross-border neobanking.</span>
           </h1>
           <p className="text-sm md:text-base text-zinc-500 leading-relaxed max-w-2xl">
-            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer social travel booking future, starting by coordinating and booking train/bus ticket routes.
+            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a fairer, simpler financial future for international residents, starting with instant tax recovery.
           </p>
         </FadeIn>
 
@@ -74,7 +74,7 @@ export default function Careers() {
             <Globe size={18} className="text-[#71E300]" /> Our Core Philosophy
           </h2>
           <p className="text-sm text-zinc-500 leading-relaxed">
-            We operate at the convergence of real-world transit utility and fluid social architecture. We prioritize real-world usability and community connection over buzzwords. If you want to build systems that everyday people use to travel and see their friends, you will find your home at diaspedia.
+            We operate at the convergence of secure, regulated neobanking services and intuitive consumer tech. We prioritize real-world usability and trust over buzzwords. If you want to build systems that everyday people use to manage their money and claim back their hard-earned cash, you will find your home at diaspedia.
           </p>
         </FadeIn>
 
