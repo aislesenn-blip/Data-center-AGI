@@ -38,39 +38,39 @@ export default function TermsOfService() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our collective travel pass coordination platform, scheduling services, and related mobile applications.
+            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our expat neobanking services, automated VAT claim recovery platforms, and matching debit cards.
           </p>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">1. Agreement to Terms</h2>
             <p>
-              By accessing our platform, selecting schedules, joining active trips, or booking consolidated passenger tickets, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
+              By opening a diaspedia bank account, depositing funds, completing transactions with your debit card, or filing VAT refund claims, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">2. Ticket Booking & Group pooling</h2>
+            <h2 className="text-xl font-bold text-brand-text">2. Account Opening & Eligibility</h2>
             <p>
-              diaspedia coordinates passenger groups on commercial transit lines. In doing so:
+              diaspedia provides everyday accounts for international residents in Europe. In doing so:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
-              <li>Users must submit their correct legal passenger names matching their identification cards or passports.</li>
-              <li>Users must complete payment prior to ticket issuance and follow carrier-specific baggage rules.</li>
-              <li>diaspedia acts as an intermediary coordinating passenger passes, but carrier terms of service (such as Deutsche Bahn or FlixBus) apply to actual transport carriage.</li>
+              <li>Users must submit their correct legal identification documents matching their non-EU passports.</li>
+              <li>Users must declare their tax residence context accurately to establish VAT refund eligibility.</li>
+              <li>Financial accounts are subject to verification rules, fraud prevention filters, and regulatory audits in compliance with German and EU banking laws.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">3. Safety and Rules of Conduct</h2>
+            <h2 className="text-xl font-bold text-brand-text">3. Auto Tax Recovery Services</h2>
             <p>
-              Trips are shared with fellow peer travelers and friends. You agree to treat all travelers with respect, comply with local transit authority guidelines, and ensure that your conduct is compliant with standard public safety regulations.
+              Our automated claim engine consolidates and files tax documents. While diaspedia makes every effort to verify receipts, final approval depends on European tax authority review parameters. Refunded amounts are paid out directly to your account balance once cleared.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">4. Payment and Calculations</h2>
+            <h2 className="text-xl font-bold text-brand-text">4. Payment & Card Controls</h2>
             <p>
-              All listed ticket prices on diaspedia are calculated as coordinate rates, providing travel booking coordinate utility.
+              By spending on your diaspedia card, you agree to comply with standard card network specifications. diaspedia reserves the right to freeze card usage if suspicious activity, illegal operations, or terms violations are discovered.
             </p>
           </div>
 

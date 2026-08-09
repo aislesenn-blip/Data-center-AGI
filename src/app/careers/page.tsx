@@ -8,32 +8,32 @@ import FadeIn from "@/components/FadeIn";
 export default function Careers() {
   const openPositions = [
     {
-      title: "Group Scheduling Architect",
-      department: "Operations & Routing",
+      title: "Senior Core Banking Architect",
+      department: "Engineering & Ledger",
       location: "Berlin, Germany (Hybrid)",
       type: "Full-Time",
-      desc: "Architect the routing consolidation algorithms and coordinate schedules between premium bus and rail operators."
+      desc: "Architect the transaction ledger pipelines, manage SEPA instant integration, and secure core neobanking database layers."
     },
     {
-      title: "Staff Software Engineer, Social Graph & Discovery",
+      title: "Staff Software Engineer, Tax & Recovery Engine",
       department: "Engineering",
       location: "Munich, Germany / Remote",
       type: "Full-Time",
-      desc: "Pioneer our Next.js/Tailwind platform, integrate real-time friend mapping, feed notification dispatching, and build scalable travel discovery features."
+      desc: "Pioneer our automated VAT deduction algorithms, invoice optical character recognition (OCR) systems, and real-time European tax claim dispatchers."
     },
     {
-      title: "Senior Product Designer (Mobile First Mobile App)",
+      title: "Senior Product Designer (Mobile First Neobank)",
       department: "Product Design",
       location: "London, UK (Hybrid)",
       type: "Full-Time",
-      desc: "Iterate on the simple, premium mobile interface, designing clean travel passes, interactive cards, and smooth sheets."
+      desc: "Iterate on the beautiful Space Grotesk layout, custom virtual cards, dynamic sliders, and high fidelity interactive drawers."
     },
     {
-      title: "Growth & Community Lead",
+      title: "International Growth & Community Lead",
       department: "Growth & Marketing",
       location: "Amsterdam, Netherlands (Hybrid)",
       type: "Full-Time",
-      desc: "Drive viral user acquisition amongst university students and frequent weekend travelers across Western and Central Europe."
+      desc: "Drive user acquisition among international students, Ausbildung participants, expat communities, and volunteers across Europe."
     }
   ];
 
@@ -61,10 +61,10 @@ export default function Careers() {
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-brand-text">
             Build the future of <br/>
-            <span className="text-zinc-500">social travel booking.</span>
+            <span className="text-zinc-500">expats neobanking.</span>
           </h1>
           <p className="text-sm md:text-base text-zinc-500 leading-relaxed max-w-2xl">
-            We are looking for visionaries, operational architects, and world-class engineers. At diaspedia, we are creating a timelier, fairer social travel booking future, starting by coordinating and booking train/bus ticket routes.
+            We are looking for visionaries, financial engineers, and world-class product designers. At diaspedia, we are creating a fairer, borderless financial future for non-EU international residents.
           </p>
         </FadeIn>
 
@@ -74,7 +74,7 @@ export default function Careers() {
             <Globe size={18} className="text-[#71E300]" /> Our Core Philosophy
           </h2>
           <p className="text-sm text-zinc-500 leading-relaxed">
-            We operate at the convergence of real-world transit utility and fluid social architecture. We prioritize real-world usability and community connection over buzzwords. If you want to build systems that everyday people use to travel and see their friends, you will find your home at diaspedia.
+            We operate at the convergence of everyday neobanking utility and automated tax recovery. We prioritize real-world usability and community connection over complex startup jargon. If you want to build systems that everyday people use to manage their money and claim back hard-earned VAT, you will find your home at diaspedia.
           </p>
         </FadeIn>
 

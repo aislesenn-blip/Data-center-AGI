@@ -1,177 +1,167 @@
 export interface UserProfile {
   username: string;
   name: string;
-  avatar?: string;
   homeCity: string;
-  friendCount: number;
-  countryCount: number;
-  tripCount: number;
-  upcomingTrips: string[];
-  pastTrips: string[];
+  residencyStatus: string;
+  passportCountry: string;
+  accountIban: string;
+  accountBic: string;
+  balance: number;
+  totalTaxReturned: number;
+  pendingTaxRefunds: number;
 }
 
-export interface Traveler {
-  username: string;
-  name: string;
-  avatarBg: string;
-  isFriend: boolean;
-  role?: string;
-}
-
-export interface Trip {
+export interface CardDetail {
   id: string;
-  from: string;
-  fromCode: string;
-  to: string;
-  toCode: string;
-  date: string;
-  departureTime: string;
-  arrivalTime: string;
-  carrier: "FlixBus" | "Deutsche Bahn" | "Eurostar";
-  price: number;
-  peopleGoingCount: number;
-  peopleGoingList: Traveler[];
+  cardNumber: string;
+  cardHolder: string;
+  expiry: string;
+  cvv: string;
+  isLocked: boolean;
+  type: "Virtual" | "Physical";
 }
 
-export interface FriendActivity {
+export interface Transaction {
   id: string;
-  username: string;
-  name: string;
-  avatarBg: string;
-  actionText: string; // e.g., "booked a ticket to"
-  from: string;
-  to: string;
-  timeAgo: string;
-  tripId: string;
-}
-
-export interface Ticket {
-  id: string;
-  tripId: string;
-  passengerName: string;
-  from: string;
-  to: string;
+  merchantName: string;
+  category: string;
   date: string;
   time: string;
-  carrier: string;
-  seat: string;
-  platform: string;
-  qrCodeValue: string;
-  price: number;
+  amountSpent: number;
+  taxRefundAmount: number;
+  status: "Pending" | "Verification" | "Claim Filed" | "Refunded" | "Ineligible";
+  receiptUploaded: boolean;
+  taxRate: string;
+  merchantLocation: string;
+}
+
+export interface TaxClaim {
+  id: string;
+  merchantName: string;
+  date: string;
+  purchaseAmount: number;
+  refundAmount: number;
+  status: "Reviewing" | "Approved" | "Paid";
+  progressPercent: number; // e.g., 33, 66, 100
 }
 
 export const MOCK_USER: UserProfile = {
-  username: "john",
+  username: "john_carter",
   name: "John Carter",
-  homeCity: "Berlin",
-  friendCount: 24,
-  countryCount: 7,
-  tripCount: 14,
-  upcomingTrips: ["Munich", "Hamburg"],
-  pastTrips: ["Prague", "Paris", "Amsterdam", "Vienna", "Rome", "Barcelona"]
+  homeCity: "Berlin, Germany",
+  residencyStatus: "International Student / Ausbildung",
+  passportCountry: "Canada",
+  accountIban: "DE89 3704 0044 0532 9812 00",
+  accountBic: "DIASDEBBXXX",
+  balance: 1420.50,
+  totalTaxReturned: 240.50,
+  pendingTaxRefunds: 85.20
 };
 
-export const TRAVELERS: Traveler[] = [
-  { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-  { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
-  { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false, role: "Tech designer" },
-  { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false },
-  { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
-  { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false, role: "Photographer" },
-  { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
-];
+export const MOCK_CARD: CardDetail = {
+  id: "card-1",
+  cardNumber: "4532 8812 9043 7261",
+  cardHolder: "JOHN CARTER",
+  expiry: "09/28",
+  cvv: "381",
+  isLocked: false,
+  type: "Virtual"
+};
 
-export const MOCK_TRIPS: Trip[] = [
+export const MOCK_TRANSACTIONS: Transaction[] = [
   {
-    id: "trip-ber-mun",
-    from: "Berlin",
-    fromCode: "BER",
-    to: "Munich",
-    toCode: "MUN",
-    date: "This Saturday",
-    departureTime: "08:15",
-    arrivalTime: "12:30",
-    carrier: "Deutsche Bahn",
-    price: 34.90,
-    peopleGoingCount: 12,
-    peopleGoingList: [
-      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-      { username: "alex", name: "Alex Dubois", avatarBg: "bg-purple-500", isFriend: true, role: "University student" },
-      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false },
-      { username: "lucas", name: "Lucas Müller", avatarBg: "bg-orange-500", isFriend: false }
-    ]
+    id: "tx-1",
+    merchantName: "Apple Store Kurfürstendamm",
+    category: "Electronics",
+    date: "Today",
+    time: "14:22",
+    amountSpent: 849.00,
+    taxRefundAmount: 135.50,
+    status: "Refunded",
+    receiptUploaded: true,
+    taxRate: "19% VAT",
+    merchantLocation: "Berlin, DE"
   },
   {
-    id: "trip-ber-ham",
-    from: "Berlin",
-    fromCode: "BER",
-    to: "Hamburg",
-    toCode: "HAM",
-    date: "Friday",
-    departureTime: "18:40",
-    arrivalTime: "20:50",
-    carrier: "FlixBus",
-    price: 14.90,
-    peopleGoingCount: 8,
-    peopleGoingList: [
-      { username: "emma", name: "Emma Jones", avatarBg: "bg-indigo-500", isFriend: true },
-      { username: "maxim", name: "Maxim Petrov", avatarBg: "bg-amber-500", isFriend: false },
-      { username: "clara", name: "Clara Rossi", avatarBg: "bg-teal-500", isFriend: false }
-    ]
+    id: "tx-2",
+    merchantName: "KaDeWe Department Store",
+    category: "Shopping",
+    date: "Yesterday",
+    time: "11:05",
+    amountSpent: 220.00,
+    taxRefundAmount: 35.10,
+    status: "Claim Filed",
+    receiptUploaded: true,
+    taxRate: "19% VAT",
+    merchantLocation: "Berlin, DE"
   },
   {
-    id: "trip-par-ams",
-    from: "Paris",
-    fromCode: "PAR",
-    to: "Amsterdam",
-    toCode: "AMS",
-    date: "Next Friday",
-    departureTime: "09:30",
-    arrivalTime: "13:15",
-    carrier: "Eurostar",
-    price: 49.00,
-    peopleGoingCount: 15,
-    peopleGoingList: [
-      { username: "maria", name: "Maria Schmidt", avatarBg: "bg-blue-500", isFriend: true },
-      { username: "sophie", name: "Sophie Meier", avatarBg: "bg-pink-500", isFriend: false }
-    ]
+    id: "tx-3",
+    merchantName: "Saturn Berlin Alexanderplatz",
+    category: "Electronics",
+    date: "Oct 24, 2026",
+    time: "18:40",
+    amountSpent: 310.00,
+    taxRefundAmount: 49.50,
+    status: "Claim Filed",
+    receiptUploaded: true,
+    taxRate: "19% VAT",
+    merchantLocation: "Berlin, DE"
+  },
+  {
+    id: "tx-4",
+    merchantName: "REWE Supermarket",
+    category: "Groceries",
+    date: "Oct 22, 2026",
+    time: "09:15",
+    amountSpent: 42.80,
+    taxRefundAmount: 2.80,
+    status: "Ineligible",
+    receiptUploaded: false,
+    taxRate: "7% VAT",
+    merchantLocation: "Berlin, DE"
+  },
+  {
+    id: "tx-5",
+    merchantName: "Zara Friedrichstraße",
+    category: "Shopping",
+    date: "Oct 18, 2026",
+    time: "16:30",
+    amountSpent: 115.00,
+    taxRefundAmount: 18.30,
+    status: "Refunded",
+    receiptUploaded: true,
+    taxRate: "19% VAT",
+    merchantLocation: "Berlin, DE"
   }
 ];
 
-export const MOCK_ACTIVITIES: FriendActivity[] = [
+export const MOCK_TAX_CLAIMS: TaxClaim[] = [
   {
-    id: "act-1",
-    username: "maria",
-    name: "Maria Schmidt",
-    avatarBg: "bg-blue-500",
-    actionText: "booked a ticket to",
-    from: "Berlin",
-    to: "Hamburg",
-    timeAgo: "2 hours ago",
-    tripId: "trip-ber-ham"
+    id: "clm-1",
+    merchantName: "Apple Store Kurfürstendamm",
+    date: "Today",
+    purchaseAmount: 849.00,
+    refundAmount: 135.50,
+    status: "Paid",
+    progressPercent: 100
   },
   {
-    id: "act-2",
-    username: "alex",
-    name: "Alex Dubois",
-    avatarBg: "bg-purple-500",
-    actionText: "joined the trip to",
-    from: "Berlin",
-    to: "Munich",
-    timeAgo: "4 hours ago",
-    tripId: "trip-ber-mun"
+    id: "clm-2",
+    merchantName: "KaDeWe Department Store",
+    date: "Yesterday",
+    purchaseAmount: 220.00,
+    refundAmount: 35.10,
+    status: "Approved",
+    progressPercent: 66
   },
   {
-    id: "act-3",
-    username: "emma",
-    name: "Emma Jones",
-    avatarBg: "bg-indigo-500",
-    actionText: "is traveling to",
-    from: "Berlin",
-    to: "Hamburg",
-    timeAgo: "1 day ago",
-    tripId: "trip-ber-ham"
+    id: "clm-3",
+    merchantName: "Saturn Berlin Alexanderplatz",
+    date: "Oct 24, 2026",
+    purchaseAmount: 310.00,
+    refundAmount: 49.50,
+    status: "Reviewing",
+    progressPercent: 33
   }
 ];
-
-export const INITIAL_TICKETS: Ticket[] = [];
