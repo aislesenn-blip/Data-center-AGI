@@ -38,39 +38,39 @@ export default function TermsOfService() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our collective travel pass coordination platform, scheduling services, and related mobile applications.
+            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our premium European neobank accounts, virtual/physical debit card programs, and automated tax-refund tracking/processing services.
           </p>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">1. Agreement to Terms</h2>
             <p>
-              By accessing our platform, selecting schedules, joining active trips, or booking consolidated passenger tickets, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
+              By accessing our platform, activating your DE IBAN account, initiating transactions, using the Visa/Mastercard debit cards, or uploading retail receipts for tax-refund claims, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">2. Ticket Booking & Group pooling</h2>
+            <h2 className="text-xl font-bold text-brand-text">2. Account Registration & Tax Eligibility</h2>
             <p>
-              diaspedia coordinates passenger groups on commercial transit lines. In doing so:
+              diaspedia provides digital bank accounts and card-linked tax recovery services. In doing so:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
-              <li>Users must submit their correct legal passenger names matching their identification cards or passports.</li>
-              <li>Users must complete payment prior to ticket issuance and follow carrier-specific baggage rules.</li>
-              <li>diaspedia acts as an intermediary coordinating passenger passes, but carrier terms of service (such as Deutsche Bahn or FlixBus) apply to actual transport carriage.</li>
+              <li>Users must submit correct legal identity documentation, including verified non-EU passport scans, to determine tax refund eligibility.</li>
+              <li>Users are solely responsible for ensuring the accuracy and legitimacy of all retail transaction receipts uploaded to the platform for tax-refund claims.</li>
+              <li>Banking, card clearing, and ledger settlement services are sponsored and executed by our licensed European BaaS partner bank, whose specific product terms also apply to your accounts.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">3. Safety and Rules of Conduct</h2>
+            <h2 className="text-xl font-bold text-brand-text">3. Acceptable Use and Fraud Prevention</h2>
             <p>
-              Trips are shared with fellow peer travelers and friends. You agree to treat all travelers with respect, comply with local transit authority guidelines, and ensure that your conduct is compliant with standard public safety regulations.
+              You agree to use your Diaspedia neobank account and debit cards strictly for legitimate purchases. Any attempt to fabricate retail invoices, upload falsified receipts, or engage in suspicious tax claims will result in immediate account suspension and reporting to European tax authorities.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">4. Payment and Calculations</h2>
+            <h2 className="text-xl font-bold text-brand-text">4. Tax Reimbursement & Fee Structures</h2>
             <p>
-              All listed ticket prices on diaspedia are calculated as coordinate rates, providing travel booking coordinate utility.
+              Tax refund percentages are calculated dynamically based on European VAT regulations. Processing and platform handling fees may be deducted from the final refunded amounts as specified in your account dashboard.
             </p>
           </div>
 
