@@ -38,13 +38,13 @@ export default function CookiePolicy() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            This Cookie Policy explains how <strong>diaspedia</strong> uses cookies and similar tracking technologies to recognize you when you visit our website, establish banking sessions, and keep active tax recovery claim progress secure and persistent.
+            This Cookie Policy explains how <strong>diaspedia</strong> uses cookies and similar tracking technologies to recognize you when you visit our website, establish travel companion sessions, and keep your route searches and trip coordination parameters secure and persistent.
           </p>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">1. What are Cookies?</h2>
             <p>
-              Cookies are tiny text files stored by your browser on your desktop or mobile device. They help us understand website navigation, keep your account parameters and onboarding state persistent, and offer a premium, frictionless UX.
+              Cookies are tiny text files stored by your browser on your desktop or mobile device. They help us understand website navigation, keep your onboarding and saved trip selections persistent locally on your browser, and offer a premium, frictionless companion experience.
             </p>
           </div>
 
@@ -53,11 +53,11 @@ export default function CookiePolicy() {
             <div className="space-y-3">
               <div>
                 <h3 className="font-bold text-brand-text">A. Essential Cookies</h3>
-                <p className="text-xs md:text-sm">These are strictly necessary to let you move around the app, secure financial transactions, and load dashboards cleanly. Disabling them will break core banking capabilities.</p>
+                <p className="text-xs md:text-sm">These are strictly necessary to let you move around the app, establish trip sync channels, and coordinate chat feeds safely.</p>
               </div>
               <div>
                 <h3 className="font-bold text-brand-text">B. Preference and State Cookies</h3>
-                <p className="text-xs md:text-sm">These cookies store your onboarding status, frozen card configuration, and notifications history locally on your browser, so you never lose your status between page refreshes.</p>
+                <p className="text-xs md:text-sm">These cookies store your onboarding status, active saved itineraries, and conversation states locally so you never lose your progress between page refreshes.</p>
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function CookiePolicy() {
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">3. How to Manage Cookies</h2>
             <p>
-              You can adjust your web browser settings to reject or delete cookies entirely. Please note that blocking essential cookies will disrupt the interactive diaspedia neobanking dashboard.
+              You can adjust your web browser settings to reject or delete cookies entirely. Please note that blocking essential cookies will disrupt the interactive diaspedia travel companion workspace.
             </p>
           </div>
 
