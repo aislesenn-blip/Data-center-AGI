@@ -38,45 +38,45 @@ export default function PrivacyPolicy() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            At <strong>diaspedia</strong>, we believe trust is the primary currency of premium neobanking and automated tax recovery. This Privacy Policy details our commitment to protecting your personal financial information and explaining how we collect, handle, and secure your information.
+            At <strong>diaspedia</strong>, we believe trust is the primary currency of premium social travel and scheduling utility services. This Privacy Policy details our commitment to protecting your personal information and explaining how we collect, handle, and secure your information.
           </p>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">1. Information We Collect</h2>
             <p>
-              To establish everyday bank accounts, deliver debit cards, and manage VAT recovery claims, we collect standard financial and identification information:
+              To organize efficient consolidated passenger ticketing and manage traveler schedules, we collect standard operational information:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
-              <li><strong>Personal Identity Coordinates:</strong> Full legal name, residential address, passport scans, and nationality context to verify non-EU residency status.</li>
-              <li><strong>Transactional Activity:</strong> Transaction amounts, merchant names, tax classification details, and receipt uploads necessary to verify VAT claims.</li>
-              <li><strong>Banking Details:</strong> Account balance records, payment card information, and virtual/physical credentials.</li>
+              <li><strong>Your Contact Information:</strong> Name, phone number, and email address to manage your order status and passenger coordinates.</li>
+              <li><strong>Co-Traveler Information:</strong> Selected friends list, peer connections, and regional transit hubs in your traveling network.</li>
+              <li><strong>Travel Specifications:</strong> Transit dates, carrier routes (Deutsche Bahn, FlixBus), seat preferences, and pricing calculations.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">2. How We Use Your Information</h2>
             <p>
-              We process information solely to build, secure, and optimize neobanking and tax recovery cycles:
+              We process information solely to build, schedule, and optimize collective travel routing. This includes:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
-              <li>Providing transaction ledgers, instant funding, and debit card transaction clearing.</li>
-              <li>Compiling and submitting verified tax recovery documentation directly to relevant European tax authorities.</li>
-              <li>Sending push and in-app alerts regarding deposit clearances, frozen status changes, and paid VAT claims.</li>
-              <li>Ensuring full compliance with anti-money laundering (AML), know-your-customer (KYC) regulations, and general European bank safety standards.</li>
+              <li>Pooling traveler coordinates dynamically on specific routes to coordinate bookings.</li>
+              <li>Generating digital passenger tickets and clearing booking procedures with licensed operators.</li>
+              <li>Updating you through notifications as your travel group coordinates or boarding times approach.</li>
+              <li>Safeguarding our community against unauthorized, offensive, or hazardous behavior during transit.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">3. Zero Data Sales Policy</h2>
             <p>
-              diaspedia will <strong>never</strong> rent, sell, or trade your financial history or identity information to third-party marketing companies. Your transaction feeds, passport details, and balance records are kept strictly confidential within our encrypted banking vaults.
+              diaspedia will <strong>never</strong> rent, sell, or trade your personal information or transaction history to third-party advertisers. Your travel paths, friend networks, and travel schedules are kept strictly private within our infrastructure.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">4. Bank-Grade Security</h2>
+            <h2 className="text-xl font-bold text-brand-text">4. Information Security</h2>
             <p>
-              We utilize premium encryption standards, automated transaction monitors, and industry-standard security boundaries. Your digital debit card information, transaction history, and KYC records are fully shielded from unauthorized leakage or external threats.
+              We utilize premium standard security, administrative controls, and encryption layers to secure your inputs. Your digital boarding pass and payment profiles are fully encrypted to guarantee user safety and secure transactions.
             </p>
           </div>
 
