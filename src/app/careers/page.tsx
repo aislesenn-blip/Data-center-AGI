@@ -8,32 +8,32 @@ import FadeIn from "@/components/FadeIn";
 export default function Careers() {
   const openPositions = [
     {
-      title: "Senior Core Banking Architect",
-      department: "Engineering & Ledger",
+      title: "Senior Core Routing Engineer",
+      department: "Engineering & Route Networks",
       location: "Berlin, Germany (Hybrid)",
       type: "Full-Time",
-      desc: "Architect the transaction ledger pipelines, manage SEPA instant integration, and secure core neobanking database layers."
+      desc: "Architect our hybrid transport provider layer, optimize multi-leg regional train searches, and manage high-speed API connections across Deutsche Bahn, SNCF, and ÖBB networks."
     },
     {
-      title: "Staff Software Engineer, Tax & Recovery Engine",
+      title: "Staff Software Engineer, Real-Time Sync",
       department: "Engineering",
       location: "Munich, Germany / Remote",
       type: "Full-Time",
-      desc: "Pioneer our automated VAT deduction algorithms, invoice optical character recognition (OCR) systems, and real-time European tax claim dispatchers."
+      desc: "Pioneer our live delay forecasting system, platform updates synchronization engine, and push notifications gateway to ensure travelers always have precise rail data."
     },
     {
-      title: "Senior Product Designer (Mobile First Neobank)",
+      title: "Senior Product Designer (Mobile Companion)",
       department: "Product Design",
       location: "London, UK (Hybrid)",
       type: "Full-Time",
-      desc: "Iterate on the beautiful Space Grotesk layout, custom virtual cards, dynamic sliders, and high fidelity interactive drawers."
+      desc: "Iterate on the beautiful Space Grotesk layout, custom interactive chats, seat-buddy coordination flows, and high fidelity mobile viewport simulator panels."
     },
     {
-      title: "International Growth & Community Lead",
+      title: "European Growth & Community Lead",
       department: "Growth & Marketing",
       location: "Amsterdam, Netherlands (Hybrid)",
       type: "Full-Time",
-      desc: "Drive user acquisition among international students, Ausbildung participants, expat communities, and volunteers across Europe."
+      desc: "Drive traveler acquisition among expats, backpackers, daily rail commuters, international students, and volunteers across Germany and major European hubs."
     }
   ];
 
@@ -61,10 +61,10 @@ export default function Careers() {
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-brand-text">
             Build the future of <br/>
-            <span className="text-zinc-500">expats neobanking.</span>
+            <span className="text-zinc-500">social rail companion.</span>
           </h1>
           <p className="text-sm md:text-base text-zinc-500 leading-relaxed max-w-2xl">
-            We are looking for visionaries, financial engineers, and world-class product designers. At diaspedia, we are creating a fairer, borderless financial future for non-EU international residents.
+            We are looking for visionaries, routing engine architects, and world-class product designers. At diaspedia, we are creating a beautiful, friendly social layer on top of European public transportation.
           </p>
         </FadeIn>
 
@@ -74,7 +74,7 @@ export default function Careers() {
             <Globe size={18} className="text-[#71E300]" /> Our Core Philosophy
           </h2>
           <p className="text-sm text-zinc-500 leading-relaxed">
-            We operate at the convergence of everyday neobanking utility and automated tax recovery. We prioritize real-world usability and community connection over complex startup jargon. If you want to build systems that everyday people use to manage their money and claim back hard-earned VAT, you will find your home at diaspedia.
+            We operate at the convergence of everyday travel utility and friendly social coordination. We prioritize real-world usability and human connection over complex corporate jargon. If you want to build systems that people use to make their European train journeys more memorable and collaborative, you will find your home at diaspedia.
           </p>
         </FadeIn>
 

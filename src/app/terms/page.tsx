@@ -38,39 +38,39 @@ export default function TermsOfService() {
 
         <FadeIn delay={0.1} className="space-y-8 text-sm md:text-base text-zinc-500 leading-relaxed">
           <p>
-            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our expat neobanking services, automated VAT claim recovery platforms, and matching debit cards.
+            Welcome to <strong>diaspedia</strong>. These Terms of Service outline the agreement between you and diaspedia concerning your use of our European social travel utility, intelligent rail companion, seat buddy matching, and group chat systems.
           </p>
 
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-brand-text">1. Agreement to Terms</h2>
             <p>
-              By opening a diaspedia bank account, depositing funds, completing transactions with your debit card, or filing VAT refund claims, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
+              By searching rail itineraries, saving trips, connecting with travel companions, matching wishlists, or coordinating in group chats, you agree to be legally bound by these terms. If you do not agree to all terms, please discontinue using our service.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">2. Account Opening & Eligibility</h2>
+            <h2 className="text-xl font-bold text-brand-text">2. Core Scope & Services</h2>
             <p>
-              diaspedia provides everyday accounts for international residents in Europe. In doing so:
+              diaspedia is an interactive planning and social companion layer. In doing so:
             </p>
             <ul className="list-disc list-inside pl-4 space-y-1.5 text-xs md:text-sm">
-              <li>Users must submit their correct legal identification documents matching their non-EU passports.</li>
-              <li>Users must declare their tax residence context accurately to establish VAT refund eligibility.</li>
-              <li>Financial accounts are subject to verification rules, fraud prevention filters, and regulatory audits in compliance with German and EU banking laws.</li>
+              <li>Users are responsible for entering valid, accurate travel search queries and station parameters.</li>
+              <li>diaspedia is not a ticket issuer or reseller. We do not sell passenger tickets, reserve seats, or process transit payments. Any ticket acquisition must be finalized externally with the official transit providers (e.g. Deutsche Bahn, SNCF, Eurostar).</li>
+              <li>Users must communicate respectfully in active group chats and coordinate shared travel in compliance with local rules.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">3. Auto Tax Recovery Services</h2>
+            <h2 className="text-xl font-bold text-brand-text">3. Transit Data Disclaimer</h2>
             <p>
-              Our automated claim engine consolidates and files tax documents. While diaspedia makes every effort to verify receipts, final approval depends on European tax authority review parameters. Refunded amounts are paid out directly to your account balance once cleared.
+              While our hybrid transit provider model makes every effort to offer accurate schedules, platforms, and delay forecasts, final train status remains subject to real-time changes by the respective national railway authorities. diaspedia is not liable for missed departures, cancellations, or delays.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-bold text-brand-text">4. Payment & Card Controls</h2>
+            <h2 className="text-xl font-bold text-brand-text">4. Seat Buddy & Collaboration</h2>
             <p>
-              By spending on your diaspedia card, you agree to comply with standard card network specifications. diaspedia reserves the right to freeze card usage if suspicious activity, illegal operations, or terms violations are discovered.
+              Seat Buddy is a peer-to-peer coordination utility. diaspedia does not secure seat assignments or enforce shared coach seating rules. Cooperation with other travelers remains completely at your discretion.
             </p>
           </div>
 
