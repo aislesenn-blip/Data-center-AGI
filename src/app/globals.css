@@ -29,28 +29,18 @@
   }
 }
 
-/* Custom Chamfered/Angled Card Utilities */
+/*
+  Custom Chamfered/Angled Card Utilities
+  Top-left: cut, Top-right: sharp, Bottom-right: cut, Bottom-left: sharp.
+*/
 .chamfered-card {
   clip-path: polygon(
-    8px 0,
+    14px 0,
     100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
     0 100%,
-    0 8px
-  );
-}
-
-.chamfered-card-all {
-  clip-path: polygon(
-    8px 0,
-    calc(100% - 8px) 0,
-    100% 8px,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    8px 100%,
-    0 calc(100% - 8px),
-    0 8px
+    0 14px
   );
 }
 
