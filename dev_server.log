@@ -5,27 +5,9 @@
 ▲ Next.js 16.2.10 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 933ms
+✓ Ready in 550ms
 
 ○ Compiling / ...
- HEAD / 200 in 5.4s (next.js: 5.1s, application-code: 373ms)
- GET / 200 in 147ms (next.js: 8ms, application-code: 139ms)
-[browser] db.transport.rest is currently offline or timed out. Falling back to high-fidelity offline rail schedules. AbortError: signal is aborted without reason
-    at <unknown> (src/lib/transport.ts:264:51)
-  262 | ...If we have local matching, let's inject those. If not, we generate elegant realistic s...
-  263 | ...st controller = new AbortController();
-> 264 | ...st timeoutId = setTimeout(() => controller.abort(), 2000);
-      |                                               ^
-  265 | ...
-  266 | ...Dynamic autocomplete lookups to fetch correct HAFAS station IDs
-  267 | ...st apiFromQuery = encodeURIComponent(normalizedFrom); (src/lib/transport.ts:282:13)
- GET / 200 in 89ms (next.js: 4ms, application-code: 85ms)
-[browser] db.transport.rest is currently offline or timed out. Falling back to high-fidelity offline rail schedules. AbortError: signal is aborted without reason
-    at <unknown> (src/lib/transport.ts:264:51)
-  262 | ...If we have local matching, let's inject those. If not, we generate elegant realistic s...
-  263 | ...st controller = new AbortController();
-> 264 | ...st timeoutId = setTimeout(() => controller.abort(), 2000);
-      |                                               ^
-  265 | ...
-  266 | ...Dynamic autocomplete lookups to fetch correct HAFAS station IDs
-  267 | ...st apiFromQuery = encodeURIComponent(normalizedFrom); (src/lib/transport.ts:282:13)
+ GET / 200 in 7.0s (next.js: 6.4s, application-code: 587ms)
+ GET / 200 in 104ms (next.js: 6ms, application-code: 98ms)
+ GET / 200 in 86ms (next.js: 4ms, application-code: 82ms)
