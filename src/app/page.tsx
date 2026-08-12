@@ -21,7 +21,8 @@ import {
   Sliders,
   Settings as SettingsIcon,
   MapPin,
-  Info
+  Info,
+  Mic
 } from "lucide-react";
 
 import {
@@ -101,6 +102,13 @@ export default function Home() {
   const [selectedMatch, setSelectedMatch] = useState<NowMatch | null>(null);
   const [chatLog, setChatLog] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
+
+  // One detail at a time progressive state variables
+  const [progressiveStage, setProgressiveStage] = useState<number>(0); // 0 = initial, 1 = going, 2 = starting, 3 = when, 4 = stopping
+  const [progGoing, setProgGoing] = useState<string>("");
+  const [progStarting, setProgStarting] = useState<string>("");
+  const [progWhen, setProgWhen] = useState<string>("");
+  const [progStopping, setProgStopping] = useState<string>("");
 
   // LATER state variables
   const [laterInputText, setLaterInputText] = useState<string>("");
@@ -241,29 +249,61 @@ export default function Home() {
     setTimeout(() => setActionFeedback(null), 3000);
   };
 
-  // Handle input submission for NOW tab
+  // Handle input submission for NOW tab (now with progressive details parse)
   const handleNowSubmit = (textToSubmit: string) => {
     if (!textToSubmit.trim()) return;
 
-    // Detect destination from text
-    let dest = "BER Airport";
-    if (textToSubmit.toLowerCase().includes("station") || textToSubmit.toLowerCase().includes("train")) {
-      dest = "Central Train Station";
+    // Detect if some parameters are already there
+    let detectedDest = "";
+    if (textToSubmit.toLowerCase().includes("airport") || textToSubmit.toLowerCase().includes("ber")) {
+      detectedDest = "BER Airport";
+    } else if (textToSubmit.toLowerCase().includes("station") || textToSubmit.toLowerCase().includes("train")) {
+      detectedDest = "Central Train Station";
     } else if (textToSubmit.toLowerCase().includes("stadium")) {
-      dest = "Olympic Stadium";
+      detectedDest = "Olympic Stadium";
     } else if (textToSubmit.toLowerCase().includes("munich")) {
-      dest = "Munich";
+      detectedDest = "Munich";
     } else if (textToSubmit.toLowerCase().includes("office")) {
-      dest = "Office Complex East";
+      detectedDest = "Office Complex East";
     }
+
+    // Set stage based on missing information
+    if (!detectedDest) {
+      setProgressiveStage(1); // Ask: Where are you going?
+    } else {
+      setProgGoing(detectedDest);
+      setProgressiveStage(2); // Ask: Where are you starting from?
+    }
+  };
+
+  const handleProgressiveNext = () => {
+    if (progressiveStage === 1) {
+      if (!progGoing.trim()) return;
+      setProgressiveStage(2);
+    } else if (progressiveStage === 2) {
+      if (!progStarting.trim()) return;
+      setProgressiveStage(3);
+    } else if (progressiveStage === 3) {
+      if (!progWhen.trim()) return;
+      setProgressiveStage(4);
+    } else if (progressiveStage === 4) {
+      // Execute match creation!
+      executeNowRequest(progGoing, progStarting, progWhen, progStopping);
+    }
+  };
+
+  const executeNowRequest = (dest: string, start: string, when: string, stopping: string) => {
+    const combinedText = `Heading to ${dest} starting from ${start} at ${when}${stopping ? ' stopping at ' + stopping : ''}`;
 
     setNowRequest({
       id: `now-${laterPlans.length + 1}`,
-      text: textToSubmit,
+      text: combinedText,
       destination: dest,
       status: "searching",
       timestamp: "Just now"
     });
+
+    setProgressiveStage(0);
 
     // Simulate natural AI parsing and real-time scanning
     setTimeout(() => {
@@ -758,64 +798,144 @@ export default function Home() {
                 </h1>
               </div>
 
-              {/* Single Simple Entry Box (ChatGPT-like but strictly an elegant textbox, no categories) */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
-                <div className="space-y-1">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
-                    TELL DIASPEDIA NOW
-                  </span>
-                  <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                    State what you are doing right now in simple English.
-                  </p>
-                </div>
+              {/* Singular, calm, open space supporting text and voice input with rotating subtle placeholder */}
+              <div className="space-y-6">
+                {progressiveStage === 0 ? (
+                  <div className="bg-white border border-[#EFF3F4] p-6 space-y-4 shadow-sm chamfered-card">
+                    <div className="space-y-1">
+                      <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
+                        TELL DIASPEDIA
+                      </span>
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                        Simply explain what you are trying to do, and the system will figure it out.
+                      </p>
+                    </div>
 
-                <div className="space-y-3">
-                  <textarea
-                    rows={2}
-                    value={nowInputText}
-                    onChange={(e) => setNowInputText(e.target.value)}
-                    placeholder="Tell Diaspedia... (e.g. I'm going to BER airport now)"
-                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
-                  />
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <textarea
+                          rows={3}
+                          value={nowInputText}
+                          onChange={(e) => setNowInputText(e.target.value)}
+                          placeholder="e.g. I need to get to the airport in 20 minutes..."
+                          className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-4 pr-12 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const voices = [
+                              "I'm going to BER airport right now.",
+                              "I need to get to the train station.",
+                              "I'm leaving the office in 10 minutes.",
+                              "I need to get to the Olympic stadium."
+                            ];
+                            const randomVoice = voices[Math.floor(Math.random() * voices.length)];
+                            setNowInputText(randomVoice);
+                          }}
+                          className="absolute right-3.5 bottom-4 p-2 text-zinc-400 hover:text-brand-primary active:scale-95 transition-all cursor-pointer"
+                          title="Talk to Diaspedia"
+                        >
+                          <Mic size={18} />
+                        </button>
+                      </div>
 
-                  <button
-                    onClick={() => {
-                      handleNowSubmit(nowInputText);
-                    }}
-                    disabled={!nowInputText.trim()}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
-                  >
-                    <span>Submit Intent</span>
-                    <ArrowRight size={14} className="text-brand-primary" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Quick Click presets when no request is active */}
-              {!nowRequest && (
-                <div className="space-y-3">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                    Or choose a common intent
-                  </span>
-                  <div className="grid grid-cols-1 gap-2.5">
-                    {[
-                      "I'm going to BER airport now.",
-                      "I need to get to the train station.",
-                      "I'm leaving this office complex in 15 minutes.",
-                      "I'm heading to the Olympic stadium."
-                    ].map((prompt, idx) => (
                       <button
-                        key={idx}
-                        onClick={() => handlePresetNow(prompt)}
-                        className="w-full bg-[#F5F8FA] hover:bg-zinc-100 border border-[#EFF3F4] px-4 py-3 text-left text-xs font-bold text-zinc-700 transition-all flex items-center justify-between chamfered-card"
+                        onClick={() => {
+                          handleNowSubmit(nowInputText);
+                        }}
+                        disabled={!nowInputText.trim()}
+                        className="w-full bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-4 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card h-[52px]"
                       >
-                        <span>&ldquo;{prompt}&rdquo;</span>
-                        <ChevronRight size={14} className="text-brand-primary" />
+                        <span>SEND</span>
+                        <ArrowRight size={14} className="text-brand-primary" />
                       </button>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  /* One Detail At A Time sequential questions */
+                  <div className="bg-white border border-[#EFF3F4] p-6 space-y-4 shadow-sm chamfered-card">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
+                        REVEALING DETAILS
+                      </span>
+                      <button
+                        onClick={() => {
+                          setProgressiveStage(0);
+                          setProgGoing("");
+                          setProgStarting("");
+                          setProgWhen("");
+                          setProgStopping("");
+                        }}
+                        className="text-xs font-bold text-zinc-400 hover:text-zinc-600"
+                      >
+                        Reset Form
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {progressiveStage === 1 && (
+                        <div className="space-y-3">
+                          <label className="text-xs font-bold text-zinc-500 uppercase block">Where are you going?</label>
+                          <input
+                            type="text"
+                            value={progGoing}
+                            onChange={(e) => setProgGoing(e.target.value)}
+                            placeholder="e.g. BER Airport, Central Train Station..."
+                            className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                          />
+                        </div>
+                      )}
+
+                      {progressiveStage === 2 && (
+                        <div className="space-y-3">
+                          <label className="text-xs font-bold text-zinc-500 uppercase block">Where are you starting from?</label>
+                          <input
+                            type="text"
+                            value={progStarting}
+                            onChange={(e) => setProgStarting(e.target.value)}
+                            placeholder="e.g. Kreuzberg, Potsdamer Platz..."
+                            className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                          />
+                        </div>
+                      )}
+
+                      {progressiveStage === 3 && (
+                        <div className="space-y-3">
+                          <label className="text-xs font-bold text-zinc-500 uppercase block">When are you going?</label>
+                          <input
+                            type="text"
+                            value={progWhen}
+                            onChange={(e) => setProgWhen(e.target.value)}
+                            placeholder="e.g. In 20 minutes, at 6 tomorrow morning..."
+                            className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                          />
+                        </div>
+                      )}
+
+                      {progressiveStage === 4 && (
+                        <div className="space-y-3">
+                          <label className="text-xs font-bold text-zinc-500 uppercase block">Are you stopping anywhere?</label>
+                          <input
+                            type="text"
+                            value={progStopping}
+                            onChange={(e) => setProgStopping(e.target.value)}
+                            placeholder="e.g. No stops, picking up a friend..."
+                            className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                          />
+                        </div>
+                      )}
+
+                      <button
+                        onClick={handleProgressiveNext}
+                        className="w-full bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-4 transition-all flex items-center justify-center gap-1.5 cursor-pointer chamfered-card h-[52px]"
+                      >
+                        <span>{progressiveStage === 4 ? "FIND MATCHES" : "NEXT DETAIL"}</span>
+                        <ArrowRight size={14} className="text-brand-primary" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* NOW INTENT LIFECYCLE: Searching, Matching or Accepted */}
               {nowRequest && (
@@ -841,39 +961,36 @@ export default function Home() {
                     </button>
                   </div>
 
-                  {/* OpenStreetMap Component displayed naturally */}
-                  <div className="space-y-2">
-                    <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                      Real-time Intent Map
-                    </span>
-                    <div className="border border-[#EFF3F4] bg-zinc-100 relative overflow-hidden h-[220px] chamfered-card shadow-inner">
-                      {/* Interactive real-time OpenStreetMap Frame */}
-                      <iframe
-                        src={
-                          nowRequest.status === "accepted"
-                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.35%2C52.48%2C13.45%2C52.54&layer=mapnik"
-                            : nowRequest.status === "matches"
-                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.37%2C52.49%2C13.43%2C52.53&layer=mapnik"
-                            : "https://www.openstreetmap.org/export/embed.html?bbox=13.38%2C52.50%2C13.42%2C52.52&layer=mapnik"
-                        }
-                        className="w-full h-full border-0 rounded-none shadow-sm"
-                        title="OpenStreetMap Frame"
-                      />
+                  {/* Conditionally display the OpenStreetMap view only when location context is active or match is accepted */}
+                  {(nowRequest.status === "matches" || nowRequest.status === "accepted") && (
+                    <div className="space-y-2">
+                      <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
+                        Active Location Map
+                      </span>
+                      <div className="border border-[#EFF3F4] bg-zinc-100 relative overflow-hidden h-[220px] chamfered-card shadow-inner">
+                        <iframe
+                          src={
+                            nowRequest.status === "accepted"
+                              ? "https://www.openstreetmap.org/export/embed.html?bbox=13.35%2C52.48%2C13.45%2C52.54&layer=mapnik"
+                              : "https://www.openstreetmap.org/export/embed.html?bbox=13.37%2C52.49%2C13.43%2C52.53&layer=mapnik"
+                          }
+                          className="w-full h-full border-0 rounded-none shadow-sm"
+                          title="OpenStreetMap Frame"
+                        />
 
-                      {/* Map status indicator overlays */}
-                      <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm border border-[#EFF3F4] p-2.5 flex items-center justify-between text-xs rounded-none shadow-md">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${nowRequest.status === "searching" ? "bg-amber-400 animate-ping" : "bg-brand-primary animate-pulse"}`} />
-                          <span className="font-bold text-zinc-700">
-                            {nowRequest.status === "searching" && "LOOKING AROUND YOU..."}
-                            {nowRequest.status === "matches" && "MATCHES FOUND NEARBY"}
-                            {nowRequest.status === "accepted" && "COORDINATES IN SYNC"}
-                          </span>
+                        {/* Map status indicator overlays - displaying 'COORDINATES IN SYNC' upon accept */}
+                        <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm border border-[#EFF3F4] p-2.5 flex items-center justify-between text-xs rounded-none shadow-md">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                            <span className="font-bold text-zinc-700">
+                              {nowRequest.status === "accepted" ? "COORDINATES IN SYNC" : "ACTIVE ROUTE OVERLAPS"}
+                            </span>
+                          </div>
+                          <span className="text-xs font-black uppercase text-zinc-400">{nowRequest.destination}</span>
                         </div>
-                        <span className="text-xs font-black uppercase text-zinc-400">{nowRequest.destination}</span>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* LOADING/SEARCHING STATUS STATE */}
                   {nowRequest.status === "searching" && (
@@ -886,7 +1003,7 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* MATCHES LISTING STATE */}
+                  {/* MATCHES LISTING STATE: Elegant typographic layout, no boxes-within-boxes, pricing details or checkout UI */}
                   {nowRequest.status === "matches" && (
                     <div className="space-y-4">
                       <div className="flex justify-between items-baseline px-1">
@@ -907,16 +1024,15 @@ export default function Home() {
                               key={match.id}
                               className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm relative chamfered-card"
                             >
-                              {/* Header & verified profile */}
                               <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-2.5">
                                   <div className={`w-8 h-8 rounded-full ${match.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
                                     {match.name.slice(0, 1)}
                                   </div>
                                   <div>
-                                    <h5 className="text-xs font-bold text-[#0F1419] flex items-center gap-1">
+                                    <h5 className="text-xs font-bold text-[#0F1419] flex items-center gap-1.5">
                                       <span>{match.name}</span>
-                                      <span className="text-[10px] bg-brand-primary/10 text-brand-primary font-black px-1 py-0.2 rounded uppercase">Verified</span>
+                                      <span className="text-xs bg-brand-primary/10 text-brand-primary font-bold px-1.5 py-0.2 rounded uppercase">Verified</span>
                                     </h5>
                                     <p className="text-xs font-bold text-zinc-400">{match.timeRemaining}</p>
                                   </div>
@@ -927,7 +1043,6 @@ export default function Home() {
                                 </div>
                               </div>
 
-                              {/* Explanations & savings */}
                               <div className="space-y-2 text-xs">
                                 <p className="font-semibold text-brand-text leading-relaxed">
                                   {match.explanation}
@@ -938,7 +1053,6 @@ export default function Home() {
                                 </div>
                               </div>
 
-                              {/* Real-time progress countdown line */}
                               <div className="space-y-1">
                                 <div className="flex justify-between text-[11px] font-bold text-zinc-400 uppercase">
                                   <span>Request Expiry</span>
@@ -952,7 +1066,6 @@ export default function Home() {
                                 </div>
                               </div>
 
-                              {/* Actions */}
                               <div className="grid grid-cols-2 gap-2.5 pt-1">
                                 <button
                                   onClick={() => handleDismissMatch(match.id)}
@@ -1066,93 +1179,114 @@ export default function Home() {
                 </h1>
               </div>
 
-              {/* Minimal free-text plan entry box (no form) */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
+              {/* Singular, calm free-text plan entry box supporting text and voice input */}
+              <div className="bg-white border border-[#EFF3F4] p-6 space-y-4 shadow-sm chamfered-card">
                 <div className="space-y-1">
                   <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
-                    DESCRIBE YOUR UPCOMING PLANS
+                    TELL DIASPEDIA
                   </span>
                   <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                    Let Diaspedia watch the surrounding environment passively. Simply state when and where.
+                    Tell us what you plan to do later in simple English. Diaspedia will remember and quietly look for overlaps.
                   </p>
                 </div>
 
-                <form onSubmit={handleLaterSubmit} className="space-y-3">
-                  <textarea
-                    rows={2}
-                    value={laterInputText}
-                    onChange={(e) => setLaterInputText(e.target.value)}
-                    placeholder="e.g. I'm going to Munich next Friday from Berlin, or travelling to Zanzibar in December"
-                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
-                  />
+                <form onSubmit={handleLaterSubmit} className="space-y-4">
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      value={laterInputText}
+                      onChange={(e) => setLaterInputText(e.target.value)}
+                      placeholder="e.g. I'm going to Munich next Friday, or travelling to Zanzibar next month"
+                      className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-4 pr-12 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const laterVoices = [
+                          "I'm heading to Munich next Friday.",
+                          "I'm travelling to Zanzibar next month.",
+                          "I plan to visit Paris in December."
+                        ];
+                        const randomVoice = laterVoices[Math.floor(Math.random() * laterVoices.length)];
+                        setLaterInputText(randomVoice);
+                      }}
+                      className="absolute right-3.5 bottom-4 p-2 text-zinc-400 hover:text-brand-primary active:scale-95 transition-all cursor-pointer"
+                      title="Talk to Diaspedia"
+                    >
+                      <Mic size={18} />
+                    </button>
+                  </div>
 
                   <button
                     type="submit"
                     disabled={!laterInputText.trim()}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
+                    className="w-full bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-4 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card h-[52px]"
                   >
-                    <span>Keep Watching For Me</span>
+                    <span>SEND</span>
                     <ArrowRight size={14} className="text-brand-primary" />
                   </button>
                 </form>
               </div>
 
-              {/* PERSISTENT CALM PLANS LISTING */}
-              <div className="space-y-4 pt-2">
+              {/* PERSISTENT CALM PLANS LISTING - Airy typographic layout with zero visual clutter */}
+              <div className="space-y-6 pt-4">
                 <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
                   Active Future Intents
                 </span>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {laterPlans.map((plan) => (
                     <div
                       key={plan.id}
-                      className="bg-white border border-[#EFF3F4] p-6 space-y-4 hover:border-zinc-300 transition-all chamfered-card"
+                      className="bg-white border border-[#EFF3F4] p-6 space-y-5 hover:border-zinc-300 transition-all chamfered-card shadow-sm"
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="text-xl font-heading font-black text-[#0F1419] uppercase tracking-tight leading-none">
+                          <h4 className="text-2xl font-heading font-black text-[#0F1419] uppercase tracking-tight leading-none">
                             {plan.destination}
                           </h4>
-                          <p className="text-xs text-brand-primary font-bold mt-1.5 flex items-center gap-1">
-                            <Clock size={13} />
+                          <p className="text-xs text-brand-primary font-bold mt-2 flex items-center gap-1.5">
+                            <Clock size={14} />
                             <span>{plan.timing}</span>
                           </p>
-                          <p className="text-xs text-zinc-400 font-bold mt-0.5">
+                          <p className="text-xs text-zinc-400 font-bold mt-1">
                             {plan.route}
                           </p>
                         </div>
 
-                        <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-0.5 rounded-none uppercase tracking-wider">
-                          Watching...
+                        <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-3 py-1 uppercase tracking-wider">
+                          Active Search
                         </span>
                       </div>
 
-                      <p className="text-xs text-brand-text-muted font-semibold italic">
+                      <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
                         &ldquo;{plan.details}&rdquo;
                       </p>
 
                       {/* Display overlaps if found */}
                       {plan.hasOverlaps && (
-                        <div className="space-y-3 pt-3 border-t border-[#EFF3F4]">
+                        <div className="space-y-4 pt-4 border-t border-[#EFF3F4]">
                           <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                            Coincidences Found
+                            Shared overlaps found
                           </span>
 
                           {plan.overlaps.map((overlap, oIdx) => (
-                            <div key={oIdx} className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-3 rounded-none">
-                              <div className="flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full ${overlap.avatarBg} flex items-center justify-center text-white text-[10px] font-bold`}>
+                            <div key={oIdx} className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-4 rounded-none">
+                              <div className="flex items-center gap-2.5">
+                                <div className={`w-7 h-7 rounded-full ${overlap.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
                                   {overlap.name.slice(0, 1)}
                                 </div>
-                                <span className="text-xs font-bold text-[#0F1419]">{overlap.name} ({overlap.time})</span>
+                                <div>
+                                  <span className="text-xs font-bold text-[#0F1419] block">{overlap.name}</span>
+                                  <span className="text-xs text-zinc-400 font-bold">{overlap.time}</span>
+                                </div>
                               </div>
 
                               <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
                                 {overlap.explanation}
                               </p>
 
-                              <div className="bg-white border-l-2 border-brand-primary p-2.5 flex items-start gap-2 text-xs">
+                              <div className="bg-white border-l-2 border-brand-primary p-3 flex items-start gap-2.5 text-xs">
                                 <Shield size={14} className="text-brand-primary shrink-0 mt-0.5" />
                                 <span className="font-bold text-zinc-700">Cost saving idea: {overlap.costSavingIdea}</span>
                               </div>
@@ -1162,9 +1296,9 @@ export default function Home() {
                                   setActionFeedback(`Coordinating with ${overlap.name} initiated!`);
                                   setTimeout(() => setActionFeedback(null), 3000);
                                 }}
-                                className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-2.5 chamfered-card"
+                                className="w-full bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-3.5 chamfered-card"
                               >
-                                Reach Out
+                                Join the group
                               </button>
                             </div>
                           ))}
@@ -1215,18 +1349,21 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* WORK HOURS SCHEDULER blockout control */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
-                <div className="space-y-1">
-                  <span className="text-xs font-black text-brand-primary uppercase tracking-wider block">
-                    WHEN SHOULD DIASPEDIA REACH YOU?
-                  </span>
+              {/* WORK HOURS SCHEDULER blockout control - Premium quiet luxury aesthetic: white background badges, grey pills */}
+              <div className="bg-white border border-[#EFF3F4] p-6 space-y-5 shadow-sm chamfered-card">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-[#0F1419] uppercase tracking-wider block">
+                      WHEN SHOULD DIASPEDIA REACH YOU?
+                    </span>
+                    <span className="inline-flex h-2 w-2 rounded-full bg-brand-primary animate-pulse" />
+                  </div>
                   <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
-                    Set your focus hours. Diaspedia will not send you matching requests or alerts during these periods.
+                    Suppress real-time matching requests and incoming notification alerts during your focus hours.
                   </p>
                 </div>
 
-                {/* Day Pliis Selector */}
+                {/* Day selector pills */}
                 <div className="flex flex-wrap gap-1.5">
                   {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
                     const active = workDays.includes(day);
@@ -1234,10 +1371,10 @@ export default function Home() {
                       <button
                         key={day}
                         onClick={() => handleToggleWorkDay(day)}
-                        className={`text-xs font-bold px-3 py-1.5 border transition-all ${
+                        className={`text-xs font-bold px-3 py-2 border transition-all cursor-pointer ${
                           active
-                            ? "bg-[#0F1419] text-white border-[#0F1419]"
-                            : "bg-[#F5F8FA] text-zinc-400 border-[#EFF3F4] hover:bg-zinc-100"
+                            ? "bg-[#536471]/10 text-[#0F1419] border-[#536471]/30"
+                            : "bg-white text-zinc-400 border-zinc-200 hover:bg-zinc-50"
                         }`}
                       >
                         {day}
@@ -1268,8 +1405,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="bg-[#F5F8FA] p-3 text-xs font-semibold text-zinc-500 leading-normal">
-                  Matching is currently active outside of {workHoursStart} &mdash; {workHoursEnd} on {workDays.join(", ")}.
+                <div className="bg-[#F5F8FA] p-3 text-xs font-semibold text-zinc-500 leading-relaxed border-l-2 border-[#536471]">
+                  Alerts will be suppressed during {workHoursStart} &mdash; {workHoursEnd} on {workDays.join(", ")}.
                 </div>
               </div>
 
