@@ -3,11 +3,11 @@
 @theme {
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
-  --color-brand-bg: #F6F4ED;
-  --color-brand-primary: #71E300;
-  --color-brand-primary-hover: #5ec700;
-  --color-brand-text: #0f1115;
-  --color-brand-text-muted: #52525b;
+  --color-brand-bg: #FFFFFF;
+  --color-brand-primary: #1D9BF0; /* Old Twitter-style blue */
+  --color-brand-primary-hover: #1A8CD8;
+  --color-brand-text: #0F1419; /* High-contrast near black */
+  --color-brand-text-muted: #536471; /* Twitter-style gray */
 }
 
 @layer base {
@@ -27,6 +27,31 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
+}
+
+/* Custom Chamfered/Angled Card Utilities */
+.chamfered-card {
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+}
+
+.chamfered-card-all {
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
 }
 
 /* Support iOS notch/bezel-less screens natively with dynamic safe-area-inset */
