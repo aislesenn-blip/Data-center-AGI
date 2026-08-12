@@ -9,87 +9,153 @@ import {
   User,
   MessageSquare,
   ArrowRight,
-  ArrowLeft,
   ChevronRight,
   CheckCircle2,
   X,
   Bell,
   Check,
   Plus,
-  Bookmark,
   Send,
   Shield,
   Clock,
-  Sparkles,
-  Lock,
-  Menu
+  Sliders,
+  Settings as SettingsIcon,
+  MapPin,
+  Info
 } from "lucide-react";
 
 import {
   MOCK_USER,
   MOCK_FRIENDS,
-  MOCK_DESTINATIONS,
-  MOCK_TRAVEL_PLANS,
-  MOCK_TRAVEL_MATCHES,
-  MOCK_CHAT_MESSAGES,
   MOCK_NOTIFICATIONS,
   UserProfile,
   Friend,
-  Destination,
-  TravelPlan,
-  TravelMatch,
-  ChatMessage,
   TravelNotification
 } from "@/lib/diaspediaData";
 
+// Interfaces for our simplified Real-World Intent Platform
+interface NowRequest {
+  id: string;
+  text: string;
+  destination: string;
+  status: "searching" | "matches" | "accepted";
+  timestamp: string;
+}
+
+interface NowMatch {
+  id: string;
+  name: string;
+  avatarBg: string;
+  destination: string;
+  timeRemaining: string;
+  explanation: string;
+  costSavingIdea: string;
+  isVerified: boolean;
+}
+
+interface LaterPlan {
+  id: string;
+  destination: string;
+  timing: string;
+  route: string;
+  details: string;
+  hasOverlaps: boolean;
+  overlaps: Array<{
+    name: string;
+    time: string;
+    avatarBg: string;
+    explanation: string;
+    costSavingIdea: string;
+  }>;
+}
+
+interface ChatMsg {
+  id: string;
+  sender: "user" | "partner" | "system";
+  text: string;
+  time: string;
+}
+
 export default function Home() {
-  // Navigation: "home" | "plans" | "profile"
-  const [activeTab, setActiveTab] = useState<"home" | "plans" | "profile">("home");
+  // Navigation: "now" | "later" | "settings"
+  const [activeTab, setActiveTab] = useState<"now" | "later" | "settings">("now");
 
   // Authentication States (Mocked)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [authLoading, setAuthLoading] = useState<boolean>(false);
   const [authProvider, setAuthProvider] = useState<"google" | "apple" | null>(null);
 
-  // Onboarding Wizard State
+  // Onboarding Wizard State (Simplicity & Intent Platform focused)
   const [showWizard, setShowWizard] = useState<boolean>(false);
   const [wizardStep, setWizardStep] = useState<number>(1);
 
-  // App States
+  // User details
   const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER);
-  const [travelPlans, setTravelPlans] = useState<TravelPlan[]>(MOCK_TRAVEL_PLANS);
-  const [travelMatches, setTravelMatches] = useState<TravelMatch[]>(MOCK_TRAVEL_MATCHES);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(MOCK_CHAT_MESSAGES);
   const [notifications, setNotifications] = useState<TravelNotification[]>(MOCK_NOTIFICATIONS);
-  const [destinations, setDestinations] = useState<Destination[]>(MOCK_DESTINATIONS);
-  const [friendsList, setFriendsList] = useState<Friend[]>(MOCK_FRIENDS);
 
-  // Conversational AI Assistant Sheet State
-  const [showAiAssistant, setShowAiAssistant] = useState<boolean>(false);
-  const [aiAssistantStep, setAiAssistantStep] = useState<number>(1);
-  const [aiInputText, setAiInputText] = useState<string>("");
-  const [aiConversation, setAiConversation] = useState<Array<{ sender: "user" | "ai"; text: string }>>([
-    { sender: "ai", text: "Hi! I'm your Diaspedia companion. Tell me, where are you going?" }
+  // NOW state variables
+  const [nowInputText, setNowInputText] = useState<string>("");
+  const [nowRequest, setNowRequest] = useState<NowRequest | null>(null);
+  const [nowProgress, setNowProgress] = useState<number>(100);
+  const [activeMatches, setActiveMatches] = useState<NowMatch[]>([]);
+  const [selectedMatch, setSelectedMatch] = useState<NowMatch | null>(null);
+  const [chatLog, setChatLog] = useState<ChatMsg[]>([]);
+  const [chatInput, setChatInput] = useState<string>("");
+
+  // LATER state variables
+  const [laterInputText, setLaterInputText] = useState<string>("");
+  const [laterPlans, setLaterPlans] = useState<LaterPlan[]>([
+    {
+      id: "later-1",
+      destination: "Munich",
+      timing: "Next Friday",
+      route: "Berlin → Munich",
+      details: "Travelling for weekend leisure trip.",
+      hasOverlaps: true,
+      overlaps: [
+        {
+          name: "Sarah K.",
+          time: "Friday Morning",
+          avatarBg: "bg-zinc-800",
+          explanation: "Sarah is taking the same ICE train from Berlin Central.",
+          costSavingIdea: "Share a DB group-ticket pass to reduce the travel costs by up to 40%."
+        }
+      ]
+    },
+    {
+      id: "later-2",
+      destination: "Zanzibar",
+      timing: "December",
+      route: "Berlin → Zanzibar",
+      details: "Winter escape holiday.",
+      hasOverlaps: true,
+      overlaps: [
+        {
+          name: "Alex Miller",
+          time: "Mid December",
+          avatarBg: "bg-zinc-700",
+          explanation: "Alex is arriving at Zanzibar airport on December 12.",
+          costSavingIdea: "Coordinate joint taxi transfer to the coastal resort to share costs."
+        }
+      ]
+    }
   ]);
-  // Temporary builder variables for conversational creation
-  const [aiTripTo, setAiTripTo] = useState("");
-  const [aiTripFrom, setAiTripFrom] = useState("");
-  const [aiTripDates, setAiTripDates] = useState("");
-  const [aiTripStops, setAiTripStops] = useState("");
 
-  // UI / Status feedback
-  const [showNotifications, setShowNotifications] = useState(false);
+  // SETTINGS state variables
+  const [workHoursStart, setWorkHoursStart] = useState<string>("09:00");
+  const [workHoursEnd, setWorkHoursEnd] = useState<string>("17:00");
+  const [workDays, setWorkDays] = useState<string[]>(["Mon", "Tue", "Wed", "Thu", "Fri"]);
+  const [locationServices, setLocationServices] = useState<boolean>(true);
+  const [pushNotifications, setPushNotifications] = useState<boolean>(true);
+  const [invisibleMode, setInvisibleMode] = useState<boolean>(false);
+  const [privacyTetherEnabled, setPrivacyTetherEnabled] = useState<boolean>(true);
+
+  // UI state feedback
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
-  const [activeChatGroupId, setActiveChatGroupId] = useState<string | null>(null);
-  const [chatInputText, setChatInputText] = useState("");
-
-  // Sync contacts simulation
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isSynced, setIsSynced] = useState(false);
 
   // Scroll references
   const chatBottomRef = useRef<HTMLDivElement>(null);
-  const aiBottomRef = useRef<HTMLDivElement>(null);
 
   // Cubic Bezier Easing: [0.22, 1, 0.36, 1]
   const premiumTransition = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
@@ -108,17 +174,32 @@ export default function Home() {
     }
   }, []);
 
+  // Smooth chat auto-scrolling
   useEffect(() => {
-    if (activeChatGroupId && chatBottomRef.current) {
+    if (chatBottomRef.current) {
       chatBottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [activeChatGroupId, chatMessages]);
+  }, [chatLog]);
 
+  // Handle simulated countdown for active NOW matches
   useEffect(() => {
-    if (showAiAssistant && aiBottomRef.current) {
-      aiBottomRef.current.scrollIntoView({ behavior: "smooth" });
+    let interval: ReturnType<typeof setInterval> | undefined = undefined;
+    if (nowRequest && nowRequest.status === "matches") {
+      setNowProgress(100);
+      interval = setInterval(() => {
+        setNowProgress((prev) => {
+          if (prev <= 1) {
+            if (interval) clearInterval(interval);
+            return 0;
+          }
+          return prev - 0.8; // gradual decrease
+        });
+      }, 500);
     }
-  }, [aiConversation, showAiAssistant]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [nowRequest]);
 
   // Authenticate Mock Handler
   const handleAuth = (provider: "google" | "apple") => {
@@ -141,14 +222,16 @@ export default function Home() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setShowWizard(false);
-    setActiveTab("home");
+    setActiveTab("now");
+    setNowRequest(null);
+    setNowInputText("");
     if (typeof window !== "undefined") {
       localStorage.removeItem("diaspedia_logged_in_v2");
       localStorage.removeItem("diaspedia_onboarded_v2");
     }
   };
 
-  // Complete Introduction Wizard
+  // Onboarding Wizard Complete
   const handleCompleteWizard = () => {
     setShowWizard(false);
     if (typeof window !== "undefined") {
@@ -158,220 +241,186 @@ export default function Home() {
     setTimeout(() => setActionFeedback(null), 3000);
   };
 
-  // Conversational plan creation / chat flow
-  const handleAiMessageSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!aiInputText.trim()) return;
+  // Handle input submission for NOW tab
+  const handleNowSubmit = (textToSubmit: string) => {
+    if (!textToSubmit.trim()) return;
 
-    const userText = aiInputText.trim();
-    setAiConversation((prev) => [...prev, { sender: "user", text: userText }]);
-    setAiInputText("");
-
-    // One Detail At A Time wizard implementation inside the conversational sheet
-    setTimeout(() => {
-      if (aiAssistantStep === 1) {
-        setAiTripTo(userText);
-        setAiConversation((prev) => [
-          ...prev,
-          { sender: "ai", text: `Got it, ${userText}. Where are you starting your trip from?` }
-        ]);
-        setAiAssistantStep(2);
-      } else if (aiAssistantStep === 2) {
-        setAiTripFrom(userText);
-        setAiConversation((prev) => [
-          ...prev,
-          { sender: "ai", text: "Nice! Around which dates will you be travelling? (e.g. Dec 10 - Dec 20)" }
-        ]);
-        setAiAssistantStep(3);
-      } else if (aiAssistantStep === 3) {
-        setAiTripDates(userText);
-        setAiConversation((prev) => [
-          ...prev,
-          { sender: "ai", text: "Understood. Are you stopping anywhere along the way? (Type 'none' or list them)" }
-        ]);
-        setAiAssistantStep(4);
-      } else if (aiAssistantStep === 4) {
-        const stopsList = userText.toLowerCase() === "none" ? "" : userText;
-        setAiTripStops(stopsList);
-
-        // Build travel plan
-        const newPlanId = `plan-${travelPlans.length + 1}`;
-        const newPlan: TravelPlan = {
-          id: newPlanId,
-          fromCity: aiTripFrom,
-          destinations: [aiTripTo],
-          startDate: aiTripDates.split("-")[0]?.trim() || aiTripDates,
-          endDate: aiTripDates.split("-")[1]?.trim() || aiTripDates,
-          stops: stopsList ? stopsList.split(",").map((s) => s.trim()) : undefined,
-          isCompleted: false,
-          status: "searching"
-        };
-
-        setTravelPlans([newPlan, ...travelPlans]);
-        setAiConversation((prev) => [
-          ...prev,
-          {
-            sender: "ai",
-            text: `Perfect! I've added your trip to ${aiTripTo}. Diaspedia is now quietly running matches in the background. I will notify you when someone else is heading the same way!`
-          }
-        ]);
-        setAiAssistantStep(5);
-
-        // Add matching background notification
-        setNotifications((prev) => [
-          {
-            id: `notif-${Date.now()}`,
-            text: `Searching in the background for overlaps on your trip to ${aiTripTo}...`,
-            time: "Just now",
-            read: false,
-            type: "match",
-            planId: newPlanId
-          },
-          ...prev
-        ]);
-      } else {
-        // Free-form conversational response
-        let reply = "I am looking for overlapping trips. If any match is found, I'll alert you.";
-        if (userText.toLowerCase().includes("hello") || userText.toLowerCase().includes("hi")) {
-          reply = "Hello! Tell me if there is another trip you'd like to plan.";
-        } else if (userText.toLowerCase().includes("zanzibar")) {
-          reply = "Zanzibar is a hot destination! We already have Sarah K, Alex, and Maria Moscow matching overlaps around Dec 11-21.";
-        }
-        setAiConversation((prev) => [...prev, { sender: "ai", text: reply }]);
-      }
-    }, 1000);
-  };
-
-  const handleQuickAddDestination = (dest: Destination) => {
-    const newPlanId = `plan-${travelPlans.length + 1}`;
-    const newPlan: TravelPlan = {
-      id: newPlanId,
-      fromCity: userProfile.homeCity.split(",")[0],
-      destinations: [dest.name],
-      startDate: "Next Month",
-      endDate: "Next Month",
-      isCompleted: false,
-      status: "searching"
-    };
-
-    setTravelPlans([newPlan, ...travelPlans]);
-    setActionFeedback(`Added plan to ${dest.name}! Diaspedia is looking.`);
-    setTimeout(() => setActionFeedback(null), 3000);
-  };
-
-  const handleToggleWishlist = (destId: string, destName: string) => {
-    const updatedWishlist = [...userProfile.wishlist];
-    const index = updatedWishlist.indexOf(destId);
-    let isAdding = false;
-
-    if (index > -1) {
-      updatedWishlist.splice(index, 1);
-    } else {
-      updatedWishlist.push(destId);
-      isAdding = true;
+    // Detect destination from text
+    let dest = "BER Airport";
+    if (textToSubmit.toLowerCase().includes("station") || textToSubmit.toLowerCase().includes("train")) {
+      dest = "Central Train Station";
+    } else if (textToSubmit.toLowerCase().includes("stadium")) {
+      dest = "Olympic Stadium";
+    } else if (textToSubmit.toLowerCase().includes("munich")) {
+      dest = "Munich";
+    } else if (textToSubmit.toLowerCase().includes("office")) {
+      dest = "Office Complex East";
     }
 
-    setUserProfile({
-      ...userProfile,
-      wishlist: updatedWishlist
-    });
-
-    if (isAdding) {
-      setActionFeedback(`Saved ${destName} to wishlist!`);
-      setTimeout(() => setActionFeedback(null), 2000);
-    }
-  };
-
-  // Join match group
-  const handleJoinMatchGroup = (match: TravelMatch) => {
-    const updatedMatches = travelMatches.map((m) => {
-      if (m.id === match.id) {
-        return { ...m, hasJoinedGroup: true };
-      }
-      return m;
-    });
-    setTravelMatches(updatedMatches);
-
-    // Add user joining announcement message
-    const systemMsg: ChatMessage = {
-      id: `system-msg-${chatMessages.length + 1}`,
-      chatGroupId: match.chatGroupId || "chat-zanzibar",
-      senderUsername: "system",
-      senderName: "Diaspedia",
-      senderAvatarBg: "bg-brand-primary/10",
-      text: `${userProfile.name} joined the discussion!`,
+    setNowRequest({
+      id: `now-${laterPlans.length + 1}`,
+      text: textToSubmit,
+      destination: dest,
+      status: "searching",
       timestamp: "Just now"
-    };
+    });
 
-    setChatMessages((prev) => [...prev, systemMsg]);
+    // Simulate natural AI parsing and real-time scanning
+    setTimeout(() => {
+      setActiveMatches([
+        {
+          id: "match-now-1",
+          name: "Sarah K.",
+          avatarBg: "bg-zinc-800",
+          destination: dest,
+          timeRemaining: "Leaving in 6 minutes",
+          explanation: "Sarah is nearby and heading to the exact same place right now.",
+          costSavingIdea: "Split a shared taxi or shuttle ride to cut costs directly in half.",
+          isVerified: true
+        },
+        {
+          id: "match-now-2",
+          name: "Alex Miller",
+          avatarBg: "bg-zinc-700",
+          destination: dest,
+          timeRemaining: "Leaving in 11 minutes",
+          explanation: "Alex is departing shortly in your direction.",
+          costSavingIdea: "Share Uber XL booking together to lower transit fees.",
+          isVerified: true
+        }
+      ]);
+      setNowRequest((prev) => prev ? { ...prev, status: "matches" } : null);
+    }, 1800);
+  };
 
+  // Handle instant preset prompts for NOW
+  const handlePresetNow = (prompt: string) => {
+    setNowInputText(prompt);
+    handleNowSubmit(prompt);
+  };
+
+  // Handle accepting a real-time NOW connection
+  const handleGoTogether = (match: NowMatch) => {
+    setSelectedMatch(match);
+    setNowRequest((prev) => prev ? { ...prev, status: "accepted" } : null);
+
+    // Seed chat
+    setChatLog([
+      { id: "sys-1", sender: "system", text: "Connection established! Always verify coordinates before departure.", time: "Just now" },
+      { id: "sys-2", sender: "system", text: "Anti-Scam Check: Make payments directly to the actual taxi or transit provider. Avoid wiring/pooling funds directly with individuals.", time: "Just now" },
+      { id: `part-1`, sender: "partner", text: `Hey! Awesome that we're going to the ${match.destination} at the same time. Let's meet at the main entrance.`, time: "Just now" }
+    ]);
+
+    // Create background matching notification
     setNotifications((prev) => [
       {
-        id: `notif-${Date.now()}`,
-        text: `You joined the Zanzibar cost-sharing discussion group!`,
+        id: `notif-${prev.length + 1}`,
+        text: `You accepted ${match.name}'s request! Coordinate your trip in the active chat.`,
         time: "Just now",
         read: false,
         type: "join"
       },
       ...prev
     ]);
-
-    setActiveChatGroupId(match.chatGroupId || "chat-zanzibar");
-    setActiveTab("plans");
   };
 
-  // Send Chat message
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInputText.trim() || !activeChatGroupId) return;
+  // Dismiss match
+  const handleDismissMatch = (matchId: string) => {
+    setActiveMatches((prev) => prev.filter((m) => m.id !== matchId));
+    if (activeMatches.length <= 1) {
+      // If no matches left, reset
+      setActionFeedback("Keeping an eye out for more matches...");
+      setTimeout(() => setActionFeedback(null), 2500);
+    }
+  };
 
-    const userMsg: ChatMessage = {
-      id: `user-msg-${chatMessages.length + 1}`,
-      chatGroupId: activeChatGroupId,
-      senderUsername: userProfile.username,
-      senderName: userProfile.name,
-      senderAvatarBg: "bg-[#0F1419]",
-      text: chatInputText,
-      timestamp: "Just now"
+  // Send a message in NOW chat
+  const handleSendChat = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const userMsg: ChatMsg = {
+      id: `user-msg-${chatLog.length + 1}`,
+      sender: "user",
+      text: chatInput.trim(),
+      time: "Just now"
     };
 
-    setChatMessages((prev) => [...prev, userMsg]);
-    setChatInputText("");
+    setChatLog((prev) => [...prev, userMsg]);
+    setChatInput("");
 
-    // Simulate direct provider booking tip after message
+    // Simulate brief partner reply
     setTimeout(() => {
-      const reply: ChatMessage = {
-        id: `reply-${chatMessages.length + 2}`,
-        chatGroupId: activeChatGroupId,
-        senderUsername: "system",
-        senderName: "Diaspedia Companion",
-        senderAvatarBg: "bg-brand-primary/10",
-        text: "Tip: For transfers and shuttle bookings, book directly with the transfer agency. We advise paying providers directly instead of sharing funds with other travelers.",
-        timestamp: "Just now"
-      };
-      setChatMessages((prev) => [...prev, reply]);
-    }, 2000);
-  };
-
-  const handleSyncContacts = () => {
-    setIsSyncing(true);
-    setTimeout(() => {
-      setIsSyncing(false);
-      setIsSynced(true);
-      setActionFeedback("Address book synced successfully!");
-      setTimeout(() => setActionFeedback(null), 2500);
+      setChatLog((prev) => [
+        ...prev,
+        {
+          id: `reply-${prev.length + 1}`,
+          sender: "partner",
+          text: "Sounds great. I'll walk over there now. See you in a minute!",
+          time: "Just now"
+        }
+      ]);
     }, 1500);
   };
 
-  const resetAiAssistant = () => {
-    setAiAssistantStep(1);
-    setAiTripTo("");
-    setAiTripFrom("");
-    setAiTripDates("");
-    setAiTripStops("");
-    setAiConversation([
-      { sender: "ai", text: "Hi! I'm your Diaspedia companion. Tell me, where are you going?" }
-    ]);
+  // Handle input submission for LATER tab
+  const handleLaterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!laterInputText.trim()) return;
+
+    const textToSubmit = laterInputText.trim();
+    setLaterInputText("");
+
+    // Parse destination
+    let dest = "Paris";
+    let when = "Next Month";
+    if (textToSubmit.toLowerCase().includes("munich")) {
+      dest = "Munich";
+      when = "Friday Morning";
+    } else if (textToSubmit.toLowerCase().includes("zanzibar")) {
+      dest = "Zanzibar";
+      when = "December";
+    } else if (textToSubmit.toLowerCase().includes("tokyo")) {
+      dest = "Tokyo";
+      when = "Next Spring";
+    } else {
+      // generic parser helper
+      const words = textToSubmit.split(" ");
+      const toIndex = words.findIndex(w => w.toLowerCase() === "to");
+      if (toIndex > -1 && words[toIndex + 1]) {
+        dest = words[toIndex + 1].replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+      }
+    }
+
+    const newPlan: LaterPlan = {
+      id: `later-${laterPlans.length + 1}`,
+      destination: dest.charAt(0).toUpperCase() + dest.slice(1),
+      timing: when,
+      route: `Berlin → ${dest.charAt(0).toUpperCase() + dest.slice(1)}`,
+      details: textToSubmit,
+      hasOverlaps: true,
+      overlaps: [
+        {
+          name: "Maria Volkov",
+          time: when,
+          avatarBg: "bg-zinc-600",
+          explanation: "Maria indicated plans to go to the exact same destination around then.",
+          costSavingIdea: "Coordinate hotel booking and transfer shuttle options to trigger group discounts."
+        }
+      ]
+    };
+
+    setLaterPlans([newPlan, ...laterPlans]);
+    setActionFeedback(`Added future plan to ${dest}! Diaspedia is keeping watch.`);
+    setTimeout(() => setActionFeedback(null), 3000);
+  };
+
+  const handleToggleWorkDay = (day: string) => {
+    if (workDays.includes(day)) {
+      setWorkDays(workDays.filter((d) => d !== day));
+    } else {
+      setWorkDays([...workDays, day]);
+    }
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -395,7 +444,7 @@ export default function Home() {
               {/* Spacious, premium top area */}
               <div className="pt-16 text-left space-y-1">
                 <span className="text-xs font-bold text-brand-primary uppercase tracking-widest block">
-                  European Transit Companion
+                  Real-World Intent Engine
                 </span>
                 <span className="font-heading font-black text-6xl tracking-tighter text-[#0F1419] select-none block leading-none">
                   diaspedia
@@ -405,10 +454,10 @@ export default function Home() {
               {/* Bold middle display text */}
               <div className="flex-1 flex flex-col justify-center text-left space-y-4 max-w-xs">
                 <h1 className="text-2xl font-black font-heading leading-tight text-[#0F1419]">
-                  Your trip might be cheaper when you go with others heading the same way.
+                  Tell Diaspedia what you are doing. The system figures out the rest.
                 </h1>
                 <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                  Diaspedia works passively in the background. Tell us where you are heading, and we&apos;ll look for overlapping passenger trips.
+                  A simple intent platform. State what you are doing now or later, and we instantly discover overlapping people, places, or savings.
                 </p>
               </div>
 
@@ -457,7 +506,7 @@ export default function Home() {
         </AnimatePresence>
 
         {/* ------------------------------------------ */}
-        {/* INTRODUCTION WIZARD - EDITORIAL & GEOMETRIC */}
+        {/* INTRODUCTION WIZARD - NEW CORE INTENT CONCEPT */}
         {/* ------------------------------------------ */}
         <AnimatePresence>
           {isLoggedIn && showWizard && (
@@ -485,14 +534,15 @@ export default function Home() {
                       exit={{ x: -20, opacity: 0 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 01</span>
+                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
                         GO SOMEWHERE.
                       </h2>
                       <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Add your upcoming trips, destinations, or multiple stopovers easily in seconds.
+                        Whether you are heading to the airport right now, leaving your office, or planning a future flight, start moving.
                       </p>
                       <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <Compass className="w-12 h-12 text-brand-primary" />
+                        <MapPin className="w-12 h-12 text-brand-primary" />
                       </div>
                     </motion.div>
                   )}
@@ -505,14 +555,15 @@ export default function Home() {
                       exit={{ x: -20, opacity: 0 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 02</span>
+                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
                         TELL DIASPEDIA.
                       </h2>
                       <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Just state your starting point, dates, or travel details conversationally. The app works passively behind the scenes.
+                        Just tell Diaspedia what you are doing in simple human language. No complicated drop-down forms or parameters.
                       </p>
                       <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <MessageSquare className="w-12 h-12 text-brand-primary" />
+                        <Compass className="w-12 h-12 text-brand-primary" />
                       </div>
                     </motion.div>
                   )}
@@ -525,11 +576,12 @@ export default function Home() {
                       exit={{ x: -20, opacity: 0 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        WE PASSIVELY MATCH.
+                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 03</span>
+                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                        WE FIND MATCHES.
                       </h2>
                       <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        No manual searches needed. We scan and alert you as soon as overlapping travel plans match.
+                        We scan the surrounding environment passively. We notify you as soon as overlapping passenger plans or transit matches emerge.
                       </p>
                       <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
                         <div className="flex gap-2.5">
@@ -549,11 +601,12 @@ export default function Home() {
                       exit={{ x: -20, opacity: 0 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 04</span>
+                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
                         SPEND LESS TOGETHER.
                       </h2>
                       <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Coordinate to share transport taxis, airport shuttles, and activities without changing user behavior.
+                        Coordinate on the spot to split taxis, airport shuttle transfers, and group fares. Simplicity, passive discovery, and direct savings.
                       </p>
                       <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
                         <Shield className="w-12 h-12 text-brand-primary" />
@@ -687,676 +740,610 @@ export default function Home() {
         <main className="flex-1 overflow-y-auto px-6 pt-5 pb-32 space-y-6 scroll-smooth bg-white">
 
           {/* ========================================= */}
-          {/* TAB 1: HOME SCREEN                        */}
+          {/* TAB 1: NOW SCREEN                         */}
           {/* ========================================= */}
-          {activeTab === "home" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
-              {/* Natural screen header info */}
-              <div className="pt-2">
-                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest">
-                  Welcome Back
-                </span>
-                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
-                  Hello, {userProfile.name.split(" ")[0]}
-                </h1>
-              </div>
-
-              {/* People You May Know: Story-style horizontal row sitting naturally on the page (no box!) */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                    People You May Know
-                  </span>
-                  <span className="text-[11px] font-bold text-brand-primary">Based on your routes</span>
-                </div>
-
-                <div className="flex items-center gap-4 overflow-x-auto pb-1 scrollbar-none">
-                  {friendsList.map((f, idx) => {
-                    // Give everyone a highly realistic travel purpose context
-                    const purposes = [
-                      "Also Zanzibar, July",
-                      "Traveling Dec 10",
-                      "Also Zanzibar, Dec",
-                      "Going Munich, Feb"
-                    ];
-                    const purpose = purposes[idx % purposes.length];
-
-                    return (
-                      <div
-                        key={`friend-story-${idx}`}
-                        className="flex flex-col items-center text-center shrink-0 w-[94px] cursor-pointer"
-                        onClick={() => {
-                          setActionFeedback(`Selected @${f.username}`);
-                          setTimeout(() => setActionFeedback(null), 1500);
-                        }}
-                      >
-                        <div className="w-12 h-12 rounded-full border-2 border-brand-primary p-0.5 transition-transform active:scale-95">
-                          <div className={`w-full h-full rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-                            {f.name.slice(0, 1)}
-                          </div>
-                        </div>
-                        <span className="text-xs font-bold text-[#0F1419] mt-1.5 truncate w-full">{f.name.split(" ")[0]}</span>
-                        <span className="text-[10px] font-semibold text-brand-text-muted leading-tight mt-0.5 block w-full truncate h-7">
-                          {purpose}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Conversational Assistant entry: premium, crisp geometric silhouette with NO rounded corners */}
-              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 relative overflow-hidden space-y-4 chamfered-card">
-                <div>
-                  <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
-                    Travel Companion
-                  </span>
-                  <h3 className="text-lg font-heading font-black text-[#0F1419] mt-0.5">
-                    Tell us about your trip
-                  </h3>
-                </div>
-
-                <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                  State your destination, departure details, or travel constraints naturally. We plan and passively scan matches, one detail at a time.
-                </p>
-
-                <button
-                  onClick={() => {
-                    resetAiAssistant();
-                    setShowAiAssistant(true);
-                  }}
-                  className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer chamfered-card"
-                >
-                  <span>Start Conversation</span>
-                  <ArrowRight size={14} className="text-brand-primary" />
-                </button>
-              </div>
-
-              {/* Hero Plan Status State Block (Active upcoming plan or Empty State) */}
-              <div className="space-y-4">
-                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                  Active Plans
-                </span>
-
-                {travelPlans.filter((p) => !p.isCompleted).length === 0 ? (
-                  /* EMPTY STATE CARD - Crisp rectangular with chamfered boundaries */
-                  <div className="bg-white border border-[#EFF3F4] p-6 text-center space-y-4 chamfered-card">
-                    <h3 className="text-xs font-heading font-black uppercase text-[#0F1419] tracking-wider">
-                      WHERE ARE YOU GOING?
-                    </h3>
-                    <p className="text-xs font-semibold text-brand-text-muted leading-relaxed max-w-xs mx-auto">
-                      State your travel plans to initiate background tracking. We&apos;ll keep looking for matching passenger coordinates.
-                    </p>
-                    <button
-                      onClick={() => {
-                        resetAiAssistant();
-                        setShowAiAssistant(true);
-                      }}
-                      className="bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-xs px-5 py-3.5 flex items-center justify-center gap-1.5 cursor-pointer chamfered-card w-full"
-                    >
-                      <Plus size={14} />
-                      <span>ADD A TRIP</span>
-                    </button>
-                  </div>
-                ) : (
-                  /* HERO ACTIVE PLAN CARD - Crisp Geometric Silhouette */
-                  <div className="space-y-3">
-                    {travelPlans.filter((p) => !p.isCompleted).slice(0, 1).map((plan) => {
-                      const matchesCount = travelMatches.filter((m) => m.planId === plan.id).length;
-                      return (
-                        <div
-                          key={plan.id}
-                          className="bg-white border border-[#EFF3F4] p-6 space-y-4 hover:border-zinc-300 transition-all cursor-pointer chamfered-card"
-                          onClick={() => setActiveTab("plans")}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <span className="text-xs text-brand-text-muted font-bold uppercase tracking-wider block">
-                                UPCOMING TRIP HERO
-                              </span>
-                              <h3 className="text-xl font-heading font-black text-[#0F1419] leading-tight mt-1">
-                                {plan.fromCity} → {plan.destinations.join(" → ")}
-                              </h3>
-                              <p className="text-xs text-brand-text-muted font-bold mt-1">
-                                {plan.startDate} {plan.endDate ? `— ${plan.endDate}` : ""}
-                                {plan.stops && plan.stops.length > 0 && ` • Stops: ${plan.stops.join(", ")}`}
-                              </p>
-                            </div>
-
-                            {plan.status === "matches_found" ? (
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 bg-brand-primary rounded-full animate-pulse" />
-                                <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                  {matchesCount} Overlaps
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-xs bg-[#F5F8FA] text-zinc-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                Scanning...
-                              </span>
-                            )}
-                          </div>
-
-                          {plan.status === "matches_found" && (
-                            <div className="bg-[#F5F8FA] border-l-2 border-brand-primary p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                              <p className="font-semibold text-brand-text leading-normal">
-                                We found overlapping trips on your route around December!
-                              </p>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveTab("plans");
-                                }}
-                                className="bg-[#0F1419] hover:bg-black text-white font-bold text-xs px-4 py-2.5 shrink-0 transition-all cursor-pointer chamfered-card"
-                              >
-                                See overlaps
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Horizontal Lightweight Recommendations Card Section */}
-              <div className="space-y-4">
-                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                  Trending Destinations
-                </span>
-
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
-                  {destinations.map((dest) => {
-                    const isSaved = userProfile.wishlist.includes(dest.id);
-                    return (
-                      <div
-                        key={dest.id}
-                        className="w-[240px] bg-white border border-[#EFF3F4] p-4 shrink-0 flex flex-col justify-between space-y-4 shadow-sm hover:border-zinc-200 transition-all chamfered-card"
-                      >
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-start">
-                            <h4 className="text-xs font-heading font-black text-[#0F1419] leading-tight">
-                              {dest.name}, <span className="text-zinc-400">{dest.country}</span>
-                            </h4>
-                            <button
-                              onClick={() => handleToggleWishlist(dest.id, dest.name)}
-                              className={`p-1.5 transition-all ${
-                                isSaved ? "text-brand-primary bg-brand-primary/10" : "text-zinc-400 hover:text-zinc-600"
-                              }`}
-                            >
-                              <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} />
-                            </button>
-                          </div>
-
-                          <p className="text-xs text-brand-text-muted font-semibold leading-relaxed line-clamp-2">
-                            {dest.description}
-                          </p>
-                        </div>
-
-                        <div className="flex justify-between items-center pt-2.5 border-t border-[#EFF3F4]">
-                          <span className="text-xs text-zinc-400 font-bold">
-                            {dest.friendsInterested.length} friends saved
-                          </span>
-                          <button
-                            onClick={() => handleQuickAddDestination(dest)}
-                            className="bg-brand-primary text-white hover:bg-brand-primary-hover font-bold text-[11px] px-3 py-1.5 chamfered-card"
-                          >
-                            Add Plan
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Quick Contact Matching Section - sitting naturally on page (no container box!) */}
-              <div className="border-t border-[#EFF3F4] pt-6 space-y-4">
-                <div className="space-y-1">
-                  <h4 className="text-xs font-black tracking-wider uppercase text-brand-text-muted">Sync with Friends</h4>
-                  <p className="text-xs font-semibold text-brand-text-muted leading-normal">
-                    Securely scan address book contacts to view which friends are currently using Diaspedia.
-                  </p>
-                </div>
-
-                {!isSynced ? (
-                  <button
-                    onClick={handleSyncContacts}
-                    disabled={isSyncing}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all cursor-pointer flex items-center justify-center gap-1.5 chamfered-card"
-                  >
-                    {isSyncing ? "Syncing..." : "Sync Contacts"}
-                  </button>
-                ) : (
-                  <div className="space-y-3 pt-1">
-                    <div className="text-xs bg-[#71E300]/10 text-emerald-800 border border-[#71E300]/20 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                      <CheckCircle2 size={13} />
-                      <span>Address book synced successfully!</span>
-                    </div>
-
-                    <div className="space-y-3">
-                      {friendsList.slice(0, 3).map((f, idx) => (
-                        <div key={`friend-item-${idx}`} className="flex items-center justify-between text-xs py-1 border-b border-[#EFF3F4]/40 last:border-b-0">
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-8 h-8 rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-                              {f.name.slice(0, 1)}
-                            </div>
-                            <span className="font-bold text-brand-text">{f.name}</span>
-                          </div>
-                          <span className="text-xs text-zinc-400 font-bold bg-[#F5F8FA] px-2 py-0.5 rounded uppercase">
-                            On Diaspedia
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-
-          {/* ========================================= */}
-          {/* TAB 2: PLANS & OVERLAPS SCREEN            */}
-          {/* ========================================= */}
-          {activeTab === "plans" && (
+          {activeTab === "now" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="space-y-1">
-                <h2 className="text-2xl font-heading font-black tracking-tight text-[#0F1419]">
-                  My Travel Plans
-                </h2>
-                <p className="text-xs text-zinc-500">
-                  Diaspedia looks for overlapping plans. Once found, join discussion groups to share cost.
-                </p>
+              {/* Introduction header */}
+              <div className="pt-2">
+                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest">
+                  Live Intents
+                </span>
+                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
+                  What are you doing?
+                </h1>
               </div>
 
-              {/* ACTIVE PLANS LOOP - Crisp and Spacious */}
-              <div className="space-y-4">
-                {travelPlans.filter((p) => !p.isCompleted).map((plan) => {
-                  const planMatches = travelMatches.filter((m) => m.planId === plan.id);
-                  const isMatchFound = plan.status === "matches_found";
+              {/* Single Simple Entry Box (ChatGPT-like but strictly an elegant textbox, no categories) */}
+              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
+                <div className="space-y-1">
+                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
+                    TELL DIASPEDIA NOW
+                  </span>
+                  <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                    State what you are doing right now in simple English.
+                  </p>
+                </div>
 
-                  return (
-                    <div
-                      key={`plan-page-${plan.id}`}
-                      className="bg-white border border-[#EFF3F4] p-6 space-y-5 chamfered-card"
+                <div className="space-y-3">
+                  <textarea
+                    rows={2}
+                    value={nowInputText}
+                    onChange={(e) => setNowInputText(e.target.value)}
+                    placeholder="Tell Diaspedia... (e.g. I'm going to BER airport now)"
+                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
+                  />
+
+                  <button
+                    onClick={() => {
+                      handleNowSubmit(nowInputText);
+                    }}
+                    disabled={!nowInputText.trim()}
+                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
+                  >
+                    <span>Submit Intent</span>
+                    <ArrowRight size={14} className="text-brand-primary" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Click presets when no request is active */}
+              {!nowRequest && (
+                <div className="space-y-3">
+                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
+                    Or choose a common intent
+                  </span>
+                  <div className="grid grid-cols-1 gap-2.5">
+                    {[
+                      "I'm going to BER airport now.",
+                      "I need to get to the train station.",
+                      "I'm leaving this office complex in 15 minutes.",
+                      "I'm heading to the Olympic stadium."
+                    ].map((prompt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handlePresetNow(prompt)}
+                        className="w-full bg-[#F5F8FA] hover:bg-zinc-100 border border-[#EFF3F4] px-4 py-3 text-left text-xs font-bold text-zinc-700 transition-all flex items-center justify-between chamfered-card"
+                      >
+                        <span>&ldquo;{prompt}&rdquo;</span>
+                        <ChevronRight size={14} className="text-brand-primary" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* NOW INTENT LIFECYCLE: Searching, Matching or Accepted */}
+              {nowRequest && (
+                <div className="space-y-5 pt-2 border-t border-zinc-100">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
+                        ACTIVE INTENT NOW
+                      </span>
+                      <h3 className="text-lg font-heading font-black text-[#0F1419] mt-0.5 leading-tight">
+                        &ldquo;{nowRequest.text}&rdquo;
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setNowRequest(null);
+                        setSelectedMatch(null);
+                        setNowInputText("");
+                      }}
+                      className="text-xs font-bold text-red-500 hover:underline px-2 py-1"
                     >
-                      <div className="flex justify-between items-start pb-1">
-                        <div>
-                          <span className="text-xs text-brand-text-muted font-black uppercase tracking-wider block">
-                            ACTIVE PLAN
-                          </span>
-                          <h3 className="text-xl font-heading font-black text-[#0F1419] mt-1">
-                            {plan.fromCity} → {plan.destinations.join(" → ")}
-                          </h3>
-                          <p className="text-xs text-brand-text-muted font-bold mt-1">
-                            {plan.startDate} {plan.endDate ? `— ${plan.endDate}` : ""}
-                            {plan.stops && plan.stops.length > 0 && ` • Stops: ${plan.stops.join(", ")}`}
-                          </p>
-                        </div>
+                      Cancel
+                    </button>
+                  </div>
 
-                        {isMatchFound ? (
-                          <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">
-                            Overlaps Found
+                  {/* OpenStreetMap Component displayed naturally */}
+                  <div className="space-y-2">
+                    <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
+                      Real-time Intent Map
+                    </span>
+                    <div className="border border-[#EFF3F4] bg-zinc-100 relative overflow-hidden h-[220px] chamfered-card shadow-inner">
+                      {/* Interactive real-time OpenStreetMap Frame */}
+                      <iframe
+                        src={
+                          nowRequest.status === "accepted"
+                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.35%2C52.48%2C13.45%2C52.54&layer=mapnik"
+                            : nowRequest.status === "matches"
+                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.37%2C52.49%2C13.43%2C52.53&layer=mapnik"
+                            : "https://www.openstreetmap.org/export/embed.html?bbox=13.38%2C52.50%2C13.42%2C52.52&layer=mapnik"
+                        }
+                        className="w-full h-full border-0 rounded-none shadow-sm"
+                        title="OpenStreetMap Frame"
+                      />
+
+                      {/* Map status indicator overlays */}
+                      <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm border border-[#EFF3F4] p-2.5 flex items-center justify-between text-xs rounded-none shadow-md">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${nowRequest.status === "searching" ? "bg-amber-400 animate-ping" : "bg-brand-primary animate-pulse"}`} />
+                          <span className="font-bold text-zinc-700">
+                            {nowRequest.status === "searching" && "LOOKING AROUND YOU..."}
+                            {nowRequest.status === "matches" && "MATCHES FOUND NEARBY"}
+                            {nowRequest.status === "accepted" && "COORDINATES IN SYNC"}
                           </span>
-                        ) : (
-                          <span className="text-xs bg-[#F5F8FA] text-zinc-400 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">
-                            Scanning...
-                          </span>
-                        )}
+                        </div>
+                        <span className="text-xs font-black uppercase text-zinc-400">{nowRequest.destination}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* LOADING/SEARCHING STATUS STATE */}
+                  {nowRequest.status === "searching" && (
+                    <div className="bg-white border border-[#EFF3F4] p-8 text-center space-y-4 chamfered-card">
+                      <div className="w-10 h-10 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                      <h4 className="text-xs font-black tracking-wider uppercase text-zinc-400">Scanning Surrounding Area</h4>
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed max-w-xs mx-auto">
+                        Diaspedia is extracting location coordinates and analyzing live matches going the same way. One moment...
+                      </p>
+                    </div>
+                  )}
+
+                  {/* MATCHES LISTING STATE */}
+                  {nowRequest.status === "matches" && (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-baseline px-1">
+                        <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
+                          People heading your way
+                        </span>
+                        <span className="text-xs font-bold text-brand-primary">{activeMatches.length} matching now</span>
                       </div>
 
-                      {/* Overlaps sub-section - Pure architectural blocks */}
-                      {isMatchFound && (
-                        <div className="space-y-4 pt-4 border-t border-[#EFF3F4]">
-                          <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                            People heading the same way
-                          </span>
-
-                          <div className="space-y-4">
-                            {planMatches.map((match) => (
-                              <div
-                                key={match.id}
-                                className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-4 rounded-none"
-                              >
-                                {/* Header with Profile information */}
-                                <div className="flex justify-between items-start">
-                                  <div className="flex items-center gap-2.5">
-                                    <div className={`w-8 h-8 rounded-full ${match.friendAvatarBg} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
-                                      {match.friendName.slice(0, 1)}
-                                    </div>
-                                    <div>
-                                      <h5 className="text-xs font-bold text-[#0F1419]">{match.friendName}</h5>
-                                      <p className="text-xs text-brand-text-muted font-semibold">{match.fromCity} → {match.destinations.join(" → ")}</p>
-                                    </div>
+                      {activeMatches.length === 0 ? (
+                        <div className="bg-white border border-[#EFF3F4] p-6 text-center text-xs font-semibold text-zinc-500 chamfered-card">
+                          No active live requests in this direction right now. Keep watching?
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {activeMatches.map((match) => (
+                            <div
+                              key={match.id}
+                              className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm relative chamfered-card"
+                            >
+                              {/* Header & verified profile */}
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-2.5">
+                                  <div className={`w-8 h-8 rounded-full ${match.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
+                                    {match.name.slice(0, 1)}
                                   </div>
-
-                                  {/* Verification Badges */}
-                                  <div className="flex items-center gap-1">
-                                    {match.isPhoneVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">Phone✓</span>}
-                                    {match.isEmailVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">Email✓</span>}
-                                    {match.isIdVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">ID✓</span>}
+                                  <div>
+                                    <h5 className="text-xs font-bold text-[#0F1419] flex items-center gap-1">
+                                      <span>{match.name}</span>
+                                      <span className="text-[10px] bg-brand-primary/10 text-brand-primary font-black px-1 py-0.2 rounded uppercase">Verified</span>
+                                    </h5>
+                                    <p className="text-xs font-bold text-zinc-400">{match.timeRemaining}</p>
                                   </div>
                                 </div>
 
-                                {/* Overlap metadata */}
-                                <div className="text-xs text-brand-text font-medium space-y-1">
-                                  <p className="flex items-center gap-1.5">
-                                    <Clock size={13} className="text-brand-primary shrink-0" />
-                                    <span>{match.overlapExplanation}</span>
-                                  </p>
-                                  <p className="text-xs text-brand-text-muted font-semibold pl-4.5">
-                                    Dates: {match.startDate} — {match.endDate}
-                                  </p>
-                                </div>
-
-                                {/* Shared costs categorization */}
-                                <div className="flex flex-wrap gap-1.5 pl-0.5">
-                                  {match.potentialSavings.map((item, idx) => (
-                                    <span key={idx} className="bg-white border border-[#EFF3F4] px-2.5 py-1 rounded-none text-xs font-bold text-zinc-600">
-                                      {item}
-                                    </span>
-                                  ))}
-                                </div>
-
-                                {/* Direct provider alert/tip */}
-                                <div className="bg-white border-l-2 border-brand-primary p-3.5 rounded-none flex items-start gap-2.5">
-                                  <Shield size={14} className="text-brand-primary shrink-0 mt-0.5" />
-                                  <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
-                                    Anti-Scam Tip: Secure taxi, hotel, or shuttle transfers directly. Pay actual providers rather than wiring or pooling funds with other travelers.
-                                  </p>
-                                </div>
-
-                                {/* Join / Open chat - Chamfered button geometry */}
-                                <div>
-                                  {match.hasJoinedGroup ? (
-                                    <button
-                                      onClick={() => {
-                                        setActiveChatGroupId(match.chatGroupId || "chat-zanzibar");
-                                      }}
-                                      className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3 rounded-none flex items-center justify-center gap-1 cursor-pointer chamfered-card"
-                                    >
-                                      <MessageSquare size={14} />
-                                      <span>Open Discussion</span>
-                                    </button>
-                                  ) : (
-                                    <div className="grid grid-cols-2 gap-2">
-                                      <button
-                                        onClick={() => {
-                                          setTravelMatches(travelMatches.filter((m) => m.id !== match.id));
-                                        }}
-                                        className="bg-white border border-[#EFF3F4] text-zinc-400 font-bold text-xs py-3 rounded-none cursor-pointer chamfered-card"
-                                      >
-                                        Keep Looking
-                                      </button>
-                                      <button
-                                        onClick={() => handleJoinMatchGroup(match)}
-                                        className="bg-brand-primary hover:bg-brand-primary-hover text-white font-extrabold text-xs py-3 rounded-none cursor-pointer chamfered-card"
-                                      >
-                                        Join Group
-                                      </button>
-                                    </div>
-                                  )}
+                                <div className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-600 font-extrabold px-2.5 py-0.5 uppercase">
+                                  Nearby
                                 </div>
                               </div>
-                            ))}
-                          </div>
+
+                              {/* Explanations & savings */}
+                              <div className="space-y-2 text-xs">
+                                <p className="font-semibold text-brand-text leading-relaxed">
+                                  {match.explanation}
+                                </p>
+                                <div className="bg-[#F5F8FA] border-l-2 border-brand-primary p-3 flex items-start gap-2 text-xs">
+                                  <Info size={14} className="text-brand-primary shrink-0 mt-0.5" />
+                                  <span className="font-bold text-zinc-700">Cost saving idea: {match.costSavingIdea}</span>
+                                </div>
+                              </div>
+
+                              {/* Real-time progress countdown line */}
+                              <div className="space-y-1">
+                                <div className="flex justify-between text-[11px] font-bold text-zinc-400 uppercase">
+                                  <span>Request Expiry</span>
+                                  <span>Time-Sensitive</span>
+                                </div>
+                                <div className="h-1.5 bg-zinc-100 rounded-none overflow-hidden">
+                                  <div
+                                    className="h-full bg-brand-primary transition-all duration-500 ease-linear"
+                                    style={{ width: `${nowProgress}%` }}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="grid grid-cols-2 gap-2.5 pt-1">
+                                <button
+                                  onClick={() => handleDismissMatch(match.id)}
+                                  className="bg-white border border-[#EFF3F4] text-zinc-500 hover:bg-zinc-50 font-bold text-xs py-3 cursor-pointer chamfered-card"
+                                >
+                                  NOT FOR ME
+                                </button>
+                                <button
+                                  onClick={() => handleGoTogether(match)}
+                                  className="bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-3 cursor-pointer chamfered-card"
+                                >
+                                  GO TOGETHER
+                                </button>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
-                  );
-                })}
-              </div>
+                  )}
 
-              {/* INTEGRATED GROUP DISCUSSION CHAT COMPONENT */}
-              {activeChatGroupId && (
-                <div className="bg-white border-t-2 border-[#0F1419] p-6 space-y-4 shadow-sm animate-fade-in rounded-none">
-                  <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4]">
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-brand-text-muted tracking-widest">Zanzibar Shared Discussion</h4>
-                      <p className="text-xs text-brand-primary font-bold">Coordination & Overlap</p>
-                    </div>
-                    <button
-                      onClick={() => setActiveChatGroupId(null)}
-                      className="p-1 rounded-none text-zinc-500 hover:text-black cursor-pointer"
-                    >
-                      <X size={18} />
-                    </button>
-                  </div>
+                  {/* ACCEPTED AND COORDINATION STATE */}
+                  {nowRequest.status === "accepted" && selectedMatch && (
+                    <div className="bg-white border-t-2 border-[#0F1419] p-5 space-y-4 shadow-sm chamfered-card">
+                      <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4]">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full ${selectedMatch.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
+                            {selectedMatch.name.slice(0, 1)}
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-black uppercase text-brand-text-muted">Coordinate with {selectedMatch.name}</h4>
+                            <p className="text-xs text-brand-primary font-bold">Sharing transit to {nowRequest.destination}</p>
+                          </div>
+                        </div>
+                      </div>
 
-                  {/* Messaging logs */}
-                  <div className="h-[220px] overflow-y-auto space-y-3 p-1">
-                    {chatMessages
-                      .filter((msg) => msg.chatGroupId === activeChatGroupId)
-                      .map((msg) => {
-                        const isUser = msg.senderUsername === userProfile.username;
-                        const isSystem = msg.senderUsername === "system";
+                      {/* Message logs */}
+                      <div className="h-[200px] overflow-y-auto space-y-3 p-1">
+                        {chatLog.map((msg) => {
+                          const isUser = msg.sender === "user";
+                          const isSystem = msg.sender === "system";
 
-                        if (isSystem) {
+                          if (isSystem) {
+                            return (
+                              <div key={msg.id} className="text-center py-1">
+                                <span className="bg-brand-primary/10 border border-brand-primary/20 text-zinc-800 text-xs font-bold px-3 py-1 uppercase tracking-wider block leading-relaxed rounded-none">
+                                  {msg.text}
+                                </span>
+                              </div>
+                            );
+                          }
+
                           return (
-                            <div key={msg.id} className="text-center py-1">
-                              <span className="bg-brand-primary/10 border border-brand-primary/25 text-zinc-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                {msg.text}
-                              </span>
-                            </div>
-                          );
-                        }
-
-                        return (
-                          <div
-                            key={msg.id}
-                            className={`flex items-start gap-2.5 max-w-[90%] ${isUser ? "ml-auto flex-row-reverse" : "mr-auto"}`}
-                          >
-                            <div className="space-y-1 w-full">
-                              <span className="text-xs text-zinc-400 font-bold block">
-                                {isUser ? "YOU" : msg.senderName.toUpperCase()}
-                              </span>
-                              <div className={`p-3.5 text-xs leading-relaxed border-l-2 ${isUser ? "bg-[#0F1419] text-white border-[#0F1419]" : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"} rounded-none`}>
-                                {msg.text}
+                            <div
+                              key={msg.id}
+                              className={`flex items-start gap-2.5 max-w-[90%] ${isUser ? "ml-auto flex-row-reverse" : "mr-auto"}`}
+                            >
+                              <div className="space-y-1 w-full">
+                                <span className="text-xs text-zinc-400 font-bold block">
+                                  {isUser ? "YOU" : selectedMatch.name.toUpperCase()}
+                                </span>
+                                <div className={`p-3 text-xs leading-relaxed border-l-2 ${isUser ? "bg-[#0F1419] text-white border-[#0F1419]" : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"} rounded-none`}>
+                                  {msg.text}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    <div ref={chatBottomRef} />
-                  </div>
+                          );
+                        })}
+                        <div ref={chatBottomRef} />
+                      </div>
 
-                  {/* Message submit form */}
-                  <form onSubmit={handleSendMessage} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Type coordination message..."
-                      value={chatInputText}
-                      onChange={(e) => setChatInputText(e.target.value)}
-                      className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
-                    />
-                    <button
-                      type="submit"
-                      className="bg-[#0F1419] text-white hover:bg-black w-11 h-11 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
-                    >
-                      <Send size={15} />
-                    </button>
-                  </form>
+                      {/* Message input */}
+                      <form onSubmit={handleSendChat} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Type coordination message..."
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
+                        />
+                        <button
+                          type="submit"
+                          className="bg-[#0F1419] text-white hover:bg-black w-11 h-11 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
+                        >
+                          <Send size={15} />
+                        </button>
+                      </form>
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
           )}
 
           {/* ========================================= */}
-          {/* TAB 3: PROFILE SCREEN                     */}
+          {/* TAB 2: LATER SCREEN                       */}
           {/* ========================================= */}
-          {activeTab === "profile" && (
+          {activeTab === "later" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              {/* Profile card with verified credentials - Chamfered */}
-              <div className="bg-white border border-[#EFF3F4] p-6 text-center space-y-4 shadow-sm relative chamfered-card">
-                <div className="relative inline-block">
-                  <div className="w-20 h-20 rounded-full bg-brand-primary flex items-center justify-center text-white text-3xl font-heading font-black shadow-md mx-auto">
-                    {userProfile.name.slice(0, 1)}
-                  </div>
+              <div className="pt-2">
+                <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+                  Future Intents
+                </span>
+                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
+                  Going somewhere later?
+                </h1>
+              </div>
+
+              {/* Minimal free-text plan entry box (no form) */}
+              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
+                <div className="space-y-1">
+                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
+                    DESCRIBE YOUR UPCOMING PLANS
+                  </span>
+                  <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                    Let Diaspedia watch the surrounding environment passively. Simply state when and where.
+                  </p>
                 </div>
 
-                <div className="space-y-0.5">
-                  <h3 className="text-lg font-heading font-black text-[#0F1419]">
-                    @{userProfile.username}
-                  </h3>
-                  <p className="text-xs font-bold text-brand-text-muted">Home: {userProfile.homeCity}</p>
+                <form onSubmit={handleLaterSubmit} className="space-y-3">
+                  <textarea
+                    rows={2}
+                    value={laterInputText}
+                    onChange={(e) => setLaterInputText(e.target.value)}
+                    placeholder="e.g. I'm going to Munich next Friday from Berlin, or travelling to Zanzibar in December"
+                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!laterInputText.trim()}
+                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
+                  >
+                    <span>Keep Watching For Me</span>
+                    <ArrowRight size={14} className="text-brand-primary" />
+                  </button>
+                </form>
+              </div>
+
+              {/* PERSISTENT CALM PLANS LISTING */}
+              <div className="space-y-4 pt-2">
+                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
+                  Active Future Intents
+                </span>
+
+                <div className="space-y-4">
+                  {laterPlans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className="bg-white border border-[#EFF3F4] p-6 space-y-4 hover:border-zinc-300 transition-all chamfered-card"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-xl font-heading font-black text-[#0F1419] uppercase tracking-tight leading-none">
+                            {plan.destination}
+                          </h4>
+                          <p className="text-xs text-brand-primary font-bold mt-1.5 flex items-center gap-1">
+                            <Clock size={13} />
+                            <span>{plan.timing}</span>
+                          </p>
+                          <p className="text-xs text-zinc-400 font-bold mt-0.5">
+                            {plan.route}
+                          </p>
+                        </div>
+
+                        <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-0.5 rounded-none uppercase tracking-wider">
+                          Watching...
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-brand-text-muted font-semibold italic">
+                        &ldquo;{plan.details}&rdquo;
+                      </p>
+
+                      {/* Display overlaps if found */}
+                      {plan.hasOverlaps && (
+                        <div className="space-y-3 pt-3 border-t border-[#EFF3F4]">
+                          <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
+                            Coincidences Found
+                          </span>
+
+                          {plan.overlaps.map((overlap, oIdx) => (
+                            <div key={oIdx} className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-3 rounded-none">
+                              <div className="flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-full ${overlap.avatarBg} flex items-center justify-center text-white text-[10px] font-bold`}>
+                                  {overlap.name.slice(0, 1)}
+                                </div>
+                                <span className="text-xs font-bold text-[#0F1419]">{overlap.name} ({overlap.time})</span>
+                              </div>
+
+                              <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
+                                {overlap.explanation}
+                              </p>
+
+                              <div className="bg-white border-l-2 border-brand-primary p-2.5 flex items-start gap-2 text-xs">
+                                <Shield size={14} className="text-brand-primary shrink-0 mt-0.5" />
+                                <span className="font-bold text-zinc-700">Cost saving idea: {overlap.costSavingIdea}</span>
+                              </div>
+
+                              <button
+                                onClick={() => {
+                                  setActionFeedback(`Coordinating with ${overlap.name} initiated!`);
+                                  setTimeout(() => setActionFeedback(null), 3000);
+                                }}
+                                className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-2.5 chamfered-card"
+                              >
+                                Reach Out
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ========================================= */}
+          {/* TAB 3: SETTINGS SCREEN                    */}
+          {/* ========================================= */}
+          {activeTab === "settings" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-6"
+            >
+              <div className="pt-2">
+                <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+                  Preferences
+                </span>
+                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
+                  Settings
+                </h1>
+              </div>
+
+              {/* Minimalist Profile detail card */}
+              <div className="bg-white border border-[#EFF3F4] p-5 text-center space-y-3.5 shadow-sm relative chamfered-card">
+                <div className="w-16 h-16 rounded-full bg-[#0F1419] flex items-center justify-center text-white text-2xl font-heading font-black mx-auto">
+                  {userProfile.name.slice(0, 1)}
+                </div>
+                <div>
+                  <h3 className="text-xs font-black uppercase text-[#0F1419]">@{userProfile.username}</h3>
+                  <p className="text-xs text-zinc-400 font-bold">Home: {userProfile.homeCity}</p>
                 </div>
 
-                {/* Verified Indicators */}
-                <div className="flex flex-wrap justify-center gap-1.5 pt-1">
-                  {userProfile.isPhoneVerified && (
-                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
-                      <span>Phone Verified</span>
-                    </span>
-                  )}
-                  {userProfile.isEmailVerified && (
-                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
-                      <span>Email Verified</span>
-                    </span>
-                  )}
-                  {userProfile.isIdVerified && (
-                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
-                      <span>ID Verified</span>
-                    </span>
-                  )}
-                </div>
-
-                {/* Logout Button */}
-                <div className="pt-2">
+                <div className="pt-2 border-t border-[#EFF3F4]">
                   <button
                     onClick={handleLogout}
-                    className="text-xs font-bold text-zinc-400 hover:text-red-500 transition-colors"
+                    className="text-xs font-bold text-red-500 hover:underline"
                   >
                     Logout Account
                   </button>
                 </div>
               </div>
 
-              {/* Travel Statistics - Crisp and Solid */}
-              <div className="bg-[#0F1419] text-white p-6 space-y-4 shadow-lg chamfered-card">
-                <div>
-                  <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
-                    Your Travel History
-                  </span>
-                  <h3 className="text-lg font-heading font-black tracking-tight mt-0.5">Travel Analytics</h3>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3.5">
-                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
-                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">KILOMETERS</span>
-                    <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
-                      {userProfile.totalKmTraveled.toLocaleString()} km
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
-                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">CITIES VISITED</span>
-                    <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
-                      {userProfile.totalCitiesVisited}
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
-                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">TOTAL PLANS</span>
-                    <div className="text-lg font-heading font-black text-zinc-100 mt-0.5">
-                      {userProfile.totalTripsCount}
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
-                    <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">CO2 REDUCED</span>
-                    <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
-                      -{userProfile.carbonSavedKg.toFixed(0)} kg
-                    </div>
-                  </div>
-                </div>
-
-                {/* Completed Plans list */}
-                <div className="space-y-3 pt-4 border-t border-white/10">
-                  <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block">
-                    Completed Travel Plans
-                  </span>
-                  {travelPlans.filter((p) => p.isCompleted).map((plan) => (
-                    <div
-                      key={plan.id}
-                      className="bg-white/5 p-3 flex justify-between items-center text-xs rounded-none border-b border-white/5 last:border-b-0"
-                    >
-                      <div>
-                        <div className="font-bold text-zinc-200">{plan.fromCity} → {plan.destinations.join(" → ")}</div>
-                        <span className="text-xs text-zinc-400 font-medium">{plan.startDate}</span>
-                      </div>
-                      <span className="text-brand-primary font-bold">Archived</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Conversational Profile Edits Option - Crisp */}
-              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 space-y-4 chamfered-card">
+              {/* WORK HOURS SCHEDULER blockout control */}
+              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
                 <div className="space-y-1">
-                  <h4 className="text-xs font-black uppercase text-brand-text-muted">Edit Profile via Conversation</h4>
+                  <span className="text-xs font-black text-brand-primary uppercase tracking-wider block">
+                    WHEN SHOULD DIASPEDIA REACH YOU?
+                  </span>
                   <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
-                    Modify home cities, residency, passport details, or travel settings dynamically using speech.
+                    Set your focus hours. Diaspedia will not send you matching requests or alerts during these periods.
                   </p>
                 </div>
 
-                <button
-                  onClick={() => {
-                    resetAiAssistant();
-                    setAiConversation([
-                      { sender: "ai", text: "Hi! Want to update your profile details? Tell me what needs to be updated." }
-                    ]);
-                    setShowAiAssistant(true);
-                  }}
-                  className="w-full bg-white border border-[#EFF3F4] text-zinc-800 font-bold text-xs py-3 cursor-pointer chamfered-card"
-                >
-                  <span>Talk with Assistant</span>
-                </button>
-              </div>
+                {/* Day Pliis Selector */}
+                <div className="flex flex-wrap gap-1.5">
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
+                    const active = workDays.includes(day);
+                    return (
+                      <button
+                        key={day}
+                        onClick={() => handleToggleWorkDay(day)}
+                        className={`text-xs font-bold px-3 py-1.5 border transition-all ${
+                          active
+                            ? "bg-[#0F1419] text-white border-[#0F1419]"
+                            : "bg-[#F5F8FA] text-zinc-400 border-[#EFF3F4] hover:bg-zinc-100"
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
 
-              {/* Background Matching Settings Privacy Toggles - Chamfered */}
-              <div className="bg-white border border-[#EFF3F4] p-6 shadow-sm space-y-4 chamfered-card">
-                <h3 className="text-xs font-black tracking-wider uppercase text-brand-text-muted px-1">Privacy Controls</h3>
-
-                <div className="flex items-center justify-between text-xs">
-                  <div className="space-y-1 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Share Saved Travel Plans</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Allow connected friends on Diaspedia to see your active travels.</p>
+                {/* Time range inputs */}
+                <div className="grid grid-cols-2 gap-3.5 text-xs">
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-zinc-400 uppercase block">START TIME</span>
+                    <input
+                      type="time"
+                      value={workHoursStart}
+                      onChange={(e) => setWorkHoursStart(e.target.value)}
+                      className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-2.5 font-bold focus:outline-none"
+                    />
                   </div>
-                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end shrink-0">
-                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-zinc-400 uppercase block">END TIME</span>
+                    <input
+                      type="time"
+                      value={workHoursEnd}
+                      onChange={(e) => setWorkHoursEnd(e.target.value)}
+                      className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-2.5 font-bold focus:outline-none"
+                    />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
-                  <div className="space-y-1 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Background Matching</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Scan background overlaps for shared travel costs automatically.</p>
+                <div className="bg-[#F5F8FA] p-3 text-xs font-semibold text-zinc-500 leading-normal">
+                  Matching is currently active outside of {workHoursStart} &mdash; {workHoursEnd} on {workDays.join(", ")}.
+                </div>
+              </div>
+
+              {/* Basic controls toggles */}
+              <div className="bg-white border border-[#EFF3F4] p-5 shadow-sm space-y-4 chamfered-card">
+                <span className="text-xs font-black tracking-wider uppercase text-brand-text-muted px-1">Privacy & Toggles</span>
+
+                {/* Toggle 1 */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="space-y-0.5 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Location Services</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Enable real-time OpenStreetMap tracking for surrounding coincidences.</p>
                   </div>
-                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end shrink-0">
+                  <button
+                    onClick={() => setLocationServices(!locationServices)}
+                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
+                      locationServices ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
+                    }`}
+                  >
                     <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+                  </button>
+                </div>
+
+                {/* Toggle 2 */}
+                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
+                  <div className="space-y-0.5 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Push Notifications</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Alert me instantly when a passenger overlap is discovered.</p>
                   </div>
+                  <button
+                    onClick={() => setPushNotifications(!pushNotifications)}
+                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
+                      pushNotifications ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
+                    }`}
+                  >
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+                  </button>
+                </div>
+
+                {/* Toggle 3 */}
+                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
+                  <div className="space-y-0.5 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Invisible Matching</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Participate in matching without exposing your profile name directly.</p>
+                  </div>
+                  <button
+                    onClick={() => setInvisibleMode(!invisibleMode)}
+                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
+                      invisibleMode ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
+                    }`}
+                  >
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+                  </button>
+                </div>
+
+                {/* Toggle 4 */}
+                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
+                  <div className="space-y-0.5 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Strict Verification Only</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Only match me with users who have verified phone and ID credentials.</p>
+                  </div>
+                  <button
+                    onClick={() => setPrivacyTetherEnabled(!privacyTetherEnabled)}
+                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
+                      privacyTetherEnabled ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
+                    }`}
+                  >
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+                  </button>
                 </div>
               </div>
 
               {/* Dedicated Corporate Legal Links Footer - Sleek Flat */}
-              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 text-center space-y-4 rounded-none">
+              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-5 text-center space-y-4 rounded-none">
                 <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
                   diaspedia Corporation
                 </span>
@@ -1367,7 +1354,7 @@ export default function Home() {
                   <Link href="/cookies" className="hover:text-brand-primary hover:underline">Cookie Policy</Link>
                 </div>
                 <p className="text-xs text-zinc-400 font-semibold leading-normal">
-                  diaspedia &copy; {new Date().getFullYear()}. Financial accounts, matching layers, and travel companion details are powered in partnership with open global transit providers.
+                  diaspedia &copy; {new Date().getFullYear()}. Financial accounts, matching layers, and real-world companion details are powered in partnership with open global transit providers.
                 </p>
               </div>
             </motion.div>
@@ -1376,145 +1363,37 @@ export default function Home() {
         </main>
 
         {/* ------------------------------------------ */}
-        {/* LIGHTWEIGHT CONVERSATIONAL ASSISTANT DRAWER */}
-        {/* ------------------------------------------ */}
-        <AnimatePresence>
-          {showAiAssistant && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black z-50"
-                onClick={() => setShowAiAssistant(false)}
-              />
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-[#0F1419] z-[55] p-6 space-y-4 max-h-[85%] flex flex-col overflow-hidden shadow-2xl rounded-none"
-              >
-                {/* Drawer Header - Sleek Minimalist */}
-                <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4] shrink-0">
-                  <div>
-                    <h3 className="text-xs font-black uppercase tracking-widest text-[#0F1419]">Diaspedia Companion</h3>
-                    <p className="text-xs text-brand-text-muted font-bold">One detail at a time</p>
-                  </div>
-
-                  <button
-                    onClick={() => setShowAiAssistant(false)}
-                    className="p-1 rounded-none text-zinc-500 hover:text-black cursor-pointer"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-
-                {/* Progress Indicators for Conversational Steps */}
-                {aiAssistantStep <= 4 && (
-                  <div className="flex gap-1.5 h-1 bg-zinc-100 rounded-none overflow-hidden shrink-0">
-                    {[1, 2, 3, 4].map((step) => (
-                      <div
-                        key={`ai-step-${step}`}
-                        className={`flex-1 h-full rounded-none transition-all ${
-                          step <= aiAssistantStep ? "bg-brand-primary" : "bg-zinc-100"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Dialogue log container - Structured and Editorial */}
-                <div className="flex-1 overflow-y-auto space-y-4 py-2 scrollbar-none">
-                  {aiConversation.map((msg, idx) => (
-                    <div
-                      key={`ai-msg-${idx}`}
-                      className={`flex items-start gap-3 max-w-[90%] ${
-                        msg.sender === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
-                      }`}
-                    >
-                      <div className="space-y-1 w-full">
-                        <span className="text-xs text-zinc-400 font-bold block">
-                          {msg.sender === "user" ? "YOU" : "DIASPEDIA"}
-                        </span>
-
-                        <div className={`p-4 text-xs leading-relaxed border-l-2 ${
-                          msg.sender === "user"
-                            ? "bg-[#0F1419] text-white border-[#0F1419] font-bold"
-                            : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"
-                        }`}>
-                          {msg.text}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={aiBottomRef} />
-                </div>
-
-                {/* Bottom messaging input box - Chamfered Corner */}
-                <form onSubmit={handleAiMessageSubmit} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
-                  <input
-                    type="text"
-                    required
-                    placeholder={
-                      aiAssistantStep === 1
-                        ? "e.g. Zanzibar"
-                        : aiAssistantStep === 2
-                        ? "e.g. Berlin"
-                        : aiAssistantStep === 3
-                        ? "e.g. Dec 10 - Dec 20"
-                        : aiAssistantStep === 4
-                        ? "e.g. none"
-                        : "Ask anything..."
-                    }
-                    value={aiInputText}
-                    onChange={(e) => setAiInputText(e.target.value)}
-                    className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3.5 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-[#0F1419] text-white hover:bg-black w-12 h-12 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
-                  >
-                    <Send size={15} />
-                  </button>
-                </form>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* ------------------------------------------ */}
         {/* PERSISTENT THREE-ITEM BOTTOM CAP NAVIGATION */}
         {/* ------------------------------------------ */}
-        <nav className="absolute bottom-5 left-4 right-4 bg-[#0F1419] rounded-full px-4 py-2.5 flex justify-around items-center z-40 shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-white/5 shrink-0">
+        <nav className="absolute bottom-5 left-4 right-4 bg-[#0F1419] rounded-full px-4 py-2.5 flex justify-around items-center z-40 shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-white/10 shrink-0">
           <button
-            onClick={() => setActiveTab("home")}
+            onClick={() => setActiveTab("now")}
             className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "home" ? "text-brand-primary font-bold" : "text-zinc-500 hover:text-zinc-300"
+              activeTab === "now" ? "text-white font-bold" : "text-white/60 hover:text-white"
             }`}
           >
-            <Compass size={20} className={activeTab === "home" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-xs tracking-tight">Home</span>
+            <Compass size={20} className={activeTab === "now" ? "text-white" : "text-white/60"} />
+            <span className="text-xs tracking-tight uppercase font-black">NOW</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("plans")}
+            onClick={() => setActiveTab("later")}
             className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "plans" ? "text-brand-primary font-bold" : "text-zinc-500 hover:text-zinc-300"
+              activeTab === "later" ? "text-white font-bold" : "text-white/60 hover:text-white"
             }`}
           >
-            <Calendar size={20} className={activeTab === "plans" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-xs tracking-tight">Plans</span>
+            <Calendar size={20} className={activeTab === "later" ? "text-white" : "text-white/60"} />
+            <span className="text-xs tracking-tight uppercase font-black">LATER</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("profile")}
+            onClick={() => setActiveTab("settings")}
             className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "profile" ? "text-brand-primary font-bold" : "text-zinc-500 hover:text-zinc-300"
+              activeTab === "settings" ? "text-white font-bold" : "text-white/60 hover:text-white"
             }`}
           >
-            <User size={20} className={activeTab === "profile" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-xs tracking-tight">Profile</span>
+            <User size={20} className={activeTab === "settings" ? "text-white" : "text-white/60"} />
+            <span className="text-xs tracking-tight uppercase font-black">SETTINGS</span>
           </button>
         </nav>
 
