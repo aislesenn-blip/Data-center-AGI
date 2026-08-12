@@ -382,7 +382,7 @@ export default function Home() {
       <div className="w-full max-w-md bg-white h-[100dvh] relative flex flex-col shadow-[0_12px_40px_rgba(0,0,0,0.03)] overflow-hidden border-x border-zinc-100">
 
         {/* ------------------------------------------ */}
-        {/* MOCK AUTHENTICATION SCREEN - FULLY RESPONSIVE & CONSTRAINED */}
+        {/* MOCK AUTHENTICATION SCREEN - EDITORIAL & GEOMETRIC */}
         {/* ------------------------------------------ */}
         <AnimatePresence>
           {!isLoggedIn && (
@@ -392,31 +392,43 @@ export default function Home() {
               transition={premiumTransition}
               className="absolute inset-0 bg-white z-[80] flex flex-col justify-between p-8 h-[100dvh] overflow-hidden"
             >
-              <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6 max-w-sm mx-auto">
-                {/* Brand Lowercase Wordmark */}
-                <span className="font-heading font-black text-5xl tracking-tighter text-brand-primary select-none">
+              {/* Spacious, premium top area */}
+              <div className="pt-16 text-left space-y-1">
+                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest block">
+                  European Transit Companion
+                </span>
+                <span className="font-heading font-black text-6xl tracking-tighter text-[#0F1419] select-none block leading-none">
                   diaspedia
                 </span>
+              </div>
 
-                <p className="text-sm font-semibold text-zinc-500 leading-relaxed max-w-xs">
+              {/* Bold middle display text */}
+              <div className="flex-1 flex flex-col justify-center text-left space-y-4 max-w-xs">
+                <h1 className="text-2xl font-black font-heading leading-tight text-[#0F1419]">
                   Your trip might be cheaper when you go with others heading the same way.
+                </h1>
+                <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                  Diaspedia works passively in the background. Tell us where you are heading, and we&apos;ll look for overlapping passenger trips.
                 </p>
               </div>
 
-              {/* Strict Continue Buttons Only */}
-              <div className="w-full max-w-xs mx-auto space-y-3 pb-8">
+              {/* Sleek, Chamfered-Corner Action Buttons */}
+              <div className="w-full space-y-3 pb-8">
                 <button
                   type="button"
                   onClick={() => handleAuth("google")}
                   disabled={authLoading}
-                  className="w-full bg-black hover:bg-zinc-900 active:scale-95 text-white font-bold text-xs py-4 rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2.5 h-[52px]"
+                  className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
                 >
                   {authLoading && authProvider === "google" ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
                   ) : (
                     <>
-                      <span className="font-mono">G</span>
-                      <span>CONTINUE WITH GOOGLE</span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-sm">G</span>
+                        <span>CONTINUE WITH GOOGLE</span>
+                      </div>
+                      <ArrowRight size={14} className="text-brand-primary" />
                     </>
                   )}
                 </button>
@@ -425,14 +437,17 @@ export default function Home() {
                   type="button"
                   onClick={() => handleAuth("apple")}
                   disabled={authLoading}
-                  className="w-full bg-white border-2 border-zinc-100 hover:bg-zinc-50 active:scale-95 text-[#0F1419] font-bold text-xs py-4 rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2.5 h-[52px]"
+                  className="w-full bg-white border border-[#EFF3F4] hover:bg-zinc-50 text-[#0F1419] font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
                 >
                   {authLoading && authProvider === "apple" ? (
-                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto" />
                   ) : (
                     <>
-                      <span className="font-mono"></span>
-                      <span>CONTINUE WITH APPLE</span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-sm"></span>
+                        <span>CONTINUE WITH APPLE</span>
+                      </div>
+                      <ArrowRight size={14} className="text-zinc-400" />
                     </>
                   )}
                 </button>
@@ -442,7 +457,7 @@ export default function Home() {
         </AnimatePresence>
 
         {/* ------------------------------------------ */}
-        {/* INTRODUCTION WIZARD - 4 STEPS */}
+        {/* INTRODUCTION WIZARD - EDITORIAL & GEOMETRIC */}
         {/* ------------------------------------------ */}
         <AnimatePresence>
           {isLoggedIn && showWizard && (
@@ -460,7 +475,7 @@ export default function Home() {
               </div>
 
               {/* Wizard Content Slots */}
-              <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto space-y-8">
+              <div className="flex-1 flex flex-col justify-center space-y-8 max-w-sm mx-auto w-full">
                 <AnimatePresence mode="wait">
                   {wizardStep === 1 && (
                     <motion.div
@@ -468,16 +483,16 @@ export default function Home() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ x: -20, opacity: 0 }}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
                         GO SOMEWHERE.
                       </h2>
-                      <p className="text-xs font-semibold text-zinc-500 leading-relaxed">
-                        Add your upcoming trips, destinations, or multiple stops easily.
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                        Add your upcoming trips, destinations, or multiple stopovers easily in seconds.
                       </p>
-                      <div className="bg-[#F5F8FA] p-8 rounded-2xl flex items-center justify-center">
-                        <Compass className="w-12 h-12 text-brand-primary animate-pulse" />
+                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
+                        <Compass className="w-12 h-12 text-brand-primary" />
                       </div>
                     </motion.div>
                   )}
@@ -488,15 +503,15 @@ export default function Home() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ x: -20, opacity: 0 }}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        TELL DIASPEDIA ABOUT YOUR TRIP.
+                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                        TELL DIASPEDIA.
                       </h2>
-                      <p className="text-xs font-semibold text-zinc-500 leading-relaxed">
-                        Just tell us your starting points, dates, or travel context. The app works quietly behind the scenes.
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                        Just state your starting point, dates, or travel details conversationally. The app works passively behind the scenes.
                       </p>
-                      <div className="bg-[#F5F8FA] p-8 rounded-2xl flex items-center justify-center">
+                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
                         <MessageSquare className="w-12 h-12 text-brand-primary" />
                       </div>
                     </motion.div>
@@ -508,19 +523,19 @@ export default function Home() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ x: -20, opacity: 0 }}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        WE&apos;LL LOOK FOR PEOPLE GOING THE SAME WAY.
+                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                        WE PASSIVELY MATCH.
                       </h2>
-                      <p className="text-xs font-semibold text-zinc-500 leading-relaxed">
-                        No endless manual search. We automatically scan matches and let you review overlaps securely.
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                        No manual searches needed. We scan and alert you as soon as overlapping travel plans match.
                       </p>
-                      <div className="bg-[#F5F8FA] p-8 rounded-2xl flex items-center justify-center">
-                        <div className="flex gap-2">
-                          <div className="w-5 h-5 rounded-full bg-brand-primary" />
-                          <div className="w-5 h-5 rounded-full bg-zinc-300" />
-                          <div className="w-5 h-5 rounded-full bg-zinc-400" />
+                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
+                        <div className="flex gap-2.5">
+                          <div className="w-4 h-4 bg-brand-primary" />
+                          <div className="w-4 h-4 bg-zinc-300" />
+                          <div className="w-4 h-4 bg-[#0F1419]" />
                         </div>
                       </div>
                     </motion.div>
@@ -532,15 +547,15 @@ export default function Home() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ x: -20, opacity: 0 }}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        YOU MAY FIND A WAY TO SPEND LESS TOGETHER.
+                      <h2 className="text-5xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
+                        SPEND LESS TOGETHER.
                       </h2>
-                      <p className="text-xs font-semibold text-zinc-500 leading-relaxed">
-                        Share taxis, airport shuttles, accommodation, or travel plans easily without behavior changes.
+                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                        Coordinate to share transport taxis, airport shuttles, and activities without changing user behavior.
                       </p>
-                      <div className="bg-[#F5F8FA] p-8 rounded-2xl flex items-center justify-center">
+                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
                         <Shield className="w-12 h-12 text-brand-primary" />
                       </div>
                     </motion.div>
@@ -549,23 +564,23 @@ export default function Home() {
               </div>
 
               {/* Sequential Action Button */}
-              <div className="w-full max-w-xs mx-auto pb-4">
+              <div className="w-full pb-4 max-w-sm mx-auto">
                 {wizardStep < 4 ? (
                   <button
                     type="button"
                     onClick={() => setWizardStep((prev) => prev + 1)}
-                    className="w-full bg-brand-primary hover:bg-brand-primary-hover active:scale-95 text-white font-bold text-xs py-4 rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
                   >
-                    <span>NEXT</span>
-                    <ArrowRight size={14} />
+                    <span>CONTINUE</span>
+                    <ArrowRight size={14} className="text-brand-primary" />
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={handleCompleteWizard}
-                    className="w-full bg-[#0F1419] hover:bg-black active:scale-95 text-white font-bold text-xs py-4 rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
                   >
-                    <span>LET&apos;S GO</span>
+                    <span>START DIASPEDIA</span>
                     <Check size={14} />
                   </button>
                 )}
@@ -678,138 +693,165 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              className="space-y-8"
             >
-              {/* People You May Know: Story-style small profile row */}
-              <div className="space-y-2.5">
-                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block px-1">
-                  People You May Know
+              {/* Natural screen header info */}
+              <div className="pt-2">
+                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest">
+                  Welcome Back
                 </span>
-                <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
-                  {friendsList.map((f, idx) => (
-                    <div
-                      key={`friend-story-${idx}`}
-                      className="flex flex-col items-center gap-1 shrink-0 px-1 cursor-pointer"
-                      onClick={() => {
-                        setActionFeedback(`Selected @${f.username}`);
-                        setTimeout(() => setActionFeedback(null), 1500);
-                      }}
-                    >
-                      <div className="w-12 h-12 rounded-full border-2 border-brand-primary p-0.5">
-                        <div className={`w-full h-full rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-                          {f.name.slice(0, 1)}
+                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
+                  Hello, {userProfile.name.split(" ")[0]}
+                </h1>
+              </div>
+
+              {/* People You May Know: Story-style horizontal row sitting naturally on the page (no box!) */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
+                    People You May Know
+                  </span>
+                  <span className="text-[11px] font-bold text-brand-primary">Based on your routes</span>
+                </div>
+
+                <div className="flex items-center gap-4 overflow-x-auto pb-1 scrollbar-none">
+                  {friendsList.map((f, idx) => {
+                    // Give everyone a highly realistic travel purpose context
+                    const purposes = [
+                      "Also Zanzibar, July",
+                      "Traveling Dec 10",
+                      "Also Zanzibar, Dec",
+                      "Going Munich, Feb"
+                    ];
+                    const purpose = purposes[idx % purposes.length];
+
+                    return (
+                      <div
+                        key={`friend-story-${idx}`}
+                        className="flex flex-col items-center text-center shrink-0 w-[94px] cursor-pointer"
+                        onClick={() => {
+                          setActionFeedback(`Selected @${f.username}`);
+                          setTimeout(() => setActionFeedback(null), 1500);
+                        }}
+                      >
+                        <div className="w-12 h-12 rounded-full border-2 border-brand-primary p-0.5 transition-transform active:scale-95">
+                          <div className={`w-full h-full rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
+                            {f.name.slice(0, 1)}
+                          </div>
                         </div>
+                        <span className="text-xs font-bold text-[#0F1419] mt-1.5 truncate w-full">{f.name.split(" ")[0]}</span>
+                        <span className="text-[10px] font-semibold text-brand-text-muted leading-tight mt-0.5 block w-full truncate h-7">
+                          {purpose}
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-zinc-700">{f.name.split(" ")[0]}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Interactive Talk to Diaspedia AI Core Trigger */}
-              <div className="bg-[#F5F8FA] border border-zinc-100 p-5 rounded-2xl relative overflow-hidden space-y-3 chamfered-card">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
-                      AI COMPANION
-                    </span>
-                    <h3 className="text-base font-heading font-black text-[#0F1419] mt-0.5">
-                      Talk to Diaspedia
-                    </h3>
-                  </div>
-                  <Sparkles className="text-brand-primary w-5 h-5 animate-pulse" />
+              {/* Conversational Assistant entry: premium, crisp geometric silhouette with NO rounded corners */}
+              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 relative overflow-hidden space-y-4 chamfered-card">
+                <div>
+                  <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
+                    Travel Companion
+                  </span>
+                  <h3 className="text-lg font-heading font-black text-[#0F1419] mt-0.5">
+                    Tell us about your trip
+                  </h3>
                 </div>
-                <p className="text-xs font-semibold text-zinc-500 leading-relaxed">
-                  Plan multiple trips, destinations, or edit profiles conversationally. One detail at a time.
+
+                <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
+                  State your destination, departure details, or travel constraints naturally. We plan and passively scan matches, one detail at a time.
                 </p>
+
                 <button
                   onClick={() => {
                     resetAiAssistant();
                     setShowAiAssistant(true);
                   }}
-                  className="w-full bg-black hover:bg-zinc-900 text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer chamfered-card"
                 >
                   <span>Start Conversation</span>
-                  <ArrowRight size={14} />
+                  <ArrowRight size={14} className="text-brand-primary" />
                 </button>
               </div>
 
               {/* Hero Plan Status State Block (Active upcoming plan or Empty State) */}
-              <div className="space-y-3">
-                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block px-1">
+              <div className="space-y-4">
+                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
                   Active Plans
                 </span>
 
                 {travelPlans.filter((p) => !p.isCompleted).length === 0 ? (
-                  /* EMPTY STATE CARD */
-                  <div className="bg-white border-2 border-dashed border-zinc-200 p-6 rounded-2xl text-center space-y-4">
-                    <h3 className="text-sm font-heading font-black uppercase text-[#0F1419]">
+                  /* EMPTY STATE CARD - Crisp rectangular with chamfered boundaries */
+                  <div className="bg-white border border-[#EFF3F4] p-6 text-center space-y-4 chamfered-card">
+                    <h3 className="text-xs font-heading font-black uppercase text-[#0F1419] tracking-wider">
                       WHERE ARE YOU GOING?
                     </h3>
-                    <p className="text-xs font-semibold text-zinc-500 leading-relaxed max-w-xs mx-auto">
-                      Tell Diaspedia about a trip you&apos;re planning. We&apos;ll keep looking for people going the same way.
+                    <p className="text-xs font-semibold text-brand-text-muted leading-relaxed max-w-xs mx-auto">
+                      State your travel plans to initiate background tracking. We&apos;ll keep looking for matching passenger coordinates.
                     </p>
                     <button
                       onClick={() => {
                         resetAiAssistant();
                         setShowAiAssistant(true);
                       }}
-                      className="bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-xs px-5 py-3 rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-xs px-5 py-3.5 flex items-center justify-center gap-1.5 cursor-pointer chamfered-card w-full"
                     >
                       <Plus size={14} />
                       <span>ADD A TRIP</span>
                     </button>
                   </div>
                 ) : (
-                  /* HERO ACTIVE PLAN CARD */
+                  /* HERO ACTIVE PLAN CARD - Crisp Geometric Silhouette */
                   <div className="space-y-3">
                     {travelPlans.filter((p) => !p.isCompleted).slice(0, 1).map((plan) => {
                       const matchesCount = travelMatches.filter((m) => m.planId === plan.id).length;
                       return (
                         <div
                           key={plan.id}
-                          className="bg-white border border-zinc-100 rounded-2xl p-5 shadow-sm space-y-4 hover:border-zinc-200 transition-all cursor-pointer"
+                          className="bg-white border border-[#EFF3F4] p-6 space-y-4 hover:border-zinc-300 transition-all cursor-pointer chamfered-card"
                           onClick={() => setActiveTab("plans")}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider block">
+                              <span className="text-xs text-brand-text-muted font-bold uppercase tracking-wider block">
                                 UPCOMING TRIP HERO
                               </span>
-                              <h3 className="text-lg font-heading font-black text-brand-primary leading-tight mt-1">
+                              <h3 className="text-xl font-heading font-black text-[#0F1419] leading-tight mt-1">
                                 {plan.fromCity} → {plan.destinations.join(" → ")}
                               </h3>
-                              <p className="text-xs text-zinc-500 font-bold mt-1">
+                              <p className="text-xs text-brand-text-muted font-bold mt-1">
                                 {plan.startDate} {plan.endDate ? `— ${plan.endDate}` : ""}
                                 {plan.stops && plan.stops.length > 0 && ` • Stops: ${plan.stops.join(", ")}`}
                               </p>
                             </div>
 
                             {plan.status === "matches_found" ? (
-                              <div className="flex items-center gap-1">
-                                <span className="w-2 h-2 bg-[#71E300] rounded-full animate-ping" />
-                                <span className="text-xs bg-[#71E300]/10 text-zinc-800 border border-[#71E300]/30 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                              <div className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 bg-brand-primary rounded-full animate-pulse" />
+                                <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                   {matchesCount} Overlaps
                                 </span>
                               </div>
                             ) : (
                               <span className="text-xs bg-[#F5F8FA] text-zinc-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                We&apos;re looking
+                                Scanning...
                               </span>
                             )}
                           </div>
 
                           {plan.status === "matches_found" && (
-                            <div className="bg-brand-primary/10 p-3.5 rounded-xl border border-brand-primary/15 flex items-center justify-between gap-3 text-xs">
-                              <p className="font-semibold text-zinc-800">
-                                WE FOUND PEOPLE GOING YOUR WAY.
+                            <div className="bg-[#F5F8FA] border-l-2 border-brand-primary p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                              <p className="font-semibold text-brand-text leading-normal">
+                                We found overlapping trips on your route around December!
                               </p>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setActiveTab("plans");
                                 }}
-                                className="bg-[#0F1419] hover:bg-black text-white font-bold text-xs px-3.5 py-2 rounded-lg shrink-0 transition-all cursor-pointer"
+                                className="bg-[#0F1419] hover:bg-black text-white font-bold text-xs px-4 py-2.5 shrink-0 transition-all cursor-pointer chamfered-card"
                               >
                                 See overlaps
                               </button>
@@ -823,44 +865,46 @@ export default function Home() {
               </div>
 
               {/* Horizontal Lightweight Recommendations Card Section */}
-              <div className="space-y-3">
-                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block px-1">
+              <div className="space-y-4">
+                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
                   Trending Destinations
                 </span>
+
                 <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
                   {destinations.map((dest) => {
                     const isSaved = userProfile.wishlist.includes(dest.id);
                     return (
                       <div
                         key={dest.id}
-                        className="w-[240px] bg-white border border-zinc-100 rounded-2xl p-4 shrink-0 flex flex-col justify-between space-y-3 shadow-sm hover:border-zinc-200 transition-all chamfered-card"
+                        className="w-[240px] bg-white border border-[#EFF3F4] p-4 shrink-0 flex flex-col justify-between space-y-4 shadow-sm hover:border-zinc-200 transition-all chamfered-card"
                       >
-                        <div>
+                        <div className="space-y-2">
                           <div className="flex justify-between items-start">
                             <h4 className="text-xs font-heading font-black text-[#0F1419] leading-tight">
                               {dest.name}, <span className="text-zinc-400">{dest.country}</span>
                             </h4>
                             <button
                               onClick={() => handleToggleWishlist(dest.id, dest.name)}
-                              className={`p-1.5 rounded-lg transition-all ${
+                              className={`p-1.5 transition-all ${
                                 isSaved ? "text-brand-primary bg-brand-primary/10" : "text-zinc-400 hover:text-zinc-600"
                               }`}
                             >
                               <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} />
                             </button>
                           </div>
-                          <p className="text-xs text-zinc-500 font-semibold leading-relaxed line-clamp-2 mt-1">
+
+                          <p className="text-xs text-brand-text-muted font-semibold leading-relaxed line-clamp-2">
                             {dest.description}
                           </p>
                         </div>
 
-                        <div className="flex justify-between items-center pt-2 border-t border-zinc-50">
+                        <div className="flex justify-between items-center pt-2.5 border-t border-[#EFF3F4]">
                           <span className="text-xs text-zinc-400 font-bold">
                             {dest.friendsInterested.length} friends saved
                           </span>
                           <button
                             onClick={() => handleQuickAddDestination(dest)}
-                            className="bg-brand-primary text-white hover:bg-brand-primary-hover font-bold text-xs px-2.5 py-1.5 rounded-lg"
+                            className="bg-brand-primary text-white hover:bg-brand-primary-hover font-bold text-[11px] px-3 py-1.5 chamfered-card"
                           >
                             Add Plan
                           </button>
@@ -871,11 +915,11 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Quick Contact Matching Block */}
-              <div className="bg-white border border-zinc-100 p-5 rounded-2xl space-y-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <h4 className="text-xs font-black tracking-wider uppercase text-zinc-400">Sync with Friends</h4>
-                  <p className="text-xs font-semibold text-zinc-500 leading-normal">
+              {/* Quick Contact Matching Section - sitting naturally on page (no container box!) */}
+              <div className="border-t border-[#EFF3F4] pt-6 space-y-4">
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black tracking-wider uppercase text-brand-text-muted">Sync with Friends</h4>
+                  <p className="text-xs font-semibold text-brand-text-muted leading-normal">
                     Securely scan address book contacts to view which friends are currently using Diaspedia.
                   </p>
                 </div>
@@ -884,27 +928,27 @@ export default function Home() {
                   <button
                     onClick={handleSyncContacts}
                     disabled={isSyncing}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all cursor-pointer flex items-center justify-center gap-1.5 chamfered-card"
                   >
                     {isSyncing ? "Syncing..." : "Sync Contacts"}
                   </button>
                 ) : (
-                  <div className="space-y-2 pt-1">
-                    <div className="text-xs bg-[#71E300]/10 text-[#5ec700] border border-[#71E300]/20 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                  <div className="space-y-3 pt-1">
+                    <div className="text-xs bg-[#71E300]/10 text-emerald-800 border border-[#71E300]/20 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
                       <CheckCircle2 size={13} />
-                      <span>Address book synced!</span>
+                      <span>Address book synced successfully!</span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {friendsList.slice(0, 3).map((f, idx) => (
-                        <div key={`friend-item-${idx}`} className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <div className={`w-6 h-6 rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
+                        <div key={`friend-item-${idx}`} className="flex items-center justify-between text-xs py-1 border-b border-[#EFF3F4]/40 last:border-b-0">
+                          <div className="flex items-center gap-2.5">
+                            <div className={`w-8 h-8 rounded-full ${f.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
                               {f.name.slice(0, 1)}
                             </div>
-                            <span className="font-bold text-zinc-800">{f.name}</span>
+                            <span className="font-bold text-brand-text">{f.name}</span>
                           </div>
-                          <span className="text-xs text-zinc-400 font-bold bg-[#F5F8FA] px-2 py-0.5 rounded-md uppercase">
+                          <span className="text-xs text-zinc-400 font-bold bg-[#F5F8FA] px-2 py-0.5 rounded uppercase">
                             On Diaspedia
                           </span>
                         </div>
@@ -934,7 +978,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* ACTIVE PLANS LOOP */}
+              {/* ACTIVE PLANS LOOP - Crisp and Spacious */}
               <div className="space-y-4">
                 {travelPlans.filter((p) => !p.isCompleted).map((plan) => {
                   const planMatches = travelMatches.filter((m) => m.planId === plan.id);
@@ -943,103 +987,102 @@ export default function Home() {
                   return (
                     <div
                       key={`plan-page-${plan.id}`}
-                      className="bg-[#F5F8FA] border border-zinc-100 rounded-2xl p-5 space-y-4"
+                      className="bg-white border border-[#EFF3F4] p-6 space-y-5 chamfered-card"
                     >
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start pb-1">
                         <div>
-                          <span className="text-xs text-zinc-400 font-black uppercase tracking-wider block">
+                          <span className="text-xs text-brand-text-muted font-black uppercase tracking-wider block">
                             ACTIVE PLAN
                           </span>
-                          <h3 className="text-lg font-heading font-black text-brand-primary mt-1">
+                          <h3 className="text-xl font-heading font-black text-[#0F1419] mt-1">
                             {plan.fromCity} → {plan.destinations.join(" → ")}
                           </h3>
-                          <p className="text-xs text-zinc-500 font-bold mt-1">
+                          <p className="text-xs text-brand-text-muted font-bold mt-1">
                             {plan.startDate} {plan.endDate ? `— ${plan.endDate}` : ""}
                             {plan.stops && plan.stops.length > 0 && ` • Stops: ${plan.stops.join(", ")}`}
                           </p>
                         </div>
 
                         {isMatchFound ? (
-                          <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/30 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 animate-pulse">
+                          <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">
                             Overlaps Found
                           </span>
                         ) : (
-                          <span className="text-xs bg-zinc-100 text-zinc-400 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-ping" />
-                            <span>Looking...</span>
+                          <span className="text-xs bg-[#F5F8FA] text-zinc-400 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">
+                            Scanning...
                           </span>
                         )}
                       </div>
 
-                      {/* Overlaps sub-section */}
+                      {/* Overlaps sub-section - Pure architectural blocks */}
                       {isMatchFound && (
-                        <div className="space-y-3.5 pt-2 border-t border-zinc-200">
-                          <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block">
+                        <div className="space-y-4 pt-4 border-t border-[#EFF3F4]">
+                          <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
                             People heading the same way
                           </span>
 
-                          <div className="space-y-3">
+                          <div className="space-y-4">
                             {planMatches.map((match) => (
                               <div
                                 key={match.id}
-                                className="bg-white border border-zinc-100 rounded-xl p-4 space-y-3 shadow-sm hover:border-zinc-200 transition-all"
+                                className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-4 rounded-none"
                               >
                                 {/* Header with Profile information */}
                                 <div className="flex justify-between items-start">
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-2.5">
                                     <div className={`w-8 h-8 rounded-full ${match.friendAvatarBg} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                                       {match.friendName.slice(0, 1)}
                                     </div>
                                     <div>
-                                      <h5 className="text-xs font-bold text-zinc-800">{match.friendName}</h5>
-                                      <p className="text-xs text-zinc-400 font-semibold">{match.fromCity} → {match.destinations.join(" → ")}</p>
+                                      <h5 className="text-xs font-bold text-[#0F1419]">{match.friendName}</h5>
+                                      <p className="text-xs text-brand-text-muted font-semibold">{match.fromCity} → {match.destinations.join(" → ")}</p>
                                     </div>
                                   </div>
 
                                   {/* Verification Badges */}
                                   <div className="flex items-center gap-1">
-                                    {match.isPhoneVerified && <span className="text-xs bg-zinc-100 text-zinc-500 font-bold px-1.5 py-0.5 rounded">Phone✓</span>}
-                                    {match.isEmailVerified && <span className="text-xs bg-zinc-100 text-zinc-500 font-bold px-1.5 py-0.5 rounded">Email✓</span>}
-                                    {match.isIdVerified && <span className="text-xs bg-zinc-100 text-zinc-500 font-bold px-1.5 py-0.5 rounded">ID✓</span>}
+                                    {match.isPhoneVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">Phone✓</span>}
+                                    {match.isEmailVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">Email✓</span>}
+                                    {match.isIdVerified && <span className="text-xs bg-white text-zinc-500 font-bold px-1.5 py-0.5 border border-zinc-100 rounded-none">ID✓</span>}
                                   </div>
                                 </div>
 
                                 {/* Overlap metadata */}
-                                <div className="text-xs text-zinc-700 font-medium pl-1 space-y-1">
-                                  <p className="flex items-center gap-1 text-[#0F1419]">
-                                    <Clock size={12} className="text-brand-primary shrink-0" />
+                                <div className="text-xs text-brand-text font-medium space-y-1">
+                                  <p className="flex items-center gap-1.5">
+                                    <Clock size={13} className="text-brand-primary shrink-0" />
                                     <span>{match.overlapExplanation}</span>
                                   </p>
-                                  <p className="text-xs text-zinc-400">
+                                  <p className="text-xs text-brand-text-muted font-semibold pl-4.5">
                                     Dates: {match.startDate} — {match.endDate}
                                   </p>
                                 </div>
 
                                 {/* Shared costs categorization */}
-                                <div className="flex flex-wrap gap-1.5">
+                                <div className="flex flex-wrap gap-1.5 pl-0.5">
                                   {match.potentialSavings.map((item, idx) => (
-                                    <span key={idx} className="bg-[#F5F8FA] px-2.5 py-1 rounded-md text-xs font-bold text-zinc-600">
+                                    <span key={idx} className="bg-white border border-[#EFF3F4] px-2.5 py-1 rounded-none text-xs font-bold text-zinc-600">
                                       {item}
                                     </span>
                                   ))}
                                 </div>
 
                                 {/* Direct provider alert/tip */}
-                                <div className="bg-[#F5F8FA] p-3 rounded-xl flex items-start gap-2.5 border border-zinc-100">
+                                <div className="bg-white border-l-2 border-brand-primary p-3.5 rounded-none flex items-start gap-2.5">
                                   <Shield size={14} className="text-brand-primary shrink-0 mt-0.5" />
-                                  <p className="text-xs text-zinc-500 font-semibold leading-relaxed">
+                                  <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
                                     Anti-Scam Tip: Secure taxi, hotel, or shuttle transfers directly. Pay actual providers rather than wiring or pooling funds with other travelers.
                                   </p>
                                 </div>
 
-                                {/* Join / Open chat */}
+                                {/* Join / Open chat - Chamfered button geometry */}
                                 <div>
                                   {match.hasJoinedGroup ? (
                                     <button
                                       onClick={() => {
                                         setActiveChatGroupId(match.chatGroupId || "chat-zanzibar");
                                       }}
-                                      className="w-full bg-brand-primary text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 cursor-pointer"
+                                      className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3 rounded-none flex items-center justify-center gap-1 cursor-pointer chamfered-card"
                                     >
                                       <MessageSquare size={14} />
                                       <span>Open Discussion</span>
@@ -1050,13 +1093,13 @@ export default function Home() {
                                         onClick={() => {
                                           setTravelMatches(travelMatches.filter((m) => m.id !== match.id));
                                         }}
-                                        className="bg-white border border-zinc-100 text-zinc-400 font-bold text-xs py-2.5 rounded-xl cursor-pointer"
+                                        className="bg-white border border-[#EFF3F4] text-zinc-400 font-bold text-xs py-3 rounded-none cursor-pointer chamfered-card"
                                       >
                                         Keep Looking
                                       </button>
                                       <button
                                         onClick={() => handleJoinMatchGroup(match)}
-                                        className="bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-2.5 rounded-xl cursor-pointer"
+                                        className="bg-brand-primary hover:bg-brand-primary-hover text-white font-extrabold text-xs py-3 rounded-none cursor-pointer chamfered-card"
                                       >
                                         Join Group
                                       </button>
@@ -1075,17 +1118,17 @@ export default function Home() {
 
               {/* INTEGRATED GROUP DISCUSSION CHAT COMPONENT */}
               {activeChatGroupId && (
-                <div className="border border-zinc-100 rounded-2xl p-5 space-y-4 shadow-sm bg-white animate-fade-in">
-                  <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
+                <div className="bg-white border-t-2 border-[#0F1419] p-6 space-y-4 shadow-sm animate-fade-in rounded-none">
+                  <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4]">
                     <div>
-                      <h4 className="text-xs font-black uppercase text-zinc-400">Zanzibar Shared Discussion</h4>
+                      <h4 className="text-xs font-black uppercase text-brand-text-muted tracking-widest">Zanzibar Shared Discussion</h4>
                       <p className="text-xs text-brand-primary font-bold">Coordination & Overlap</p>
                     </div>
                     <button
                       onClick={() => setActiveChatGroupId(null)}
-                      className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 cursor-pointer"
+                      className="p-1 rounded-none text-zinc-500 hover:text-black cursor-pointer"
                     >
-                      <X size={14} />
+                      <X size={18} />
                     </button>
                   </div>
 
@@ -1110,14 +1153,13 @@ export default function Home() {
                         return (
                           <div
                             key={msg.id}
-                            className={`flex items-start gap-2 max-w-[85%] ${isUser ? "ml-auto flex-row-reverse" : "mr-auto"}`}
+                            className={`flex items-start gap-2.5 max-w-[90%] ${isUser ? "ml-auto flex-row-reverse" : "mr-auto"}`}
                           >
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${msg.senderAvatarBg}`}>
-                              {msg.senderName.slice(0, 1)}
-                            </div>
-                            <div className="space-y-0.5">
-                              <span className="text-xs text-zinc-400 font-bold block">{msg.senderName}</span>
-                              <div className={`p-3 rounded-xl text-xs leading-relaxed ${isUser ? "bg-brand-primary text-white" : "bg-[#F5F8FA] text-zinc-800"}`}>
+                            <div className="space-y-1 w-full">
+                              <span className="text-xs text-zinc-400 font-bold block">
+                                {isUser ? "YOU" : msg.senderName.toUpperCase()}
+                              </span>
+                              <div className={`p-3.5 text-xs leading-relaxed border-l-2 ${isUser ? "bg-[#0F1419] text-white border-[#0F1419]" : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"} rounded-none`}>
                                 {msg.text}
                               </div>
                             </div>
@@ -1128,20 +1170,20 @@ export default function Home() {
                   </div>
 
                   {/* Message submit form */}
-                  <form onSubmit={handleSendMessage} className="flex gap-2 border-t border-zinc-100 pt-3">
+                  <form onSubmit={handleSendMessage} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
                     <input
                       type="text"
                       required
                       placeholder="Type coordination message..."
                       value={chatInputText}
                       onChange={(e) => setChatInputText(e.target.value)}
-                      className="flex-1 bg-[#F5F8FA] border border-zinc-100 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                      className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
                     />
                     <button
                       type="submit"
-                      className="bg-brand-primary text-white hover:bg-brand-primary-hover w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0"
+                      className="bg-[#0F1419] text-white hover:bg-black w-11 h-11 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
                     >
-                      <Send size={14} />
+                      <Send size={15} />
                     </button>
                   </form>
                 </div>
@@ -1158,8 +1200,8 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              {/* Profile card with verified credentials */}
-              <div className="bg-white border border-zinc-100 rounded-2xl p-6 text-center space-y-4 shadow-sm relative">
+              {/* Profile card with verified credentials - Chamfered */}
+              <div className="bg-white border border-[#EFF3F4] p-6 text-center space-y-4 shadow-sm relative chamfered-card">
                 <div className="relative inline-block">
                   <div className="w-20 h-20 rounded-full bg-brand-primary flex items-center justify-center text-white text-3xl font-heading font-black shadow-md mx-auto">
                     {userProfile.name.slice(0, 1)}
@@ -1170,25 +1212,25 @@ export default function Home() {
                   <h3 className="text-lg font-heading font-black text-[#0F1419]">
                     @{userProfile.username}
                   </h3>
-                  <p className="text-xs font-bold text-zinc-400">Home: {userProfile.homeCity}</p>
+                  <p className="text-xs font-bold text-brand-text-muted">Home: {userProfile.homeCity}</p>
                 </div>
 
                 {/* Verified Indicators */}
                 <div className="flex flex-wrap justify-center gap-1.5 pt-1">
                   {userProfile.isPhoneVerified && (
-                    <span className="text-xs bg-brand-primary/5 border border-brand-primary/10 text-zinc-800 font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
                       <span>Phone Verified</span>
                     </span>
                   )}
                   {userProfile.isEmailVerified && (
-                    <span className="text-xs bg-brand-primary/5 border border-brand-primary/10 text-zinc-800 font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
                       <span>Email Verified</span>
                     </span>
                   )}
                   {userProfile.isIdVerified && (
-                    <span className="text-xs bg-brand-primary/5 border border-brand-primary/10 text-zinc-800 font-extrabold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-800 font-extrabold px-3 py-1 rounded-none uppercase tracking-wider flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-brand-primary rounded-full" />
                       <span>ID Verified</span>
                     </span>
@@ -1206,8 +1248,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Travel Statistics */}
-              <div className="bg-[#0F1419] text-white rounded-2xl p-5 shadow-md space-y-4">
+              {/* Travel Statistics - Crisp and Solid */}
+              <div className="bg-[#0F1419] text-white p-6 space-y-4 shadow-lg chamfered-card">
                 <div>
                   <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
                     Your Travel History
@@ -1216,28 +1258,28 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3.5">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
                     <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">KILOMETERS</span>
                     <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
                       {userProfile.totalKmTraveled.toLocaleString()} km
                     </div>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
                     <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">CITIES VISITED</span>
                     <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
                       {userProfile.totalCitiesVisited}
                     </div>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
                     <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">TOTAL PLANS</span>
                     <div className="text-lg font-heading font-black text-zinc-100 mt-0.5">
                       {userProfile.totalTripsCount}
                     </div>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <div className="bg-white/5 border border-white/10 rounded-none p-3.5">
                     <span className="text-xs font-black text-zinc-400 uppercase tracking-wider block">CO2 REDUCED</span>
                     <div className="text-lg font-heading font-black text-brand-primary mt-0.5">
                       -{userProfile.carbonSavedKg.toFixed(0)} kg
@@ -1245,15 +1287,15 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Archived Plans */}
-                <div className="space-y-2 pt-2 border-t border-white/10">
+                {/* Completed Plans list */}
+                <div className="space-y-3 pt-4 border-t border-white/10">
                   <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block">
                     Completed Travel Plans
                   </span>
                   {travelPlans.filter((p) => p.isCompleted).map((plan) => (
                     <div
                       key={plan.id}
-                      className="bg-white/5 rounded-xl p-3 flex justify-between items-center text-xs"
+                      className="bg-white/5 p-3 flex justify-between items-center text-xs rounded-none border-b border-white/5 last:border-b-0"
                     >
                       <div>
                         <div className="font-bold text-zinc-200">{plan.fromCity} → {plan.destinations.join(" → ")}</div>
@@ -1265,12 +1307,15 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Conversational Profile Edits Option */}
-              <div className="bg-[#F5F8FA] border border-zinc-100 p-5 rounded-2xl space-y-3">
-                <h4 className="text-xs font-black uppercase text-zinc-400">Edit Profile via AI</h4>
-                <p className="text-xs text-zinc-500 font-semibold leading-relaxed">
-                  Modify cities, residency, passport details, or travel settings dynamically using conversation.
-                </p>
+              {/* Conversational Profile Edits Option - Crisp */}
+              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 space-y-4 chamfered-card">
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black uppercase text-brand-text-muted">Edit Profile via Conversation</h4>
+                  <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
+                    Modify home cities, residency, passport details, or travel settings dynamically using speech.
+                  </p>
+                </div>
+
                 <button
                   onClick={() => {
                     resetAiAssistant();
@@ -1279,41 +1324,40 @@ export default function Home() {
                     ]);
                     setShowAiAssistant(true);
                   }}
-                  className="w-full bg-white border border-zinc-200 text-zinc-800 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 cursor-pointer"
+                  className="w-full bg-white border border-[#EFF3F4] text-zinc-800 font-bold text-xs py-3 cursor-pointer chamfered-card"
                 >
-                  <Sparkles size={14} className="text-brand-primary" />
                   <span>Talk with Assistant</span>
                 </button>
               </div>
 
-              {/* Background Matching Settings Privacy Toggles */}
-              <div className="bg-white border border-zinc-100 p-5 rounded-2xl shadow-sm space-y-3.5">
-                <h3 className="text-xs font-black tracking-wider uppercase text-zinc-400 px-1">Privacy Controls</h3>
+              {/* Background Matching Settings Privacy Toggles - Chamfered */}
+              <div className="bg-white border border-[#EFF3F4] p-6 shadow-sm space-y-4 chamfered-card">
+                <h3 className="text-xs font-black tracking-wider uppercase text-brand-text-muted px-1">Privacy Controls</h3>
 
                 <div className="flex items-center justify-between text-xs">
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-zinc-800 block">Share Saved Travel Plans</span>
-                    <p className="text-xs text-zinc-400 font-semibold">Allow connected friends on Diaspedia to see your active travels.</p>
+                  <div className="space-y-1 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Share Saved Travel Plans</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Allow connected friends on Diaspedia to see your active travels.</p>
                   </div>
-                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end">
+                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end shrink-0">
                     <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs border-t border-zinc-50 pt-3">
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-zinc-800 block">Background Matching</span>
-                    <p className="text-xs text-zinc-400 font-semibold">Scan background overlaps for shared travel costs automatically.</p>
+                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
+                  <div className="space-y-1 max-w-[80%]">
+                    <span className="font-bold text-[#0F1419] block">Background Matching</span>
+                    <p className="text-xs text-brand-text-muted font-semibold">Scan background overlaps for shared travel costs automatically.</p>
                   </div>
-                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end">
+                  <div className="w-10 h-6 bg-brand-primary rounded-full p-0.5 cursor-pointer flex justify-end shrink-0">
                     <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
                   </div>
                 </div>
               </div>
 
-              {/* Dedicated Corporate Legal Links Footer */}
-              <div className="bg-[#F5F8FA] border border-zinc-100 rounded-2xl p-5 text-center space-y-4">
-                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest block">
+              {/* Dedicated Corporate Legal Links Footer - Sleek Flat */}
+              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-6 text-center space-y-4 rounded-none">
+                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
                   diaspedia Corporation
                 </span>
                 <div className="flex flex-wrap justify-center gap-4 text-xs font-bold text-zinc-600">
@@ -1349,32 +1393,30 @@ export default function Home() {
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl border-t border-zinc-100 z-[55] p-6 space-y-4 max-h-[85%] flex flex-col overflow-hidden shadow-2xl"
+                className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-[#0F1419] z-[55] p-6 space-y-4 max-h-[85%] flex flex-col overflow-hidden shadow-2xl rounded-none"
               >
-                {/* Drawer Header */}
-                <div className="flex justify-between items-center pb-3 border-b border-zinc-100 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="text-brand-primary w-5 h-5" />
-                    <div>
-                      <h3 className="text-sm font-heading font-black text-[#0F1419]">Diaspedia Companion</h3>
-                      <p className="text-xs text-zinc-400 font-bold">One detail at a time</p>
-                    </div>
+                {/* Drawer Header - Sleek Minimalist */}
+                <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4] shrink-0">
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[#0F1419]">Diaspedia Companion</h3>
+                    <p className="text-xs text-brand-text-muted font-bold">One detail at a time</p>
                   </div>
+
                   <button
                     onClick={() => setShowAiAssistant(false)}
-                    className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 cursor-pointer"
+                    className="p-1 rounded-none text-zinc-500 hover:text-black cursor-pointer"
                   >
-                    <X size={16} />
+                    <X size={18} />
                   </button>
                 </div>
 
                 {/* Progress Indicators for Conversational Steps */}
                 {aiAssistantStep <= 4 && (
-                  <div className="flex gap-1 h-1 bg-zinc-100 rounded-full overflow-hidden shrink-0">
+                  <div className="flex gap-1.5 h-1 bg-zinc-100 rounded-none overflow-hidden shrink-0">
                     {[1, 2, 3, 4].map((step) => (
                       <div
                         key={`ai-step-${step}`}
-                        className={`flex-1 h-full rounded-full transition-all ${
+                        className={`flex-1 h-full rounded-none transition-all ${
                           step <= aiAssistantStep ? "bg-brand-primary" : "bg-zinc-100"
                         }`}
                       />
@@ -1382,26 +1424,24 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Dialogue log container */}
+                {/* Dialogue log container - Structured and Editorial */}
                 <div className="flex-1 overflow-y-auto space-y-4 py-2 scrollbar-none">
                   {aiConversation.map((msg, idx) => (
                     <div
                       key={`ai-msg-${idx}`}
-                      className={`flex items-start gap-2.5 max-w-[85%] ${
+                      className={`flex items-start gap-3 max-w-[90%] ${
                         msg.sender === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
                       }`}
                     >
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${
-                        msg.sender === "user" ? "bg-[#0F1419]" : "bg-brand-primary"
-                      }`}>
-                        {msg.sender === "user" ? "U" : "D"}
-                      </div>
-                      <div className="space-y-0.5">
+                      <div className="space-y-1 w-full">
                         <span className="text-xs text-zinc-400 font-bold block">
-                          {msg.sender === "user" ? "You" : "Diaspedia"}
+                          {msg.sender === "user" ? "YOU" : "DIASPEDIA"}
                         </span>
-                        <div className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
-                          msg.sender === "user" ? "bg-brand-primary text-white rounded-tr-none" : "bg-zinc-100 text-zinc-800 rounded-tl-none"
+
+                        <div className={`p-4 text-xs leading-relaxed border-l-2 ${
+                          msg.sender === "user"
+                            ? "bg-[#0F1419] text-white border-[#0F1419] font-bold"
+                            : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"
                         }`}>
                           {msg.text}
                         </div>
@@ -1411,29 +1451,29 @@ export default function Home() {
                   <div ref={aiBottomRef} />
                 </div>
 
-                {/* Bottom messaging input box */}
-                <form onSubmit={handleAiMessageSubmit} className="flex gap-2 border-t border-zinc-100 pt-3 shrink-0">
+                {/* Bottom messaging input box - Chamfered Corner */}
+                <form onSubmit={handleAiMessageSubmit} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
                   <input
                     type="text"
                     required
                     placeholder={
                       aiAssistantStep === 1
-                        ? "e.g. Zanzibar, Paris"
+                        ? "e.g. Zanzibar"
                         : aiAssistantStep === 2
-                        ? "e.g. Berlin, Hamburg"
+                        ? "e.g. Berlin"
                         : aiAssistantStep === 3
                         ? "e.g. Dec 10 - Dec 20"
                         : aiAssistantStep === 4
-                        ? "e.g. none, or list stopovers"
+                        ? "e.g. none"
                         : "Ask anything..."
                     }
                     value={aiInputText}
                     onChange={(e) => setAiInputText(e.target.value)}
-                    className="flex-1 bg-[#F5F8FA]/80 border border-zinc-100 rounded-xl px-4 py-3.5 text-xs font-semibold focus:outline-none focus:border-brand-primary"
+                    className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3.5 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
                   />
                   <button
                     type="submit"
-                    className="bg-[#0F1419] text-white hover:bg-black w-12 h-12 rounded-xl flex items-center justify-center transition-all cursor-pointer"
+                    className="bg-[#0F1419] text-white hover:bg-black w-12 h-12 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
                   >
                     <Send size={15} />
                   </button>
@@ -1454,7 +1494,7 @@ export default function Home() {
             }`}
           >
             <Compass size={20} className={activeTab === "home" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-[12px] tracking-tight">Home</span>
+            <span className="text-xs tracking-tight">Home</span>
           </button>
 
           <button
@@ -1464,7 +1504,7 @@ export default function Home() {
             }`}
           >
             <Calendar size={20} className={activeTab === "plans" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-[12px] tracking-tight">Plans</span>
+            <span className="text-xs tracking-tight">Plans</span>
           </button>
 
           <button
@@ -1474,7 +1514,7 @@ export default function Home() {
             }`}
           >
             <User size={20} className={activeTab === "profile" ? "text-brand-primary" : "text-zinc-500"} />
-            <span className="text-[12px] tracking-tight">Profile</span>
+            <span className="text-xs tracking-tight">Profile</span>
           </button>
         </nav>
 
