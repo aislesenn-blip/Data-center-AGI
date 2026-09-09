@@ -1,1399 +1,623 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Compass,
-  Calendar,
-  User,
-  MessageSquare,
-  ArrowRight,
-  ChevronRight,
-  CheckCircle2,
+  Search,
   X,
-  Bell,
-  Check,
-  Plus,
-  Send,
-  Shield,
-  Clock,
-  Sliders,
-  Settings as SettingsIcon,
+  Navigation as NavIcon,
   MapPin,
+  Clock,
+  ArrowRight,
+  Plus,
+  Check,
+  ChevronRight,
+  Compass,
+  Store,
+  Tag,
+  Share2,
+  ExternalLink,
+  ChevronUp,
   Info
 } from "lucide-react";
 
 import {
-  MOCK_USER,
-  MOCK_FRIENDS,
-  MOCK_NOTIFICATIONS,
-  UserProfile,
-  Friend,
-  TravelNotification
-} from "@/lib/diaspediaData";
-
-// Interfaces for our simplified Real-World Intent Platform
-interface NowRequest {
-  id: string;
-  text: string;
-  destination: string;
-  status: "searching" | "matches" | "accepted";
-  timestamp: string;
-}
-
-interface NowMatch {
-  id: string;
-  name: string;
-  avatarBg: string;
-  destination: string;
-  timeRemaining: string;
-  explanation: string;
-  costSavingIdea: string;
-  isVerified: boolean;
-}
-
-interface LaterPlan {
-  id: string;
-  destination: string;
-  timing: string;
-  route: string;
-  details: string;
-  hasOverlaps: boolean;
-  overlaps: Array<{
-    name: string;
-    time: string;
-    avatarBg: string;
-    explanation: string;
-    costSavingIdea: string;
-  }>;
-}
-
-interface ChatMsg {
-  id: string;
-  sender: "user" | "partner" | "system";
-  text: string;
-  time: string;
-}
+  CAMPUS_BUSINESSES,
+  POPULAR_NEEDS,
+  Business,
+  OfferedItem
+} from "@/lib/windoData";
 
 export default function Home() {
-  // Navigation: "now" | "later" | "settings"
-  const [activeTab, setActiveTab] = useState<"now" | "later" | "settings">("now");
+  // Navigation / View State: "explore" | "search" | "merchant"
+  const [activeTab, setActiveTab] = useState<"explore" | "search" | "merchant">("explore");
 
-  // Authentication States (Mocked)
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [authLoading, setAuthLoading] = useState<boolean>(false);
-  const [authProvider, setAuthProvider] = useState<"google" | "apple" | null>(null);
+  // Businesses state (supports adding merchant items dynamically)
+  const [businesses, setBusinesses] = useState<Business[]>(CAMPUS_BUSINESSES);
 
-  // Onboarding Wizard State (Simplicity & Intent Platform focused)
-  const [showWizard, setShowWizard] = useState<boolean>(false);
-  const [wizardStep, setWizardStep] = useState<number>(1);
+  // Selected business modal / bottom sheet
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
 
-  // User details
-  const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_USER);
-  const [notifications, setNotifications] = useState<TravelNotification[]>(MOCK_NOTIFICATIONS);
+  // Search input state
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // NOW state variables
-  const [nowInputText, setNowInputText] = useState<string>("");
-  const [nowRequest, setNowRequest] = useState<NowRequest | null>(null);
-  const [nowProgress, setNowProgress] = useState<number>(100);
-  const [activeMatches, setActiveMatches] = useState<NowMatch[]>([]);
-  const [selectedMatch, setSelectedMatch] = useState<NowMatch | null>(null);
-  const [chatLog, setChatLog] = useState<ChatMsg[]>([]);
-  const [chatInput, setChatInput] = useState<string>("");
+  // Sheet collapse/expand state for Uber-like sheet
+  const [sheetExpanded, setSheetExpanded] = useState<boolean>(false);
 
-  // LATER state variables
-  const [laterInputText, setLaterInputText] = useState<string>("");
-  const [laterPlans, setLaterPlans] = useState<LaterPlan[]>([
-    {
-      id: "later-1",
-      destination: "Munich",
-      timing: "Next Friday",
-      route: "Berlin → Munich",
-      details: "Travelling for weekend leisure trip.",
-      hasOverlaps: true,
-      overlaps: [
-        {
-          name: "Sarah K.",
-          time: "Friday Morning",
-          avatarBg: "bg-zinc-800",
-          explanation: "Sarah is taking the same ICE train from Berlin Central.",
-          costSavingIdea: "Share a DB group-ticket pass to reduce the travel costs by up to 40%."
-        }
-      ]
-    },
-    {
-      id: "later-2",
-      destination: "Zanzibar",
-      timing: "December",
-      route: "Berlin → Zanzibar",
-      details: "Winter escape holiday.",
-      hasOverlaps: true,
-      overlaps: [
-        {
-          name: "Alex Miller",
-          time: "Mid December",
-          avatarBg: "bg-zinc-700",
-          explanation: "Alex is arriving at Zanzibar airport on December 12.",
-          costSavingIdea: "Coordinate joint taxi transfer to the coastal resort to share costs."
-        }
-      ]
-    }
-  ]);
+  // Merchant creation modal state
+  const [showMerchantModal, setShowMerchantModal] = useState<boolean>(false);
+  const [selectedMerchantBizId, setSelectedMerchantBizId] = useState<string>(CAMPUS_BUSINESSES[0].id);
+  const [newItemName, setNewItemName] = useState<string>("");
+  const [newItemPrice, setNewItemPrice] = useState<string>("");
+  const [newItemCategory, setNewItemCategory] = useState<"product" | "service" | "food">("product");
+  const [merchantSuccessMsg, setMerchantSuccessMsg] = useState<string | null>(null);
 
-  // SETTINGS state variables
-  const [workHoursStart, setWorkHoursStart] = useState<string>("09:00");
-  const [workHoursEnd, setWorkHoursEnd] = useState<string>("17:00");
-  const [workDays, setWorkDays] = useState<string[]>(["Mon", "Tue", "Wed", "Thu", "Fri"]);
-  const [locationServices, setLocationServices] = useState<boolean>(true);
-  const [pushNotifications, setPushNotifications] = useState<boolean>(true);
-  const [invisibleMode, setInvisibleMode] = useState<boolean>(false);
-  const [privacyTetherEnabled, setPrivacyTetherEnabled] = useState<boolean>(true);
+  // Direction / Route simulation banner state
+  const [routeActiveBiz, setRouteActiveBiz] = useState<Business | null>(null);
 
-  // UI state feedback
-  const [showNotifications, setShowNotifications] = useState<boolean>(false);
-  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  // Uber transition curve
+  const uberTransition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
 
-  // Scroll references
-  const chatBottomRef = useRef<HTMLDivElement>(null);
+  // Filtered businesses matching searchQuery (item-level or business level)
+  const filteredBusinesses = useMemo(() => {
+    if (!searchQuery.trim()) return businesses;
+    const q = searchQuery.toLowerCase().trim();
 
-  // Cubic Bezier Easing: [0.22, 1, 0.36, 1]
-  const premiumTransition = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const loggedInVal = localStorage.getItem("diaspedia_logged_in_v2") === "true";
-      const onboardedVal = localStorage.getItem("diaspedia_onboarded_v2") === "true";
-
-      if (loggedInVal) {
-        setIsLoggedIn(true);
-        if (!onboardedVal) {
-          setShowWizard(true);
-        }
+    return businesses.filter((biz) => {
+      // 1. Check business name or category
+      if (biz.name.toLowerCase().includes(q) || biz.category.toLowerCase().includes(q)) {
+        return true;
       }
-    }
-  }, []);
-
-  // Smooth chat auto-scrolling
-  useEffect(() => {
-    if (chatBottomRef.current) {
-      chatBottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chatLog]);
-
-  // Handle simulated countdown for active NOW matches
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined = undefined;
-    if (nowRequest && nowRequest.status === "matches") {
-      setNowProgress(100);
-      interval = setInterval(() => {
-        setNowProgress((prev) => {
-          if (prev <= 1) {
-            if (interval) clearInterval(interval);
-            return 0;
-          }
-          return prev - 0.8; // gradual decrease
-        });
-      }, 500);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [nowRequest]);
-
-  // Authenticate Mock Handler
-  const handleAuth = (provider: "google" | "apple") => {
-    setAuthLoading(true);
-    setAuthProvider(provider);
-    setTimeout(() => {
-      setAuthLoading(false);
-      setIsLoggedIn(true);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("diaspedia_logged_in_v2", "true");
-        const onboardedVal = localStorage.getItem("diaspedia_onboarded_v2") === "true";
-        if (!onboardedVal) {
-          setShowWizard(true);
-          setWizardStep(1);
-        }
+      // 2. Check summary items
+      if (biz.itemsSummary.some((item) => item.toLowerCase().includes(q))) {
+        return true;
       }
-    }, 1200);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setShowWizard(false);
-    setActiveTab("now");
-    setNowRequest(null);
-    setNowInputText("");
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("diaspedia_logged_in_v2");
-      localStorage.removeItem("diaspedia_onboarded_v2");
-    }
-  };
-
-  // Onboarding Wizard Complete
-  const handleCompleteWizard = () => {
-    setShowWizard(false);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("diaspedia_onboarded_v2", "true");
-    }
-    setActionFeedback("Welcome to Diaspedia!");
-    setTimeout(() => setActionFeedback(null), 3000);
-  };
-
-  // Handle input submission for NOW tab
-  const handleNowSubmit = (textToSubmit: string) => {
-    if (!textToSubmit.trim()) return;
-
-    // Detect destination from text
-    let dest = "BER Airport";
-    if (textToSubmit.toLowerCase().includes("station") || textToSubmit.toLowerCase().includes("train")) {
-      dest = "Central Train Station";
-    } else if (textToSubmit.toLowerCase().includes("stadium")) {
-      dest = "Olympic Stadium";
-    } else if (textToSubmit.toLowerCase().includes("munich")) {
-      dest = "Munich";
-    } else if (textToSubmit.toLowerCase().includes("office")) {
-      dest = "Office Complex East";
-    }
-
-    setNowRequest({
-      id: `now-${laterPlans.length + 1}`,
-      text: textToSubmit,
-      destination: dest,
-      status: "searching",
-      timestamp: "Just now"
+      // 3. Check individual items
+      if (biz.items.some((item) => item.name.toLowerCase().includes(q))) {
+        return true;
+      }
+      return false;
     });
+  }, [businesses, searchQuery]);
 
-    // Simulate natural AI parsing and real-time scanning
-    setTimeout(() => {
-      setActiveMatches([
-        {
-          id: "match-now-1",
-          name: "Sarah K.",
-          avatarBg: "bg-zinc-800",
-          destination: dest,
-          timeRemaining: "Leaving in 6 minutes",
-          explanation: "Sarah is nearby and heading to the exact same place right now.",
-          costSavingIdea: "Split a shared taxi or shuttle ride to cut costs directly in half.",
-          isVerified: true
-        },
-        {
-          id: "match-now-2",
-          name: "Alex Miller",
-          avatarBg: "bg-zinc-700",
-          destination: dest,
-          timeRemaining: "Leaving in 11 minutes",
-          explanation: "Alex is departing shortly in your direction.",
-          costSavingIdea: "Share Uber XL booking together to lower transit fees.",
-          isVerified: true
-        }
-      ]);
-      setNowRequest((prev) => prev ? { ...prev, status: "matches" } : null);
-    }, 1800);
+  // Handle Quick Need Tap
+  const handleSelectNeed = (needLabel: string) => {
+    setSearchQuery(needLabel);
+    setActiveTab("explore");
   };
 
-  // Handle instant preset prompts for NOW
-  const handlePresetNow = (prompt: string) => {
-    setNowInputText(prompt);
-    handleNowSubmit(prompt);
-  };
-
-  // Handle accepting a real-time NOW connection
-  const handleGoTogether = (match: NowMatch) => {
-    setSelectedMatch(match);
-    setNowRequest((prev) => prev ? { ...prev, status: "accepted" } : null);
-
-    // Seed chat
-    setChatLog([
-      { id: "sys-1", sender: "system", text: "Connection established! Always verify coordinates before departure.", time: "Just now" },
-      { id: "sys-2", sender: "system", text: "Anti-Scam Check: Make payments directly to the actual taxi or transit provider. Avoid wiring/pooling funds directly with individuals.", time: "Just now" },
-      { id: `part-1`, sender: "partner", text: `Hey! Awesome that we're going to the ${match.destination} at the same time. Let's meet at the main entrance.`, time: "Just now" }
-    ]);
-
-    // Create background matching notification
-    setNotifications((prev) => [
-      {
-        id: `notif-${prev.length + 1}`,
-        text: `You accepted ${match.name}'s request! Coordinate your trip in the active chat.`,
-        time: "Just now",
-        read: false,
-        type: "join"
-      },
-      ...prev
-    ]);
-  };
-
-  // Dismiss match
-  const handleDismissMatch = (matchId: string) => {
-    setActiveMatches((prev) => prev.filter((m) => m.id !== matchId));
-    if (activeMatches.length <= 1) {
-      // If no matches left, reset
-      setActionFeedback("Keeping an eye out for more matches...");
-      setTimeout(() => setActionFeedback(null), 2500);
-    }
-  };
-
-  // Send a message in NOW chat
-  const handleSendChat = (e: React.FormEvent) => {
+  // Add new merchant item
+  const handleAddMerchantItem = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!chatInput.trim()) return;
+    if (!newItemName.trim() || !newItemPrice.trim()) return;
 
-    const userMsg: ChatMsg = {
-      id: `user-msg-${chatLog.length + 1}`,
-      sender: "user",
-      text: chatInput.trim(),
-      time: "Just now"
-    };
+    const formattedPrice = newItemPrice.startsWith("€") ? newItemPrice : `€${newItemPrice}`;
 
-    setChatLog((prev) => [...prev, userMsg]);
-    setChatInput("");
-
-    // Simulate brief partner reply
-    setTimeout(() => {
-      setChatLog((prev) => [
-        ...prev,
-        {
-          id: `reply-${prev.length + 1}`,
-          sender: "partner",
-          text: "Sounds great. I'll walk over there now. See you in a minute!",
-          time: "Just now"
+    setBusinesses((prev) =>
+      prev.map((biz) => {
+        if (biz.id === selectedMerchantBizId) {
+          const newItem: OfferedItem = {
+            id: `item-${Date.now()}`,
+            name: newItemName.trim(),
+            price: formattedPrice,
+            category: newItemCategory,
+            statusTag: "Available now"
+          };
+          return {
+            ...biz,
+            items: [newItem, ...biz.items],
+            itemsSummary: [newItem.name, ...biz.itemsSummary]
+          };
         }
-      ]);
+        return biz;
+      })
+    );
+
+    setMerchantSuccessMsg(`Successfully added "${newItemName.trim()}" (${formattedPrice})!`);
+    setNewItemName("");
+    setNewItemPrice("");
+    setTimeout(() => {
+      setMerchantSuccessMsg(null);
+      setShowMerchantModal(false);
     }, 1500);
   };
 
-  // Handle input submission for LATER tab
-  const handleLaterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!laterInputText.trim()) return;
-
-    const textToSubmit = laterInputText.trim();
-    setLaterInputText("");
-
-    // Parse destination
-    let dest = "Paris";
-    let when = "Next Month";
-    if (textToSubmit.toLowerCase().includes("munich")) {
-      dest = "Munich";
-      when = "Friday Morning";
-    } else if (textToSubmit.toLowerCase().includes("zanzibar")) {
-      dest = "Zanzibar";
-      when = "December";
-    } else if (textToSubmit.toLowerCase().includes("tokyo")) {
-      dest = "Tokyo";
-      when = "Next Spring";
-    } else {
-      // generic parser helper
-      const words = textToSubmit.split(" ");
-      const toIndex = words.findIndex(w => w.toLowerCase() === "to");
-      if (toIndex > -1 && words[toIndex + 1]) {
-        dest = words[toIndex + 1].replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-      }
-    }
-
-    const newPlan: LaterPlan = {
-      id: `later-${laterPlans.length + 1}`,
-      destination: dest.charAt(0).toUpperCase() + dest.slice(1),
-      timing: when,
-      route: `Berlin → ${dest.charAt(0).toUpperCase() + dest.slice(1)}`,
-      details: textToSubmit,
-      hasOverlaps: true,
-      overlaps: [
-        {
-          name: "Maria Volkov",
-          time: when,
-          avatarBg: "bg-zinc-600",
-          explanation: "Maria indicated plans to go to the exact same destination around then.",
-          costSavingIdea: "Coordinate hotel booking and transfer shuttle options to trigger group discounts."
-        }
-      ]
-    };
-
-    setLaterPlans([newPlan, ...laterPlans]);
-    setActionFeedback(`Added future plan to ${dest}! Diaspedia is keeping watch.`);
-    setTimeout(() => setActionFeedback(null), 3000);
-  };
-
-  const handleToggleWorkDay = (day: string) => {
-    if (workDays.includes(day)) {
-      setWorkDays(workDays.filter((d) => d !== day));
-    } else {
-      setWorkDays([...workDays, day]);
-    }
-  };
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
   return (
-    <div className="min-h-screen bg-[#F5F8FA] text-[#0F1419] font-sans antialiased flex justify-center overflow-hidden">
-      {/* Edge-to-edge premium mobile container shell */}
-      <div className="w-full max-w-md bg-white h-[100dvh] relative flex flex-col shadow-[0_12px_40px_rgba(0,0,0,0.03)] overflow-hidden border-x border-zinc-100">
+    <div className="min-h-screen bg-black text-black font-sans antialiased flex justify-center overflow-hidden">
+      {/* Phone Viewport Container Shell */}
+      <div className="w-full max-w-md bg-white h-[100dvh] relative flex flex-col shadow-2xl overflow-hidden">
 
-        {/* ------------------------------------------ */}
-        {/* MOCK AUTHENTICATION SCREEN - EDITORIAL & GEOMETRIC */}
-        {/* ------------------------------------------ */}
-        <AnimatePresence>
-          {!isLoggedIn && (
-            <motion.div
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={premiumTransition}
-              className="absolute inset-0 bg-white z-[80] flex flex-col justify-between p-8 h-[100dvh] overflow-hidden"
-            >
-              {/* Spacious, premium top area */}
-              <div className="pt-16 text-left space-y-1">
-                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest block">
-                  Real-World Intent Engine
-                </span>
-                <span className="font-heading font-black text-6xl tracking-tighter text-[#0F1419] select-none block leading-none">
-                  diaspedia
-                </span>
-              </div>
+        {/* ======================================================== */}
+        {/* MAP BACKGROUND (THE PRODUCT)                            */}
+        {/* ======================================================== */}
+        <div className="absolute inset-0 z-0 bg-[#E5E3DF] overflow-hidden">
+          {/* Tile-based OpenStreetMap view centered on Frankfurt Campus */}
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=8.6600%2C50.1220%2C8.6750%2C50.1330&layer=mapnik"
+            className="w-full h-full border-0 grayscale-[25%] contrast-[105%]"
+            title="WINDO Campus Map"
+          />
 
-              {/* Bold middle display text */}
-              <div className="flex-1 flex flex-col justify-center text-left space-y-4 max-w-xs">
-                <h1 className="text-2xl font-black font-heading leading-tight text-[#0F1419]">
-                  Tell Diaspedia what you are doing. The system figures out the rest.
-                </h1>
-                <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                  A simple intent platform. State what you are doing now or later, and we instantly discover overlapping people, places, or savings.
-                </p>
-              </div>
+          {/* Map Overlay Soft Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none" />
 
-              {/* Sleek, Chamfered-Corner Action Buttons */}
-              <div className="w-full space-y-3 pb-8">
-                <button
-                  type="button"
-                  onClick={() => handleAuth("google")}
-                  disabled={authLoading}
-                  className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
+          {/* Interactive Business Markers on Map */}
+          {filteredBusinesses.map((biz, idx) => {
+            // Position pins on map overlay
+            const topPositions = [28, 42, 22, 58, 36, 68];
+            const leftPositions = [48, 62, 28, 38, 72, 54];
+            const topPos = topPositions[idx % topPositions.length];
+            const leftPos = leftPositions[idx % leftPositions.length];
+
+            const isSelected = selectedBusiness?.id === biz.id;
+
+            return (
+              <button
+                key={biz.id}
+                onClick={() => {
+                  setSelectedBusiness(biz);
+                  setSheetExpanded(true);
+                }}
+                style={{ top: `${topPos}%`, left: `${leftPos}%` }}
+                className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-10 transition-all cursor-pointer group focus:outline-none`}
+              >
+                {/* Pin Badge */}
+                <div
+                  className={`px-3 py-1.5 rounded-full shadow-lg font-black text-xs flex items-center gap-1.5 border transition-all ${
+                    isSelected
+                      ? "bg-black text-white border-black scale-110 shadow-2xl ring-4 ring-black/20"
+                      : "bg-white text-black border-zinc-200 hover:scale-105"
+                  }`}
                 >
-                  {authLoading && authProvider === "google" ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm">G</span>
-                        <span>CONTINUE WITH GOOGLE</span>
-                      </div>
-                      <ArrowRight size={14} className="text-brand-primary" />
-                    </>
-                  )}
-                </button>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                  <span className="truncate max-w-[110px]">{biz.name}</span>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleAuth("apple")}
-                  disabled={authLoading}
-                  className="w-full bg-white border border-[#EFF3F4] hover:bg-zinc-50 text-[#0F1419] font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
-                >
-                  {authLoading && authProvider === "apple" ? (
-                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto" />
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm"></span>
-                        <span>CONTINUE WITH APPLE</span>
-                      </div>
-                      <ArrowRight size={14} className="text-zinc-400" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ------------------------------------------ */}
-        {/* INTRODUCTION WIZARD - NEW CORE INTENT CONCEPT */}
-        {/* ------------------------------------------ */}
-        <AnimatePresence>
-          {isLoggedIn && showWizard && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={premiumTransition}
-              className="absolute inset-0 bg-white z-[70] flex flex-col justify-between p-8 h-[100dvh] overflow-hidden"
-            >
-              {/* Header Indicator */}
-              <div className="flex justify-between items-center pt-4">
-                <span className="font-heading font-black text-xl tracking-tighter text-brand-primary">diaspedia</span>
-                <span className="text-xs font-bold text-zinc-400">Step {wizardStep} of 4</span>
-              </div>
-
-              {/* Wizard Content Slots */}
-              <div className="flex-1 flex flex-col justify-center space-y-8 max-w-sm mx-auto w-full">
-                <AnimatePresence mode="wait">
-                  {wizardStep === 1 && (
-                    <motion.div
-                      key="step-1"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ x: -20, opacity: 0 }}
-                      className="space-y-6"
-                    >
-                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 01</span>
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        GO SOMEWHERE.
-                      </h2>
-                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Whether you are heading to the airport right now, leaving your office, or planning a future flight, start moving.
-                      </p>
-                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <MapPin className="w-12 h-12 text-brand-primary" />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {wizardStep === 2 && (
-                    <motion.div
-                      key="step-2"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ x: -20, opacity: 0 }}
-                      className="space-y-6"
-                    >
-                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 02</span>
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        TELL DIASPEDIA.
-                      </h2>
-                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Just tell Diaspedia what you are doing in simple human language. No complicated drop-down forms or parameters.
-                      </p>
-                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <Compass className="w-12 h-12 text-brand-primary" />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {wizardStep === 3 && (
-                    <motion.div
-                      key="step-3"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ x: -20, opacity: 0 }}
-                      className="space-y-6"
-                    >
-                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 03</span>
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        WE FIND MATCHES.
-                      </h2>
-                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        We scan the surrounding environment passively. We notify you as soon as overlapping passenger plans or transit matches emerge.
-                      </p>
-                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <div className="flex gap-2.5">
-                          <div className="w-4 h-4 bg-brand-primary" />
-                          <div className="w-4 h-4 bg-zinc-300" />
-                          <div className="w-4 h-4 bg-[#0F1419]" />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {wizardStep === 4 && (
-                    <motion.div
-                      key="step-4"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ x: -20, opacity: 0 }}
-                      className="space-y-6"
-                    >
-                      <span className="text-xs font-black uppercase text-brand-primary tracking-widest block">Step 04</span>
-                      <h2 className="text-4xl font-heading font-black tracking-tight leading-none text-[#0F1419]">
-                        SPEND LESS TOGETHER.
-                      </h2>
-                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                        Coordinate on the spot to split taxis, airport shuttle transfers, and group fares. Simplicity, passive discovery, and direct savings.
-                      </p>
-                      <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-8 flex items-center justify-center chamfered-card">
-                        <Shield className="w-12 h-12 text-brand-primary" />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Sequential Action Button */}
-              <div className="w-full pb-4 max-w-sm mx-auto">
-                {wizardStep < 4 ? (
-                  <button
-                    type="button"
-                    onClick={() => setWizardStep((prev) => prev + 1)}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
-                  >
-                    <span>CONTINUE</span>
-                    <ArrowRight size={14} className="text-brand-primary" />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleCompleteWizard}
-                    className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-bold text-xs py-4 px-6 shadow-sm transition-all cursor-pointer flex items-center justify-between chamfered-card h-[54px]"
-                  >
-                    <span>START DIASPEDIA</span>
-                    <Check size={14} />
-                  </button>
+                {/* Sub-label showing main offering or price */}
+                {biz.priceRange && (
+                  <div className="mt-1 bg-black/80 backdrop-blur-md text-white text-[11px] font-bold px-2 py-0.5 rounded-md shadow text-center w-max mx-auto opacity-90">
+                    {biz.priceRange.split("—")[1] || biz.priceRange}
+                  </div>
                 )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </button>
+            );
+          })}
+        </div>
 
-        {/* ------------------------------------------ */}
-        {/* MAIN APPLICATION SHIELD HEADER */}
-        {/* ------------------------------------------ */}
-        <header className="sticky top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-zinc-100 py-3.5 px-6 flex items-center justify-between z-30 shrink-0">
-          <span className="font-heading font-black text-2xl tracking-tighter text-brand-primary select-none">
-            diaspedia
-          </span>
+        {/* ======================================================== */}
+        {/* TOP FLOATING UBER-STYLE SEARCH HEADER                     */}
+        {/* ======================================================== */}
+        <header className="absolute top-4 left-4 right-4 z-30 space-y-2">
+          {/* Top Brand & Search Bar Card */}
+          <div className="bg-white rounded-2xl shadow-xl p-3.5 border border-zinc-100 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-black text-white font-black text-base flex items-center justify-center font-heading tracking-tighter shrink-0 select-none">
+              W
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setShowNotifications(!showNotifications);
-                if (!showNotifications) {
-                  setNotifications(notifications.map((n) => ({ ...n, read: true })));
-                }
-              }}
-              className="relative w-9 h-9 rounded-xl bg-[#F5F8FA] hover:bg-zinc-100 flex items-center justify-center text-[#0F1419] active:scale-90 transition-all cursor-pointer"
-            >
-              <Bell size={18} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-brand-primary text-white text-xs font-black w-5 h-5 rounded-full border-2 border-white flex items-center justify-center">
-                  {unreadCount}
-                </span>
+            <div className="flex-1 relative flex items-center">
+              <Search size={18} className="absolute left-3 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search what you need (e.g. coffee, USB cable)..."
+                className="w-full bg-[#F3F3F3] hover:bg-zinc-200/70 focus:bg-white text-black font-semibold text-xs py-2.5 pl-9 pr-8 rounded-xl focus:outline-none transition-all placeholder:text-zinc-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 p-1 rounded-full text-zinc-400 hover:text-black cursor-pointer"
+                >
+                  <X size={14} />
+                </button>
               )}
-            </button>
+            </div>
+          </div>
+
+          {/* Quick Need Pills Horizontal Bar */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-0.5">
+            {POPULAR_NEEDS.map((need) => {
+              const isActive = searchQuery.toLowerCase() === need.label.toLowerCase();
+              return (
+                <button
+                  key={need.label}
+                  onClick={() => handleSelectNeed(need.label)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-sm cursor-pointer border ${
+                    isActive
+                      ? "bg-black text-white border-black"
+                      : "bg-white/95 backdrop-blur-md text-zinc-800 border-zinc-200/80 hover:bg-white"
+                  }`}
+                >
+                  <span>{need.icon}</span> <span className="ml-1 capitalize">{need.label}</span>
+                </button>
+              );
+            })}
           </div>
         </header>
 
-        {/* NOTIFICATIONS CONTAINER OVERLAY */}
+        {/* Active Navigation Route Banner if user tapped [Go there] */}
         <AnimatePresence>
-          {showNotifications && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 bg-black/40 z-[45]"
-                onClick={() => setShowNotifications(false)}
-              />
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute top-[58px] left-4 right-4 bg-white border border-zinc-100 shadow-xl z-50 max-h-[70%] overflow-y-auto rounded-2xl p-5 space-y-4"
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-black tracking-wider uppercase text-zinc-400">Activity Alerts</h3>
-                  <button
-                    onClick={() => setShowNotifications(false)}
-                    className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:bg-zinc-200 cursor-pointer"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-
-                <div className="space-y-2.5">
-                  {notifications.map((n) => (
-                    <div
-                      key={n.id}
-                      className={`p-3.5 rounded-xl text-xs border transition-all ${
-                        n.read ? "bg-white border-zinc-100" : "bg-brand-primary/5 border-brand-primary/20"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start gap-2">
-                        <p className="font-semibold text-zinc-800 leading-relaxed">{n.text}</p>
-                        <span className="text-xs text-zinc-400 font-bold shrink-0">{n.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* ACTION NOTIFICATIONS STATE FEEDBACK */}
-        <AnimatePresence>
-          {actionFeedback && (
+          {routeActiveBiz && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="absolute top-[68px] left-6 right-6 bg-brand-primary text-white text-xs font-bold px-4 py-3 rounded-xl shadow-lg z-50 flex items-center gap-2"
+              exit={{ opacity: 0, y: -20 }}
+              className="absolute top-28 left-4 right-4 z-30 bg-black text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between"
             >
-              <CheckCircle2 size={16} className="shrink-0" />
-              <span>{actionFeedback}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-500 text-black flex items-center justify-center font-black">
+                  <NavIcon size={20} />
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Heading To</div>
+                  <div className="text-sm font-black font-heading text-white">{routeActiveBiz.name}</div>
+                  <div className="text-xs text-emerald-400 font-bold">{routeActiveBiz.distance} &bull; {routeActiveBiz.address}</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setRouteActiveBiz(null)}
+                className="p-2 text-zinc-400 hover:text-white cursor-pointer"
+              >
+                <X size={18} />
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ------------------------------------------ */}
-        {/* MAIN BODY SCROLLABLE ELEMENT */}
-        {/* ------------------------------------------ */}
-        <main className="flex-1 overflow-y-auto px-6 pt-5 pb-32 space-y-6 scroll-smooth bg-white">
+        {/* ======================================================== */}
+        {/* BOTTOM FLOATING UBER-STYLE SHEET                         */}
+        {/* ======================================================== */}
+        <motion.div
+          animate={{
+            height: sheetExpanded ? "75%" : "38%"
+          }}
+          transition={uberTransition}
+          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.15)] border-t border-zinc-100 z-20 flex flex-col overflow-hidden"
+        >
+          {/* Drag Handle Header */}
+          <div
+            onClick={() => setSheetExpanded(!sheetExpanded)}
+            className="w-full py-3 flex flex-col items-center justify-center cursor-pointer select-none bg-white border-b border-zinc-50 shrink-0"
+          >
+            <div className="w-10 h-1 bg-zinc-300 rounded-full mb-1" />
+            <div className="text-[11px] font-black text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+              <span>{filteredBusinesses.length} Nearby Places</span>
+              <ChevronUp size={12} className={`transition-transform duration-300 ${sheetExpanded ? "rotate-180" : ""}`} />
+            </div>
+          </div>
 
-          {/* ========================================= */}
-          {/* TAB 1: NOW SCREEN                         */}
-          {/* ========================================= */}
-          {activeTab === "now" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              {/* Introduction header */}
-              <div className="pt-2">
-                <span className="text-xs font-bold text-brand-primary uppercase tracking-widest">
-                  Live Intents
-                </span>
-                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
-                  What are you doing?
-                </h1>
+          {/* Business Cards Scroll Container */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+
+            {/* If search query has no results */}
+            {filteredBusinesses.length === 0 ? (
+              <div className="py-8 text-center space-y-2">
+                <p className="text-sm font-bold text-zinc-800">No places nearby offering &ldquo;{searchQuery}&rdquo;</p>
+                <p className="text-xs text-zinc-500">Try searching for coffee, haircut, USB cable, or lunch.</p>
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="mt-2 text-xs font-bold text-black underline cursor-pointer"
+                >
+                  Clear search
+                </button>
               </div>
+            ) : (
+              filteredBusinesses.map((biz) => {
+                const isSelected = selectedBusiness?.id === biz.id;
 
-              {/* Single Simple Entry Box (ChatGPT-like but strictly an elegant textbox, no categories) */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
-                <div className="space-y-1">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
-                    TELL DIASPEDIA NOW
+                return (
+                  <div
+                    key={biz.id}
+                    onClick={() => setSelectedBusiness(biz)}
+                    className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-3 ${
+                      isSelected
+                        ? "bg-black text-white border-black shadow-xl"
+                        : "bg-[#F9F9F9] hover:bg-[#F2F2F2] text-black border-zinc-100"
+                    }`}
+                  >
+                    {/* Header Row */}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className={`font-heading font-black text-base tracking-tight ${isSelected ? "text-white" : "text-black"}`}>
+                            {biz.name}
+                          </h3>
+                        </div>
+                        <p className={`text-xs font-medium mt-0.5 ${isSelected ? "text-zinc-400" : "text-zinc-500"}`}>
+                          {biz.category} &bull; <span className="font-bold">{biz.distance}</span>
+                        </p>
+                      </div>
+
+                      <span className={`text-[11px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                        isSelected ? "bg-white/20 text-white" : "bg-emerald-100 text-emerald-800"
+                      }`}>
+                        {biz.openingHours}
+                      </span>
+                    </div>
+
+                    {/* Offered Items List Preview */}
+                    <div className="space-y-1.5 pt-1 border-t border-zinc-200/40">
+                      {biz.items.slice(0, 3).map((item) => (
+                        <div key={item.id} className="flex justify-between items-center text-xs">
+                          <span className={`font-medium ${isSelected ? "text-zinc-200" : "text-zinc-700"}`}>
+                            {item.name}
+                          </span>
+                          <span className={`font-black ${isSelected ? "text-white" : "text-black"}`}>
+                            {item.price}
+                          </span>
+                        </div>
+                      ))}
+                      {biz.items.length > 3 && (
+                        <div className={`text-[11px] font-bold pt-0.5 ${isSelected ? "text-zinc-400" : "text-zinc-400"}`}>
+                          + {biz.items.length - 3} more offerings
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Bar */}
+                    <div className="flex justify-between items-center pt-2">
+                      <span className={`text-xs font-bold ${isSelected ? "text-zinc-400" : "text-zinc-500"}`}>
+                        {biz.address}
+                      </span>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRouteActiveBiz(biz);
+                        }}
+                        className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isSelected
+                            ? "bg-white text-black hover:bg-zinc-200"
+                            : "bg-black text-white hover:bg-zinc-800"
+                        }`}
+                      >
+                        <span>Go there</span>
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </motion.div>
+
+        {/* ======================================================== */}
+        {/* DETAILED BUSINESS WINDOW SHEET (WHEN CLICKED)            */}
+        {/* ======================================================== */}
+        <AnimatePresence>
+          {selectedBusiness && (
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              transition={uberTransition}
+              className="absolute inset-x-0 bottom-0 top-16 bg-white z-40 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
+            >
+              {/* Sheet Header */}
+              <div className="p-5 border-b border-zinc-100 flex justify-between items-start shrink-0">
+                <div>
+                  <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest block">
+                    Digital Window View
                   </span>
-                  <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                    State what you are doing right now in simple English.
+                  <h2 className="text-2xl font-heading font-black text-black tracking-tight leading-tight mt-0.5">
+                    {selectedBusiness.name}
+                  </h2>
+                  <p className="text-xs font-bold text-zinc-500 mt-1 flex items-center gap-2">
+                    <span className="text-black font-extrabold">{selectedBusiness.distance}</span>
+                    <span>&bull;</span>
+                    <span>{selectedBusiness.address}</span>
                   </p>
                 </div>
 
-                <div className="space-y-3">
-                  <textarea
-                    rows={2}
-                    value={nowInputText}
-                    onChange={(e) => setNowInputText(e.target.value)}
-                    placeholder="Tell Diaspedia... (e.g. I'm going to BER airport now)"
-                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
-                  />
-
-                  <button
-                    onClick={() => {
-                      handleNowSubmit(nowInputText);
-                    }}
-                    disabled={!nowInputText.trim()}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
-                  >
-                    <span>Submit Intent</span>
-                    <ArrowRight size={14} className="text-brand-primary" />
-                  </button>
-                </div>
+                <button
+                  onClick={() => setSelectedBusiness(null)}
+                  className="p-2 rounded-full bg-zinc-100 text-black hover:bg-zinc-200 cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              {/* Quick Click presets when no request is active */}
-              {!nowRequest && (
-                <div className="space-y-3">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                    Or choose a common intent
+              {/* Offerings Body List */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-6">
+
+                {/* Real-Time Status & Hours */}
+                <div className="bg-[#F8F8F8] p-4 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-black">
+                    <Clock size={16} className="text-emerald-600" />
+                    <span>{selectedBusiness.openingHours}</span>
+                  </div>
+                  <span className="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase">
+                    Open Now
                   </span>
-                  <div className="grid grid-cols-1 gap-2.5">
-                    {[
-                      "I'm going to BER airport now.",
-                      "I need to get to the train station.",
-                      "I'm leaving this office complex in 15 minutes.",
-                      "I'm heading to the Olympic stadium."
-                    ].map((prompt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handlePresetNow(prompt)}
-                        className="w-full bg-[#F5F8FA] hover:bg-zinc-100 border border-[#EFF3F4] px-4 py-3 text-left text-xs font-bold text-zinc-700 transition-all flex items-center justify-between chamfered-card"
+                </div>
+
+                {/* What They Offer List */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-baseline">
+                    <h3 className="text-xs font-black text-zinc-400 uppercase tracking-wider">
+                      What you can get here
+                    </h3>
+                    <span className="text-xs font-bold text-zinc-500">{selectedBusiness.items.length} items</span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {selectedBusiness.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3.5 bg-white border border-zinc-100 rounded-2xl shadow-sm flex justify-between items-center hover:border-zinc-300 transition-all"
                       >
-                        <span>&ldquo;{prompt}&rdquo;</span>
-                        <ChevronRight size={14} className="text-brand-primary" />
-                      </button>
+                        <div>
+                          <div className="text-sm font-bold text-black">{item.name}</div>
+                          {item.statusTag && (
+                            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded mt-1 inline-block">
+                              {item.statusTag}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-sm font-black text-black bg-[#F3F3F3] px-3 py-1.5 rounded-xl">
+                          {item.price}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
-              )}
 
-              {/* NOW INTENT LIFECYCLE: Searching, Matching or Accepted */}
-              {nowRequest && (
-                <div className="space-y-5 pt-2 border-t border-zinc-100">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="text-xs font-black text-brand-primary uppercase tracking-widest block">
-                        ACTIVE INTENT NOW
-                      </span>
-                      <h3 className="text-lg font-heading font-black text-[#0F1419] mt-0.5 leading-tight">
-                        &ldquo;{nowRequest.text}&rdquo;
-                      </h3>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setNowRequest(null);
-                        setSelectedMatch(null);
-                        setNowInputText("");
-                      }}
-                      className="text-xs font-bold text-red-500 hover:underline px-2 py-1"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-
-                  {/* OpenStreetMap Component displayed naturally */}
-                  <div className="space-y-2">
-                    <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                      Real-time Intent Map
-                    </span>
-                    <div className="border border-[#EFF3F4] bg-zinc-100 relative overflow-hidden h-[220px] chamfered-card shadow-inner">
-                      {/* Interactive real-time OpenStreetMap Frame */}
-                      <iframe
-                        src={
-                          nowRequest.status === "accepted"
-                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.35%2C52.48%2C13.45%2C52.54&layer=mapnik"
-                            : nowRequest.status === "matches"
-                            ? "https://www.openstreetmap.org/export/embed.html?bbox=13.37%2C52.49%2C13.43%2C52.53&layer=mapnik"
-                            : "https://www.openstreetmap.org/export/embed.html?bbox=13.38%2C52.50%2C13.42%2C52.52&layer=mapnik"
-                        }
-                        className="w-full h-full border-0 rounded-none shadow-sm"
-                        title="OpenStreetMap Frame"
-                      />
-
-                      {/* Map status indicator overlays */}
-                      <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm border border-[#EFF3F4] p-2.5 flex items-center justify-between text-xs rounded-none shadow-md">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${nowRequest.status === "searching" ? "bg-amber-400 animate-ping" : "bg-brand-primary animate-pulse"}`} />
-                          <span className="font-bold text-zinc-700">
-                            {nowRequest.status === "searching" && "LOOKING AROUND YOU..."}
-                            {nowRequest.status === "matches" && "MATCHES FOUND NEARBY"}
-                            {nowRequest.status === "accepted" && "COORDINATES IN SYNC"}
-                          </span>
-                        </div>
-                        <span className="text-xs font-black uppercase text-zinc-400">{nowRequest.destination}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* LOADING/SEARCHING STATUS STATE */}
-                  {nowRequest.status === "searching" && (
-                    <div className="bg-white border border-[#EFF3F4] p-8 text-center space-y-4 chamfered-card">
-                      <div className="w-10 h-10 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto" />
-                      <h4 className="text-xs font-black tracking-wider uppercase text-zinc-400">Scanning Surrounding Area</h4>
-                      <p className="text-xs font-semibold text-brand-text-muted leading-relaxed max-w-xs mx-auto">
-                        Diaspedia is extracting location coordinates and analyzing live matches going the same way. One moment...
-                      </p>
-                    </div>
-                  )}
-
-                  {/* MATCHES LISTING STATE */}
-                  {nowRequest.status === "matches" && (
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-baseline px-1">
-                        <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                          People heading your way
-                        </span>
-                        <span className="text-xs font-bold text-brand-primary">{activeMatches.length} matching now</span>
-                      </div>
-
-                      {activeMatches.length === 0 ? (
-                        <div className="bg-white border border-[#EFF3F4] p-6 text-center text-xs font-semibold text-zinc-500 chamfered-card">
-                          No active live requests in this direction right now. Keep watching?
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {activeMatches.map((match) => (
-                            <div
-                              key={match.id}
-                              className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm relative chamfered-card"
-                            >
-                              {/* Header & verified profile */}
-                              <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-2.5">
-                                  <div className={`w-8 h-8 rounded-full ${match.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-                                    {match.name.slice(0, 1)}
-                                  </div>
-                                  <div>
-                                    <h5 className="text-xs font-bold text-[#0F1419] flex items-center gap-1">
-                                      <span>{match.name}</span>
-                                      <span className="text-[10px] bg-brand-primary/10 text-brand-primary font-black px-1 py-0.2 rounded uppercase">Verified</span>
-                                    </h5>
-                                    <p className="text-xs font-bold text-zinc-400">{match.timeRemaining}</p>
-                                  </div>
-                                </div>
-
-                                <div className="text-xs bg-[#F5F8FA] border border-[#EFF3F4] text-zinc-600 font-extrabold px-2.5 py-0.5 uppercase">
-                                  Nearby
-                                </div>
-                              </div>
-
-                              {/* Explanations & savings */}
-                              <div className="space-y-2 text-xs">
-                                <p className="font-semibold text-brand-text leading-relaxed">
-                                  {match.explanation}
-                                </p>
-                                <div className="bg-[#F5F8FA] border-l-2 border-brand-primary p-3 flex items-start gap-2 text-xs">
-                                  <Info size={14} className="text-brand-primary shrink-0 mt-0.5" />
-                                  <span className="font-bold text-zinc-700">Cost saving idea: {match.costSavingIdea}</span>
-                                </div>
-                              </div>
-
-                              {/* Real-time progress countdown line */}
-                              <div className="space-y-1">
-                                <div className="flex justify-between text-[11px] font-bold text-zinc-400 uppercase">
-                                  <span>Request Expiry</span>
-                                  <span>Time-Sensitive</span>
-                                </div>
-                                <div className="h-1.5 bg-zinc-100 rounded-none overflow-hidden">
-                                  <div
-                                    className="h-full bg-brand-primary transition-all duration-500 ease-linear"
-                                    style={{ width: `${nowProgress}%` }}
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Actions */}
-                              <div className="grid grid-cols-2 gap-2.5 pt-1">
-                                <button
-                                  onClick={() => handleDismissMatch(match.id)}
-                                  className="bg-white border border-[#EFF3F4] text-zinc-500 hover:bg-zinc-50 font-bold text-xs py-3 cursor-pointer chamfered-card"
-                                >
-                                  NOT FOR ME
-                                </button>
-                                <button
-                                  onClick={() => handleGoTogether(match)}
-                                  className="bg-[#0F1419] hover:bg-black text-white font-extrabold text-xs py-3 cursor-pointer chamfered-card"
-                                >
-                                  GO TOGETHER
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* ACCEPTED AND COORDINATION STATE */}
-                  {nowRequest.status === "accepted" && selectedMatch && (
-                    <div className="bg-white border-t-2 border-[#0F1419] p-5 space-y-4 shadow-sm chamfered-card">
-                      <div className="flex justify-between items-center pb-3 border-b border-[#EFF3F4]">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-8 h-8 rounded-full ${selectedMatch.avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-                            {selectedMatch.name.slice(0, 1)}
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-black uppercase text-brand-text-muted">Coordinate with {selectedMatch.name}</h4>
-                            <p className="text-xs text-brand-primary font-bold">Sharing transit to {nowRequest.destination}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Message logs */}
-                      <div className="h-[200px] overflow-y-auto space-y-3 p-1">
-                        {chatLog.map((msg) => {
-                          const isUser = msg.sender === "user";
-                          const isSystem = msg.sender === "system";
-
-                          if (isSystem) {
-                            return (
-                              <div key={msg.id} className="text-center py-1">
-                                <span className="bg-brand-primary/10 border border-brand-primary/20 text-zinc-800 text-xs font-bold px-3 py-1 uppercase tracking-wider block leading-relaxed rounded-none">
-                                  {msg.text}
-                                </span>
-                              </div>
-                            );
-                          }
-
-                          return (
-                            <div
-                              key={msg.id}
-                              className={`flex items-start gap-2.5 max-w-[90%] ${isUser ? "ml-auto flex-row-reverse" : "mr-auto"}`}
-                            >
-                              <div className="space-y-1 w-full">
-                                <span className="text-xs text-zinc-400 font-bold block">
-                                  {isUser ? "YOU" : selectedMatch.name.toUpperCase()}
-                                </span>
-                                <div className={`p-3 text-xs leading-relaxed border-l-2 ${isUser ? "bg-[#0F1419] text-white border-[#0F1419]" : "bg-[#F5F8FA] text-[#0F1419] border-brand-primary font-semibold"} rounded-none`}>
-                                  {msg.text}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        <div ref={chatBottomRef} />
-                      </div>
-
-                      {/* Message input */}
-                      <form onSubmit={handleSendChat} className="flex gap-2 border-t border-[#EFF3F4] pt-3 shrink-0">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Type coordination message..."
-                          value={chatInput}
-                          onChange={(e) => setChatInput(e.target.value)}
-                          className="flex-1 bg-[#F5F8FA] border border-[#EFF3F4] px-4 py-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none"
-                        />
-                        <button
-                          type="submit"
-                          className="bg-[#0F1419] text-white hover:bg-black w-11 h-11 rounded-none flex items-center justify-center transition-all cursor-pointer shrink-0"
-                        >
-                          <Send size={15} />
-                        </button>
-                      </form>
-                    </div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* ========================================= */}
-          {/* TAB 2: LATER SCREEN                       */}
-          {/* ========================================= */}
-          {activeTab === "later" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <div className="pt-2">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                  Future Intents
-                </span>
-                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
-                  Going somewhere later?
-                </h1>
               </div>
 
-              {/* Minimal free-text plan entry box (no form) */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
-                <div className="space-y-1">
-                  <span className="text-xs font-black text-brand-text-muted uppercase tracking-wider block">
-                    DESCRIBE YOUR UPCOMING PLANS
-                  </span>
-                  <p className="text-xs font-semibold text-brand-text-muted leading-relaxed">
-                    Let Diaspedia watch the surrounding environment passively. Simply state when and where.
-                  </p>
-                </div>
-
-                <form onSubmit={handleLaterSubmit} className="space-y-3">
-                  <textarea
-                    rows={2}
-                    value={laterInputText}
-                    onChange={(e) => setLaterInputText(e.target.value)}
-                    placeholder="e.g. I'm going to Munich next Friday from Berlin, or travelling to Zanzibar in December"
-                    className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-3 text-xs font-semibold focus:outline-none focus:border-brand-primary rounded-none resize-none leading-relaxed"
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={!laterInputText.trim()}
-                    className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-3.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed chamfered-card"
-                  >
-                    <span>Keep Watching For Me</span>
-                    <ArrowRight size={14} className="text-brand-primary" />
-                  </button>
-                </form>
-              </div>
-
-              {/* PERSISTENT CALM PLANS LISTING */}
-              <div className="space-y-4 pt-2">
-                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block px-1">
-                  Active Future Intents
-                </span>
-
-                <div className="space-y-4">
-                  {laterPlans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className="bg-white border border-[#EFF3F4] p-6 space-y-4 hover:border-zinc-300 transition-all chamfered-card"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="text-xl font-heading font-black text-[#0F1419] uppercase tracking-tight leading-none">
-                            {plan.destination}
-                          </h4>
-                          <p className="text-xs text-brand-primary font-bold mt-1.5 flex items-center gap-1">
-                            <Clock size={13} />
-                            <span>{plan.timing}</span>
-                          </p>
-                          <p className="text-xs text-zinc-400 font-bold mt-0.5">
-                            {plan.route}
-                          </p>
-                        </div>
-
-                        <span className="text-xs bg-brand-primary/10 text-brand-primary border border-brand-primary/20 font-bold px-2.5 py-0.5 rounded-none uppercase tracking-wider">
-                          Watching...
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-brand-text-muted font-semibold italic">
-                        &ldquo;{plan.details}&rdquo;
-                      </p>
-
-                      {/* Display overlaps if found */}
-                      {plan.hasOverlaps && (
-                        <div className="space-y-3 pt-3 border-t border-[#EFF3F4]">
-                          <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                            Coincidences Found
-                          </span>
-
-                          {plan.overlaps.map((overlap, oIdx) => (
-                            <div key={oIdx} className="bg-[#F5F8FA] border border-[#EFF3F4] p-4 space-y-3 rounded-none">
-                              <div className="flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full ${overlap.avatarBg} flex items-center justify-center text-white text-[10px] font-bold`}>
-                                  {overlap.name.slice(0, 1)}
-                                </div>
-                                <span className="text-xs font-bold text-[#0F1419]">{overlap.name} ({overlap.time})</span>
-                              </div>
-
-                              <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
-                                {overlap.explanation}
-                              </p>
-
-                              <div className="bg-white border-l-2 border-brand-primary p-2.5 flex items-start gap-2 text-xs">
-                                <Shield size={14} className="text-brand-primary shrink-0 mt-0.5" />
-                                <span className="font-bold text-zinc-700">Cost saving idea: {overlap.costSavingIdea}</span>
-                              </div>
-
-                              <button
-                                onClick={() => {
-                                  setActionFeedback(`Coordinating with ${overlap.name} initiated!`);
-                                  setTimeout(() => setActionFeedback(null), 3000);
-                                }}
-                                className="w-full bg-[#0F1419] hover:bg-black text-white font-bold text-xs py-2.5 chamfered-card"
-                              >
-                                Reach Out
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+              {/* Bottom Action Footer */}
+              <div className="p-4 border-t border-zinc-100 bg-white shrink-0">
+                <button
+                  onClick={() => {
+                    setRouteActiveBiz(selectedBusiness);
+                    setSelectedBusiness(null);
+                  }}
+                  className="w-full bg-black hover:bg-zinc-800 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+                >
+                  <span>Go to {selectedBusiness.name}</span>
+                  <ArrowRight size={16} />
+                </button>
               </div>
             </motion.div>
           )}
+        </AnimatePresence>
 
-          {/* ========================================= */}
-          {/* TAB 3: SETTINGS SCREEN                    */}
-          {/* ========================================= */}
-          {activeTab === "settings" && (
+        {/* ======================================================== */}
+        {/* MERCHANT OFFERING MODAL ("Add what you offer")           */}
+        {/* ======================================================== */}
+        <AnimatePresence>
+          {showMerchantModal && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center"
             >
-              <div className="pt-2">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                  Preferences
-                </span>
-                <h1 className="text-3xl font-heading font-black tracking-tight text-[#0F1419] leading-tight">
-                  Settings
-                </h1>
-              </div>
-
-              {/* Minimalist Profile detail card */}
-              <div className="bg-white border border-[#EFF3F4] p-5 text-center space-y-3.5 shadow-sm relative chamfered-card">
-                <div className="w-16 h-16 rounded-full bg-[#0F1419] flex items-center justify-center text-white text-2xl font-heading font-black mx-auto">
-                  {userProfile.name.slice(0, 1)}
-                </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase text-[#0F1419]">@{userProfile.username}</h3>
-                  <p className="text-xs text-zinc-400 font-bold">Home: {userProfile.homeCity}</p>
-                </div>
-
-                <div className="pt-2 border-t border-[#EFF3F4]">
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={uberTransition}
+                className="w-full bg-white rounded-t-3xl p-6 space-y-5 max-h-[85vh] overflow-y-auto"
+              >
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
+                  <div>
+                    <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">Merchant Portal</span>
+                    <h2 className="text-xl font-heading font-black text-black">Add what you offer</h2>
+                  </div>
                   <button
-                    onClick={handleLogout}
-                    className="text-xs font-bold text-red-500 hover:underline"
+                    onClick={() => setShowMerchantModal(false)}
+                    className="p-2 rounded-full bg-zinc-100 text-black hover:bg-zinc-200 cursor-pointer"
                   >
-                    Logout Account
+                    <X size={18} />
                   </button>
                 </div>
-              </div>
 
-              {/* WORK HOURS SCHEDULER blockout control */}
-              <div className="bg-white border border-[#EFF3F4] p-5 space-y-4 shadow-sm chamfered-card">
-                <div className="space-y-1">
-                  <span className="text-xs font-black text-brand-primary uppercase tracking-wider block">
-                    WHEN SHOULD DIASPEDIA REACH YOU?
-                  </span>
-                  <p className="text-xs text-brand-text-muted font-semibold leading-relaxed">
-                    Set your focus hours. Diaspedia will not send you matching requests or alerts during these periods.
-                  </p>
-                </div>
-
-                {/* Day Pliis Selector */}
-                <div className="flex flex-wrap gap-1.5">
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => {
-                    const active = workDays.includes(day);
-                    return (
-                      <button
-                        key={day}
-                        onClick={() => handleToggleWorkDay(day)}
-                        className={`text-xs font-bold px-3 py-1.5 border transition-all ${
-                          active
-                            ? "bg-[#0F1419] text-white border-[#0F1419]"
-                            : "bg-[#F5F8FA] text-zinc-400 border-[#EFF3F4] hover:bg-zinc-100"
-                        }`}
+                {merchantSuccessMsg ? (
+                  <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500 text-white font-black flex items-center justify-center mx-auto">
+                      <Check size={20} />
+                    </div>
+                    <p className="text-xs font-black text-emerald-900">{merchantSuccessMsg}</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleAddMerchantItem} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 block">Select Business</label>
+                      <select
+                        value={selectedMerchantBizId}
+                        onChange={(e) => setSelectedMerchantBizId(e.target.value)}
+                        className="w-full bg-[#F3F3F3] p-3 rounded-xl text-xs font-bold text-black border-0 focus:outline-none"
                       >
-                        {day}
-                      </button>
-                    );
-                  })}
-                </div>
+                        {businesses.map((b) => (
+                          <option key={b.id} value={b.id}>{b.name} ({b.category})</option>
+                        ))}
+                      </select>
+                    </div>
 
-                {/* Time range inputs */}
-                <div className="grid grid-cols-2 gap-3.5 text-xs">
-                  <div className="space-y-1.5">
-                    <span className="font-bold text-zinc-400 uppercase block">START TIME</span>
-                    <input
-                      type="time"
-                      value={workHoursStart}
-                      onChange={(e) => setWorkHoursStart(e.target.value)}
-                      className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-2.5 font-bold focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <span className="font-bold text-zinc-400 uppercase block">END TIME</span>
-                    <input
-                      type="time"
-                      value={workHoursEnd}
-                      onChange={(e) => setWorkHoursEnd(e.target.value)}
-                      className="w-full bg-[#F5F8FA] border border-[#EFF3F4] p-2.5 font-bold focus:outline-none"
-                    />
-                  </div>
-                </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 block">Offering Name (Product or Service)</label>
+                      <input
+                        type="text"
+                        required
+                        value={newItemName}
+                        onChange={(e) => setNewItemName(e.target.value)}
+                        placeholder="e.g. USB-C Cable, Haircut, Espresso"
+                        className="w-full bg-[#F3F3F3] p-3 rounded-xl text-xs font-bold text-black border-0 focus:outline-none"
+                      />
+                    </div>
 
-                <div className="bg-[#F5F8FA] p-3 text-xs font-semibold text-zinc-500 leading-normal">
-                  Matching is currently active outside of {workHoursStart} &mdash; {workHoursEnd} on {workDays.join(", ")}.
-                </div>
-              </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 block">Price (€)</label>
+                      <input
+                        type="text"
+                        required
+                        value={newItemPrice}
+                        onChange={(e) => setNewItemPrice(e.target.value)}
+                        placeholder="e.g. 8.00 or 18.00"
+                        className="w-full bg-[#F3F3F3] p-3 rounded-xl text-xs font-bold text-black border-0 focus:outline-none"
+                      />
+                    </div>
 
-              {/* Basic controls toggles */}
-              <div className="bg-white border border-[#EFF3F4] p-5 shadow-sm space-y-4 chamfered-card">
-                <span className="text-xs font-black tracking-wider uppercase text-brand-text-muted px-1">Privacy & Toggles</span>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 block">Category</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(["product", "service", "food"] as const).map((cat) => (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setNewItemCategory(cat)}
+                            className={`py-2 text-xs font-bold capitalize rounded-xl border ${
+                              newItemCategory === cat
+                                ? "bg-black text-white border-black"
+                                : "bg-[#F3F3F3] text-zinc-700 border-transparent"
+                            }`}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Toggle 1 */}
-                <div className="flex items-center justify-between text-xs">
-                  <div className="space-y-0.5 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Location Services</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Enable real-time OpenStreetMap tracking for surrounding coincidences.</p>
-                  </div>
-                  <button
-                    onClick={() => setLocationServices(!locationServices)}
-                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
-                      locationServices ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
-                    }`}
-                  >
-                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                  </button>
-                </div>
-
-                {/* Toggle 2 */}
-                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
-                  <div className="space-y-0.5 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Push Notifications</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Alert me instantly when a passenger overlap is discovered.</p>
-                  </div>
-                  <button
-                    onClick={() => setPushNotifications(!pushNotifications)}
-                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
-                      pushNotifications ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
-                    }`}
-                  >
-                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                  </button>
-                </div>
-
-                {/* Toggle 3 */}
-                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
-                  <div className="space-y-0.5 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Invisible Matching</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Participate in matching without exposing your profile name directly.</p>
-                  </div>
-                  <button
-                    onClick={() => setInvisibleMode(!invisibleMode)}
-                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
-                      invisibleMode ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
-                    }`}
-                  >
-                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                  </button>
-                </div>
-
-                {/* Toggle 4 */}
-                <div className="flex items-center justify-between text-xs border-t border-[#EFF3F4] pt-4">
-                  <div className="space-y-0.5 max-w-[80%]">
-                    <span className="font-bold text-[#0F1419] block">Strict Verification Only</span>
-                    <p className="text-xs text-brand-text-muted font-semibold">Only match me with users who have verified phone and ID credentials.</p>
-                  </div>
-                  <button
-                    onClick={() => setPrivacyTetherEnabled(!privacyTetherEnabled)}
-                    className={`w-10 h-6 rounded-full p-0.5 transition-all cursor-pointer flex ${
-                      privacyTetherEnabled ? "bg-brand-primary justify-end" : "bg-zinc-200 justify-start"
-                    }`}
-                  >
-                    <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Dedicated Corporate Legal Links Footer - Sleek Flat */}
-              <div className="bg-[#F5F8FA] border border-[#EFF3F4] p-5 text-center space-y-4 rounded-none">
-                <span className="text-xs font-black text-brand-text-muted uppercase tracking-widest block">
-                  diaspedia Corporation
-                </span>
-                <div className="flex flex-wrap justify-center gap-4 text-xs font-bold text-zinc-600">
-                  <Link href="/careers" className="hover:text-brand-primary hover:underline">Careers</Link>
-                  <Link href="/privacy" className="hover:text-brand-primary hover:underline">Privacy Policy</Link>
-                  <Link href="/terms" className="hover:text-brand-primary hover:underline">Terms of Service</Link>
-                  <Link href="/cookies" className="hover:text-brand-primary hover:underline">Cookie Policy</Link>
-                </div>
-                <p className="text-xs text-zinc-400 font-semibold leading-normal">
-                  diaspedia &copy; {new Date().getFullYear()}. Financial accounts, matching layers, and real-world companion details are powered in partnership with open global transit providers.
-                </p>
-              </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-black text-white font-black text-xs py-4 rounded-2xl hover:bg-zinc-800 transition-all cursor-pointer shadow-lg mt-2"
+                    >
+                      Save Offering
+                    </button>
+                  </form>
+                )}
+              </motion.div>
             </motion.div>
           )}
+        </AnimatePresence>
 
-        </main>
-
-        {/* ------------------------------------------ */}
-        {/* PERSISTENT THREE-ITEM BOTTOM CAP NAVIGATION */}
-        {/* ------------------------------------------ */}
-        <nav className="absolute bottom-5 left-4 right-4 bg-[#0F1419] rounded-full px-4 py-2.5 flex justify-around items-center z-40 shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-white/10 shrink-0">
+        {/* ======================================================== */}
+        {/* PERSISTENT UBER-STYLE BOTTOM CAP NAVIGATION              */}
+        {/* ======================================================== */}
+        <nav className="absolute bottom-4 left-4 right-4 bg-black text-white rounded-full p-2 flex justify-around items-center z-30 shadow-2xl border border-white/10">
           <button
-            onClick={() => setActiveTab("now")}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "now" ? "text-white font-bold" : "text-white/60 hover:text-white"
+            onClick={() => {
+              setActiveTab("explore");
+              setSelectedBusiness(null);
+            }}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              activeTab === "explore" ? "bg-white text-black font-black" : "text-zinc-400 hover:text-white"
             }`}
           >
-            <Compass size={20} className={activeTab === "now" ? "text-white" : "text-white/60"} />
-            <span className="text-xs tracking-tight uppercase font-black">NOW</span>
+            <Compass size={16} />
+            <span>Explore</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("later")}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "later" ? "text-white font-bold" : "text-white/60 hover:text-white"
-            }`}
+            onClick={() => {
+              setShowMerchantModal(true);
+            }}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer text-zinc-400 hover:text-white`}
           >
-            <Calendar size={20} className={activeTab === "later" ? "text-white" : "text-white/60"} />
-            <span className="text-xs tracking-tight uppercase font-black">LATER</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("settings")}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 cursor-pointer ${
-              activeTab === "settings" ? "text-white font-bold" : "text-white/60 hover:text-white"
-            }`}
-          >
-            <User size={20} className={activeTab === "settings" ? "text-white" : "text-white/60"} />
-            <span className="text-xs tracking-tight uppercase font-black">SETTINGS</span>
+            <Plus size={16} />
+            <span>Merchant</span>
           </button>
         </nav>
 
