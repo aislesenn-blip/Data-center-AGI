@@ -9,7 +9,7 @@
   --color-brand-text: #000000;
   --color-brand-muted: #6B6B6B;
   --color-brand-light: #F6F6F6;
-  --color-brand-[#F3F3F3]: #F3F3F3;
+  --color-brand-gray: #F3F3F3;
 }
 
 @layer base {
