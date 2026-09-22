@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Check, Bookmark, Clock, Award, Trash2 } from "lucide-react";
+import { Bookmark, Clock } from "lucide-react";
 import { Course, UserProgress } from "@/lib/lingoData";
 import CourseCard from "./CourseCard";
 
@@ -22,7 +22,7 @@ export default function MyLearningView({
   onOpenCourseDetail,
   onToggleSave,
 }: MyLearningViewProps) {
-  const [activeTab, setActiveTab] = useState<"continue" | "saved" | "history">("continue");
+  const [activeTab, setActiveTab] = useState<"continue" | "saved">("continue");
 
   const progressMap = userProgressList.reduce((acc, curr) => {
     acc[curr.courseId] = curr;
@@ -40,19 +40,19 @@ export default function MyLearningView({
         <h1 className="text-3xl sm:text-4xl font-heading font-black text-white tracking-tight">
           My Learning
         </h1>
-        <p className="text-sm text-zinc-400 font-medium">
+        <p className="text-sm text-slate-300 font-medium">
           Your personal library, active progress, and saved productions.
         </p>
       </div>
 
       {/* Tabs Row */}
-      <div className="border-b border-zinc-800 flex gap-6 text-xs sm:text-sm font-bold text-zinc-400">
+      <div className="border-b border-slate-800 flex gap-6 text-xs sm:text-sm font-bold text-slate-400">
         <button
           onClick={() => setActiveTab("continue")}
           className={`pb-3 border-b-2 transition-colors cursor-pointer ${
             activeTab === "continue"
-              ? "border-red-600 text-white font-black"
-              : "border-transparent hover:text-zinc-200"
+              ? "border-sky-400 text-white font-black"
+              : "border-transparent hover:text-slate-200"
           }`}
         >
           Continue Learning ({continueCourses.length})
@@ -61,8 +61,8 @@ export default function MyLearningView({
           onClick={() => setActiveTab("saved")}
           className={`pb-3 border-b-2 transition-colors cursor-pointer ${
             activeTab === "saved"
-              ? "border-red-600 text-white font-black"
-              : "border-transparent hover:text-zinc-200"
+              ? "border-sky-400 text-white font-black"
+              : "border-transparent hover:text-slate-200"
           }`}
         >
           Saved / My List ({savedCourses.length})
@@ -73,10 +73,10 @@ export default function MyLearningView({
       {activeTab === "continue" && (
         <div>
           {continueCourses.length === 0 ? (
-            <div className="py-16 text-center space-y-3 bg-[#181818] border border-zinc-800 rounded-3xl p-8 max-w-md mx-auto">
-              <Clock size={32} className="mx-auto text-zinc-600" />
+            <div className="py-16 text-center space-y-3 bg-[#0f172a] border border-slate-800 rounded-3xl p-8 max-w-md mx-auto">
+              <Clock size={32} className="mx-auto text-slate-500" />
               <h3 className="text-base font-bold text-white">No active courses yet</h3>
-              <p className="text-xs text-zinc-400">Start watching any course to track your progress automatically.</p>
+              <p className="text-xs text-slate-300">Start watching any course to track your progress automatically.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -100,10 +100,10 @@ export default function MyLearningView({
       {activeTab === "saved" && (
         <div>
           {savedCourses.length === 0 ? (
-            <div className="py-16 text-center space-y-3 bg-[#181818] border border-zinc-800 rounded-3xl p-8 max-w-md mx-auto">
-              <Bookmark size={32} className="mx-auto text-zinc-600" />
+            <div className="py-16 text-center space-y-3 bg-[#0f172a] border border-slate-800 rounded-3xl p-8 max-w-md mx-auto">
+              <Bookmark size={32} className="mx-auto text-slate-500" />
               <h3 className="text-base font-bold text-white">Your list is empty</h3>
-              <p className="text-xs text-zinc-400">Click &ldquo;＋ My Learning&rdquo; on any course poster to save it here.</p>
+              <p className="text-xs text-slate-300">Click &ldquo;＋ My Learning&rdquo; on any course poster to save it here.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

@@ -85,11 +85,11 @@ export default function FamilyProfileSwitcher({
                 className="group flex flex-col items-center space-y-2 cursor-pointer focus:outline-none"
               >
                 <div className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 transition-all group-hover:scale-105 ${
-                  isSelected ? "border-red-600 ring-4 ring-red-600/30" : "border-zinc-700 group-hover:border-white"
+                  isSelected ? "border-sky-400 ring-4 ring-sky-500/30" : "border-slate-700 group-hover:border-white"
                 }`}>
                   <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
                   {isSelected && (
-                    <div className="absolute inset-0 bg-red-600/30 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-sky-500/30 flex items-center justify-center">
                       <Check size={24} className="text-white drop-shadow" />
                     </div>
                   )}

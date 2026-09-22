@@ -128,7 +128,7 @@ export default function Home() {
   const newReleases = courses.filter((c) => c.badge === "NEW");
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans antialiased overflow-x-hidden selection:bg-red-600 selection:text-white">
+    <div className="min-h-screen bg-[#0b1120] text-white font-sans antialiased overflow-x-hidden selection:bg-sky-500 selection:text-white">
 
       {/* Persistent Netflix Header */}
       <Header
@@ -410,14 +410,14 @@ export default function Home() {
       />
 
       {/* MOBILE BOTTOM NAVIGATION */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#141414]/95 backdrop-blur-md border-t border-zinc-800 px-2 py-2 flex justify-around items-center text-[10px] font-bold text-zinc-400">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0b1120]/95 backdrop-blur-md border-t border-slate-800 px-2 py-2 flex justify-around items-center text-[10px] font-bold text-slate-400">
         <button
           onClick={() => setActiveTab("home")}
           className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
             activeTab === "home" ? "text-white font-black" : "hover:text-white"
           }`}
         >
-          <Tv size={18} className={activeTab === "home" ? "text-red-600" : ""} />
+          <Tv size={18} className={activeTab === "home" ? "text-sky-400" : ""} />
           <span>Home</span>
         </button>
 
@@ -427,7 +427,7 @@ export default function Home() {
             activeTab === "explore" ? "text-white font-black" : "hover:text-white"
           }`}
         >
-          <Compass size={18} className={activeTab === "explore" ? "text-red-600" : ""} />
+          <Compass size={18} className={activeTab === "explore" ? "text-sky-400" : ""} />
           <span>Explore</span>
         </button>
 
@@ -437,14 +437,14 @@ export default function Home() {
             activeTab === "my-learning" ? "text-white font-black" : "hover:text-white"
           }`}
         >
-          <Bookmark size={18} className={activeTab === "my-learning" ? "text-red-600" : ""} />
+          <Bookmark size={18} className={activeTab === "my-learning" ? "text-sky-400" : ""} />
           <span>My Learning</span>
         </button>
 
         <button
           onClick={() => setActiveTab("creator-studio")}
           className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "creator-studio" ? "text-red-400 font-black" : "hover:text-white"
+            activeTab === "creator-studio" ? "text-sky-400 font-black" : "hover:text-white"
           }`}
         >
           <Video size={18} />
@@ -457,15 +457,15 @@ export default function Home() {
             activeTab === "profile" ? "text-white font-black" : "hover:text-white"
           }`}
         >
-          <User size={18} className={activeTab === "profile" ? "text-red-600" : ""} />
+          <User size={18} className={activeTab === "profile" ? "text-sky-400" : ""} />
           <span>Profile</span>
         </button>
       </nav>
 
       {/* FOOTER */}
-      <footer className="border-t border-zinc-800/80 bg-[#101010] py-10 px-4 sm:px-6 lg:px-8 text-xs text-zinc-500 space-y-4 text-center select-none">
+      <footer className="border-t border-slate-800/80 bg-[#070b14] py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-500 space-y-4 text-center select-none">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="font-heading font-black text-lg text-red-600 tracking-tighter">
+          <div className="font-heading font-black text-lg text-sky-400 tracking-tighter">
             LINGO<span className="text-white">DESK</span>
           </div>
 

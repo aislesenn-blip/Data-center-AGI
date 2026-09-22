@@ -51,11 +51,11 @@ export default function CourseRow({
             <span>{title}</span>
           </h2>
           {subtitle && (
-            <p className="text-xs font-semibold text-zinc-400 mt-0.5">{subtitle}</p>
+            <p className="text-xs font-semibold text-slate-400 mt-0.5">{subtitle}</p>
           )}
         </div>
 
-        <span className="text-xs font-bold text-zinc-500 hover:text-red-400 transition-colors cursor-pointer hidden sm:inline-block">
+        <span className="text-xs font-bold text-slate-400 hover:text-sky-400 transition-colors cursor-pointer hidden sm:inline-block">
           Explore All &rsaquo;
         </span>
       </div>
@@ -66,7 +66,7 @@ export default function CourseRow({
         {/* Left Scroll Arrow Button */}
         <button
           onClick={() => scroll("left")}
-          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-black/80 hover:bg-black text-white border border-zinc-700/80 items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-300 shadow-2xl cursor-pointer"
+          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-300 shadow-2xl cursor-pointer"
           aria-label="Scroll left"
         >
           <ChevronLeft size={22} />
@@ -93,7 +93,7 @@ export default function CourseRow({
         {/* Right Scroll Arrow Button */}
         <button
           onClick={() => scroll("right")}
-          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-black/80 hover:bg-black text-white border border-zinc-700/80 items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-300 shadow-2xl cursor-pointer"
+          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700/80 items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-300 shadow-2xl cursor-pointer"
           aria-label="Scroll right"
         >
           <ChevronRight size={22} />

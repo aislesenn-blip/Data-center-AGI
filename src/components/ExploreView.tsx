@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, Filter, X, Sparkles, BookOpen } from "lucide-react";
+import { Search, X, BookOpen } from "lucide-react";
 import { Course, ALL_SUBJECTS, SubjectCategory } from "@/lib/lingoData";
 import CourseCard from "./CourseCard";
 
@@ -54,24 +54,24 @@ export default function ExploreView({
         <h1 className="text-3xl sm:text-5xl font-heading font-black text-white tracking-tight">
           Explore LingoDesk
         </h1>
-        <p className="text-sm text-zinc-400 font-medium">
+        <p className="text-sm text-slate-300 font-medium">
           Discover world-class streaming courses taught by real human experts.
         </p>
 
         {/* Large Netflix Search Bar */}
         <div className="relative flex items-center max-w-xl mx-auto pt-2">
-          <Search size={20} className="absolute left-4 text-zinc-400 pointer-events-none" />
+          <Search size={20} className="absolute left-4 text-slate-400 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="What do you want to learn today? (e.g. German, Python, Math)..."
-            className="w-full bg-[#1f1f1f] border border-zinc-700/80 hover:border-zinc-500 focus:border-red-500 text-white font-medium text-sm py-4 pl-12 pr-10 rounded-2xl focus:outline-none transition-all shadow-xl placeholder-zinc-500"
+            className="w-full bg-slate-900 border border-slate-700 hover:border-slate-500 focus:border-sky-500 text-white font-medium text-sm py-4 pl-12 pr-10 rounded-2xl focus:outline-none transition-all shadow-xl placeholder-slate-400"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 p-1 rounded-full text-zinc-400 hover:text-white cursor-pointer"
+              className="absolute right-4 p-1 rounded-full text-slate-400 hover:text-white cursor-pointer"
             >
               <X size={16} />
             </button>
@@ -86,8 +86,8 @@ export default function ExploreView({
             onClick={() => setSelectedSubject("All")}
             className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border cursor-pointer ${
               selectedSubject === "All"
-                ? "bg-red-600 text-white border-red-500 shadow-lg"
-                : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:text-white hover:bg-zinc-800"
+                ? "bg-sky-500 text-white border-sky-400 shadow-lg"
+                : "bg-slate-900/80 text-slate-300 border-slate-800 hover:text-white hover:bg-slate-800"
             }`}
           >
             All Subjects
@@ -101,8 +101,8 @@ export default function ExploreView({
                 onClick={() => setSelectedSubject(sub)}
                 className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border cursor-pointer ${
                   isActive
-                    ? "bg-red-600 text-white border-red-500 shadow-lg"
-                    : "bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:text-white hover:bg-zinc-800"
+                    ? "bg-sky-500 text-white border-sky-400 shadow-lg"
+                    : "bg-slate-900/80 text-slate-300 border-slate-800 hover:text-white hover:bg-slate-800"
                 }`}
               >
                 {sub}
@@ -112,19 +112,19 @@ export default function ExploreView({
         </div>
 
         {/* Level Filters */}
-        <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-xs font-bold text-zinc-400">
+        <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs font-bold text-slate-400">
           <span>Showing {filteredCourses.length} Courses</span>
 
           <div className="flex items-center gap-2">
-            <span className="hidden sm:inline text-zinc-500">Level:</span>
+            <span className="hidden sm:inline text-slate-400">Level:</span>
             {["All", "Beginner", "Intermediate", "Advanced"].map((lvl) => (
               <button
                 key={lvl}
                 onClick={() => setSelectedLevel(lvl)}
                 className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
                   selectedLevel === lvl
-                    ? "bg-zinc-800 text-white font-bold"
-                    : "text-zinc-500 hover:text-zinc-300"
+                    ? "bg-slate-800 text-white font-bold"
+                    : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 {lvl}
@@ -136,10 +136,10 @@ export default function ExploreView({
 
       {/* Course Grid Results */}
       {filteredCourses.length === 0 ? (
-        <div className="py-20 text-center space-y-3 bg-[#181818] border border-zinc-800 rounded-3xl p-8 max-w-lg mx-auto">
-          <BookOpen size={36} className="mx-auto text-zinc-600" />
+        <div className="py-20 text-center space-y-3 bg-[#0f172a] border border-slate-800 rounded-3xl p-8 max-w-lg mx-auto">
+          <BookOpen size={36} className="mx-auto text-slate-500" />
           <h3 className="text-lg font-bold text-white">No courses match your criteria</h3>
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-slate-300">
             Try searching for &ldquo;German&rdquo;, &ldquo;Python&rdquo;, &ldquo;Math&rdquo;, or reset your filters.
           </p>
           <button
@@ -148,7 +148,7 @@ export default function ExploreView({
               setSelectedSubject("All");
               setSelectedLevel("All");
             }}
-            className="mt-2 text-xs font-bold text-red-400 underline cursor-pointer"
+            className="mt-2 text-xs font-bold text-sky-400 underline cursor-pointer"
           >
             Clear all filters
           </button>

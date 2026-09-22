@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Check, Sparkles, BookOpen, Layers, Target, ArrowRight } from "lucide-react";
+import { X, Check, Sparkles, ArrowRight } from "lucide-react";
 import { ALL_SUBJECTS, SubjectCategory } from "@/lib/lingoData";
 
 interface OnboardingModalProps {
@@ -45,26 +45,26 @@ export default function OnboardingModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-      <div className="relative w-full max-w-2xl bg-[#1a1a1a] border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b1120]/90 backdrop-blur-md">
+      <div className="relative w-full max-w-2xl bg-[#0f172a] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-white">
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
         >
           <X size={18} />
         </button>
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <div className="flex justify-between text-xs font-bold text-zinc-400">
-            <span className="text-red-500 uppercase tracking-widest font-black">Step {step} of 3</span>
+          <div className="flex justify-between text-xs font-bold text-slate-400">
+            <span className="text-sky-400 uppercase tracking-widest font-black">Step {step} of 3</span>
             <span>{step === 1 ? "Interests" : step === 2 ? "Level" : step === 3 ? "Style" : "Ready"}</span>
           </div>
-          <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-red-600 h-full transition-all duration-300"
+              className="bg-sky-500 h-full transition-all duration-300"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
@@ -77,7 +77,7 @@ export default function OnboardingModal({
               <h2 className="text-2xl sm:text-3xl font-heading font-black text-white">
                 What do you want to learn?
               </h2>
-              <p className="text-sm text-zinc-400 font-medium">
+              <p className="text-sm text-slate-300 font-medium">
                 Select your primary subjects. You can explore everything else anytime.
               </p>
             </div>
@@ -91,12 +91,12 @@ export default function OnboardingModal({
                     onClick={() => toggleInterest(subject)}
                     className={`p-3.5 rounded-2xl text-xs font-bold text-left transition-all border cursor-pointer flex items-center justify-between ${
                       isSelected
-                        ? "bg-red-600/20 text-white border-red-500/80 shadow-md"
-                        : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:bg-zinc-800 hover:text-white"
+                        ? "bg-sky-500/20 text-white border-sky-500/80 shadow-md"
+                        : "bg-slate-900 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-white"
                     }`}
                   >
                     <span>{subject}</span>
-                    {isSelected && <Check size={14} className="text-red-400 shrink-0" />}
+                    {isSelected && <Check size={14} className="text-sky-400 shrink-0" />}
                   </button>
                 );
               })}
@@ -104,7 +104,7 @@ export default function OnboardingModal({
 
             <button
               onClick={() => setStep(2)}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+              className="w-full bg-sky-500 hover:bg-sky-400 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
             >
               <span>Continue</span>
               <ArrowRight size={16} />
@@ -119,7 +119,7 @@ export default function OnboardingModal({
               <h2 className="text-2xl sm:text-3xl font-heading font-black text-white">
                 What&apos;s your current level?
               </h2>
-              <p className="text-sm text-zinc-400 font-medium">
+              <p className="text-sm text-slate-300 font-medium">
                 We&apos;ll tailor the hero featured content and recommendations to your depth.
               </p>
             </div>
@@ -131,13 +131,13 @@ export default function OnboardingModal({
                   onClick={() => setSelectedLevel(lvl)}
                   className={`w-full p-4 rounded-2xl text-left border transition-all cursor-pointer flex items-center justify-between ${
                     selectedLevel === lvl
-                      ? "bg-red-600/20 border-red-500 text-white font-bold"
-                      : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                      ? "bg-sky-500/20 border-sky-500 text-white font-bold"
+                      : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white"
                   }`}
                 >
                   <div>
                     <div className="text-sm font-bold text-white">{lvl}</div>
-                    <p className="text-xs text-zinc-400 font-normal mt-0.5">
+                    <p className="text-xs text-slate-300 font-normal mt-0.5">
                       {lvl === "Beginner"
                         ? "Starting fresh or building fundamental intuition."
                         : lvl === "Intermediate"
@@ -145,7 +145,7 @@ export default function OnboardingModal({
                         : "Advanced concepts, complex projects, and theory."}
                     </p>
                   </div>
-                  {selectedLevel === lvl && <Check size={16} className="text-red-400 shrink-0" />}
+                  {selectedLevel === lvl && <Check size={16} className="text-sky-400 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -153,13 +153,13 @@ export default function OnboardingModal({
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="w-1/3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-sm py-4 rounded-2xl cursor-pointer"
+                className="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-4 rounded-2xl cursor-pointer"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="w-2/3 bg-red-600 hover:bg-red-700 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+                className="w-2/3 bg-sky-500 hover:bg-sky-400 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
               >
                 <span>Continue</span>
                 <ArrowRight size={16} />
@@ -175,7 +175,7 @@ export default function OnboardingModal({
               <h2 className="text-2xl sm:text-3xl font-heading font-black text-white">
                 How do you like to learn?
               </h2>
-              <p className="text-sm text-zinc-400 font-medium">
+              <p className="text-sm text-slate-300 font-medium">
                 Choose your preferred learning format.
               </p>
             </div>
@@ -187,12 +187,12 @@ export default function OnboardingModal({
                   onClick={() => setSelectedStyle(stl)}
                   className={`w-full p-4 rounded-2xl text-left border text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
                     selectedStyle === stl
-                      ? "bg-red-600/20 border-red-500 text-white"
-                      : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                      ? "bg-sky-500/20 border-sky-500 text-white"
+                      : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white"
                   }`}
                 >
                   <span>{stl}</span>
-                  {selectedStyle === stl && <Check size={16} className="text-red-400 shrink-0" />}
+                  {selectedStyle === stl && <Check size={16} className="text-sky-400 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -200,7 +200,7 @@ export default function OnboardingModal({
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="w-1/3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-sm py-4 rounded-2xl cursor-pointer"
+                className="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-4 rounded-2xl cursor-pointer"
               >
                 Back
               </button>
@@ -209,7 +209,7 @@ export default function OnboardingModal({
                   onComplete(selectedInterests);
                   onClose();
                 }}
-                className="w-2/3 bg-red-600 hover:bg-red-700 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+                className="w-2/3 bg-sky-500 hover:bg-sky-400 text-white font-black text-sm py-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
               >
                 <Sparkles size={16} />
                 <span>Your LingoDesk is Ready</span>
