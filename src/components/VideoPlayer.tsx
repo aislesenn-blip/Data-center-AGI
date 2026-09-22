@@ -10,14 +10,9 @@ import {
   Volume2,
   VolumeX,
   Globe,
-  Settings,
-  Maximize,
   ChevronRight,
   Check,
-  FileText,
-  Download,
-  Award,
-  Sparkles
+  Award
 } from "lucide-react";
 import { Course, Lesson, TEACHERS } from "@/lib/lingoData";
 
@@ -107,21 +102,21 @@ export default function VideoPlayer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col justify-between select-none overflow-hidden text-white animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-[#0b1120] flex flex-col justify-between select-none overflow-hidden text-white animate-fadeIn">
 
       {/* Top Header Controls Overlay */}
-      <div className="absolute top-0 left-0 right-0 z-30 p-4 sm:p-6 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between">
+      <div className="absolute top-0 left-0 right-0 z-30 p-4 sm:p-6 bg-gradient-to-b from-[#0b1120]/95 via-[#0b1120]/50 to-transparent flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="p-2.5 rounded-full bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 text-white transition-all cursor-pointer"
+            className="p-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-white transition-all cursor-pointer"
             aria-label="Exit Player"
           >
             <X size={20} />
           </button>
 
           <div>
-            <span className="text-[10px] sm:text-xs font-bold text-red-400 uppercase tracking-wider block">
+            <span className="text-[10px] sm:text-xs font-bold text-sky-400 uppercase tracking-wider block">
               {course.title} &bull; Episode {currentLesson.episodeNumber}
             </span>
             <h2 className="text-sm sm:text-base font-heading font-black text-white truncate max-w-xs sm:max-w-md">
@@ -134,9 +129,9 @@ export default function VideoPlayer({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAudioMenu(!showAudioMenu)}
-            className="flex items-center gap-1.5 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold text-zinc-200 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-xs font-bold text-slate-200 transition-all cursor-pointer"
           >
-            <Globe size={14} className="text-red-500" />
+            <Globe size={14} className="text-sky-400" />
             <span className="hidden sm:inline">{selectedAudioTrack}</span>
           </button>
         </div>
@@ -158,7 +153,7 @@ export default function VideoPlayer({
         {/* Subtitles Overlay Simulation */}
         {selectedSubtitleTrack !== "Off" && (
           <div className="absolute bottom-20 inset-x-0 text-center pointer-events-none z-20">
-            <span className="bg-black/80 text-white font-medium text-sm sm:text-base px-4 py-1.5 rounded-lg border border-white/10 shadow-2xl backdrop-blur-md">
+            <span className="bg-slate-900/90 text-white font-medium text-sm sm:text-base px-4 py-1.5 rounded-lg border border-slate-700/80 shadow-2xl backdrop-blur-md">
               [{selectedSubtitleTrack}] &ldquo;Understanding fundamental concepts allows us to see patterns clearly.&rdquo;
             </span>
           </div>
@@ -166,7 +161,7 @@ export default function VideoPlayer({
 
         {/* Lesson Complete Overlay */}
         {isEnded && (
-          <div className="absolute inset-0 bg-black/85 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 space-y-5 text-center">
+          <div className="absolute inset-0 bg-[#0b1120]/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 space-y-5 text-center">
             <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center">
               <Award size={32} />
             </div>
@@ -176,7 +171,7 @@ export default function VideoPlayer({
                 Lesson Complete
               </span>
               <h3 className="text-2xl font-heading font-black text-white">{currentLesson.title}</h3>
-              <p className="text-xs text-zinc-400 max-w-md">
+              <p className="text-xs text-slate-300 max-w-md">
                 Great progress! Continue learning with the next episode or review your notes.
               </p>
             </div>
@@ -188,7 +183,7 @@ export default function VideoPlayer({
                     setIsEnded(false);
                     onLessonChange(nextLesson);
                   }}
-                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black text-sm px-6 py-3 rounded-2xl shadow-xl transition-all cursor-pointer"
+                  className="flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-black text-sm px-6 py-3 rounded-2xl shadow-xl transition-all cursor-pointer"
                 >
                   <span>Next Episode: {nextLesson.title}</span>
                   <ChevronRight size={16} />
@@ -196,7 +191,7 @@ export default function VideoPlayer({
               ) : (
                 <button
                   onClick={onClose}
-                  className="bg-white text-black font-black text-sm px-6 py-3 rounded-2xl shadow-xl transition-all cursor-pointer"
+                  className="bg-white text-slate-900 font-black text-sm px-6 py-3 rounded-2xl shadow-xl transition-all cursor-pointer"
                 >
                   Return to LingoDesk
                 </button>
@@ -207,10 +202,10 @@ export default function VideoPlayer({
       </div>
 
       {/* Bottom Floating Control Bar */}
-      <div className="relative z-30 bg-gradient-to-t from-black via-black/80 to-transparent p-4 sm:p-6 space-y-3">
+      <div className="relative z-30 bg-gradient-to-t from-[#0b1120] via-[#0b1120]/90 to-transparent p-4 sm:p-6 space-y-3">
 
         {/* Seekbar */}
-        <div className="flex items-center gap-3 text-xs font-bold text-zinc-400">
+        <div className="flex items-center gap-3 text-xs font-bold text-slate-400">
           <span>{formatTime(currentTime)}</span>
           <input
             type="range"
@@ -218,7 +213,7 @@ export default function VideoPlayer({
             max={duration || 100}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-red-600 focus:outline-none"
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500 focus:outline-none"
           />
           <span>{formatTime(duration)}</span>
         </div>
@@ -230,14 +225,14 @@ export default function VideoPlayer({
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={togglePlay}
-              className="p-3 rounded-full bg-white text-black hover:bg-zinc-200 transition-all cursor-pointer shadow-lg"
+              className="p-3 rounded-full bg-sky-500 text-white hover:bg-sky-400 transition-all cursor-pointer shadow-lg"
             >
-              {isPlaying ? <Pause size={20} className="fill-black" /> : <Play size={20} className="fill-black ml-0.5" />}
+              {isPlaying ? <Pause size={20} className="fill-white" /> : <Play size={20} className="fill-white ml-0.5" />}
             </button>
 
             <button
               onClick={() => skipTime(-10)}
-              className="p-2 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Rewind 10s"
             >
               <RotateCcw size={18} />
@@ -245,7 +240,7 @@ export default function VideoPlayer({
 
             <button
               onClick={() => skipTime(10)}
-              className="p-2 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Forward 10s"
             >
               <RotateCw size={18} />
@@ -253,7 +248,7 @@ export default function VideoPlayer({
 
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
             >
               {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
             </button>
@@ -266,12 +261,12 @@ export default function VideoPlayer({
             <div className="relative">
               <button
                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                className="px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-300 hover:text-white cursor-pointer"
+                className="px-2.5 py-1 rounded bg-slate-900 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white cursor-pointer"
               >
                 {playbackSpeed}x
               </button>
               {showSpeedMenu && (
-                <div className="absolute bottom-10 right-0 bg-[#1f1f1f] border border-zinc-700 rounded-xl p-1.5 space-y-1 z-50 text-xs">
+                <div className="absolute bottom-10 right-0 bg-slate-900 border border-slate-700 rounded-xl p-1.5 space-y-1 z-50 text-xs">
                   {[0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button
                       key={speed}
@@ -280,7 +275,7 @@ export default function VideoPlayer({
                         setShowSpeedMenu(false);
                       }}
                       className={`w-full px-3 py-1.5 rounded text-left font-bold cursor-pointer ${
-                        playbackSpeed === speed ? "bg-red-600 text-white" : "text-zinc-300 hover:bg-zinc-800"
+                        playbackSpeed === speed ? "bg-sky-600 text-white" : "text-slate-300 hover:bg-slate-800"
                       }`}
                     >
                       {speed}x
@@ -294,16 +289,16 @@ export default function VideoPlayer({
             <div className="relative">
               <button
                 onClick={() => setShowAudioMenu(!showAudioMenu)}
-                className="flex items-center gap-1.5 p-2 rounded bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-300 hover:text-white cursor-pointer"
+                className="flex items-center gap-1.5 p-2 rounded bg-slate-900 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white cursor-pointer"
                 title="Audio Dubbing Language"
               >
-                <Globe size={16} className="text-red-500" />
+                <Globe size={16} className="text-sky-400" />
                 <span className="hidden sm:inline">Audio</span>
               </button>
 
               {showAudioMenu && (
-                <div className="absolute bottom-12 right-0 w-64 bg-[#1f1f1f] border border-zinc-700 rounded-2xl shadow-2xl p-3 z-50 text-xs space-y-2">
-                  <div className="font-bold text-zinc-400 uppercase text-[10px] border-b border-zinc-800 pb-1.5">
+                <div className="absolute bottom-12 right-0 w-64 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-3 z-50 text-xs space-y-2">
+                  <div className="font-bold text-slate-400 uppercase text-[10px] border-b border-slate-800 pb-1.5">
                     Select Audio Track
                   </div>
                   <div className="space-y-1">
@@ -322,8 +317,8 @@ export default function VideoPlayer({
                         }}
                         className={`w-full p-2 rounded-xl text-left font-medium flex items-center justify-between cursor-pointer ${
                           selectedAudioTrack === track
-                            ? "bg-red-600 text-white font-bold"
-                            : "text-zinc-300 hover:bg-zinc-800"
+                            ? "bg-sky-600 text-white font-bold"
+                            : "text-slate-300 hover:bg-slate-800"
                         }`}
                       >
                         <span>{track}</span>
@@ -339,15 +334,15 @@ export default function VideoPlayer({
             <div className="relative">
               <button
                 onClick={() => setShowSubtitlesMenu(!showSubtitlesMenu)}
-                className="p-2 rounded bg-zinc-900 border border-zinc-700 text-xs font-bold text-zinc-300 hover:text-white cursor-pointer"
+                className="p-2 rounded bg-slate-900 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white cursor-pointer"
                 title="Subtitles"
               >
                 CC
               </button>
 
               {showSubtitlesMenu && (
-                <div className="absolute bottom-12 right-0 w-48 bg-[#1f1f1f] border border-zinc-700 rounded-2xl shadow-2xl p-3 z-50 text-xs space-y-2">
-                  <div className="font-bold text-zinc-400 uppercase text-[10px] border-b border-zinc-800 pb-1.5">
+                <div className="absolute bottom-12 right-0 w-48 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-3 z-50 text-xs space-y-2">
+                  <div className="font-bold text-slate-400 uppercase text-[10px] border-b border-slate-800 pb-1.5">
                     Subtitles
                   </div>
                   <div className="space-y-1">
@@ -360,8 +355,8 @@ export default function VideoPlayer({
                         }}
                         className={`w-full p-2 rounded-xl text-left font-medium flex items-center justify-between cursor-pointer ${
                           selectedSubtitleTrack === sub
-                            ? "bg-red-600 text-white font-bold"
-                            : "text-zinc-300 hover:bg-zinc-800"
+                            ? "bg-sky-600 text-white font-bold"
+                            : "text-slate-300 hover:bg-slate-800"
                         }`}
                       >
                         <span>{sub}</span>
