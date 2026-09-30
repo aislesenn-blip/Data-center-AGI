@@ -1,484 +1,338 @@
 "use client";
 
-import { useState } from "react";
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import CourseRow from "@/components/CourseRow";
-import CourseDetailModal from "@/components/CourseDetailModal";
-import VideoPlayer from "@/components/VideoPlayer";
-import ExploreView from "@/components/ExploreView";
-import MyLearningView from "@/components/MyLearningView";
-import ProfileView from "@/components/ProfileView";
-import TeacherProfileModal from "@/components/TeacherProfileModal";
-import CreatorStudioView from "@/components/CreatorStudioView";
-import SubscriptionView from "@/components/SubscriptionView";
-import OnboardingModal from "@/components/OnboardingModal";
-import FamilyProfileSwitcher from "@/components/FamilyProfileSwitcher";
-
+import React, { useState } from "react";
+import { Header } from "@/components/Header";
+import { BottomNav, TabType } from "@/components/BottomNav";
+import { INITIAL_PARCELS, BUS_OPERATORS } from "@/lib/data";
 import {
-  COURSES,
-  TEACHERS,
-  INITIAL_USER_PROGRESS,
-  DEFAULT_USER_PROFILE,
-  Course,
-  Lesson,
-  Teacher,
-  UserProgress,
-  UserProfile,
-  SubjectCategory,
-} from "@/lib/lingoData";
+  BusRouteOption,
+  ParcelRecord,
+  ParcelType,
+  PaymentMethodOption,
+} from "@/lib/types";
 
-import { Tv, Compass, Bookmark, Video, User } from "lucide-react";
+// Views
+import { HomeScreen } from "@/components/views/HomeScreen";
+import { RouteScreen } from "@/components/views/RouteScreen";
+import { ParcelDetailsScreen } from "@/components/views/ParcelDetailsScreen";
+import { PaymentScreen } from "@/components/views/PaymentScreen";
+import { SuccessScreen } from "@/components/views/SuccessScreen";
+import { TrackParcelScreen } from "@/components/views/TrackParcelScreen";
+import { ParcelTrackingDetails } from "@/components/views/ParcelTrackingDetails";
+import { MyParcelsScreen } from "@/components/views/MyParcelsScreen";
+import { ProfileScreen } from "@/components/views/ProfileScreen";
 
 export default function Home() {
-  // Navigation View State
-  const [activeTab, setActiveTab] = useState<
-    "home" | "explore" | "my-learning" | "creator-studio" | "subscription" | "profile"
+  const [activeTab, setActiveTab] = useState<TabType>("home");
+  const [activeView, setActiveView] = useState<
+    | "home"
+    | "route"
+    | "details"
+    | "payment"
+    | "success"
+    | "track-search"
+    | "track-details"
+    | "my-parcels"
+    | "profile"
   >("home");
 
-  // Search State
-  const [searchQuery, setSearchQuery] = useState("");
+  // Parcels State
+  const [parcels, setParcels] = useState<ParcelRecord[]>(INITIAL_PARCELS);
+  const [selectedParcel, setSelectedParcel] = useState<ParcelRecord | null>(
+    null
+  );
+  const [notFoundSearchCode, setNotFoundSearchCode] = useState<string | null>(
+    null
+  );
 
-  // Global Audio Preference
-  const [selectedAudioLanguage, setSelectedAudioLanguage] = useState("Deutsch (Original)");
+  // Send Flow Draft State
+  const [sendDraft, setSendDraft] = useState<{
+    from: string;
+    to: string;
+    date: string;
+    bus: BusRouteOption;
+    parcelType?: ParcelType;
+    weight?: string;
+    senderName?: string;
+    senderPhone?: string;
+    receiverName?: string;
+    receiverPhone?: string;
+    receiverLocation?: string;
+  }>({
+    from: "Dar es Salaam",
+    to: "Arusha",
+    date: "Today",
+    bus: BUS_OPERATORS[0],
+  });
 
-  // State: Dynamic Courses Catalog (supports newly published courses from Creator Studio)
-  const [courses, setCourses] = useState<Course[]>(COURSES);
+  const [recentlyCreatedParcel, setRecentlyCreatedParcel] =
+    useState<ParcelRecord | null>(null);
 
-  // State: Saved Courses (My List)
-  const [savedCourseIds, setSavedCourseIds] = useState<string[]>([
-    "course-math-simple",
-    "course-german-everyday",
-    "course-python-beginners",
-  ]);
+  // Navigation handlers
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    setNotFoundSearchCode(null);
+    if (tab === "home") setActiveView("home");
+    else if (tab === "send") setActiveView("route");
+    else if (tab === "track") setActiveView("track-search");
+    else if (tab === "profile") setActiveView("profile");
+    else if (tab === "my-parcels") setActiveView("my-parcels");
+  };
 
-  // State: User Progress Tracking
-  const [userProgressList, setUserProgressList] = useState<UserProgress[]>(INITIAL_USER_PROGRESS);
+  // Flow Step 1: Route selected -> Move to Parcel Details
+  const handleSelectBusRoute = (
+    from: string,
+    to: string,
+    date: string,
+    bus: BusRouteOption
+  ) => {
+    setSendDraft((prev) => ({ ...prev, from, to, date, bus }));
+    setActiveView("details");
+  };
 
-  // State: Active Profile
-  const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
+  // Flow Step 2: Parcel details filled -> Move to Payment
+  const handleSubmitParcelDetails = (details: {
+    parcelType: ParcelType;
+    weight: string;
+    senderName: string;
+    senderPhone: string;
+    receiverName: string;
+    receiverPhone: string;
+    receiverLocation: string;
+  }) => {
+    setSendDraft((prev) => ({ ...prev, ...details }));
+    setActiveView("payment");
+  };
 
-  // Modals & Overlays State
-  const [selectedCourseDetail, setSelectedCourseDetail] = useState<Course | null>(null);
-  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
-  const [activePlayingCourse, setActivePlayingCourse] = useState<Course | null>(null);
-  const [activePlayingLesson, setActivePlayingLesson] = useState<Lesson | null>(null);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showProfileSwitcher, setShowProfileSwitcher] = useState(false);
+  // Flow Step 3: Payment finished -> Generate code & Move to Success Screen
+  const handlePaymentComplete = (paymentMethod: PaymentMethodOption) => {
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const newCode = `BP-${randomNum}`;
 
-  // Progress Map Helper
-  const progressMap = userProgressList.reduce((acc, curr) => {
-    acc[curr.courseId] = curr;
-    return acc;
-  }, {} as Record<string, UserProgress>);
+    const newParcel: ParcelRecord = {
+      id: `p-${Date.now()}`,
+      code: newCode,
+      from: sendDraft.from,
+      to: sendDraft.to,
+      busOperator: sendDraft.bus.operator,
+      departureTime: sendDraft.bus.departureTime,
+      arrivalTime: sendDraft.bus.arrivalTime,
+      price: sendDraft.bus.price,
+      date: sendDraft.date,
+      status: "Payment confirmed",
+      parcelType: sendDraft.parcelType || "Medium package",
+      weight: sendDraft.weight || "2 kg",
+      senderName: sendDraft.senderName || "Juma Hassan",
+      senderPhone: sendDraft.senderPhone || "+255 712 345 678",
+      receiverName: sendDraft.receiverName || "Amina Rashid",
+      receiverPhone: sendDraft.receiverPhone || "+255 754 987 654",
+      receiverLocation: sendDraft.receiverLocation || "Central Station",
+      paymentMethod: paymentMethod.name,
+      createdAt: "Just now",
+      timeline: [
+        { title: "Payment confirmed", timestamp: "Just now", completed: true, current: true },
+        { title: "Parcel received at station", completed: false, current: false },
+        { title: "Bus departed", completed: false, current: false },
+        { title: "On the way", completed: false, current: false },
+        { title: "Arrived", completed: false, current: false },
+        { title: "Collected by receiver", completed: false, current: false },
+      ],
+    };
 
-  // Handlers
-  const handleToggleSave = (courseId: string) => {
-    setSavedCourseIds((prev) =>
-      prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
+    setParcels((prev) => [newParcel, ...prev]);
+    setRecentlyCreatedParcel(newParcel);
+    setActiveView("success");
+  };
+
+  // Direct Search Code
+  const handleSearchCode = (code: string) => {
+    const matched = parcels.find(
+      (p) => p.code.toUpperCase() === code.toUpperCase()
     );
+    if (matched) {
+      setSelectedParcel(matched);
+      setNotFoundSearchCode(null);
+      setActiveView("track-details");
+    } else {
+      setNotFoundSearchCode(code);
+      setActiveView("track-search");
+    }
   };
 
-  const handlePlayCourse = (course: Course, lesson?: Lesson) => {
-    setActivePlayingCourse(course);
-    setActivePlayingLesson(lesson || course.lessons[0]);
+  // Back Button Logic
+  const getHeaderTitle = () => {
+    if (activeView === "home") fontTitle: return "BluePost";
+    if (activeView === "route") return "Select Route & Bus";
+    if (activeView === "details") return "Parcel Details";
+    if (activeView === "payment") return "Payment";
+    if (activeView === "success") return "Order Confirmed";
+    if (activeView === "track-search") return "Track Parcel";
+    if (activeView === "track-details") return "Tracking Details";
+    if (activeView === "my-parcels") return "My Parcels";
+    if (activeView === "profile") return "Profile";
+    return "BluePost";
   };
 
-  const handleLessonCompleted = (courseId: string, lessonId: string) => {
-    setUserProgressList((prev) => {
-      const existingIndex = prev.findIndex((p) => p.courseId === courseId);
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          percentComplete: Math.min(100, updated[existingIndex].percentComplete + 20),
-          lastWatchedAt: "Just now",
-        };
-        return updated;
-      } else {
-        return [
-          ...prev,
-          {
-            courseId,
-            lastEpisodeId: lessonId,
-            percentComplete: 20,
-            lastWatchedAt: "Just now",
-          },
-        ];
-      }
-    });
-  };
+  const showBackButton = [
+    "details",
+    "payment",
+    "track-details",
+  ].includes(activeView);
 
-  const handleAddNewPublishedCourse = (newCourse: Course) => {
-    setCourses((prev) => [newCourse, ...prev]);
+  const handleHeaderBack = () => {
+    if (activeView === "details") setActiveView("route");
+    else if (activeView === "payment") setActiveView("details");
+    else if (activeView === "track-details") setActiveView("track-search");
   };
-
-  // Grouped Courses for Homepage Rows
-  const featuredHeroCourse = courses.find((c) => c.id === "course-math-simple") || courses[0];
-  const continueCourses = courses.filter((c) => progressMap[c.id]);
-  const trendingCourses = courses.filter((c) => c.badge === "TRENDING" || c.rating >= 4.93);
-  const pickedForYouCourses = courses.filter((c) => c.matchScore >= 95);
-  const germanCourses = courses.filter((c) => c.subject === "Languages");
-  const mathCourses = courses.filter((c) => c.subject === "Mathematics");
-  const techCourses = courses.filter((c) => c.subject === "Technology");
-  const businessCourses = courses.filter((c) => c.subject === "Business" || c.subject === "Finance");
-  const scienceCourses = courses.filter((c) => c.subject === "Science");
-  const cookingCourses = courses.filter((c) => c.subject === "Cooking");
-  const practicalCourses = courses.filter((c) => c.subject === "Practical Skills" || c.subject === "Creative");
-  const newReleases = courses.filter((c) => c.badge === "NEW");
 
   return (
-    <div className="min-h-screen bg-[#0b1120] text-white font-sans antialiased overflow-x-hidden selection:bg-sky-500 selection:text-white">
-
-      {/* Persistent Netflix Header */}
+    <div className="flex flex-col h-full bg-[#F7F8FA]">
+      {/* Persistent Header */}
       <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        userProfile={userProfile}
-        onOpenProfileSwitcher={() => setShowProfileSwitcher(true)}
-        onOpenOnboarding={() => setShowOnboarding(true)}
-        selectedAudioLanguage={selectedAudioLanguage}
-        setSelectedAudioLanguage={setSelectedAudioLanguage}
+        title={getHeaderTitle()}
+        showBack={showBackButton}
+        onBack={handleHeaderBack}
+        onProfileClick={() => {
+          setActiveTab("profile");
+          setActiveView("profile");
+        }}
       />
 
-      {/* VIEW ROUTER */}
-      <main className="pb-24">
-        {/* VIEW 1: HOME */}
-        {activeTab === "home" && (
-          <div className="space-y-6 sm:space-y-8 animate-fadeIn">
-            {/* Cinematic Hero */}
-            <Hero
-              featuredCourse={featuredHeroCourse}
-              onPlayCourse={handlePlayCourse}
-              onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-              isSaved={savedCourseIds.includes(featuredHeroCourse.id)}
-              onToggleSave={handleToggleSave}
-            />
-
-            {/* Content Rows */}
-            <div className="space-y-4 -mt-10 sm:-mt-16 relative z-30">
-              {/* Row 1: Continue Learning */}
-              {continueCourses.length > 0 && (
-                <CourseRow
-                  title="Continue Learning"
-                  subtitle="Resume where you left off"
-                  courses={continueCourses}
-                  userProgressMap={progressMap}
-                  onPlayCourse={handlePlayCourse}
-                  onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                  savedCourseIds={savedCourseIds}
-                  onToggleSave={handleToggleSave}
-                />
-              )}
-
-              {/* Row 2: Trending on LingoDesk */}
-              <CourseRow
-                title="Trending on LingoDesk"
-                subtitle="Most watched productions globally this week"
-                courses={trendingCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 3: Picked for You */}
-              <CourseRow
-                title="Picked for You"
-                subtitle="Based on your learning history and interest in Mathematics & Languages"
-                courses={pickedForYouCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 4: Learn Languages */}
-              <CourseRow
-                title="Conversational Languages & German"
-                courses={germanCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 5: Technology & Coding */}
-              <CourseRow
-                title="Technology & Software Engineering"
-                courses={techCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 6: Mathematics & Logic */}
-              <CourseRow
-                title="Mathematics & Visual Thinking"
-                courses={mathCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 7: Science & Physics */}
-              <CourseRow
-                title="Science & Cosmic Exploration"
-                courses={scienceCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 8: Business & Finance */}
-              <CourseRow
-                title="Business & Strategic Finance"
-                courses={businessCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 9: Culinary Arts & Cooking */}
-              <CourseRow
-                title="Culinary Arts & Cooking"
-                courses={cookingCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 10: Skills for Life */}
-              <CourseRow
-                title="Skills for Life & Creative Mastery"
-                courses={practicalCourses}
-                userProgressMap={progressMap}
-                onPlayCourse={handlePlayCourse}
-                onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                savedCourseIds={savedCourseIds}
-                onToggleSave={handleToggleSave}
-              />
-
-              {/* Row 11: New on LingoDesk */}
-              {newReleases.length > 0 && (
-                <CourseRow
-                  title="New on LingoDesk"
-                  courses={newReleases}
-                  userProgressMap={progressMap}
-                  onPlayCourse={handlePlayCourse}
-                  onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-                  savedCourseIds={savedCourseIds}
-                  onToggleSave={handleToggleSave}
-                />
-              )}
-            </div>
+      {/* Send Flow Step Progress Indicator */}
+      {["route", "details", "payment"].includes(activeView) && (
+        <div className="bg-white px-4 py-2.5 border-b border-gray-200 flex items-center justify-between text-xs font-semibold text-gray-500">
+          <div className={`flex items-center gap-1 ${activeView === "route" ? "text-[#0066FF]" : "text-gray-900"}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${activeView === "route" ? "bg-[#0066FF] text-white" : "bg-gray-200 text-gray-700"}`}>1</span>
+            Route
           </div>
-        )}
+          <div className="w-6 h-0.5 bg-gray-200" />
+          <div className={`flex items-center gap-1 ${activeView === "details" ? "text-[#0066FF]" : activeView === "payment" ? "text-gray-900" : "text-gray-400"}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${activeView === "details" ? "bg-[#0066FF] text-white" : activeView === "payment" ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-500"}`}>2</span>
+            Parcel
+          </div>
+          <div className="w-6 h-0.5 bg-gray-200" />
+          <div className={`flex items-center gap-1 ${activeView === "payment" ? "text-[#0066FF]" : "text-gray-400"}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${activeView === "payment" ? "bg-[#0066FF] text-white" : "bg-gray-200 text-gray-500"}`}>3</span>
+            Payment
+          </div>
+        </div>
+      )}
 
-        {/* VIEW 2: EXPLORE */}
-        {activeTab === "explore" && (
-          <ExploreView
-            courses={courses}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onPlayCourse={handlePlayCourse}
-            onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-            savedCourseIds={savedCourseIds}
-            onToggleSave={handleToggleSave}
+      {/* Main Scrollable View Area */}
+      <main className="flex-1 overflow-y-auto">
+        {activeView === "home" && (
+          <HomeScreen
+            onSendClick={() => {
+              setActiveTab("send");
+              setActiveView("route");
+            }}
+            onTrackClick={(code) => handleSearchCode(code)}
+            onSelectParcel={(parcel) => {
+              setSelectedParcel(parcel);
+              setActiveTab("track");
+              setActiveView("track-details");
+            }}
+            onViewAllParcels={() => {
+              setActiveTab("profile");
+              setActiveView("my-parcels");
+            }}
+            recentParcels={parcels}
           />
         )}
 
-        {/* VIEW 3: MY LEARNING */}
-        {activeTab === "my-learning" && (
-          <MyLearningView
-            courses={courses}
-            userProgressList={userProgressList}
-            savedCourseIds={savedCourseIds}
-            onPlayCourse={handlePlayCourse}
-            onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
-            onToggleSave={handleToggleSave}
+        {activeView === "route" && (
+          <RouteScreen
+            initialFrom={sendDraft.from}
+            initialTo={sendDraft.to}
+            onSelectBusRoute={handleSelectBusRoute}
           />
         )}
 
-        {/* VIEW 4: CREATOR STUDIO */}
-        {activeTab === "creator-studio" && (
-          <CreatorStudioView
-            publishedCourses={courses}
-            onAddNewCourse={handleAddNewPublishedCourse}
-            onOpenCourseDetail={(course) => setSelectedCourseDetail(course)}
+        {activeView === "details" && (
+          <ParcelDetailsScreen
+            initialData={sendDraft}
+            onSubmitDetails={handleSubmitParcelDetails}
           />
         )}
 
-        {/* VIEW 5: SUBSCRIPTION PLANS */}
-        {activeTab === "subscription" && (
-          <SubscriptionView
-            currentPlan={userProfile.subscriptionPlan}
-            onSelectPlan={(plan) =>
-              setUserProfile({ ...userProfile, subscriptionPlan: plan })
-            }
+        {activeView === "payment" && (
+          <PaymentScreen
+            summary={{
+              from: sendDraft.from,
+              to: sendDraft.to,
+              bus: sendDraft.bus,
+              parcelType: sendDraft.parcelType || "Medium package",
+              weight: sendDraft.weight || "2 kg",
+              price: sendDraft.bus.price,
+              senderPhone: sendDraft.senderPhone || "+255 712 345 678",
+            }}
+            onPaymentComplete={handlePaymentComplete}
           />
         )}
 
-        {/* VIEW 6: PROFILE */}
-        {activeTab === "profile" && (
-          <ProfileView
-            userProfile={userProfile}
-            onOpenProfileSwitcher={() => setShowProfileSwitcher(true)}
-            onOpenOnboarding={() => setShowOnboarding(true)}
-            onOpenSubscription={() => setActiveTab("subscription")}
+        {activeView === "success" && recentlyCreatedParcel && (
+          <SuccessScreen
+            parcel={recentlyCreatedParcel}
+            onTrackParcel={(code) => handleSearchCode(code)}
+            onViewDetails={(parcel) => {
+              setSelectedParcel(parcel);
+              setActiveTab("track");
+              setActiveView("track-details");
+            }}
+            onGoHome={() => {
+              setActiveTab("home");
+              setActiveView("home");
+            }}
+          />
+        )}
+
+        {activeView === "track-search" && (
+          <TrackParcelScreen
+            onSearch={handleSearchCode}
+            recentParcels={parcels}
+            onSelectParcel={(parcel) => {
+              setSelectedParcel(parcel);
+              setActiveView("track-details");
+            }}
+            notFoundCode={notFoundSearchCode}
+          />
+        )}
+
+        {activeView === "track-details" && selectedParcel && (
+          <ParcelTrackingDetails
+            parcel={selectedParcel}
+            onBack={() => setActiveView("track-search")}
+          />
+        )}
+
+        {activeView === "my-parcels" && (
+          <MyParcelsScreen
+            parcels={parcels}
+            onSelectParcel={(parcel) => {
+              setSelectedParcel(parcel);
+              setActiveTab("track");
+              setActiveView("track-details");
+            }}
+            onSendClick={() => {
+              setActiveTab("send");
+              setActiveView("route");
+            }}
+          />
+        )}
+
+        {activeView === "profile" && (
+          <ProfileScreen
+            onViewMyParcels={() => setActiveView("my-parcels")}
+            onSendParcel={() => {
+              setActiveTab("send");
+              setActiveView("route");
+            }}
           />
         )}
       </main>
 
-      {/* MODALS */}
-      {/* Course Detail Modal */}
-      {selectedCourseDetail && (
-        <CourseDetailModal
-          course={selectedCourseDetail}
-          onClose={() => setSelectedCourseDetail(null)}
-          onPlayLesson={(course, lesson) => {
-            setSelectedCourseDetail(null);
-            handlePlayCourse(course, lesson);
-          }}
-          isSaved={savedCourseIds.includes(selectedCourseDetail.id)}
-          onToggleSave={handleToggleSave}
-          onOpenTeacherProfile={(teacher) => setSelectedTeacher(teacher)}
-          allCourses={courses}
-        />
-      )}
-
-      {/* Video Player Overlay */}
-      {activePlayingCourse && activePlayingLesson && (
-        <VideoPlayer
-          course={activePlayingCourse}
-          currentLesson={activePlayingLesson}
-          onClose={() => {
-            setActivePlayingCourse(null);
-            setActivePlayingLesson(null);
-          }}
-          onLessonChange={(lesson) => setActivePlayingLesson(lesson)}
-          onLessonCompleted={handleLessonCompleted}
-        />
-      )}
-
-      {/* Teacher Profile Modal */}
-      {selectedTeacher && (
-        <TeacherProfileModal
-          teacher={selectedTeacher}
-          onClose={() => setSelectedTeacher(null)}
-          courses={courses}
-          onPlayCourse={handlePlayCourse}
-          onOpenCourseDetail={(course) => {
-            setSelectedTeacher(null);
-            setSelectedCourseDetail(course);
-          }}
-          savedCourseIds={savedCourseIds}
-          onToggleSave={handleToggleSave}
-        />
-      )}
-
-      {/* Onboarding Wizard Modal */}
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={() => setShowOnboarding(false)}
-        onComplete={(selectedInterests) => {
-          setUserProfile({ ...userProfile, interests: selectedInterests });
-        }}
-      />
-
-      {/* Family Profile Switcher Modal */}
-      <FamilyProfileSwitcher
-        isOpen={showProfileSwitcher}
-        onClose={() => setShowProfileSwitcher(false)}
-        currentProfile={userProfile}
-        onSwitchProfile={(profile) => setUserProfile(profile)}
-      />
-
-      {/* MOBILE BOTTOM NAVIGATION */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0b1120]/95 backdrop-blur-md border-t border-slate-800 px-2 py-2 flex justify-around items-center text-[10px] font-bold text-slate-400">
-        <button
-          onClick={() => setActiveTab("home")}
-          className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "home" ? "text-white font-black" : "hover:text-white"
-          }`}
-        >
-          <Tv size={18} className={activeTab === "home" ? "text-sky-400" : ""} />
-          <span>Home</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("explore")}
-          className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "explore" ? "text-white font-black" : "hover:text-white"
-          }`}
-        >
-          <Compass size={18} className={activeTab === "explore" ? "text-sky-400" : ""} />
-          <span>Explore</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("my-learning")}
-          className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "my-learning" ? "text-white font-black" : "hover:text-white"
-          }`}
-        >
-          <Bookmark size={18} className={activeTab === "my-learning" ? "text-sky-400" : ""} />
-          <span>My Learning</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("creator-studio")}
-          className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "creator-studio" ? "text-sky-400 font-black" : "hover:text-white"
-          }`}
-        >
-          <Video size={18} />
-          <span>Creator</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("profile")}
-          className={`flex flex-col items-center gap-1 p-1.5 cursor-pointer ${
-            activeTab === "profile" ? "text-white font-black" : "hover:text-white"
-          }`}
-        >
-          <User size={18} className={activeTab === "profile" ? "text-sky-400" : ""} />
-          <span>Profile</span>
-        </button>
-      </nav>
-
-      {/* FOOTER */}
-      <footer className="border-t border-slate-800/80 bg-[#070b14] py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-500 space-y-4 text-center select-none">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="font-heading font-black text-lg text-sky-400 tracking-tighter">
-            LINGO<span className="text-white">DESK</span>
-          </div>
-
-          <p className="font-medium text-zinc-400">
-            One subscription. Everything worth learning.
-          </p>
-
-          <p className="text-[11px] text-zinc-600">
-            &copy; {new Date().getFullYear()} LingoDesk Inc. All rights reserved.
-          </p>
-        </div>
-      </footer>
-
+      {/* Persistent Bottom Navigation Bar */}
+      <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
     </div>
   );
 }

@@ -1,230 +1,66 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Search,
-  Globe,
-  User,
-  Sparkles,
-  ChevronDown,
-  Video
-} from "lucide-react";
-import { UserProfile } from "@/lib/lingoData";
+import React from "react";
+import { User } from "lucide-react";
 
 interface HeaderProps {
-  activeTab: "home" | "explore" | "my-learning" | "creator-studio" | "subscription" | "profile";
-  setActiveTab: (tab: "home" | "explore" | "my-learning" | "creator-studio" | "subscription" | "profile") => void;
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
-  userProfile: UserProfile;
-  onOpenProfileSwitcher: () => void;
-  onOpenOnboarding: () => void;
-  selectedAudioLanguage: string;
-  setSelectedAudioLanguage: (lang: string) => void;
+  title?: string;
+  showBack?: boolean;
+  onBack?: () => void;
+  onProfileClick?: () => void;
 }
 
-export default function Header({
-  activeTab,
-  setActiveTab,
-  searchQuery,
-  setSearchQuery,
-  userProfile,
-  onOpenProfileSwitcher,
-  onOpenOnboarding,
-  selectedAudioLanguage,
-  setSelectedAudioLanguage,
-}: HeaderProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showLangMenu, setShowLangMenu] = useState(false);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const audioOptions = [
-    { label: "Deutsch (Original)", code: "de" },
-    { label: "English (Dubbed)", code: "en" },
-    { label: "Français (Dubbed)", code: "fr" },
-    { label: "Español (Dubbed)", code: "es" },
-    { label: "Kiswahili (Dubbed)", code: "sw" },
-  ];
-
+export const Header: React.FC<HeaderProps> = ({
+  title = "BluePost",
+  showBack = false,
+  onBack,
+  onProfileClick,
+}) => {
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        isScrolled
-          ? "bg-[#0b1120]/95 backdrop-blur-md shadow-2xl border-b border-slate-800"
-          : "bg-gradient-to-b from-[#0b1120]/95 via-[#0b1120]/60 to-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-
-        {/* Left Side: Brand Logo & Navigation Links */}
-        <div className="flex items-center gap-6 lg:gap-10">
-          {/* Logo */}
+    <header className="bg-white border-b border-gray-200 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20">
+      <div className="flex items-center gap-3">
+        {showBack && (
           <button
-            onClick={() => setActiveTab("home")}
-            className="flex items-center gap-1.5 focus:outline-none group text-left cursor-pointer"
+            onClick={onBack}
+            className="p-1 -ml-1 text-gray-700 hover:text-gray-900 active:bg-gray-100 rounded focus:outline-none"
+            aria-label="Go back"
           >
-            <span className="font-heading font-black text-2xl sm:text-3xl tracking-tighter text-sky-400 group-hover:scale-105 transition-transform">
-              LINGO<span className="text-white">DESK</span>
-            </span>
-            <span className="hidden sm:inline-block bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider ml-1">
-              Streaming
-            </span>
-          </button>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold">
-            <button
-              onClick={() => setActiveTab("home")}
-              className={`transition-colors cursor-pointer ${
-                activeTab === "home" ? "text-white font-bold border-b-2 border-sky-400 pb-1" : "text-slate-300 hover:text-white"
-              }`}
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              Home
-            </button>
-            <button
-              onClick={() => setActiveTab("explore")}
-              className={`transition-colors cursor-pointer ${
-                activeTab === "explore" ? "text-white font-bold border-b-2 border-sky-400 pb-1" : "text-slate-300 hover:text-white"
-              }`}
-            >
-              Explore
-            </button>
-            <button
-              onClick={() => setActiveTab("my-learning")}
-              className={`transition-colors cursor-pointer ${
-                activeTab === "my-learning" ? "text-white font-bold border-b-2 border-sky-400 pb-1" : "text-slate-300 hover:text-white"
-              }`}
-            >
-              My Learning
-            </button>
-            <button
-              onClick={() => setActiveTab("creator-studio")}
-              className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
-                activeTab === "creator-studio"
-                  ? "text-sky-400 font-bold border-b-2 border-sky-400 pb-1"
-                  : "text-slate-300 hover:text-sky-300"
-              }`}
-            >
-              <Video size={15} />
-              <span>Creator Studio</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("subscription")}
-              className={`flex items-center gap-1 transition-colors cursor-pointer ${
-                activeTab === "subscription"
-                  ? "text-amber-400 font-bold border-b-2 border-amber-400 pb-1"
-                  : "text-slate-300 hover:text-amber-400"
-              }`}
-            >
-              <Sparkles size={14} className="text-amber-400" />
-              <span>Plans</span>
-            </button>
-          </nav>
-        </div>
-
-        {/* Right Side: Search, Language Indicator, Profile */}
-        <div className="flex items-center gap-3 sm:gap-5">
-
-          {/* Search Bar */}
-          <div className="relative flex items-center">
-            <div
-              className={`flex items-center bg-slate-900/80 border border-slate-700/80 rounded-full px-3 py-1.5 transition-all ${
-                isSearchExpanded || searchQuery ? "w-48 sm:w-64 border-sky-500/50 bg-slate-900" : "w-10 sm:w-10 overflow-hidden"
-              }`}
-            >
-              <button
-                onClick={() => {
-                  setIsSearchExpanded(!isSearchExpanded);
-                  if (!isSearchExpanded) setActiveTab("explore");
-                }}
-                className="text-slate-300 hover:text-white shrink-0 cursor-pointer"
-              >
-                <Search size={18} />
-              </button>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (activeTab !== "explore") setActiveTab("explore");
-                }}
-                placeholder="Search German, Python, Math..."
-                className={`bg-transparent text-xs text-white placeholder-slate-400 ml-2 focus:outline-none w-full ${
-                  isSearchExpanded || searchQuery ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
               />
-            </div>
-          </div>
-
-          {/* AI Language/Dubbing Quick Selector */}
-          <div className="relative">
-            <button
-              onClick={() => setShowLangMenu(!showLangMenu)}
-              className="flex items-center gap-1.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 px-2.5 py-1.5 rounded-full text-xs font-semibold text-slate-200 hover:text-white transition-all cursor-pointer"
-              title="Global Audio Preference"
-            >
-              <Globe size={15} className="text-sky-400" />
-              <span className="hidden sm:inline-block truncate max-w-[100px]">{selectedAudioLanguage}</span>
-              <ChevronDown size={12} className="text-slate-400" />
-            </button>
-
-            {/* Language Selector Dropdown */}
-            {showLangMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 text-xs">
-                <div className="px-3 py-2 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  AI Dubbing Default Audio
-                </div>
-                <div className="py-1 space-y-0.5">
-                  {audioOptions.map((opt) => (
-                    <button
-                      key={opt.code}
-                      onClick={() => {
-                        setSelectedAudioLanguage(opt.label);
-                        setShowLangMenu(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between font-medium transition-colors cursor-pointer ${
-                        selectedAudioLanguage === opt.label
-                          ? "bg-sky-600 text-white font-bold"
-                          : "text-slate-200 hover:bg-slate-800 hover:text-white"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {selectedAudioLanguage === opt.label && <span className="text-[10px]">Active</span>}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Profile Switcher & Avatar */}
-          <button
-            onClick={onOpenProfileSwitcher}
-            className="flex items-center gap-2 p-1 bg-slate-900/80 hover:bg-slate-800 rounded-full border border-slate-700/80 cursor-pointer transition-all"
-          >
-            <img
-              src={userProfile.avatar}
-              alt={userProfile.name}
-              className="w-8 h-8 rounded-full object-cover border border-sky-400/50"
-            />
-            <span className="hidden lg:inline-block text-xs font-bold text-white pr-2">
-              {userProfile.name.split(" ")[0]}
-            </span>
+            </svg>
           </button>
+        )}
+        <div className="flex items-baseline gap-2">
+          <span className="font-bold text-xl tracking-tight text-[#0066FF]">
+            BluePost
+          </span>
+          {title && title !== "BluePost" && (
+            <span className="text-sm font-medium text-gray-500 border-l border-gray-200 pl-2">
+              {title}
+            </span>
+          )}
         </div>
       </div>
+
+      {onProfileClick && (
+        <button
+          onClick={onProfileClick}
+          className="w-9 h-9 rounded-md bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-200 active:scale-95 transition-all"
+          aria-label="Profile"
+        >
+          <User className="w-5 h-5 text-gray-700" />
+        </button>
+      )}
     </header>
   );
-}
+};
