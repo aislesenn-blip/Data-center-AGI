@@ -2,42 +2,33 @@
 
 @theme {
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: var(--font-space-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
-  --color-brand-bg: #0b1120;
-  --color-brand-card: #0f172a;
-  --color-brand-surface: #1e293b;
-  --color-brand-primary: #0284c7;
-  --color-brand-cyan: #38bdf8;
-  --color-brand-indigo: #6366f1;
-  --color-brand-text: #f8fafc;
-  --color-brand-muted: #94a3b8;
+  --color-bluepost-primary: #0066FF;
+  --color-bluepost-primary-hover: #0052CC;
+  --color-bluepost-dark: #111827;
+  --color-bluepost-bg: #F7F8FA;
+  --color-bluepost-card: #FFFFFF;
+  --color-bluepost-border: #E5E7EB;
+  --color-bluepost-muted: #6B7280;
+  --color-bluepost-success: #16A34A;
+  --color-bluepost-error: #DC2626;
 }
 
 @layer base {
   body {
-    background-color: #0b1120;
-    color: #f8fafc;
+    background-color: #EBF0F5;
+    color: #111827;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-sans);
   }
 
   *:focus-visible {
-    outline: 2px solid #38bdf8;
+    outline: 2px solid #0066FF;
     outline-offset: 2px;
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-  }
 }
 
-/* Support iOS notch/bezel-less screens natively with dynamic safe-area-inset */
-.pb-safe-bottom {
-  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-}
-
-/* Hide scrollbar globally across the application for premium feel */
+/* Hide scrollbar globally across the application for clean feel */
 ::-webkit-scrollbar {
   display: none !important;
 }
