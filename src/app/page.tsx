@@ -10,6 +10,7 @@ import DetailsStep from '@/components/DetailsStep';
 import OptionsStep from '@/components/OptionsStep';
 import PaymentStep from '@/components/PaymentStep';
 import TrackingStep from '@/components/TrackingStep';
+import Logo from '@/components/Logo';
 
 type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
 
@@ -27,16 +28,11 @@ export default function App() {
 
         {/* Simple Brand Header */}
         <div className="absolute top-6 left-6 z-20">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-bluepost-primary text-white flex items-center justify-center font-bold text-lg leading-none">
-              B
-            </div>
-            <span className="font-bold text-xl text-bluepost-dark tracking-tight">BluePost</span>
-          </div>
+          <Logo />
         </div>
 
         {/* Progressive Floating Container */}
-        <div className="w-full mt-12 flex-1 flex flex-col justify-center">
+        <div className="w-full mt-16 flex-1 flex flex-col justify-center">
           <AnimatePresence mode="wait">
             {currentStep === 'location' && (
               <LocationStep
@@ -82,7 +78,7 @@ export default function App() {
       {/* LAYER 4: Floating Bottom Navigation */}
       {/* Hide navigation on payment/tracking to focus the user, show on earlier steps */}
       <AnimatePresence>
-        {['location', 'details', 'options', 'tracking'].includes(currentStep) && (
+        {['location', 'details', 'options'].includes(currentStep) && (
           <FloatingNav />
         )}
       </AnimatePresence>
