@@ -30,8 +30,8 @@ export default function PaymentStep({ onNext, onBack }: PaymentStepProps) {
           <div className="flex items-center gap-3">
             <ShipmentTriangle size="sm" />
             <div>
-              <p className="font-semibold text-sm">Box / Medium</p>
-              <p className="text-xs text-gray-500">Passenger Bus</p>
+              <p className="font-semibold text-sm">Shabiby Line</p>
+              <p className="text-xs text-gray-500">Clothes and shoes (Parcel)</p>
             </div>
           </div>
           <span className="font-bold text-lg">TSh 15,000</span>

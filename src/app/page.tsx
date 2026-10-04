@@ -10,8 +10,9 @@ import DetailsStep from '@/components/DetailsStep';
 import OptionsStep from '@/components/OptionsStep';
 import PaymentStep from '@/components/PaymentStep';
 import TrackingStep from '@/components/TrackingStep';
+import ShipmentTriangle from '@/components/ShipmentTriangle';
 
-type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
+type Step = 'location' | 'options' | 'details' | 'payment' | 'tracking';
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('location');
@@ -28,8 +29,8 @@ export default function App() {
         {/* Simple Brand Header */}
         <div className="absolute top-6 left-6 z-20">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-bluepost-primary text-white flex items-center justify-center font-bold text-lg leading-none">
-              B
+            <div className="flex items-center justify-center">
+              <ShipmentTriangle size="sm" />
             </div>
             <span className="font-bold text-xl text-bluepost-dark tracking-tight">BluePost</span>
           </div>
@@ -41,23 +42,23 @@ export default function App() {
             {currentStep === 'location' && (
               <LocationStep
                 key="location"
-                onNext={() => setCurrentStep('details')}
-              />
-            )}
-
-            {currentStep === 'details' && (
-              <DetailsStep
-                key="details"
                 onNext={() => setCurrentStep('options')}
-                onBack={() => setCurrentStep('location')}
               />
             )}
 
             {currentStep === 'options' && (
               <OptionsStep
                 key="options"
+                onNext={() => setCurrentStep('details')}
+                onBack={() => setCurrentStep('location')}
+              />
+            )}
+
+            {currentStep === 'details' && (
+              <DetailsStep
+                key="details"
                 onNext={() => setCurrentStep('payment')}
-                onBack={() => setCurrentStep('details')}
+                onBack={() => setCurrentStep('options')}
               />
             )}
 
@@ -65,7 +66,7 @@ export default function App() {
               <PaymentStep
                 key="payment"
                 onNext={() => setCurrentStep('tracking')}
-                onBack={() => setCurrentStep('options')}
+                onBack={() => setCurrentStep('details')}
               />
             )}
 
