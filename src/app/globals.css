@@ -2,33 +2,34 @@
 
 @theme {
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --color-bluepost-primary: #0066FF;
-  --color-bluepost-primary-hover: #0052CC;
-  --color-bluepost-dark: #111827;
-  --color-bluepost-bg: #F7F8FA;
+  --color-bluepost-primary: #0A58CA;
+  --color-bluepost-primary-hover: #084298;
+  --color-bluepost-dark: #1F2937;
+  --color-bluepost-bg: #F3F4F6;
   --color-bluepost-card: #FFFFFF;
   --color-bluepost-border: #E5E7EB;
   --color-bluepost-muted: #6B7280;
-  --color-bluepost-success: #16A34A;
-  --color-bluepost-error: #DC2626;
+  --color-bluepost-success: #10B981;
 }
 
 @layer base {
   body {
-    background-color: #EBF0F5;
-    color: #111827;
+    background-color: var(--color-bluepost-bg);
+    color: var(--color-bluepost-dark);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
   }
 
   *:focus-visible {
-    outline: 2px solid #0066FF;
+    outline: 2px solid var(--color-bluepost-primary);
     outline-offset: 2px;
   }
 }
 
-/* Hide scrollbar globally across the application for clean feel */
+/* Hide scrollbar globally across the application for a clean modern app feel */
 ::-webkit-scrollbar {
   display: none !important;
 }
