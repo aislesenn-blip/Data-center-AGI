@@ -9,14 +9,11 @@ interface DetailsStepProps {
 }
 
 export default function DetailsStep({ onNext, onBack }: DetailsStepProps) {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState('parcel');
+  const [value, setValue] = useState('');
 
-  const options = [
-    { id: 'envelope', icon: <Mail size={24} />, label: 'Envelope / Small' },
-    { id: 'box', icon: <ShipmentTriangle size="sm" />, label: 'Box / Medium' },
-    { id: 'boxes', icon: <Box size={24} />, label: 'Multiple Boxes' },
-    { id: 'cargo', icon: <Truck size={24} />, label: 'Large Cargo' },
-  ];
+  const isFormValid = description.trim().length > 0 && value.trim().length > 0;
 
   return (
     <motion.div
@@ -30,38 +27,57 @@ export default function DetailsStep({ onNext, onBack }: DetailsStepProps) {
       </button>
 
       <h2 className="text-2xl font-bold mt-12 mb-6 text-bluepost-dark">
-        What are you moving?
+        Package Details
       </h2>
 
-      <div className="grid grid-cols-2 gap-4">
-        {options.map((option) => (
-          <button
-            key={option.id}
-            onClick={() => setSelected(option.id)}
-            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-3 border-2 transition-all ${
-              selected === option.id
-                ? 'border-bluepost-primary bg-blue-50/50 text-bluepost-primary'
-                : 'border-gray-100 hover:border-gray-200 text-gray-600'
-            }`}
+      <div className="space-y-5">
+        <div>
+          <label className="text-sm font-semibold text-gray-700 block mb-2">What is inside?</label>
+          <input
+            type="text"
+            placeholder="e.g. Clothes and shoes"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-bluepost-primary transition-colors placeholder:text-gray-400"
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-semibold text-gray-700 block mb-2">Type of Item</label>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-bluepost-primary transition-colors appearance-none"
           >
-            <div className={`${selected === option.id ? 'text-bluepost-primary' : 'text-gray-400'}`}>
-              {option.icon}
-            </div>
-            <span className="font-medium text-sm text-center">{option.label}</span>
-          </button>
-        ))}
+            <option value="parcel">Parcel / Box</option>
+            <option value="documents">Documents</option>
+            <option value="electronics">Electronics</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-semibold text-gray-700 block mb-2">Estimated Value (TSh)</label>
+          <input
+            type="number"
+            placeholder="e.g. 50000"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-bluepost-primary transition-colors placeholder:text-gray-400"
+          />
+        </div>
       </div>
 
       <button
         onClick={onNext}
-        disabled={!selected}
+        disabled={!isFormValid}
         className={`mt-8 w-full rounded-xl py-4 font-semibold text-lg transition-colors flex justify-center items-center gap-2 ${
-          selected
-            ? 'bg-bluepost-primary hover:bg-bluepost-primary-hover text-white'
+          isFormValid
+            ? 'bg-bluepost-primary hover:bg-bluepost-primary-hover text-white shadow-sm'
             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
         }`}
       >
-        Find Transport
+        Calculate Price
       </button>
     </motion.div>
   );

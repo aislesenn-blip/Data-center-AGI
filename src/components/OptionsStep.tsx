@@ -10,33 +10,30 @@ interface OptionsStepProps {
 export default function OptionsStep({ onNext, onBack }: OptionsStepProps) {
   const options = [
     {
-      id: 'fastest',
-      title: 'Fastest',
-      vehicle: 'Passenger Bus',
+      id: 'shabiby',
+      operator: 'Shabiby Line',
       icon: <Bus size={20} />,
-      capacity: 'Small capacity',
-      price: 'TSh 15,000',
-      time: 'Today, 4:00 PM',
+      departure: 'Today, 18:00',
+      arrival: 'Tomorrow, Morning',
+      price: 'TSh 15,000 (Base)',
       highlight: true,
     },
     {
-      id: 'capacity',
-      title: 'More Capacity',
-      vehicle: 'Cargo Van',
-      icon: <Box size={20} />,
-      capacity: 'Medium capacity',
-      price: 'TSh 25,000',
-      time: 'Tomorrow, 8:00 AM',
+      id: 'abood',
+      operator: 'Abood Bus',
+      icon: <Bus size={20} />,
+      departure: 'Tomorrow, 08:00',
+      arrival: 'Tomorrow, Evening',
+      price: 'TSh 12,000 (Base)',
       highlight: false,
     },
     {
-      id: 'large',
-      title: 'Large Load',
-      vehicle: 'Truck',
-      icon: <Truck size={20} />,
-      capacity: 'Large capacity',
-      price: 'TSh 85,000',
-      time: 'Tomorrow, 12:00 PM',
+      id: 'bmcoach',
+      operator: 'BM Coach',
+      icon: <Bus size={20} />,
+      departure: 'Tomorrow, 10:00',
+      arrival: 'Tomorrow, Night',
+      price: 'TSh 14,000 (Base)',
       highlight: false,
     }
   ];
@@ -77,7 +74,7 @@ export default function OptionsStep({ onNext, onBack }: OptionsStepProps) {
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 <div className="text-gray-400">{option.icon}</div>
-                <h3 className="font-semibold text-lg">{option.vehicle}</h3>
+                <h3 className="font-semibold text-lg">{option.operator}</h3>
               </div>
               <span className="font-bold text-bluepost-dark">{option.price}</span>
             </div>
@@ -85,11 +82,11 @@ export default function OptionsStep({ onNext, onBack }: OptionsStepProps) {
             <div className="flex flex-col gap-1 mt-3">
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Clock size={14} />
-                <span>Arrives {option.time}</span>
+                <span>Departing: {option.departure}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300 inline-block"></span>
-                <span>{option.capacity}</span>
+                <span>Expected arrival: {option.arrival}</span>
               </div>
             </div>
           </div>
