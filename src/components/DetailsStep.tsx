@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Mail, Truck, ArrowLeft } from 'lucide-react';
+import { Box, Mail, Truck, ArrowLeft, ChevronRight } from 'lucide-react';
 import ShipmentTriangle from './ShipmentTriangle';
 
 interface DetailsStepProps {
@@ -9,60 +9,47 @@ interface DetailsStepProps {
 }
 
 export default function DetailsStep({ onNext, onBack }: DetailsStepProps) {
-  const [selected, setSelected] = useState<string | null>(null);
-
   const options = [
-    { id: 'envelope', icon: <Mail size={24} />, label: 'Envelope / Small' },
-    { id: 'box', icon: <ShipmentTriangle size="sm" />, label: 'Box / Medium' },
+    { id: 'envelope', icon: <Mail size={24} />, label: 'Envelope / Small Document' },
+    { id: 'box', icon: <ShipmentTriangle size="sm" />, label: 'Standard Box' },
     { id: 'boxes', icon: <Box size={24} />, label: 'Multiple Boxes' },
     { id: 'cargo', icon: <Truck size={24} />, label: 'Large Cargo' },
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="bg-white rounded-3xl p-6 shadow-xl w-full max-w-md mx-auto relative"
-    >
-      <button onClick={onBack} className="absolute left-6 top-6 text-gray-400 hover:text-gray-800 transition-colors">
-        <ArrowLeft size={24} />
-      </button>
+    <div className="w-full relative h-full flex flex-col">
+      {/* Fixed App Header */}
+      <div className="fixed top-0 left-0 w-full bg-bluepost-dark h-16 flex items-center justify-center z-50">
+        <button onClick={onBack} className="absolute left-4 text-white hover:text-gray-300 transition-colors">
+          <ArrowLeft size={24} />
+        </button>
+        <span className="text-white font-bold text-lg">Select Shipment Type</span>
+      </div>
 
-      <h2 className="text-2xl font-bold mt-12 mb-6 text-bluepost-dark">
-        What are you moving?
-      </h2>
-
-      <div className="grid grid-cols-2 gap-4">
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        className="w-full max-w-md mx-auto pt-24 pb-4 px-4 flex flex-col gap-4"
+      >
         {options.map((option) => (
           <button
             key={option.id}
-            onClick={() => setSelected(option.id)}
-            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-3 border-2 transition-all ${
-              selected === option.id
-                ? 'border-bluepost-primary bg-blue-50/50 text-bluepost-primary'
-                : 'border-gray-100 hover:border-gray-200 text-gray-600'
-            }`}
+            onClick={onNext}
+            className="w-[92%] mx-auto h-16 bg-white rounded-md shadow-sm border border-gray-100 flex items-center px-4 justify-between transition-colors hover:bg-gray-50 hover:shadow-md"
           >
-            <div className={`${selected === option.id ? 'text-bluepost-primary' : 'text-gray-400'}`}>
-              {option.icon}
+            <div className="flex items-center gap-4">
+              <div className="text-bluepost-primary">
+                {option.icon}
+              </div>
+              <span className="font-bold text-[15px] text-bluepost-dark">{option.label}</span>
             </div>
-            <span className="font-medium text-sm text-center">{option.label}</span>
+            <div className="text-gray-400">
+              <ChevronRight size={20} />
+            </div>
           </button>
         ))}
-      </div>
-
-      <button
-        onClick={onNext}
-        disabled={!selected}
-        className={`mt-8 w-full rounded-xl py-4 font-semibold text-lg transition-colors flex justify-center items-center gap-2 ${
-          selected
-            ? 'bg-bluepost-primary hover:bg-bluepost-primary-hover text-white'
-            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-        }`}
-      >
-        Find Transport
-      </button>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
