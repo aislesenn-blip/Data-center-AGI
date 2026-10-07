@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Mail, Truck, ArrowLeft } from 'lucide-react';
+import { Box, Mail, Truck, ArrowLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import ShipmentTriangle from './ShipmentTriangle';
 
 interface DetailsStepProps {
@@ -9,8 +9,6 @@ interface DetailsStepProps {
 }
 
 export default function DetailsStep({ onNext, onBack }: DetailsStepProps) {
-  const [selected, setSelected] = useState<string | null>(null);
-
   const options = [
     { id: 'envelope', icon: <Mail size={24} />, label: 'Envelope / Small' },
     { id: 'box', icon: <ShipmentTriangle size="sm" />, label: 'Box / Medium' },
@@ -23,46 +21,39 @@ export default function DetailsStep({ onNext, onBack }: DetailsStepProps) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-white rounded-3xl p-6 shadow-xl w-full max-w-md mx-auto relative"
+      className="flex flex-col w-full h-full bg-bluepost-bg absolute top-0 left-0 right-0 bottom-0 z-20"
     >
-      <button onClick={onBack} className="absolute left-6 top-6 text-gray-400 hover:text-gray-800 transition-colors">
-        <ArrowLeft size={24} />
-      </button>
+      {/* Fixed Top Header */}
+      <div className="bg-[#0F172A] text-white w-full flex items-center justify-between p-4 shadow-md shrink-0">
+        <button onClick={onBack} className="p-2 -ml-2 text-white hover:text-gray-300 transition-colors">
+          <ArrowLeft size={24} />
+        </button>
+        <h2 className="font-bold text-lg tracking-wide">Select Goods Type</h2>
+        <button className="p-2 -mr-2 text-white hover:text-gray-300 transition-colors">
+          <RefreshCw size={20} />
+        </button>
+      </div>
 
-      <h2 className="text-2xl font-bold mt-12 mb-6 text-bluepost-dark">
-        What are you moving?
-      </h2>
-
-      <div className="grid grid-cols-2 gap-4">
+      {/* Main List Area */}
+      <div className="w-full flex-1 pt-6 pb-28 px-4 flex flex-col gap-4 overflow-y-auto items-center">
         {options.map((option) => (
           <button
             key={option.id}
-            onClick={() => setSelected(option.id)}
-            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-3 border-2 transition-all ${
-              selected === option.id
-                ? 'border-bluepost-primary bg-blue-50/50 text-bluepost-primary'
-                : 'border-gray-100 hover:border-gray-200 text-gray-600'
-            }`}
+            onClick={onNext}
+            className="w-full max-w-md bg-white rounded-lg shadow-sm h-14 flex items-center px-4 justify-between border border-gray-100 hover:border-bluepost-primary/30 transition-colors group"
           >
-            <div className={`${selected === option.id ? 'text-bluepost-primary' : 'text-gray-400'}`}>
+            <div className="text-gray-500 group-hover:text-bluepost-primary transition-colors flex-shrink-0">
               {option.icon}
             </div>
-            <span className="font-medium text-sm text-center">{option.label}</span>
+            <span className="font-bold text-[15px] text-bluepost-dark flex-1 text-left px-4">
+              {option.label}
+            </span>
+            <div className="text-gray-400 group-hover:text-bluepost-primary flex-shrink-0">
+              <ChevronRight size={20} />
+            </div>
           </button>
         ))}
       </div>
-
-      <button
-        onClick={onNext}
-        disabled={!selected}
-        className={`mt-8 w-full rounded-xl py-4 font-semibold text-lg transition-colors flex justify-center items-center gap-2 ${
-          selected
-            ? 'bg-bluepost-primary hover:bg-bluepost-primary-hover text-white'
-            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-        }`}
-      >
-        Find Transport
-      </button>
     </motion.div>
   );
 }

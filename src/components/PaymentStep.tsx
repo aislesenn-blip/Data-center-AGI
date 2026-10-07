@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Check, Smartphone } from 'lucide-react';
+import { ArrowLeft, Check, Smartphone, Box, ShieldCheck } from 'lucide-react';
 import ShipmentTriangle from './ShipmentTriangle';
 
 interface PaymentStepProps {
@@ -14,66 +14,82 @@ export default function PaymentStep({ onNext, onBack }: PaymentStepProps) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-white rounded-3xl p-6 shadow-xl w-full max-w-md mx-auto relative"
+      className="flex flex-col w-full h-full bg-bluepost-bg absolute top-0 left-0 right-0 bottom-0 z-20"
     >
-      <button onClick={onBack} className="absolute left-6 top-6 text-gray-400 hover:text-gray-800 transition-colors">
-        <ArrowLeft size={24} />
-      </button>
-
-      <h2 className="text-2xl font-bold mt-12 mb-6 text-bluepost-dark">
-        Confirm & Pay
-      </h2>
-
-      {/* Summary Card */}
-      <div className="bg-gray-50 rounded-2xl p-5 mb-6 border border-gray-100">
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <ShipmentTriangle size="sm" />
-            <div>
-              <p className="font-semibold text-sm">Box / Medium</p>
-              <p className="text-xs text-gray-500">Passenger Bus</p>
-            </div>
-          </div>
-          <span className="font-bold text-lg">TSh 15,000</span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">From</span>
-            <span className="font-medium text-right">Dar es Salaam</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">To</span>
-            <span className="font-medium text-right">Dodoma</span>
-          </div>
-        </div>
+      {/* Top App Bar */}
+      <div className="bg-[#0F172A] text-white w-full flex items-center justify-between p-4 shadow-md shrink-0">
+        <button onClick={onBack} className="p-2 -ml-2 text-white hover:text-gray-300 transition-colors">
+          <ArrowLeft size={24} />
+        </button>
+        <h2 className="font-bold text-lg tracking-wide flex items-center gap-2">
+          <ShieldCheck size={20} className="text-bluepost-primary" />
+          Checkout
+        </h2>
+        <div className="w-8" />
       </div>
 
-      {/* Payment Method - simplified for native feel */}
-      <div className="mb-8">
-        <p className="text-sm font-semibold mb-3 text-gray-700">Payment Method</p>
-        <div className="flex items-center justify-between p-4 rounded-xl border-2 border-bluepost-primary bg-blue-50/20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-bluepost-primary">
-              <Smartphone size={20} />
-            </div>
-            <div>
-              <p className="font-semibold text-sm">Mobile Money</p>
-              <p className="text-xs text-gray-500">M-Pesa, Tigo Pesa, Airtel Money</p>
+      <div className="w-full flex-1 pt-6 pb-28 px-4 flex flex-col gap-6 overflow-y-auto items-center">
+        {/* Summary Card */}
+        <div className="w-full max-w-md bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-50 text-bluepost-primary flex items-center justify-center shrink-0">
+                <Box size={20} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-bluepost-dark">Medium Box</span>
+                <span className="text-xs text-gray-500">Shabiby Line • Dar to Dom</span>
+              </div>
             </div>
           </div>
-          <div className="w-5 h-5 rounded-full bg-bluepost-primary flex items-center justify-center text-white">
-            <Check size={12} />
+
+          <div className="p-4 space-y-3">
+            <div className="flex justify-between items-center text-sm">
+               <span className="text-gray-500">Base Fare</span>
+               <span className="font-medium text-gray-800">TSh 14,000</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+               <span className="text-gray-500">Platform Fee</span>
+               <span className="font-medium text-gray-800">TSh 1,000</span>
+            </div>
+            <div className="pt-3 mt-1 border-t border-gray-100 flex justify-between items-center">
+               <span className="font-bold text-gray-800">Total</span>
+               <span className="font-black text-xl text-bluepost-dark">TSh 15,000</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={onNext}
-        className="w-full bg-bluepost-dark hover:bg-black text-white rounded-xl py-4 font-semibold text-lg transition-colors flex justify-center items-center gap-2"
-      >
-        Pay TSh 15,000
-      </button>
+        {/* Payment Method */}
+        <div className="w-full max-w-md">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">Payment Method</p>
+          <div className="bg-blue-50/50 border-2 border-bluepost-primary rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-bluepost-primary">
+                <Smartphone size={20} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-bluepost-dark text-sm">Mobile Money</span>
+                <span className="text-xs text-gray-500">M-Pesa, Tigo Pesa, Airtel</span>
+              </div>
+            </div>
+            <div className="w-6 h-6 rounded-full bg-bluepost-primary flex items-center justify-center text-white shadow-sm">
+              <Check size={14} strokeWidth={3} />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto w-full max-w-md pt-4">
+          <button
+            onClick={onNext}
+            className="w-full bg-[#0F172A] hover:bg-black text-white rounded-lg py-4 font-bold text-lg transition-colors shadow-md flex justify-center items-center gap-2"
+          >
+            Pay TSh 15,000
+          </button>
+          <p className="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-1">
+            <ShieldCheck size={12} /> Payments are secure and encrypted
+          </p>
+        </div>
+      </div>
     </motion.div>
   );
 }

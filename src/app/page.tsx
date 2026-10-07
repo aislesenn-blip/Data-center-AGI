@@ -17,26 +17,18 @@ export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('location');
 
   return (
-    <main className="relative min-h-screen w-full bg-bluepost-bg font-sans overflow-hidden">
-
+    <main className="relative h-screen w-full bg-bluepost-bg font-sans overflow-y-auto">
       {/* LAYER 1: Background Spatial Map Layer */}
       <MapLayer />
 
-      {/* LAYER 2 & 3: Floating UI Content & Controls */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-[100dvh] p-4 pb-28 pt-8 w-full max-w-lg mx-auto">
+      {/* Background split for Location step (Screen 1 equivalent) positioned above MapLayer but below UI */}
+      <div className={`absolute top-0 left-0 w-full h-[45%] bg-[#0F172A] z-[5] transition-opacity duration-300 ${currentStep === 'location' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
 
-        {/* Simple Brand Header */}
-        <div className="absolute top-6 left-6 z-20">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-bluepost-primary text-white flex items-center justify-center font-bold text-lg leading-none">
-              B
-            </div>
-            <span className="font-bold text-xl text-bluepost-dark tracking-tight">BluePost</span>
-          </div>
-        </div>
+      {/* LAYER 2 & 3: Floating UI Content & Controls */}
+      <div className="relative z-10 flex flex-col items-center min-h-full pb-28 w-full max-w-lg mx-auto">
 
         {/* Progressive Floating Container */}
-        <div className="w-full mt-12 flex-1 flex flex-col justify-center">
+        <div className="w-full flex-1 flex flex-col">
           <AnimatePresence mode="wait">
             {currentStep === 'location' && (
               <LocationStep
