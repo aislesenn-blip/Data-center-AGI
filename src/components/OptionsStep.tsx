@@ -275,12 +275,12 @@ export default function OptionsStep({ bookingState, updateBookingState, onNext, 
           options.map((option) => (
             <div
               key={option.id}
-              className={`w-full max-w-md bg-white rounded-lg shadow-md p-4 flex flex-col gap-4 border ${option.highlight ? 'border-bluepost-primary/50' : 'border-gray-100'}`}
+              className="w-full max-w-md bg-white rounded-lg shadow-md p-4 flex flex-col gap-4 border border-gray-100"
             >
-              {/* Row 1: Title & Capacity */}
+              {/* Row 1: Type & Capacity */}
               <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                <span className={`font-bold text-xs tracking-wider ${option.highlight ? 'text-bluepost-primary' : 'text-gray-500'}`}>
-                  {option.highlight ? 'RECOMMENDED' : 'STANDARD'}
+                <span className="font-bold text-xs tracking-wider text-gray-500 uppercase">
+                  {option.vehicleType}
                 </span>
                 <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-md">
                   {option.capacity}
