@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Box, Mail, Truck, ArrowLeft, RefreshCw, User, MapPin } from 'lucide-react';
+import { Box, Mail, Truck, ArrowLeft, RefreshCw, User, MapPin, PackagePlus } from 'lucide-react';
 import ShipmentTriangle from './ShipmentTriangle';
 import { BookingState, ShipmentDetails } from '@/lib/types';
 
@@ -30,6 +30,7 @@ export default function DetailsStep({ bookingState, updateBookingState, onNext, 
     { id: 'Box', icon: <ShipmentTriangle size="sm" />, label: 'Box / Medium' },
     { id: 'Multiple Boxes', icon: <Box size={24} />, label: 'Multiple Boxes' },
     { id: 'Cargo', icon: <Truck size={24} />, label: 'Large Cargo' },
+    { id: 'Other', icon: <PackagePlus size={24} />, label: 'Other' },
   ];
 
   const handleSelectType = (typeId: string) => {
@@ -127,10 +128,10 @@ export default function DetailsStep({ bookingState, updateBookingState, onNext, 
                 <div className="space-y-4">
                   <div className="flex flex-col">
                     <label className="text-xs text-gray-500 font-medium mb-1">Description of Contents</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Clothes, Books, Spare parts"
-                      className="w-full border border-gray-200 rounded-md p-2.5 outline-none focus:border-bluepost-primary text-sm font-medium"
+                    <textarea
+                      rows={3}
+                      placeholder="e.g., 2 pairs of trousers, 3 shirts and one pair of shoes. Or: Small electronic device packed inside a cardboard box."
+                      className="w-full border border-gray-200 rounded-md p-2.5 outline-none focus:border-bluepost-primary text-sm font-medium resize-none"
                       value={draft.description}
                       onChange={(e) => setDraft(prev => ({ ...prev, description: e.target.value }))}
                     />
