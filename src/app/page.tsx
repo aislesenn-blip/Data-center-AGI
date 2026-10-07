@@ -11,10 +11,50 @@ import OptionsStep from '@/components/OptionsStep';
 import PaymentStep from '@/components/PaymentStep';
 import TrackingStep from '@/components/TrackingStep';
 
-type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
+import { Location } from '@/data/locations';
+import { TransportOption } from '@/data/transports';
+import { ShipmentDetails } from '@/utils/pricing';
+
+export type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
+
+export interface BookingState {
+  origin: Location | null;
+  destination: Location | null;
+  shipmentDetails: ShipmentDetails | null;
+  selectedDate: Date;
+  selectedTransport: TransportOption | null;
+}
+
+const initialBookingState: BookingState = {
+  origin: null,
+  destination: null,
+  shipmentDetails: {
+    goodsType: '',
+    description: '',
+    weight: '',
+    declaredValue: '',
+    isFragile: false,
+    senderName: '',
+    senderPhone: '',
+    receiverName: '',
+    receiverPhone: '',
+  },
+  selectedDate: new Date(),
+  selectedTransport: null,
+};
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('location');
+  const [bookingState, setBookingState] = useState<BookingState>(initialBookingState);
+
+  const updateBookingState = (updates: Partial<BookingState>) => {
+    setBookingState((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleReset = () => {
+    setBookingState(initialBookingState);
+    setCurrentStep('location');
+  };
 
   return (
     <main className="relative h-screen w-full bg-bluepost-bg font-sans overflow-y-auto">
@@ -34,6 +74,8 @@ export default function App() {
               <LocationStep
                 key="location"
                 onNext={() => setCurrentStep('details')}
+                bookingState={bookingState}
+                updateBookingState={updateBookingState}
               />
             )}
 
@@ -42,6 +84,8 @@ export default function App() {
                 key="details"
                 onNext={() => setCurrentStep('options')}
                 onBack={() => setCurrentStep('location')}
+                bookingState={bookingState}
+                updateBookingState={updateBookingState}
               />
             )}
 
@@ -50,6 +94,8 @@ export default function App() {
                 key="options"
                 onNext={() => setCurrentStep('payment')}
                 onBack={() => setCurrentStep('details')}
+                bookingState={bookingState}
+                updateBookingState={updateBookingState}
               />
             )}
 
@@ -58,13 +104,15 @@ export default function App() {
                 key="payment"
                 onNext={() => setCurrentStep('tracking')}
                 onBack={() => setCurrentStep('options')}
+                bookingState={bookingState}
               />
             )}
 
             {currentStep === 'tracking' && (
               <TrackingStep
                 key="tracking"
-                onReset={() => setCurrentStep('location')}
+                onReset={handleReset}
+                bookingState={bookingState}
               />
             )}
           </AnimatePresence>
