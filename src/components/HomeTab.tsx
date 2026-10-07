@@ -22,25 +22,22 @@ export default function HomeTab({ onStartShipment, recentShipments, onOpenShipme
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full translate-x-10 -translate-y-10 z-0"></div>
 
         <div className="relative z-10">
-          <h1 className="text-xl font-bold mb-3 text-bluepost-dark leading-tight">
-            Choose where your goods are going &rarr; choose how they should travel &rarr; pay &rarr; receive your shipment code &rarr; hand over your package.
+          <h1 className="text-2xl font-bold mb-6 text-bluepost-dark leading-tight">
+            Send a package
           </h1>
-          <p className="text-gray-600 text-sm mb-6 font-medium">
-            Arrange and pay for your shipment, get a code, and then take your package to the carrier station.
-          </p>
 
           <button
             onClick={onStartShipment}
             className="w-full bg-bluepost-dark hover:bg-black text-white rounded-lg py-4 font-bold transition-colors flex justify-center items-center gap-2 shadow-sm"
           >
-            Start New Shipment <ArrowRight size={18} />
+            New package <ArrowRight size={18} />
           </button>
         </div>
       </div>
 
       <div className="w-full max-w-md mx-auto">
         <div className="flex items-center justify-between mb-4 mt-6">
-          <h2 className="font-bold text-lg text-gray-900 drop-shadow-md">Active Shipments</h2>
+          <h2 className="font-bold text-lg text-gray-900 drop-shadow-md">Active</h2>
         </div>
 
         {recentShipments.length === 0 ? (
@@ -48,7 +45,7 @@ export default function HomeTab({ onStartShipment, recentShipments, onOpenShipme
             <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-bluepost-primary mb-4">
               <Package size={32} />
             </div>
-            <h3 className="font-bold text-gray-900 mb-1">No active shipments</h3>
+            <h3 className="font-bold text-gray-900 mb-1">No active packages</h3>
             <p className="text-sm text-gray-600 font-medium">When you send or receive goods, they will appear here.</p>
           </div>
         ) : (

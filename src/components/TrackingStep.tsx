@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ShipmentTriangle from './ShipmentTriangle';
 import { Home, PackageCheck, Copy } from 'lucide-react';
@@ -8,8 +8,6 @@ interface TrackingStepProps {
   bookingState: BookingState;
   onReset: () => void;
 }
-
-import { useState, useEffect } from 'react';
 
 export default function TrackingStep({ bookingState, onReset }: TrackingStepProps) {
   const { from, to, selectedTransport, id } = bookingState;
