@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Navigation } from 'lucide-react';
+import { ArrowDownUp } from 'lucide-react';
 
 interface LocationStepProps {
   onNext: () => void;
@@ -12,55 +12,57 @@ export default function LocationStep({ onNext }: LocationStepProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="bg-white rounded-3xl p-6 shadow-xl w-full max-w-md mx-auto"
+      className="flex flex-col items-center w-full pt-12"
     >
-      <h1 className="text-2xl font-bold mb-6 text-bluepost-dark">
-        Move something anywhere.
+      {/* Brand / Logo Pill */}
+      <div className="bg-white rounded-full px-6 py-2 flex items-center gap-2 mb-8 shadow-sm">
+        <div className="w-6 h-6 rounded-full bg-bluepost-primary text-white flex items-center justify-center font-bold text-xs leading-none">
+          B
+        </div>
+        <span className="font-bold text-lg text-bluepost-dark tracking-tight">BluePost</span>
+      </div>
+
+      <h1 className="text-2xl font-bold mb-8 text-white text-center leading-tight">
+        Move something <br /> anywhere.
       </h1>
 
-      <div className="space-y-4 relative">
-        {/* Decorative timeline line connecting From and To */}
-        <div className="absolute left-6 top-10 bottom-10 w-0.5 bg-gray-200 z-0"></div>
+      <div className="bg-white rounded-xl p-4 shadow-md w-[92%] max-w-md mx-auto">
+        <div className="relative flex flex-col gap-2">
+          {/* Swap Button overlapping the two inputs */}
+          <button className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-bluepost-primary transition-colors">
+            <ArrowDownUp size={16} />
+          </button>
 
-        {/* From Input */}
-        <div className="relative z-10 flex items-center bg-gray-50 rounded-2xl p-3 border border-gray-100">
-          <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mr-3 text-bluepost-dark">
-            <div className="w-2.5 h-2.5 rounded-full bg-bluepost-dark"></div>
-          </div>
-          <div className="flex-1">
-            <label className="text-[10px] text-gray-500 font-medium uppercase tracking-wider block mb-1">From</label>
+          {/* From Input */}
+          <div className="flex flex-col border border-gray-200 rounded-md p-3 px-4 relative z-10 bg-white">
+            <label className="text-[12px] text-gray-500 font-medium mb-1">From</label>
             <input
               type="text"
               placeholder="Origin address or city"
-              className="w-full bg-transparent outline-none text-base font-medium placeholder:text-gray-400"
+              className="w-full bg-transparent outline-none text-base font-bold text-bluepost-dark placeholder:text-gray-300 placeholder:font-normal pr-12"
               defaultValue="Dar es Salaam"
             />
           </div>
-        </div>
 
-        {/* To Input */}
-        <div className="relative z-10 flex items-center bg-gray-50 rounded-2xl p-3 border border-gray-100">
-          <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mr-3 text-bluepost-primary">
-            <MapPin size={18} className="fill-blue-50" />
-          </div>
-          <div className="flex-1">
-            <label className="text-[10px] text-gray-500 font-medium uppercase tracking-wider block mb-1">To</label>
+          {/* To Input */}
+          <div className="flex flex-col border border-gray-200 rounded-md p-3 px-4 relative z-10 bg-white">
+            <label className="text-[12px] text-gray-500 font-medium mb-1">To</label>
             <input
               type="text"
               placeholder="Destination"
-              className="w-full bg-transparent outline-none text-base font-medium placeholder:text-gray-400"
+              className="w-full bg-transparent outline-none text-base font-bold text-bluepost-dark placeholder:text-gray-300 placeholder:font-normal pr-12"
               defaultValue="Dodoma"
             />
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={onNext}
-        className="mt-8 w-full bg-bluepost-primary hover:bg-bluepost-primary-hover text-white rounded-xl py-4 font-semibold text-lg transition-colors flex justify-center items-center gap-2"
-      >
-        Continue
-      </button>
+        <button
+          onClick={onNext}
+          className="mt-4 w-full bg-bluepost-dark hover:bg-black text-white rounded-md py-3.5 font-bold text-lg transition-colors flex justify-center items-center"
+        >
+          Search
+        </button>
+      </div>
     </motion.div>
   );
 }
