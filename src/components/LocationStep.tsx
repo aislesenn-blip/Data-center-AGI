@@ -140,8 +140,8 @@ export default function LocationStep({ bookingState, updateBookingState, onNext 
       exit={{ opacity: 0, y: -20 }}
       className="flex flex-col items-center w-full pt-12"
     >
-      <h1 className="text-xl font-bold mb-8 mt-12 text-white text-center leading-tight max-w-sm px-4">
-        Choose where your goods are going &rarr; choose how they should travel &rarr; pay &rarr; receive your shipment code &rarr; hand over your package.
+      <h1 className="text-2xl font-bold mb-8 mt-12 text-white text-center leading-tight max-w-sm px-4">
+        Where is it going?
       </h1>
 
       <div className="bg-white rounded-xl p-4 shadow-md w-[92%] max-w-md mx-auto">
