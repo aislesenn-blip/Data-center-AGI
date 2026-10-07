@@ -10,12 +10,17 @@ import DetailsStep from '@/components/DetailsStep';
 import OptionsStep from '@/components/OptionsStep';
 import PaymentStep from '@/components/PaymentStep';
 import TrackingStep from '@/components/TrackingStep';
+import HomeTab from '@/components/HomeTab';
+import HistoryTab from '@/components/HistoryTab';
+import ProfileTab from '@/components/ProfileTab';
 
-import { BookingState } from '@/lib/types';
+import { BookingState, HistoryItem } from '@/lib/types';
 
 type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
+type Tab = 'home' | 'find' | 'history' | 'profile';
 
 export default function App() {
+  const [currentTab, setCurrentTab] = useState<Tab>('home');
   const [currentStep, setCurrentStep] = useState<Step>('location');
 
   // Global App State
@@ -27,13 +32,49 @@ export default function App() {
     selectedTransport: null,
   });
 
+  const [shipmentHistory, setShipmentHistory] = useState<HistoryItem[]>([]);
+
+  // Function to save booking state to history and move to tracking
+  const handlePaymentComplete = () => {
+    const trackingId = `BP-${Math.floor(1000 + Math.random() * 9000)}`;
+    const finalBookingState = { ...bookingState, id: trackingId };
+    const historyItem: HistoryItem = {
+      id: trackingId,
+      status: 'READY TO SHIP',
+      bookingState: finalBookingState,
+      createdAt: new Date(),
+    };
+
+    setBookingState(finalBookingState);
+    setShipmentHistory(prev => [historyItem, ...prev]);
+    setCurrentStep('tracking');
+  };
+
+  const handleStartShipment = () => {
+    setBookingState({
+      from: null,
+      to: null,
+      date: new Date(),
+      shipment: null,
+      selectedTransport: null,
+    });
+    setCurrentStep('location');
+    setCurrentTab('find');
+  };
+
+  const handleOpenShipment = (item: HistoryItem) => {
+    setBookingState(item.bookingState);
+    setCurrentStep('tracking');
+    setCurrentTab('find'); // Keep find active for tracking view
+  };
+
   return (
     <main className="relative h-screen w-full bg-bluepost-bg font-sans overflow-y-auto">
       {/* LAYER 1: Background Spatial Map Layer */}
       <MapLayer />
 
       {/* Background split for Location step (Screen 1 equivalent) positioned above MapLayer but below UI */}
-      <div className={`absolute top-0 left-0 w-full h-[45%] bg-[#0F172A] z-[5] transition-opacity duration-300 ${currentStep === 'location' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
+      <div className={`absolute top-0 left-0 w-full h-[45%] bg-[#0F172A] z-[5] transition-opacity duration-300 ${currentTab === 'find' && currentStep === 'location' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
 
       {/* LAYER 2 & 3: Floating UI Content & Controls */}
       <div className="relative z-10 flex flex-col items-center min-h-full pb-28 w-full max-w-lg mx-auto">
@@ -41,7 +82,28 @@ export default function App() {
         {/* Progressive Floating Container */}
         <div className="w-full flex-1 flex flex-col">
           <AnimatePresence mode="wait">
-            {currentStep === 'location' && (
+            {currentTab === 'home' && (
+              <HomeTab
+                key="home"
+                onStartShipment={handleStartShipment}
+                recentShipments={shipmentHistory}
+                onOpenShipment={handleOpenShipment}
+              />
+            )}
+
+            {currentTab === 'history' && (
+              <HistoryTab
+                key="history"
+                shipments={shipmentHistory}
+                onOpenShipment={handleOpenShipment}
+              />
+            )}
+
+            {currentTab === 'profile' && (
+              <ProfileTab key="profile" />
+            )}
+
+            {currentTab === 'find' && currentStep === 'location' && (
               <LocationStep
                 key="location"
                 bookingState={bookingState}
@@ -50,7 +112,7 @@ export default function App() {
               />
             )}
 
-            {currentStep === 'details' && (
+            {currentTab === 'find' && currentStep === 'details' && (
               <DetailsStep
                 key="details"
                 bookingState={bookingState}
@@ -60,7 +122,7 @@ export default function App() {
               />
             )}
 
-            {currentStep === 'options' && (
+            {currentTab === 'find' && currentStep === 'options' && (
               <OptionsStep
                 key="options"
                 bookingState={bookingState}
@@ -70,27 +132,21 @@ export default function App() {
               />
             )}
 
-            {currentStep === 'payment' && (
+            {currentTab === 'find' && currentStep === 'payment' && (
               <PaymentStep
                 key="payment"
                 bookingState={bookingState}
-                onNext={() => setCurrentStep('tracking')}
+                onNext={handlePaymentComplete}
                 onBack={() => setCurrentStep('options')}
               />
             )}
 
-            {currentStep === 'tracking' && (
+            {currentTab === 'find' && currentStep === 'tracking' && (
               <TrackingStep
                 key="tracking"
                 bookingState={bookingState}
                 onReset={() => {
-                  setBookingState({
-                    from: null,
-                    to: null,
-                    date: new Date(),
-                    shipment: null,
-                    selectedTransport: null,
-                  });
+                  setCurrentTab('home');
                   setCurrentStep('location');
                 }}
               />
@@ -102,8 +158,8 @@ export default function App() {
       {/* LAYER 4: Floating Bottom Navigation */}
       {/* Hide navigation on payment/tracking to focus the user, show on earlier steps */}
       <AnimatePresence>
-        {['location', 'details', 'options', 'tracking'].includes(currentStep) && (
-          <FloatingNav />
+        {!(currentTab === 'find' && (currentStep === 'payment' || currentStep === 'tracking')) && (
+          <FloatingNav currentTab={currentTab} onTabChange={(tab) => setCurrentTab(tab as Tab)} />
         )}
       </AnimatePresence>
 

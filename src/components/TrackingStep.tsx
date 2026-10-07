@@ -12,13 +12,17 @@ interface TrackingStepProps {
 import { useState, useEffect } from 'react';
 
 export default function TrackingStep({ bookingState, onReset }: TrackingStepProps) {
-  const { from, to, selectedTransport } = bookingState;
+  const { from, to, selectedTransport, id } = bookingState;
 
-  const [trackingId, setTrackingId] = useState('BP-....');
+  const [trackingId, setTrackingId] = useState(id || 'BP-....');
 
   useEffect(() => {
-    setTrackingId(`BP-${Math.floor(1000 + Math.random() * 9000)}`);
-  }, []);
+    if (!id) {
+       setTrackingId(`BP-${Math.floor(1000 + Math.random() * 9000)}`);
+    } else {
+       setTrackingId(id);
+    }
+  }, [id]);
 
   return (
     <motion.div
