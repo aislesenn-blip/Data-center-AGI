@@ -29,9 +29,17 @@ export interface TransportOption {
 }
 
 export interface BookingState {
+  id?: string;
   from: Location | null;
   to: Location | null;
   date: Date;
   shipment: ShipmentDetails | null;
   selectedTransport: TransportOption | null;
+}
+
+export interface HistoryItem {
+  id: string;
+  status: 'IN TRANSIT' | 'DELIVERED' | 'READY TO SHIP';
+  bookingState: BookingState;
+  createdAt: Date;
 }

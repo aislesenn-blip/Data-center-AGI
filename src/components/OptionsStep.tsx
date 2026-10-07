@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Bus, Truck, Box, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Clock, Bus, Truck, Box, ChevronLeft, ChevronRight, CalendarDays, X } from 'lucide-react';
 import { BookingState, TransportOption } from '@/lib/types';
 import { getTransportOptions } from '@/lib/data';
 
@@ -11,7 +11,7 @@ interface OptionsStepProps {
   onBack: () => void;
 }
 
-// Helper to generate next 7 days
+// Helper to generate next 7 days for the quick ribbon
 function generateDates(startDate: Date) {
   const dates = [];
   for (let i = 0; i < 7; i++) {
@@ -22,9 +22,124 @@ function generateDates(startDate: Date) {
   return dates;
 }
 
+// Full Calendar Component
+function FullCalendar({
+  selectedDate,
+  onSelectDate,
+  onClose,
+}: {
+  selectedDate: Date;
+  onSelectDate: (date: Date) => void;
+  onClose: () => void;
+}) {
+  const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
+
+  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+
+  const handlePrevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+  // Generate blank days for grid alignment
+  const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+  // Generate actual days
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  const isToday = (day: number) => {
+    const today = new Date();
+    return today.getDate() === day && today.getMonth() === currentMonth.getMonth() && today.getFullYear() === currentMonth.getFullYear();
+  };
+
+  const isSelected = (day: number) => {
+    return selectedDate.getDate() === day && selectedDate.getMonth() === currentMonth.getMonth() && selectedDate.getFullYear() === currentMonth.getFullYear();
+  };
+
+  const isPast = (day: number) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    return checkDate < today;
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="absolute top-0 left-0 right-0 bottom-0 bg-white z-50 flex flex-col"
+    >
+      <div className="bg-[#0F172A] text-white p-4 flex items-center justify-between shadow-md">
+        <h2 className="font-bold text-lg">Select Date</h2>
+        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+          <X size={24} />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full mt-4">
+        <div className="flex items-center justify-between mb-6">
+          <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <ChevronLeft size={24} className="text-bluepost-dark" />
+          </button>
+          <h3 className="font-bold text-lg text-bluepost-dark">
+            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+          </h3>
+          <button onClick={handleNextMonth} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <ChevronRight size={24} className="text-bluepost-dark" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-7 gap-2 mb-2">
+          {dayNames.map(day => (
+            <div key={day} className="text-center text-xs font-bold text-gray-400 uppercase">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-2">
+          {blanks.map(blank => (
+            <div key={`blank-${blank}`} className="h-12" />
+          ))}
+          {days.map(day => {
+            const past = isPast(day);
+            const selected = isSelected(day);
+            const today = isToday(day);
+
+            return (
+              <button
+                key={day}
+                disabled={past}
+                onClick={() => {
+                  onSelectDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
+                }}
+                className={`h-12 w-full rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                  past ? 'text-gray-300 cursor-not-allowed' :
+                  selected ? 'bg-bluepost-primary text-white shadow-md' :
+                  today ? 'bg-blue-50 text-bluepost-primary border border-bluepost-primary/30' :
+                  'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {day}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function OptionsStep({ bookingState, updateBookingState, onNext, onBack }: OptionsStepProps) {
-  // Use a local state for the scrolling dates view, independent from the selected booking date
-  const [dateViewStart, setDateViewStart] = useState(new Date());
+  const [dateViewStart, setDateViewStart] = useState(bookingState.date);
+  const [showFullCalendar, setShowFullCalendar] = useState(false);
 
   const dates = useMemo(() => generateDates(dateViewStart), [dateViewStart]);
 
@@ -39,6 +154,8 @@ export default function OptionsStep({ bookingState, updateBookingState, onNext, 
 
   const handleSelectDate = (date: Date) => {
     updateBookingState({ date });
+    setDateViewStart(date);
+    setShowFullCalendar(false);
   };
 
   const handleSelectTransport = (option: TransportOption) => {
@@ -74,6 +191,8 @@ export default function OptionsStep({ bookingState, updateBookingState, onNext, 
            d1.getDate() === d2.getDate();
   };
 
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -81,6 +200,16 @@ export default function OptionsStep({ bookingState, updateBookingState, onNext, 
       exit={{ opacity: 0, x: -20 }}
       className="flex flex-col w-full h-full bg-bluepost-bg absolute top-0 left-0 right-0 bottom-0 z-20"
     >
+      <AnimatePresence>
+        {showFullCalendar && (
+          <FullCalendar
+            selectedDate={bookingState.date}
+            onSelectDate={handleSelectDate}
+            onClose={() => setShowFullCalendar(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Top App Bar */}
       <div className="bg-[#0F172A] text-white w-full flex items-center justify-between p-4 shadow-md shrink-0">
         <button onClick={onBack} className="p-2 -ml-2 text-white hover:text-gray-300 transition-colors">
@@ -96,27 +225,42 @@ export default function OptionsStep({ bookingState, updateBookingState, onNext, 
       </div>
 
       {/* Date Ribbon */}
-      <div className="bg-white w-full py-3 px-4 shadow-sm shrink-0 flex items-center justify-between border-b border-gray-100">
-        <button onClick={handlePrevDates} className="text-gray-400 hover:text-gray-800"><ChevronLeft size={20} /></button>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar px-2">
-          {dates.map((date) => {
-            const isSelected = isSameDay(date, bookingState.date);
-            return (
-              <button
-                key={date.toISOString()}
-                onClick={() => handleSelectDate(date)}
-                className={`w-10 h-10 rounded-full flex flex-col items-center justify-center shrink-0 border ${
-                  isSelected
-                    ? 'bg-bluepost-primary text-white border-bluepost-primary'
-                    : 'bg-white border-gray-200 text-gray-800 hover:border-bluepost-primary/50'
-                }`}
-              >
-                <span className="font-bold text-[14px] leading-tight">{date.getDate()}</span>
-              </button>
-            );
-          })}
+      <div className="bg-white w-full shadow-sm shrink-0 flex flex-col border-b border-gray-100">
+        {/* Month Header - Clickable to open full calendar */}
+        <button
+          onClick={() => setShowFullCalendar(true)}
+          className="flex items-center justify-center gap-2 py-2 text-bluepost-dark hover:bg-gray-50 transition-colors border-b border-gray-50"
+        >
+          <span className="font-bold text-sm">{monthNames[dateViewStart.getMonth()]} {dateViewStart.getFullYear()}</span>
+          <CalendarDays size={16} className="text-gray-400" />
+        </button>
+
+        <div className="flex items-center justify-between py-3 px-4">
+          <button onClick={handlePrevDates} className="text-gray-400 hover:text-gray-800"><ChevronLeft size={20} /></button>
+          <div className="flex gap-4 overflow-x-auto no-scrollbar px-2">
+            {dates.map((date) => {
+              const isSelected = isSameDay(date, bookingState.date);
+              const isPast = date < new Date(new Date().setHours(0,0,0,0));
+
+              return (
+                <button
+                  key={date.toISOString()}
+                  onClick={() => !isPast && handleSelectDate(date)}
+                  disabled={isPast}
+                  className={`w-10 h-10 rounded-full flex flex-col items-center justify-center shrink-0 border transition-colors ${
+                    isPast ? 'opacity-40 cursor-not-allowed bg-gray-50 border-gray-100 text-gray-400' :
+                    isSelected
+                      ? 'bg-bluepost-primary text-white border-bluepost-primary shadow-sm'
+                      : 'bg-white border-gray-200 text-gray-800 hover:border-bluepost-primary/50'
+                  }`}
+                >
+                  <span className="font-bold text-[14px] leading-tight">{date.getDate()}</span>
+                </button>
+              );
+            })}
+          </div>
+          <button onClick={handleNextDates} className="text-gray-400 hover:text-gray-800"><ChevronRight size={20} /></button>
         </div>
-        <button onClick={handleNextDates} className="text-gray-400 hover:text-gray-800"><ChevronRight size={20} /></button>
       </div>
 
       {/* Result Card List */}

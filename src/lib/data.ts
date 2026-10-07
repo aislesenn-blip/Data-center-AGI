@@ -22,8 +22,28 @@ export function getTransportOptions(fromId: string, toId: string, date: Date, we
   // Weight multiplier
   const weightFactor = weight > 10 ? 2 : 1;
 
-  const dayOfWeek = date.getDay(); // Use date to slightly alter schedule
+  const dayOfWeek = date.getDay(); // Use date to alter schedule
 
+  // Sundays have no transport
+  if (dayOfWeek === 0) return [];
+
+  // Tuesdays have only one bus
+  if (dayOfWeek === 2) {
+    return [
+      {
+        id: `opt_1_${fromId}_${toId}`,
+        operator: 'Shabiby Line',
+        vehicleType: 'Passenger Bus',
+        departureTime: '10:00 AM',
+        arrivalTime: '04:00 PM',
+        price: basePrice * weightFactor,
+        capacity: 'Small to Medium Goods',
+        highlight: true,
+      }
+    ];
+  }
+
+  // Regular days have all
   return [
     {
       id: `opt_1_${fromId}_${toId}`,
