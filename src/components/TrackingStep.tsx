@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import ShipmentTriangle from './ShipmentTriangle';
-import { Home, PackageCheck, Copy } from 'lucide-react';
+import { Home, CheckCircle2, Copy } from 'lucide-react';
 import { BookingState } from '@/lib/types';
 
 interface TrackingStepProps {
@@ -12,15 +11,22 @@ interface TrackingStepProps {
 export default function TrackingStep({ bookingState, onReset }: TrackingStepProps) {
   const { from, to, selectedTransport, id } = bookingState;
 
-  const [trackingId, setTrackingId] = useState(id || 'BP-....');
+  const [paymentId, setPaymentId] = useState(id || 'BP-....');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) {
-       setTrackingId(`BP-${Math.floor(1000 + Math.random() * 9000)}`);
+       setPaymentId(`BP-${Math.floor(1000 + Math.random() * 9000)}`);
     } else {
-       setTrackingId(id);
+       setPaymentId(id);
     }
   }, [id]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(paymentId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <motion.div
@@ -29,66 +35,48 @@ export default function TrackingStep({ bookingState, onReset }: TrackingStepProp
       exit={{ opacity: 0, x: -20 }}
       className="flex flex-col w-full h-full bg-bluepost-bg absolute top-0 left-0 right-0 bottom-0 z-20"
     >
-      {/* Top Banner indicating success / tracking state */}
-      <div className="bg-bluepost-primary text-white w-full flex flex-col items-center pt-8 pb-12 shadow-md shrink-0 relative">
+      {/* Top Banner indicating success */}
+      <div className="bg-bluepost-primary text-white w-full flex flex-col items-center pt-10 pb-12 shadow-md shrink-0 relative">
         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
-          <PackageCheck size={32} />
+          <CheckCircle2 size={36} className="text-white" />
         </div>
-        <h2 className="font-bold text-xl tracking-wide">Shipment Confirmed</h2>
-        <p className="text-blue-100 text-sm mt-1">Your goods are ready to move</p>
+        <h2 className="font-bold text-2xl tracking-wide">Payment Successful</h2>
+        <p className="text-blue-100 text-sm mt-1">Your transaction is complete.</p>
       </div>
 
       <div className="w-full flex-1 px-4 -mt-6 flex flex-col gap-4 overflow-y-auto items-center pb-28">
-        {/* Tracking ID Card */}
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md border border-gray-100 p-4 flex items-center justify-between z-10 relative">
-          <div className="flex flex-col">
-            <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Tracking ID</span>
-            <span className="font-black text-2xl text-[#0F172A] tracking-widest mt-1">{trackingId}</span>
+        {/* Payment ID Card */}
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md border border-gray-100 p-6 flex flex-col items-center justify-center z-10 relative">
+          <span className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Payment ID</span>
+          <div className="flex items-center gap-3">
+             <span className="font-black text-3xl text-[#0F172A] tracking-widest">{paymentId}</span>
+             <button
+                onClick={handleCopy}
+                className={`w-10 h-10 rounded-full border flex items-center justify-center transition-colors ${copied ? 'bg-green-50 border-green-200 text-green-600' : 'bg-gray-50 border-gray-200 text-gray-500 hover:text-bluepost-primary hover:border-bluepost-primary/30'}`}
+                title="Copy Payment ID"
+             >
+               {copied ? <CheckCircle2 size={18} /> : <Copy size={18} />}
+             </button>
           </div>
-          <button className="w-10 h-10 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-bluepost-primary transition-colors">
-            <Copy size={18} />
-          </button>
+          <p className="text-xs text-gray-400 mt-4 text-center max-w-xs">Write this code on your package and drop it off at the {selectedTransport?.operator} station.</p>
         </div>
 
-        {/* Vertical Timeline Card */}
+        {/* Summary Details */}
         <div className="w-full max-w-md bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-gray-800">Status</h3>
-            <span className="bg-blue-50 text-bluepost-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-              READY TO SHIP
-            </span>
-          </div>
+          <h3 className="font-bold text-gray-800 mb-4 border-b border-gray-50 pb-3">Transaction Details</h3>
 
-          <div className="relative pl-6 space-y-8">
-            {/* Vertical Line */}
-            <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gray-200 z-0"></div>
-
-            {/* Active Vertical Line */}
-            <motion.div
-               className="absolute left-[11px] top-2 w-0.5 bg-bluepost-primary z-0"
-               initial={{ height: '0%' }}
-               animate={{ height: '10%' }}
-               transition={{ duration: 1.5, ease: "easeOut" }}
-            />
-
-            {/* Step 1: Origin */}
-            <div className="relative z-10 flex items-start gap-4">
-              <div className="w-6 h-6 rounded-full bg-bluepost-primary flex items-center justify-center absolute -left-[18px] top-0 border-4 border-white shadow-sm">
-                 <div className="w-2 h-2 rounded-full bg-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-gray-800">{from?.name || 'Origin'}</span>
-                <span className="text-sm text-gray-500">Awaiting Drop-off • {selectedTransport?.departureTime}</span>
-              </div>
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-500">Route</span>
+              <span className="text-sm font-bold text-gray-900">{from?.name} &rarr; {to?.name}</span>
             </div>
-
-            {/* Step 2: Destination */}
-            <div className="relative z-10 flex items-start gap-4 mt-12">
-              <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center absolute -left-[18px] top-0 border-4 border-white shadow-sm" />
-              <div className="flex flex-col">
-                <span className="font-bold text-gray-400">{to?.name || 'Destination'}</span>
-                <span className="text-sm text-gray-400">Estimated • {selectedTransport?.arrivalTime}</span>
-              </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-500">Carrier</span>
+              <span className="text-sm font-bold text-gray-900">{selectedTransport?.operator}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-500">Amount Paid</span>
+              <span className="text-sm font-bold text-gray-900">TSh {selectedTransport?.price.toLocaleString()}</span>
             </div>
           </div>
         </div>

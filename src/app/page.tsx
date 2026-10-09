@@ -15,6 +15,7 @@ import HistoryTab from '@/components/HistoryTab';
 import ProfileTab from '@/components/ProfileTab';
 
 import { BookingState, HistoryItem } from '@/lib/types';
+import { useEffect } from 'react';
 
 type Step = 'location' | 'details' | 'options' | 'payment' | 'tracking';
 type Tab = 'home' | 'find' | 'history' | 'profile';
@@ -33,6 +34,33 @@ export default function App() {
   });
 
   const [shipmentHistory, setShipmentHistory] = useState<HistoryItem[]>([]);
+
+  // Load history from localStorage on mount
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('bluepost_history');
+    if (savedHistory) {
+      try {
+        const parsed = JSON.parse(savedHistory);
+        // Re-hydrate dates
+        const hydrated = parsed.map((item: HistoryItem) => ({
+          ...item,
+          createdAt: new Date(item.createdAt),
+          bookingState: {
+             ...item.bookingState,
+             date: new Date(item.bookingState.date)
+          }
+        }));
+        setShipmentHistory(hydrated);
+      } catch (e) {
+        console.error("Failed to parse history", e);
+      }
+    }
+  }, []);
+
+  // Save history to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('bluepost_history', JSON.stringify(shipmentHistory));
+  }, [shipmentHistory]);
 
   // Function to save booking state to history and move to tracking
   const handlePaymentComplete = () => {
