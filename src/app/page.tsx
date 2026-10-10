@@ -96,6 +96,20 @@ export default function App() {
     setCurrentTab('find'); // Keep find active for tracking view
   };
 
+  const handleLogout = () => {
+    setBookingState({
+      from: null,
+      to: null,
+      date: new Date(),
+      shipment: null,
+      selectedTransport: null,
+    });
+    setShipmentHistory([]);
+    localStorage.removeItem('bluepost_history');
+    setCurrentTab('home');
+    setCurrentStep('location');
+  };
+
   return (
     <main className="relative h-screen w-full bg-bluepost-bg font-sans overflow-y-auto">
       {/* LAYER 1: Background Spatial Map Layer */}
@@ -128,7 +142,7 @@ export default function App() {
             )}
 
             {currentTab === 'profile' && (
-              <ProfileTab key="profile" />
+              <ProfileTab key="profile" onLogout={handleLogout} />
             )}
 
             {currentTab === 'find' && currentStep === 'location' && (
