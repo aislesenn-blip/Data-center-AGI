@@ -21,8 +21,7 @@ export default function PaymentStep({ bookingState, onNext, onBack }: PaymentSte
   };
 
   const baseFare = selectedTransport?.price || 0;
-  const platformFee = 1000;
-  const total = baseFare + platformFee;
+  const total = baseFare;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-TZ', { style: 'currency', currency: 'TZS', maximumFractionDigits: 0 }).format(price).replace('TZS', 'TSh');
@@ -64,12 +63,8 @@ export default function PaymentStep({ bookingState, onNext, onBack }: PaymentSte
 
           <div className="p-4 space-y-3">
             <div className="flex justify-between items-center text-sm">
-               <span className="text-gray-500">Base Fare</span>
+               <span className="text-gray-500">Carrier Fare</span>
                <span className="font-medium text-gray-800">{formatPrice(baseFare)}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-               <span className="text-gray-500">Platform Fee</span>
-               <span className="font-medium text-gray-800">{formatPrice(platformFee)}</span>
             </div>
             <div className="pt-3 mt-1 border-t border-gray-100 flex justify-between items-center">
                <span className="font-bold text-gray-800">Total</span>

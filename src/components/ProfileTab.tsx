@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Settings, CreditCard, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
+import { FileText, Info, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
 
 export default function ProfileTab() {
   const menuItems = [
-    { icon: <CreditCard size={20} />, label: 'Payment Methods' },
-    { icon: <Settings size={20} />, label: 'Settings' },
+    { icon: <FileText size={20} />, label: 'Terms and Conditions' },
+    { icon: <Info size={20} />, label: 'About' },
     { icon: <HelpCircle size={20} />, label: 'Help & Support' },
   ];
 
@@ -21,18 +21,6 @@ export default function ProfileTab() {
       </div>
 
       <div className="w-full flex-1 pt-6 pb-28 px-4 flex flex-col gap-6 overflow-y-auto items-center">
-        {/* Profile Header */}
-        <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-blue-50 text-bluepost-primary flex items-center justify-center border-2 border-white shadow-sm shrink-0">
-             <User size={32} />
-          </div>
-          <div className="flex flex-col">
-             <h2 className="font-bold text-xl text-bluepost-dark">Alex Shipper</h2>
-             <p className="text-gray-500 text-sm">+255 712 345 678</p>
-             <span className="inline-block mt-1 bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider w-fit">Verified</span>
-          </div>
-        </div>
-
         {/* Menu Items */}
         <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           {menuItems.map((item, index) => (
